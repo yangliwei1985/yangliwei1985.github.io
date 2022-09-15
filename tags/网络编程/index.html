@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>网络编程 | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="网络编程" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="网络编程"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/tags/">Tags</a></div>
+  <h1>网络编程</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Java网络编程02
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1.NIO 1.1 NIO通道客户端【应用】   客户端实现步骤
+ 打开通道 指定IP和端口号 写出数据 释放资源    示例代码
+public class NIOClient {  public static void main(String[] args) throws IOException {  //1.打开通道  SocketChannel socketChannel = SocketChannel.open();   //2.指定IP和端口号  socketChannel.connect(new InetSocketAddress(&#34;127.0.0.1&#34;,10000));   //3.写出数据  ByteBuffer byteBuffer = ByteBuffer.wrap(&#34;一点寒毛先制&#34;.getBytes());  socketChannel.write(byteBuffer);   //4.释放资源  socketChannel.close();  } }   1.2 NIO通道服务端【应用】   NIO通道
+  服务端通道
+只负责建立建立，不负责传递数据...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-18 11:44:51 +0000 UTC'>2022-03-18</span>&nbsp;·&nbsp;10 分钟</footer>
+  <a class="entry-link" aria-label="post link to Java网络编程02" href="https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B02/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Java网络编程01
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1.网络编程入门 1.1 网络编程概述【理解】   计算机网络
+是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统
+  网络编程
+在网络通信协议下，不同计算机上运行的程序，可以进行数据传输
+  1.2 网络编程三要素【理解】   IP地址
+要想让网络中的计算机能够互相通信，必须为每台计算机指定一个标识号，通过这个标识号来指定要接收数据的计算机和识别发送的计算机，而IP地址就是这个标识号。也就是设备的标识
+  端口
+网络的通信，本质上是两个应用程序的通信。每台计算机都有很多的应用程序，那么在网络通信时，如何区分这些应用程序呢？如果说IP地址可以唯一标识网络中的设备，那么端口号就可以唯一标识设备中的应用程序了。也就是应用程序的标识
+  协议
+通过计算机网络可以使多台计算机实现连接，位于同一个网络中的计算机在进行连接和通信时需要遵守一定的规则，这就好比在道路中行驶的汽车一定要遵守交通规则一样。在计算机网络中，这些连接和通信的规则被称为网络通信协议，它对数据的传输格式、传输速率、传输步骤等做了统一规定，通信双方必须同时遵守才能完成数据交换。常见的协议有UDP协议和TCP协议
+  1.3 IP地址【理解】 IP地址：是网络中设备的唯一标识
+  IP地址分为两大类
+  IPv4：是给每个连接在网络上的主机分配一个32bit地址。按照TCP/IP规定，IP地址用二进制来表示，每个IP地址长32bit，也就是4个字节。例如一个采用二进制形式的IP地址是“11000000 10101000 00000001 01000010”，这么长的地址，处理起来也太费劲了。为了方便使用，IP地址经常被写成十进制的形式，中间使用符号“.”分隔不同的字节。于是，上面的IP地址可以表示为“192.168.1.66”。IP地址的这种表示法叫做“点分十进制表示法”，这显然比1和0容易记忆得多
+  IPv6：由于互联网的蓬勃发展，IP地址的需求量愈来愈大，但是网络地址资源有限，使得IP的分配越发紧张。为了扩大地址空间，通过IPv6重新定义地址空间，采用128位地址长度，每16个字节一组，分成8组十六进制数，这样就解决了网络地址资源数量不够的问题
+    DOS常用命令：
+  ipconfig：查看本机IP地址
+  ping IP地址：检查网络是否连通
+    特殊IP地址：
+ 127.0.0.1：是回送地址，可以代表本机地址，一般用来测试使用    1.4 InetAddress【应用】 InetAddress：此类表示Internet协议（IP）地址
+  相关方法...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-18 11:30:56 +0000 UTC'>2022-03-18</span>&nbsp;·&nbsp;9 分钟</footer>
+  <a class="entry-link" aria-label="post link to Java网络编程01" href="https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B01/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

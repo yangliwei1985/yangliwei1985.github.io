@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>面向对象基础 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 面向对象基础 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 08 Feb 2022 16:07:03 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java面向对象</title>
+      <link>https://iblog.zone/archives/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Tue, 08 Feb 2022 16:07:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid>
+      <description>1. 类和对象 面向对象和面向过程的思想对比 :
+​	**面向过程 ：**是一种以过程为中心的编程思想，实现功能的每一步，都是自己实现的
+​	**面向对象 ：**是一种以对象为中心的编程思想，通过指挥对象实现具体的功能
+1.1 类和对象的关系 客观存在的事物皆为对象 ，所以我们也常常说万物皆对象。
+ 类  类的理解  类是对现实生活中一类具有共同属性和行为的事物的抽象 类是对象的数据类型，类是具有相同属性和行为的一组对象的集合 简单理解：类就是对现实事物的一种描述   类的组成  属性：指事物的特征，例如：手机事物（品牌，价格，尺寸） 行为：指事物能执行的操作，例如：手机事物（打电话，发短信）     类和对象的关系  类：类是对现实生活中一类具有共同属性和行为的事物的抽象 对象：是能够看得到摸的着的真实存在的实体 简单理解：类是对事物的一种描述，对象则为具体存在的事物    1.2 类的定义【应用】 类的组成是由属性和行为两部分组成
+ **属性：**在类中通过成员变量来体现（类中方法外的变量） **行为：**在类中通过成员方法来体现（和前面的方法相比去掉static关键字即可）  类的定义步骤：
+​	① 定义类
+​	② 编写类的成员变量
+​	③ 编写类的成员方法
+public class Student {  // 属性 : 姓名, 年龄  // 成员变量: 跟之前定义变量的格式一样, 只不过位置发生了改变, 类中方法外  String name;  int age;   // 行为 : 学习  // 成员方法: 跟之前定义方法的格式一样, 只不过去掉了static关键字.</description>
+    </item>
+    
+  </channel>
+</rss>

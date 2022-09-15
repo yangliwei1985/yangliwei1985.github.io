@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>k8s devops | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/categories/k8s-devops/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/categories/k8s-devops/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="k8s devops" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/categories/k8s-devops/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="k8s devops"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/categories/">Categories</a></div>
+  <h1>k8s devops</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>基于Istio实现微服务治理
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>基于Istio实现微服务治理 微服务架构可谓是当前软件开发领域的技术热点，它在各种博客、社交媒体和会议演讲上的出镜率非常之高，无论是做基础架构还是做业务系统的工程师，对微服务都相当关注，而这个现象与热度到目前为止，已经持续了近 5 年之久。
+尤其是近些年来，微服务架构逐渐发展成熟，从最初的星星之火到现在的大规模的落地与实践，几乎已经成为分布式环境下的首选架构。微服务成为时下技术热点，大量互联网公司都在做微服务架构的落地和推广。同时，也有很多传统企业基于微服务和容器，在做互联网技术转型。
+而在这个技术转型中，国内有一个趋势，以 Spring Cloud 与 Dubbo 为代表的微服务开发框架非常普及和受欢迎。然而软件开发没有银弹，基于这些传统微服务框架构建的应用系统在享受其优势的同时，痛点也越加明显。这些痛点包括但不限于以下几点：
+ 侵入性强。想要集成 SDK 的能力，除了需要添加相关依赖，往往还需要在业务代码中增加一部分的代码、或注解、或配置；业务代码与治理层代码界限不清晰。 升级成本高。每次升级都需要业务应用修改 SDK 版本，重新进行功能回归测试，并且对每一台机器进行部署上线，而这对于业务方来说，与业务的快速迭代开发是有冲突的，大多不愿意停下来做这些与业务目标不太相关的事情。 版本碎片化严重。由于升级成本高，而中间件却不会停止向前发展的步伐，久而久之，就会导致线上不同服务引用的 SDK 版本不统一、能力参差不齐，造成很难统一治理。 中间件演变困难。由于版本碎片化严重，导致中间件向前演进的过程中就需要在代码中兼容各种各样的老版本逻辑，带着 “枷锁” 前行，无法实现快速迭代。 内容多、门槛高。Spring Cloud 被称为微服务治理的全家桶，包含大大小小几十个组件，内容相当之多，往往需要几年时间去熟悉其中的关键组件。而要想使用 Spring Cloud 作为完整的治理框架，则需要深入了解其中原理与实现，否则遇到问题还是很难定位。 治理功能不全。不同于 RPC 框架，Spring Cloud 作为治理全家桶的典型，也不是万能的，诸如协议转换支持、多重授权机制、动态请求路由、故障注入、灰度发布等高级功能并没有覆盖到。而这些功能往往是企业大规模落地不可获缺的功能，因此公司往往还需要投入其它人力进行相关功能的自研或者调研其它组件作为补充。  Service Mesh 服务网格 架构和概念 目的是解决系统架构微服务化后的服务间通信和治理问题。设计初衷是提供一种通用的服务治理方案。
+Sidecar 在软件系统架构中特指边车模式。这个模式的灵感来源于我们生活中的边三轮：即在两轮摩托车的旁边添加一个边车的方式扩展现有的服务和功能。
+这个模式的精髓在于实现了数据面（业务逻辑）和控制面的解耦：原来两轮摩托车的驾驶者集中注意力跑赛道，边车上的领航员专注周围信息和地图，专注导航。
+Service Mesh 这个服务网络专注于处理服务和服务间的通讯。其主要负责构造一个稳定可靠的服务通讯的基础设施，并让整个架构更为的先进和 Cloud Native。在工程中，Service Mesh 基本来说是一组轻量级的与应用逻辑服务部署在一起的服务代理，并且对于应用服务是透明的。
+开源实现 第一代服务网格 Linkerd和Envoy Linkerd 使用Scala编写，是业界第一个开源的service mesh方案。作者 William Morgan 是 service mesh 的布道师和践行者。Envoy 基于C&#43;&#43; 11编写，无论是理论上还是实际上，后者性能都比 Linkderd 更好。这两个开源实现都是以 sidecar 为核心，绝大部分关注点都是如何做好proxy，并完成一些通用控制面的功能。 但是，当你在容器中大量部署 sidecar 以后，如何管理和控制这些 sidecar 本身就是一个不小的挑战。于是，第二代 Service Mesh 应运而生。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-12 17:38:42 +0000 UTC'>2022-01-12</span>&nbsp;·&nbsp;25 分钟</footer>
+  <a class="entry-link" aria-label="post link to 基于Istio实现微服务治理" href="https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Eistio%E5%AE%9E%E7%8E%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>SpringBoot与SpringCloud微服务项目交付
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Spring Cloud微服务项目交付 微服务扫盲篇 微服务并没有一个官方的定义，想要直接描述微服务比较困难，我们可以通过对比传统WEB应用，来理解什么是微服务。
+单体应用架构 如下是传统打车软件架构图：
+这种单体应用比较适合于小项目，优点是：
+ 开发简单直接，集中式管理 基本不会重复开发 功能都在本地，没有分布式的管理开销和调用开销  当然它的缺点也十分明显，特别对于互联网公司来说：
+ 开发效率低：所有的开发在一个项目改代码，递交代码相互等待，代码冲突不断 代码维护难：代码功能耦合在一起，新人不知道何从下手 部署不灵活：构建时间长，任何小修改必须重新构建整个项目，这个过程往往很长 稳定性不高：一个微不足道的小问题，可以导致整个应用挂掉 扩展性不够：无法满足高并发情况下的业务需求  微服务应用架构 微服务架构的设计思路不是开发一个巨大的单体式应用，而是将应用分解为小的、互相连接的微服务。一个微服务完成某个特定功能，比如乘客管理和下单管理等。每个微服务都有自己的业务逻辑和适配器。一些微服务还会提供API接口给其他微服务和应用客户端使用。
+比如，前面描述的系统可被分解为：
+每个业务逻辑都被分解为一个微服务，微服务之间通过REST API通信。一些微服务也会向终端用户或客户端开发API接口。但通常情况下，这些客户端并不能直接访问后台微服务，而是通过API Gateway来传递请求。API Gateway一般负责服务路由、负载均衡、缓存、访问控制和鉴权等任务。
+微服务架构优点：
+ 解决了复杂性问题。它将单体应用分解为一组服务。虽然功能总量不变，但应用程序已被分解为可管理的模块或服务 体系结构使得每个服务都可以由专注于此服务的团队独立开发。只要符合服务API契约，开发人员可以自由选择开发技术。这就意味着开发人员可以采用新技术编写或重构服务，由于服务相对较小，所以这并不会对整体应用造成太大影响 微服务架构可以使每个微服务独立部署。这些更改可以在测试通过后立即部署。所以微服务架构也使得CI／CD成为可能  微服务架构问题及挑战 微服务的一个主要缺点是微服务的分布式特点带来的复杂性。开发人员需要基于RPC或者消息实现微服务之间的调用和通信，而这就使得服务之间的发现、服务调用链的跟踪和质量问题变得的相当棘手。
+ 微服务的一大挑战是跨多个服务的更改  比如在传统单体应用中，若有A、B、C三个服务需要更改，A依赖B，B依赖C。我们只需更改相应的模块，然后一次性部署即可。 在微服务架构中，我们需要仔细规划和协调每个服务的变更部署。我们需要先更新C，然后更新B，最后更新A。   部署基于微服务的应用也要复杂得多  单体应用可以简单的部署在一组相同的服务器上，然后前端使用负载均衡即可。 微服务由不同的大量服务构成。每种服务可能拥有自己的配置、应用实例数量以及基础服务地址。这里就需要不同的配置、部署、扩展和监控组件。此外，我们还需要服务发现机制，以便服务可以发现与其通信的其他服务的地址    以上问题和挑战可大体概括为：
+ API Gateway 服务间调用 服务发现 服务容错 服务部署 数据调用  https://www.kancloud.cn/owenwangwen/open-capacity-platform/1480155，自助餐吃吃喝喝，竟然秒懂微服务
+微服务框架 如何应对上述挑战，出现了如下微服务领域的框架：
+  Spring Cloud（各个微服务基于Spring Boot实现）
+  Dubbo...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-11 15:30:27 +0000 UTC'>2022-01-11</span>&nbsp;·&nbsp;21 分钟</footer>
+  <a class="entry-link" aria-label="post link to SpringBoot与SpringCloud微服务项目交付" href="https://iblog.zone/archives/springboot%E4%B8%8Espringcloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BB%98/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>基于sharedLibrary进行CICD流程的优化
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>基于sharedLibrary进行CI/CD流程的优化 由于公司内部项目众多，大量的项目使用同一套流程做CICD
+ 那么势必会存在大量的重复代码 一旦某个公共的地方需要做调整，每个项目都需要修改  因此本章主要通过使用groovy实现Jenkins的sharedLibrary的开发，以提取项目在CICD实践过程中的公共逻辑，提供一系列的流程的接口供公司内各项目调用。
+开发完成后，对项目进行Jenkinsfile的改造，最后仅需通过简单的Jenkinsfile的配置，即可优雅的完成CICD流程的整个过程，此方式已在大型企业内部落地应用。
+Library工作模式 由于流水线被组织中越来越多的项目所采用，常见的模式很可能会出现。 在多个项目之间共享流水线有助于减少冗余并保持代码 “DRY”。
+流水线支持引用 “共享库” ，可以在外部源代码控制仓库中定义并加载到现有的流水线中。
+@Library(&#39;my-shared-library&#39;) _ 在实际运行过程中，会把library中定义的groovy功能添加到构建目录中：
+/var/jenkins_home/jobs/test-maven-build/branches/feature-CDN-2904.cm507o/builds/2/libs/my-shared-library/vars/devops.groovy 使用library后，Jenkinsfile大致的样子如下：
+@Library(&#39;my-shared-library&#39;) _  ...  stages {  stage(&#39;build image&#39;) {  steps {  container(&#39;tools&#39;) {  devops.buildImage(&#34;Dockerfile&#34;,&#34;172.21.51.67:5000/demo:latest&#34;)  }  }  }  }   post {  success {  script {  container(&#39;tools&#39;) {  devops.notificationSuccess(&#34;dingTalk&#34;)  }  }  }  } ....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-10 18:27:44 +0000 UTC'>2022-01-10</span>&nbsp;·&nbsp;21 分钟</footer>
+  <a class="entry-link" aria-label="post link to 基于sharedLibrary进行CICD流程的优化" href="https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Esharedlibrary%E8%BF%9B%E8%A1%8Ccicd%E6%B5%81%E7%A8%8B%E7%9A%84%E4%BC%98%E5%8C%96/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>从零开始构建基于Kubernetes的Devops平台
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>基于Kubernetes的DevOps平台实践 持续集成工具：
+ Jenkins gitlabci Tekton  本章基于k8s集群部署gitlab、sonarQube、Jenkins等工具，并把上述工具集成到Jenkins中，以Django项目和SpringBoot项目为例，通过多分支流水线及Jenkinsfile实现项目代码提交到不同的仓库分支，实现自动代码扫描、单元测试、docker容器构建、k8s服务的自动部署。
+ DevOps、CI、CD介绍 Jenkins、sonarQube、gitlab的快速部署 Jenkins初体验 流水线入门及Jenkinsfile使用 Jenkins与Kubernetes的集成 sonarQube代码扫描与Jenkins的集成 实践Django项目的基于Jenkinsfile实现开发、测试环境的CI/CD  DevOps、CI、CD介绍 Continuous Integration (CI) / Continuous Delivery (CD)
+软件交付流程
+一个软件从零开始到最终交付，大概包括以下几个阶段：规划、编码、构建、测试、发布、部署和维护，基于这些阶段，我们的软件交付模型大致经历了几个阶段：
+瀑布式流程 前期需求确立之后，软件开发人员花费数周和数月编写代码，把所有需求一次性开发完，然后将代码交给QA（质量保障）团队进行测试，然后将最终的发布版交给运维团队去部署。瀑布模型，简单来说，就是等一个阶段所有工作完成之后，再进入下一个阶段。这种模式的问题也很明显，产品迭代周期长，灵活性差。一个周期动辄几周几个月，适应不了当下产品需要快速迭代的场景。
+敏捷开发 任务由大拆小，开发、测试协同工作，注重开发敏捷，不重视交付敏捷
+DevOps 开发、测试、运维协同工作, 持续开发&#43;持续交付。
+我们是否可以认为DevOps = 提倡开发、测试、运维协同工作来实现持续开发、持续交付的一种软件交付模式？
+大家想一下为什么最初的开发模式没有直接进入DevOps的时代？
+原因是：沟通成本。
+各角色人员去沟通协作的时候都是手动去做，交流靠嘴，靠人去指挥，很显然会出大问题。所以说不能认为DevOps就是一种交付模式，因为解决不了沟通协作成本，这种模式就不具备可落地性。
+那DevOps时代如何解决角色之间的成本问题？DevOps的核心就是自动化。自动化的能力靠什么来支撑，工具和技术。
+DevOps工具链
+靠这些工具和技术，才实现了自动化流程，进而解决了协作成本，使得devops具备了可落地性。因此我们可以大致给devops一个定义：
+devops = 提倡开发、测试、运维协同工作来实现持续开发、持续交付的一种软件交付模式 &#43; 基于工具和技术支撑的自动化流程的落地实践。
+因此devops不是某一个具体的技术，而是一种思想&#43;自动化能力，来使得构建、测试、发布软件能够更加地便捷、频繁和可靠的落地实践。本次课程核心内容就是要教会大家如何利用工具和技术来实现完整的DevOps平台的建设。我们主要使用的工具有：
+ gitlab，代码仓库，企业内部使用最多的代码版本管理工具。 Jenkins， 一个可扩展的持续集成引擎，用于自动化各种任务，包括构建、测试和部署软件。 robotFramework， 基于Python的自动化测试框架 sonarqube，代码质量管理平台 maven，java包构建管理工具 Kubernetes Docker  Jenkins初体验 Kubernetes环境中部署jenkins 其他部署方式
+注意点：
+ 第一次启动很慢 因为后面Jenkins会与kubernetes集群进行集成，会需要调用kubernetes集群的api，因此安装的时候创建了ServiceAccount并赋予了cluster-admin的权限 默认部署到jenkins=true的节点 初始化容器来设置权限 ingress来外部访问 数据存储通过hostpath挂载到宿主机中  jenkins/jenkins-all....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-07 14:26:43 +0000 UTC'>2022-01-07</span>&nbsp;·&nbsp;24 分钟</footer>
+  <a class="entry-link" aria-label="post link to 从零开始构建基于Kubernetes的Devops平台" href="https://iblog.zone/archives/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84devops%E5%B9%B3%E5%8F%B0/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Kubernetes集群的日志及监控
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>第四天 Kubernetes集群的日志及监控 k8s日志收集架构 https://kubernetes.io/docs/concepts/cluster-administration/logging/
+总体分为三种方式：
+ 使用在每个节点上运行的节点级日志记录代理。 在应用程序的 pod 中，包含专门记录日志的 sidecar 容器。 将日志直接从应用程序中推送到日志记录后端。  使用节点级日志代理 容器日志驱动：
+https://docs.docker.com/config/containers/logging/configure/
+查看当前的docker主机的驱动：
+$ docker info --format &#39;{{.LoggingDriver}}&#39; json-file格式，docker会默认将标准和错误输出保存为宿主机的文件，路径为：
+/var/lib/docker/containers/&lt;container-id&gt;/&lt;container-id&gt;-json.log
+并且可以设置日志轮转：
+{  &#34;log-driver&#34;: &#34;json-file&#34;,  &#34;log-opts&#34;: {  &#34;max-size&#34;: &#34;10m&#34;,  &#34;max-file&#34;: &#34;3&#34;,  &#34;labels&#34;: &#34;production_status&#34;,  &#34;env&#34;: &#34;os,customer&#34;  } } 优势：
+ 部署方便，使用DaemonSet类型控制器来部署agent即可 对业务应用的影响最小，没有侵入性  劣势:
+ 只能收集标准和错误输出，对于容器内的文件日志，暂时收集不到  使用 sidecar 容器和日志代理   方式一：sidecar 容器将应用程序日志传送到自己的标准输出。 思路：在pod中启动一个sidecar容器，把容器内的日志文件吐到标准输出，由宿主机中的日志收集agent进行采集。
+$ cat count-pod.yaml apiVersion: v1 kind: Pod metadata:  name: counter spec:  containers:  - name: count  image: busybox  args:  - /bin/sh  - -c  - &gt;  i=0;  while true;  do  echo &#34;$i: $(date)&#34; &gt;&gt; /var/log/1....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-06 17:22:02 +0000 UTC'>2022-01-06</span>&nbsp;·&nbsp;33 分钟</footer>
+  <a class="entry-link" aria-label="post link to Kubernetes集群的日志及监控" href="https://iblog.zone/archives/kubernetes%E9%9B%86%E7%BE%A4%E7%9A%84%E6%97%A5%E5%BF%97%E5%8F%8A%E7%9B%91%E6%8E%A7/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Kubernetes进阶实践
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>第三天 Kubernetes进阶实践 本章介绍Kubernetes的进阶内容，包含Kubernetes集群调度、CNI插件、认证授权安全体系、分布式存储的对接、Helm的使用等，让学员可以更加深入的学习Kubernetes的核心内容。
+ ETCD数据的访问 kube-scheduler调度策略实践  预选与优选流程 生产中常用的调度配置实践   k8s集群网络模型  CNI介绍及集群网络选型 Flannel网络模型的实现  vxlan Backend hostgw Backend     集群认证与授权  APIServer安全控制模型 Kubectl的认证授权 RBAC kubelet的认证授权 Service Account   使用Helm管理复杂应用的部署  Helm工作原理详解 Helm的模板开发 实战：使用Helm部署Harbor仓库   kubernetes对接分部式存储  pv、pvc介绍 k8s集群如何使用cephfs作为分布式存储后端 利用storageClass实现动态存储卷的管理 实战：使用分部署存储实现有状态应用的部署   本章知识梳理及回顾  ETCD常用操作 拷贝etcdctl命令行工具：
+$ docker exec -ti etcd_container which etcdctl $ docker cp etcd_container:/usr/local/bin/etcdctl /usr/bin/etcdctl 查看etcd集群的成员节点：
+$ export ETCDCTL_API=3 $ etcdctl --endpoints=https://[127....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-05 11:13:03 +0000 UTC'>2022-01-05</span>&nbsp;·&nbsp;28 分钟</footer>
+  <a class="entry-link" aria-label="post link to Kubernetes进阶实践" href="https://iblog.zone/archives/kubernetes%E8%BF%9B%E9%98%B6%E5%AE%9E%E8%B7%B5/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Kubernetes落地实践之旅
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>第二天 Kubernetes落地实践之旅 本章学习kubernetes的架构及工作流程，重点介绍如何使用Workload管理业务应用的生命周期，实现服务不中断的滚动更新，通过服务发现和集群内负载均衡来实现集群内部的服务间访问，并通过ingress实现外部使用域名访问集群内部的服务。
+学习过程中会逐步对Django项目做k8s改造，从零开始编写所需的资源文件。通过本章的学习，学员会掌握高可用k8s集群的搭建，同时Django demo项目已经可以利用k8s的控制器、服务发现、负载均衡、配置管理等特性来实现生命周期的管理。
+纯容器模式的问题  业务容器数量庞大，哪些容器部署在哪些节点，使用了哪些端口，如何记录、管理，需要登录到每台机器去管理？ 跨主机通信，多个机器中的容器之间相互调用如何做，iptables规则手动维护？ 跨主机容器间互相调用，配置如何写？写死固定IP&#43;端口？ 如何实现业务高可用？多个容器对外提供服务如何实现负载均衡？ 容器的业务中断了，如何可以感知到，感知到以后，如何自动启动新的容器? 如何实现滚动升级保证业务的连续性？ ……  容器调度管理平台 Docker Swarm Mesos Google Kubernetes
+2017年开始Kubernetes凭借强大的容器集群管理功能, 逐步占据市场,目前在容器编排领域一枝独秀
+https://kubernetes.io/
+架构图 分布式系统，两类角色：管理节点和工作节点
+核心组件   ETCD：分布式高性能键值数据库,存储整个集群的所有元数据
+  ApiServer: API服务器,集群资源访问控制入口,提供restAPI及安全访问控制
+  Scheduler：调度器,负责把业务容器调度到最合适的Node节点
+  Controller Manager：控制器管理,确保集群资源按照期望的方式运行
+ Replication Controller Node controller ResourceQuota Controller Namespace Controller ServiceAccount Controller Token Controller Service Controller Endpoints Controller    kubelet：运行在每个节点上的主要的“节点代理”，脏活累活
+ pod 管理：kubelet 定期从所监听的数据源获取节点上 pod/container 的期望状态（运行什么容器、运行的副本数量、网络或者存储如何配置等等），并调用对应的容器平台接口达到这个状态。 容器健康检查：kubelet 创建了容器之后还要查看容器是否正常运行，如果容器运行出错，就要根据 pod 设置的重启策略进行处理....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-04 15:11:03 +0000 UTC'>2022-01-04</span>&nbsp;·&nbsp;18 分钟</footer>
+  <a class="entry-link" aria-label="post link to Kubernetes落地实践之旅" href="https://iblog.zone/archives/kubernetes%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E4%B9%8B%E6%97%85/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Etcd v3备份与恢复
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca....</p>
+  </section>
+  <footer class="entry-footer"><span title='2021-12-30 17:56:53 +0000 UTC'>2021-12-30</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to Etcd v3备份与恢复" href="https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>走进Docker的世界
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>第一天 走进Docker的世界 介绍docker的前世今生，了解docker的实现原理，以Django项目为例，带大家如何编写最佳的Dockerfile构建镜像。通过本章的学习，大家会知道docker的概念及基本操作，并学会构建自己的业务镜像，并通过抓包的方式掌握Docker最常用的bridge网络模式的通信。
+认识docker  why what how  为什么出现docker 需要一种轻量、高效的虚拟化能力
+Docker 公司位于旧金山,原名dotCloud，底层利用了Linux容器技术（LXC）（在操作系统中实现资源隔离与限制）。为了方便创建和管理这些容器，dotCloud 开发了一套内部工具，之后被命名为“Docker”。Docker就是这样诞生的。
+Hypervisor： 一种运行在基础物理服务器和操作系统之间的中间软件层，可允许多个操作系统和应用共享硬件 。常见的VMware的 Workstation 、ESXi、微软的Hyper-V或者思杰的XenServer。
+Container Runtime：通过Linux内核虚拟化能力管理多个容器，多个容器共享一套操作系统内核。因此摘掉了内核占用的空间及运行所需要的耗时，使得容器极其轻量与快速。
+什么是docker 基于操作系统内核，提供轻量级虚拟化功能的CS架构的软件产品。
+基于轻量的特性，解决软件交付过程中的环境依赖
+docker能做什么  可以把应用程序代码及运行依赖环境打包成镜像，作为交付介质，在各环境部署 可以将镜像（image）启动成为容器(container)，并且提供多容器的生命周期进行管理（启、停、删） container容器之间相互隔离，且每个容器可以设置资源限额 提供轻量级虚拟化功能，容器就是在宿主机中的一个个的虚拟的空间，彼此相互隔离，完全独立  版本管理  Docker 引擎主要有两个版本：企业版（EE）和社区版（CE） 每个季度(1-3,4-6,7-9,10-12)，企业版和社区版都会发布一个稳定版本(Stable)。社区版本会提供 4 个月的支持，而企业版本会提供 12 个月的支持 每个月社区版还会通过 Edge 方式发布月度版 从 2017 年第一季度开始，Docker 版本号遵循 YY.MM-xx 格式，类似于 Ubuntu 等项目。例如，2018 年 6 月第一次发布的社区版本为 18.06.0-ce  发展史 13年成立，15年开始，迎来了飞速发展。
+Docker 1.8之前，使用LXC，Docker在上层做了封装， 把LXC复杂的容器创建与使用方式简化为自己的一套命令体系。
+之后，为了实现跨平台等复杂的场景，Docker抽出了libcontainer项目，把对namespace、cgroup的操作封装在libcontainer项目里，支持不同的平台类型。
+2015年6月，Docker牵头成立了 OCI（Open Container Initiative开放容器计划）组织，这个组织的目的是建立起一个围绕容器的通用标准 。 容器格式标准是一种不受上层结构绑定的协议，即不限于某种特定操作系统、硬件、CPU架构、公有云等 ， 允许任何人在遵循该标准的情况下开发应用容器技术，这使得容器技术有了一个更广阔的发展空间。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2021-12-30 15:35:39 +0000 UTC'>2021-12-30</span>&nbsp;·&nbsp;13 分钟</footer>
+  <a class="entry-link" aria-label="post link to 走进Docker的世界" href="https://iblog.zone/archives/%E8%B5%B0%E8%BF%9Bdocker%E7%9A%84%E4%B8%96%E7%95%8C/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

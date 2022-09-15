@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>常用API&amp;异常 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%B8%B8%E7%94%A8api%E5%BC%82%E5%B8%B8/</link>
+    <description>Recent content in 常用API&amp;异常 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 07 Mar 2022 17:58:13 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%B8%B8%E7%94%A8api%E5%BC%82%E5%B8%B8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java常用API02</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/</link>
+      <pubDate>Mon, 07 Mar 2022 17:58:13 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/</guid>
+      <description>1.时间日期类 1.1 Date类（应用）   计算机中时间原点
+1970年1月1日 00:00:00
+  时间换算单位
+1秒 = 1000毫秒
+  Date类概述
+Date 代表了一个特定的时间，精确到毫秒
+  Date类构造方法
+   方法名 说明     public Date() 分配一个 Date对象，并初始化，以便它代表它被分配的时间，精确到毫秒   public Date(long date) 分配一个 Date对象，并将其初始化为表示从标准基准时间起指定的毫秒数      示例代码
+public class DateDemo01 {  public static void main(String[] args) {  //public Date()：分配一个 Date对象，并初始化，以便它代表它被分配的时间，精确到毫秒  Date d1 = new Date();  System.</description>
+    </item>
+    
+    <item>
+      <title>Java常用API01</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/</link>
+      <pubDate>Mon, 07 Mar 2022 16:42:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/</guid>
+      <description>1.API 1.1 API概述【理解】   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  1.2 如何使用API帮助文档【应用】   打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  2.常用API 2.1 Math（应用）   1、Math类概述
+ Math 包含执行基本数字运算的方法    2、Math中方法的调用方式
+ Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法
+   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0.</description>
+    </item>
+    
+  </channel>
+</rss>

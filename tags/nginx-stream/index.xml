@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>nginx stream on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/nginx-stream/</link>
+    <description>Recent content in nginx stream on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 27 Apr 2022 17:20:18 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/nginx-stream/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nginx Stream日志设置</title>
+      <link>https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/</link>
+      <pubDate>Wed, 27 Apr 2022 17:20:18 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/</guid>
+      <description>nginx自1.9.0开始提供tcp/udp的反向代理功能，直到1.11.4才开始提供session日志功能。
+启用stream日志配置文件 主配置文件/etc/nginx/nginx.conf增加内容：
+stream { log_format proxy &amp;#39;$remote_addr [$time_local] &amp;#39; &amp;#39;$protocol $status $bytes_sent $bytes_received &amp;#39; &amp;#39;$session_time &amp;#34;$upstream_addr&amp;#34; &amp;#39; &amp;#39;&amp;#34;$upstream_bytes_sent&amp;#34; &amp;#34;$upstream_bytes_received&amp;#34; &amp;#34;$upstream_connect_time&amp;#34;&amp;#39;; access_log /var/log/nginx/tcp-access.log proxy ; open_log_file_cache off; include /etc/nginx/conf.d/*.stream; } 具体的tcp.stream配置文件
+ upstream TCP59001 { hash $remote_addr consistent; server 192.168.1.176:59001; } server { listen 59001; proxy_connect_timeout 5s; proxy_timeout 30s; proxy_pass TCP59001; } nginx重读配置并检查tcp session日志的生成 nginx重读配置
+nginx -s reload 检查日志
+tail /var/log/nginx/tcp-access.log
+192.168.3.218 [25/Apr/2017:17:55:57 +0800] TCP 200 103 122 10.671 &amp;#34;192.168.1.176:59001&amp;#34; &amp;#34;122&amp;#34; &amp;#34;103&amp;#34; &amp;#34;0.</description>
+    </item>
+    
+  </channel>
+</rss>

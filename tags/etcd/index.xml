@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>etcd on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/etcd/</link>
+    <description>Recent content in etcd on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 30 Dec 2021 17:56:53 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/etcd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Etcd v3备份与恢复</title>
+      <link>https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <pubDate>Thu, 30 Dec 2021 17:56:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <description>ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.</description>
+    </item>
+    
+  </channel>
+</rss>

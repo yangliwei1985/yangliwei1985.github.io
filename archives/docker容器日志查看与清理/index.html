@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Docker容器日志查看与清理 | ylw&#39;s blog</title>
+<meta name="keywords" content="docker, logs" />
+<meta name="description" content="1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。
+2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：
+#!/bin/sh  echo &#34;======== docker containers logs file size ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod &#43;x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null &gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：
+#!/bin/sh  echo &#34;======== start clean docker containers logs ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Docker容器日志查看与清理" />
+<meta property="og:description" content="1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。
+2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：
+#!/bin/sh  echo &#34;======== docker containers logs file size ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod &#43;x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null &gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：
+#!/bin/sh  echo &#34;======== start clean docker containers logs ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-06T10:09:27&#43;08:00" />
+<meta property="article:modified_time" content="2022-05-06T10:09:27&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker容器日志查看与清理"/>
+<meta name="twitter:description" content="1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。
+2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：
+#!/bin/sh  echo &#34;======== docker containers logs file size ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod &#43;x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null &gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：
+#!/bin/sh  echo &#34;======== start clean docker containers logs ========&#34;  logs=$(find /var/lib/docker/containers/ -name *-json."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Docker容器日志查看与清理",
+      "item": "https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker容器日志查看与清理",
+  "name": "Docker容器日志查看与清理",
+  "description": "1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。\n2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：\n#!/bin/sh  echo \u0026#34;======== docker containers logs file size ========\u0026#34;  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod +x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null \u0026gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：\n#!/bin/sh  echo \u0026#34;======== start clean docker containers logs ========\u0026#34;  logs=$(find /var/lib/docker/containers/ -name *-json.",
+  "keywords": [
+    "docker", "logs"
+  ],
+  "articleBody": "1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。\n2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：\n#!/bin/sh  echo \"======== docker containers logs file size ========\"  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod +x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null  *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：\n#!/bin/sh  echo \"======== start clean docker containers logs ========\"  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  echo \"clean logs : $log\"  cat /dev/null  $log  done  echo \"======== end clean docker containers logs ========\" # chmod +x clean_docker_log.sh  # ./clean_docker_log.sh 但是，这样清理之后，随着时间的推移，容器日志会像杂草一样，卷土重来。\n2.3 设置Docker容器日志大小（治本）  设置一个容器服务的日志大小上限  上述方法，日志文件迟早又会涨回来。要从根本上解决问题，需要限制容器服务的日志大小上限。这个通过配置容器docker-compose的max-size选项来实现\nnginx:  image: nginx:1.12.1  restart: always  logging:  driver: “json-file”  options:  max-size: “5g” 重启nginx容器之后，其日志文件的大小就被限制在5GB，再也不用担心了。\n 全局设置  新建/etc/docker/daemon.json，若有就不用新建了。添加log-dirver和log-opts参数，样例如下：\n# vim /etc/docker/daemon.json  {  \"registry-mirrors\": [\"http://f613ce8f.m.daocloud.io\"],  \"log-driver\":\"json-file\",  \"log-opts\": {\"max-size\":\"500m\", \"max-file\":\"3\"} } max-size=500m，意味着一个容器日志大小上限是500M， max-file=3，意味着一个容器有三个日志，分别是id+.json、id+1.json、id+2.json。\n// 重启docker守护进程  # systemctl daemon-reload  # systemctl restart docker  注意：设置的日志大小，只对新建的容器有效。\n 3. 参考文章 https://blog.csdn.net/xunzhaoyao/article/details/72959917 https://www.cnblogs.com/testzcy/p/7904829.html\n",
+  "wordCount" : "138",
+  "inLanguage": "zh",
+  "datePublished": "2022-05-06T10:09:27+08:00",
+  "dateModified": "2022-05-06T10:09:27+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Docker容器日志查看与清理
+    </h1>
+    <div class="post-meta"><span title='2022-05-06 10:09:27 +0800 CST'>2022-05-06</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1-%e9%97%ae%e9%a2%98" aria-label="1. 问题">1. 问题</a></li>
+                    <li>
+                        <a href="#2-%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95" aria-label="2. 解决方法">2. 解决方法</a><ul>
+                            
+                    <li>
+                        <a href="#21-%e6%89%be%e5%87%badocker%e5%ae%b9%e5%99%a8%e6%97%a5%e5%bf%97" aria-label="2.1 找出Docker容器日志">2.1 找出Docker容器日志</a></li>
+                    <li>
+                        <a href="#22-%e6%b8%85%e7%90%86docker%e5%ae%b9%e5%99%a8%e6%97%a5%e5%bf%97%e6%b2%bb%e6%a0%87" aria-label="2.2 清理Docker容器日志（治标)">2.2 清理Docker容器日志（治标)</a></li>
+                    <li>
+                        <a href="#23-%e8%ae%be%e7%bd%aedocker%e5%ae%b9%e5%99%a8%e6%97%a5%e5%bf%97%e5%a4%a7%e5%b0%8f%e6%b2%bb%e6%9c%ac" aria-label="2.3 设置Docker容器日志大小（治本）">2.3 设置Docker容器日志大小（治本）</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3-%e5%8f%82%e8%80%83%e6%96%87%e7%ab%a0" aria-label="3. 参考文章">3. 参考文章</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1-问题">1. 问题<a hidden class="anchor" aria-hidden="true" href="#1-问题">#</a></h2>
+<p><a href="https://so.csdn.net/so/search?q=docker&amp;spm=1001.2101.3001.7020">docker</a>容器日志导致主机磁盘空间满了。<code>docker logs -f container_name</code>噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。</p>
+<h2 id="2-解决方法">2. 解决方法<a hidden class="anchor" aria-hidden="true" href="#2-解决方法">#</a></h2>
+<h3 id="21-找出docker容器日志">2.1 找出Docker容器日志<a hidden class="anchor" aria-hidden="true" href="#21-找出docker容器日志">#</a></h3>
+<p>在linux上，容器日志一般存放在<code>/var/lib/docker/containers/container_id/</code>下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;======== docker containers logs file size ========&#34;</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>logs<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>find /var/lib/docker/containers/ -name *-json.log<span style="color:#66d9ef">)</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> log in $logs  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">do</span>  
+</span></span><span style="display:flex;"><span>             ls -lh $log   
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">done</span>  
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># chmod +x docker_log_size.sh</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ./docker_log_size.sh</span>
+</span></span></code></pre></div><h3 id="22-清理docker容器日志治标">2.2 清理Docker容器日志（治标)<a hidden class="anchor" aria-hidden="true" href="#22-清理docker容器日志治标">#</a></h3>
+<p>如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null &gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;======== start clean docker containers logs ========&#34;</span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>logs<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>find /var/lib/docker/containers/ -name *-json.log<span style="color:#66d9ef">)</span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> log in $logs  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">do</span>  
+</span></span><span style="display:flex;"><span>                echo <span style="color:#e6db74">&#34;clean logs : </span>$log<span style="color:#e6db74">&#34;</span>  
+</span></span><span style="display:flex;"><span>                cat /dev/null &gt; $log  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">done</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;======== end clean docker containers logs ========&#34;</span>  
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># chmod +x clean_docker_log.sh</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ./clean_docker_log.sh</span>
+</span></span></code></pre></div><p>但是，这样清理之后，随着时间的推移，容器日志会像杂草一样，卷土重来。</p>
+<h3 id="23-设置docker容器日志大小治本">2.3 设置Docker容器日志大小（治本）<a hidden class="anchor" aria-hidden="true" href="#23-设置docker容器日志大小治本">#</a></h3>
+<ul>
+<li>设置一个容器服务的日志大小上限</li>
+</ul>
+<p>上述方法，日志文件迟早又会涨回来。要从根本上解决问题，需要限制容器服务的日志大小上限。这个通过配置容器docker-compose的max-size选项来实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nginx: 
+</span></span><span style="display:flex;"><span>  image: nginx:1.12.1 
+</span></span><span style="display:flex;"><span>  restart: always 
+</span></span><span style="display:flex;"><span>  logging: 
+</span></span><span style="display:flex;"><span>    driver: “json-file” 
+</span></span><span style="display:flex;"><span>    options: 
+</span></span><span style="display:flex;"><span>      max-size: “5g” 
+</span></span></code></pre></div><p>重启nginx容器之后，其日志文件的大小就被限制在5GB，再也不用担心了。</p>
+<ul>
+<li>全局设置</li>
+</ul>
+<p>新建/etc/docker/daemon.json，若有就不用新建了。添加log-dirver和log-opts参数，样例如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># vim /etc/docker/daemon.json</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;registry-mirrors&#34;</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;http://f613ce8f.m.daocloud.io&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;log-driver&#34;</span>:<span style="color:#e6db74">&#34;json-file&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;log-opts&#34;</span>: <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;max-size&#34;</span>:<span style="color:#e6db74">&#34;500m&#34;</span>, <span style="color:#e6db74">&#34;max-file&#34;</span>:<span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>max-size=500m，意味着一个容器日志大小上限是500M，
+max-file=3，意味着一个容器有三个日志，分别是id+.json、id+1.json、id+2.json。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 重启docker守护进程
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># systemctl daemon-reload</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># systemctl restart docker</span>
+</span></span></code></pre></div><blockquote>
+<p>注意：设置的日志大小，只对新建的容器有效。</p>
+</blockquote>
+<h2 id="3-参考文章">3. 参考文章<a hidden class="anchor" aria-hidden="true" href="#3-参考文章">#</a></h2>
+<p><a href="https://blog.csdn.net/xunzhaoyao/article/details/72959917">https://blog.csdn.net/xunzhaoyao/article/details/72959917</a>
+<a href="https://www.cnblogs.com/testzcy/p/7904829.html">https://www.cnblogs.com/testzcy/p/7904829.html</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/docker/">docker</a></li>
+      <li><a href="https://iblog.zone/tags/logs/">logs</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/gvm%E5%8D%87%E7%BA%A7%E5%90%8E%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>GVM升级后启动异常处理</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Nginx Stream日志设置</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

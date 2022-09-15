@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>API基础 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/api%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in API基础 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 16 Feb 2022 16:20:54 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/api%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java常用API</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api/</link>
+      <pubDate>Wed, 16 Feb 2022 16:20:54 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api/</guid>
+      <description>1.API 1.1 API概述-帮助文档的使用   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  如何使用API帮助文档 :
+  打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  1.2 键盘录入字符串 Scanner类 :
+​	next() : 遇到了空格, 就不再录入数据了 , 结束标记: 空格, tab键
+​	nextLine() : 可以将数据完整的接收过来 , 结束标记: 回车换行符
+代码实现 :
+package com.</description>
+    </item>
+    
+  </channel>
+</rss>

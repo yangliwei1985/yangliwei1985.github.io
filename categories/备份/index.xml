@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>备份 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E5%A4%87%E4%BB%BD/</link>
+    <description>Recent content in 备份 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 13 Apr 2022 17:19:20 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/%E5%A4%87%E4%BB%BD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL生产级全备&#43;增备备份脚本</title>
+      <link>https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/</link>
+      <pubDate>Wed, 13 Apr 2022 17:19:20 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/</guid>
+      <description>脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&amp;#34;/data/mysql_backup&amp;#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&amp;#34;root&amp;#34; MYSQL_PASSWORD=&amp;#34;root&amp;#34; MYSQL_HOST=&amp;#34;10.0.0.1&amp;#34;  MYSQL_CNF=&amp;#34;/etc/my.cnf&amp;#34; MYSQL_MULTI_GROUP=&amp;#34;--socket=/data/mysql/mysql.sock&amp;#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&amp;#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&amp;#34;  CURRENT_WEEK_OF_YEAR=$(date +%U) CURRENT_DAY_OF_WEEK=$(date +%u) CURRENT_DATE=$(date +%F) CURRENT_TIME=$(date +%H-%M-%S) CURRENT_DATETIME=&amp;#34;${CURRENT_DATE}_${CURRENT_TIME}&amp;#34;  BAK_WEEK_DIR=&amp;#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&amp;#34;  BAK_FULL_DIR=&amp;#34;${BAK_WEEK_DIR}/FULL&amp;#34;  BAK_LOG=&amp;#34;${BAK_WEEK_DIR}/backup.log&amp;#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime +${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !</description>
+    </item>
+    
+  </channel>
+</rss>

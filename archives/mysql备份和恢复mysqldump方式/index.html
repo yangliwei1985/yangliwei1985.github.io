@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Mysql备份和恢复（mysqldump方式） | ylw&#39;s blog</title>
+<meta name="keywords" content="mysqldump, 备份和恢复" />
+<meta name="description" content="一、备份单个数据库 1、备份命令：mysqldump
+　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。
+单实例语法（Syntax）: mysqldump -u &lt;username&gt; -p &lt;dbname&gt; &gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u &lt;username&gt; -p &lt;dbname&gt; -S &lt;sockPath&gt; &gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress &gt; /opt/wordpress_$(date &#43;%F).sql 2、参数解析
+ 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Mysql备份和恢复（mysqldump方式）" />
+<meta property="og:description" content="一、备份单个数据库 1、备份命令：mysqldump
+　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。
+单实例语法（Syntax）: mysqldump -u &lt;username&gt; -p &lt;dbname&gt; &gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u &lt;username&gt; -p &lt;dbname&gt; -S &lt;sockPath&gt; &gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress &gt; /opt/wordpress_$(date &#43;%F).sql 2、参数解析
+ 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-25T17:55:51&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-25T17:55:51&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mysql备份和恢复（mysqldump方式）"/>
+<meta name="twitter:description" content="一、备份单个数据库 1、备份命令：mysqldump
+　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。
+单实例语法（Syntax）: mysqldump -u &lt;username&gt; -p &lt;dbname&gt; &gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u &lt;username&gt; -p &lt;dbname&gt; -S &lt;sockPath&gt; &gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress &gt; /opt/wordpress_$(date &#43;%F).sql 2、参数解析
+ 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Mysql备份和恢复（mysqldump方式）",
+      "item": "https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Mysql备份和恢复（mysqldump方式）",
+  "name": "Mysql备份和恢复（mysqldump方式）",
+  "description": "一、备份单个数据库 1、备份命令：mysqldump\n　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。\n单实例语法（Syntax）: mysqldump -u \u0026lt;username\u0026gt; -p \u0026lt;dbname\u0026gt; \u0026gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u \u0026lt;username\u0026gt; -p \u0026lt;dbname\u0026gt; -S \u0026lt;sockPath\u0026gt; \u0026gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress \u0026gt; /opt/wordpress_$(date +%F).sql 2、参数解析\n 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database.",
+  "keywords": [
+    "mysqldump", "备份和恢复"
+  ],
+  "articleBody": "一、备份单个数据库 1、备份命令：mysqldump\n　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。\n单实例语法（Syntax）: mysqldump -u  -p   /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u  -p  -S   /path/to/***.sql  eg: mysqldump -u root -p wordpress  /opt/wordpress_$(date +%F).sql 2、参数解析\n 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database.table1 --ignore-table=database.table2 …… 23 -x --lock-all-tables：提交请求锁定所有数据库中的所有表，以保证数据的一致性。这是一个全局读锁，并且自动关闭--single-transaction 和--lock-tables 选项。 24 -l --lock-tables：开始导出前，锁定所有表。用READ LOCAL锁定表以允许MyISAM表并行插入。对于支持事务的表例如InnoDB和BDB，--single-transaction是一个更好的选择，因为它根本不需要锁定表。请注意当导出多个数据库时，--lock-tables分别为每个数据库锁定表。因此，该选项不能保证导出文件中的表在数据库之间的逻辑一致性。不同数据库表的导出状态可以完全不同。 25 --single-transaction：适合innodb事务数据库的备份。保证备份的一致性，原理是设定本次会话的隔离级别为Repeatable read，来保证本次会话（也就是dump）时，不会看到其它会话已经提交了的数据。 26 -F：刷新binlog，如果binlog打开了，-F参数会在备份时自动刷新binlog进行切换。 27 -n --no-create-db：只导出数据，而不添加CREATE DATABASE 语句。 28 -t --no-create-info：只导出数据，而不添加CREATE TABLE 语句。 29 -d --no-data：不导出任何数据，只导出数据库表结构。 30 -p --password：连接数据库密码 31 -P --port：连接数据库端口号 32 -u --user：指定连接的用户名。 举例使用：\na、导出整个数据库(包括数据库中的数据） mysqldump -u username -p dbname  dbname.sql b、导出数据库结构（不含数据） mysqldump -u username -p -d dbname  dbname.sql c、导出数据库中的某张数据表（包含数据） mysqldump -u username -p dbname tablename  tablename.sql d、导出数据库中的某张数据表的表结构（不含数据） mysqldump -u username -p -d dbname tablename  tablename.sql 3、恢复操作\n语法（Syntax）： mysql -u -p  #库必须保留，空库也可 说明：指定dbname，相当于use  4、示例\n（1）无参数备份数据库mytest和恢复\n（1）备份操作 a、备份 mysqldump -uroot -p‘123456’ mytest  /mnt/mytest_bak_$(date +%F).sql  （2）恢复操作 a、删除student表（库必须要保留，空库都行） mysql -uroot -p'123456' -e \"use mytest;drop table student;\" b、恢复数据 mysql -uroot -p'123456' mytest c、查看数据 mysql -uroot -p'123456' -e \"select * from mytest.student;\" （2）-B参数备份和恢复（建议使用）\n（1）备份操作 a、备份 mysqldump -uroot -p'123456' -B mytest  /mnt/mytest_bak_B.sql  说明：加了-B参数后，备份文件中多的Create database和use mytest的命令 加-B参数的好处： 加上-B参数后，导出的数据文件中已存在创建库和使用库的语句，不需要手动在原库是创建库的操作，在恢复过程中不需要手动建库，可以直接还原恢复。  （2）恢复操作 a、删除mytest库 mysql -uroot -p'123456' -e \"drop database mytest;\" b、恢复数据 （1）使用不带参数的导出文件导入（导入时不指定要恢复的数据库），报错 mysql -uroot - p'123456' ERROR 1046 (3D000) at line 22: No database selected （2）使用带-B参数的导出文件导入（导入时也不指定要恢复的数据库），成功 mysql -uroot -p'123456' c、查看数据 mysql -uroot -p'123456' -e \"select * from mytest.student;\" （3）–compact参数优化备份文小大小，减少输出注释（一般用于Debug调试）\n（1）备份 mysqldump -uroot -p'123456' --compact -B mytest  /mnt/mytest_bak_Compact.sql 说明： 使用--compact参数，可以优化输出内容的大小，让容量更少，适合调试。便会忽略--skip-add-drop-table，--no-set-names，--skip-disable-keys，--skip-add-locks等几个参数的功能。 （4）指定压缩命令来压缩备份文件\n（1）备份 mysqldump -uroot -p'123456' -B mytest | gzip  /mnt/mytest_bak_.sql.gz 说明： mysqldump导出的文件是文本文件，压缩效率很高 （5）备份多个数据库\n（1）说明 通过-B参数指定相关数据库，每个数据库名之前用空格分格。当使用-B参数后，将所有数据库全部列全，则此时等同于-A参数。 （2）备份 mysqldump -uroot -p'123456' -B mytest wiki | gzip  /mnt/mytestAndWiki_bak.sql.gz （6）分库备份\n　分库备份实际上就是执行一个备份语句就备份一个库，有多个库时，就执行多条相同的备份语句，只是备份的库名和备份文件名不同而已。可能通过shell脚本自动生成并执行相应的操作，也可以把所有单个备份语句写在一个shell脚本中，通过cron定时任务来备份。\n分库备份的意义是在所有库都备份成一个备份文件时，恢复其中一个库的数据是比较麻烦的，所以分库备份，利于恢复。分库备份脚本如下：\nfor dbname in ` mysql -uroot -p'123456' -e \"show databases;\" | grep -Evi \"database|infor|perfor\"` do  mysqldump -uroot -p\"123456\" --events -B $dbname | gzip  /mnt/${dbname}_bak.sql.gz done 说明：${dbname}_bak**，由于要求备份文件名以$dbname_bak.sql.gz格式命令，但系统无法辨别变量是$dbname还是$dbname_bak****，所以此时就需要用大括号“{}”将变量括起来，就是${dbname}_bak.sql.gz了。**\n（7）-d参数，只备份数据库中表结构\nmysqldump -uroot -p'123456' -d mytest  /mnt/mytestDesc_bak.sql （8）-A参数备份全库，并且-F刷新和切换binlog\nmysqldump -uroot -p'123456' -A -B -F  /mnt/All_bak.sql （9）–master-data参数在备份文件中写入当前binlog文件号\nmysqldump -uroot -p'123456' --master-data=1 --compact mytest  /mnt/All_bak.sql  mysqldump -uroot -p'123456' --master-data=2 --compact mytest  /mnt/All_bak.sql 二、备份单个表 语法（Syntax）：不能加-B参数 mysqldump -u -p dbname tablename1 tablename2...  /path/to/***.sql 示例：\n示例1：备份mytest库中的student表 mysqldump -uroot -p'123456' mytest student  /mnt/table_bak/student_bak.sql  示例2：备份mytest库中所有表，就是备份mytest库 mysqldump -uroot -p'123456' mytest  /mnt/table_bak/all_bak.sql  示例3：备份mytest库中的student和test表 mysqldump -uroot -p'123456' mytest student test  /mnt/table_bak/two_bak.sql  示例4：-d参数，只备份表结构 mysqldump -uroot -p'123456' -d mytest stusent  /mnt/studentDesc_bak.sql  示例5：-t参数，只备份数据 mysqldump -uroot -p'123456' --compact -t mytest stusent  /mnt/studentData_bak.sql INSERT INTO `student` VALUES (1,'Tom',20,'S11'),(2,'Jary',21,'S12'),(3,'King',25,'S10'),(4,'Smith',19,'S11'),(5,'??',20,'S11'),(6,'张三',20,'S11'); 三、企业生产场景不同引擎备份命令参数 1、mysqldump的关键参数\n-B：指定多个库，在备份文件中增加建库语句和use语句 --compact：去掉备份文件中的注释，适合调试，生产场景不用 -A：备份所有库 -F：刷新binlog日志 --master-data：在备份文件中增加binlog日志文件名及对应的位置点 -x --lock-all-tables：锁表 -l：只读锁表 -d：只备份表结构 -t：只备份数据 --single-transaction：适合innodb事务数据库的备份  InnoDB表在备份时，通常启用选项--single-transaction来保证备份的一致性，原理是设定本次会话的隔离级别为Repeatable read，来保证本次会话（也就是dump）时，不会看到其它会话已经提交了的数据。 2、不同引擎备份命令参数用法\n1）Myisam引擎： mysqldump -uroot -p123456 -A -B --master-data=1 -x| gzip  /data/all_$(date +%F).sql.gz  （2）InnoDB引擎： mysqldump -uroot -p123456 -A -B --master-data=1 --single-transaction  /data/bak.sql  （3）生产环境DBA给出的命令 a、for MyISAM mysqldump --user=root --all-databases --flush-privileges --lock-all-tables \\ --master-data=1 --flush-logs --triggers --routines --events \\ --hex-blob  $BACKUP_DIR/full_dump_$BACKUP_TIMESTAMP.sql  b、for InnoDB mysqldump --user=root --all-databases --flush-privileges --single-transaction \\ --master-data=1 --flush-logs --triggers --routines --events \\ --hex-blob  $BACKUP_DIR/full_dump_$BACKUP_TIMESTAMP.sql 常见错误\n但是意外发生了出现\"Warning: Using a password on the command line interface can be insecure.\n第一种方法、修改数据库配置文件\n1、我们需要修改数据库配置文件，这个要看我们数据库的配置的，有些是在/etc/my.cnf，有些是/etc/my.conf\n我们需要在[client]部分添加脚本（可以自己创建个文件，导入时指定）：\n host=localhost user=数据库用户 password=‘数据库密码’\n 2、采用命令导出和导入数据库\n#导出数据库\n mysqldump –defaults-extra-file=/etc/my.cnf database  database.sql\n #导入数据库\n mysql –defaults-extra-file=/etc/my.cnf database ",
+  "wordCount" : "537",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-25T17:55:51+08:00",
+  "dateModified": "2022-03-25T17:55:51+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Mysql备份和恢复（mysqldump方式）
+    </h1>
+    <div class="post-meta"><span title='2022-03-25 17:55:51 +0800 CST'>2022-03-25</span>&nbsp;·&nbsp;3 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80%e5%a4%87%e4%bb%bd%e5%8d%95%e4%b8%aa%e6%95%b0%e6%8d%ae%e5%ba%93" aria-label="一、备份单个数据库"><strong>一、备份单个数据库</strong></a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e5%a4%87%e4%bb%bd%e5%8d%95%e4%b8%aa%e8%a1%a8" aria-label="二、备份单个表"><strong>二、备份单个表</strong></a></li>
+                    <li>
+                        <a href="#%e4%b8%89%e4%bc%81%e4%b8%9a%e7%94%9f%e4%ba%a7%e5%9c%ba%e6%99%af%e4%b8%8d%e5%90%8c%e5%bc%95%e6%93%8e%e5%a4%87%e4%bb%bd%e5%91%bd%e4%bb%a4%e5%8f%82%e6%95%b0" aria-label="三、企业生产场景不同引擎备份命令参数"><strong>三、企业生产场景不同引擎备份命令参数</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h3 id="一备份单个数据库"><strong>一、备份单个数据库</strong><a hidden class="anchor" aria-hidden="true" href="#一备份单个数据库">#</a></h3>
+<p><strong>1、备份命令：mysqldump</strong></p>
+<p>　　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>单实例语法（Syntax）:
+</span></span><span style="display:flex;"><span>mysqldump -u &lt;username&gt; -p &lt;dbname&gt; &gt; /path/to/***.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>多实例的备份语法（Syntax）：
+</span></span><span style="display:flex;"><span>mysqldump -u &lt;username&gt; -p &lt;dbname&gt;  -S &lt;sockPath&gt; &gt; /path/to/***.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>eg: mysqldump -u root -p wordpress &gt; /opt/wordpress_<span style="color:#66d9ef">$(</span>date +%F<span style="color:#66d9ef">)</span>.sql
+</span></span></code></pre></div><p><strong>2、参数解析</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> -A --all-databases：导出全部数据库
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2</span> -Y --all-tablespaces：导出全部表空间
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span> -y --no-tablespaces：不导出任何表空间信息
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span> --add-drop-database每个数据库创建之前添加drop数据库语句。
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> --add-drop-table每个数据表创建之前添加drop数据表语句。<span style="color:#f92672">(</span>默认为打开状态，使用--skip-add-drop-table取消选项<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span> --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。<span style="color:#f92672">(</span>默认为打开状态，使用--skip-add-locks取消选项<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span> --comments附加注释信息。默认为打开，可以用--skip-comments取消
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> --compact导出更少的输出信息<span style="color:#f92672">(</span>用于调试<span style="color:#f92672">)</span>。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span> -c --complete-insert：使用完整的insert语句<span style="color:#f92672">(</span>包含列名称<span style="color:#f92672">)</span>。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span> -C --compress：在客户端和服务器之间启用压缩传递所有信息
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span> -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span> --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span> --debug-info输出调试信息并退出
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span> --default-character-set设置默认字符集，默认值为utf8
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span> --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span> -E--events：导出事件。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span> --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span> --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库<span style="color:#f92672">(</span>使用选项--databases或者--all-databases<span style="color:#f92672">)</span>，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span> --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span> --force在导出过程中忽略出现的SQL错误。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">21</span> -h --host：需要导出的主机信息
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">22</span> --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table<span style="color:#f92672">=</span>database.table1 --ignore-table<span style="color:#f92672">=</span>database.table2 ……
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span> -x --lock-all-tables：提交请求锁定所有数据库中的所有表，以保证数据的一致性。这是一个全局读锁，并且自动关闭--single-transaction 和--lock-tables 选项。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span> -l --lock-tables：开始导出前，锁定所有表。用READ LOCAL锁定表以允许MyISAM表并行插入。对于支持事务的表例如InnoDB和BDB，--single-transaction是一个更好的选择，因为它根本不需要锁定表。请注意当导出多个数据库时，--lock-tables分别为每个数据库锁定表。因此，该选项不能保证导出文件中的表在数据库之间的逻辑一致性。不同数据库表的导出状态可以完全不同。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span> --single-transaction：适合innodb事务数据库的备份。保证备份的一致性，原理是设定本次会话的隔离级别为Repeatable read，来保证本次会话（也就是dump）时，不会看到其它会话已经提交了的数据。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span> -F：刷新binlog，如果binlog打开了，-F参数会在备份时自动刷新binlog进行切换。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">27</span> -n --no-create-db：只导出数据，而不添加CREATE DATABASE 语句。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">28</span> -t --no-create-info：只导出数据，而不添加CREATE TABLE 语句。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">29</span> -d --no-data：不导出任何数据，只导出数据库表结构。
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">30</span> -p --password：连接数据库密码
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">31</span> -P --port：连接数据库端口号
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span> -u --user：指定连接的用户名。
+</span></span></code></pre></div><p>举例使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>a、导出整个数据库<span style="color:#f92672">(</span>包括数据库中的数据）
+</span></span><span style="display:flex;"><span>mysqldump -u username -p dbname &gt; dbname.sql 
+</span></span><span style="display:flex;"><span>b、导出数据库结构（不含数据）
+</span></span><span style="display:flex;"><span>mysqldump -u username -p -d dbname &gt; dbname.sql
+</span></span><span style="display:flex;"><span>c、导出数据库中的某张数据表（包含数据）
+</span></span><span style="display:flex;"><span>mysqldump -u username -p dbname tablename &gt; tablename.sql
+</span></span><span style="display:flex;"><span>d、导出数据库中的某张数据表的表结构（不含数据）
+</span></span><span style="display:flex;"><span>mysqldump -u username -p -d dbname tablename &gt; tablename.sql
+</span></span></code></pre></div><p><strong>3、恢复操作</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>语法（Syntax）：
+</span></span><span style="display:flex;"><span>mysql -u&lt;username&gt; -p&lt;password&gt; &lt;dbname&gt; &lt; /opt/mytest_bak.sql   <span style="color:#75715e">#库必须保留，空库也可</span>
+</span></span><span style="display:flex;"><span>说明：指定dbname，相当于use &lt;dbname&gt;
+</span></span></code></pre></div><p><strong>4、示例</strong></p>
+<p><strong>（1）无参数备份数据库mytest和恢复</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>（1）备份操作
+</span></span><span style="display:flex;"><span>a、备份
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p‘123456’ mytest &gt; /mnt/mytest_bak_<span style="color:#66d9ef">$(</span>date +%F<span style="color:#66d9ef">)</span>.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>（2）恢复操作
+</span></span><span style="display:flex;"><span>a、删除student表（库必须要保留，空库都行）
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -e <span style="color:#e6db74">&#34;use mytest;drop table student;&#34;</span>
+</span></span><span style="display:flex;"><span>b、恢复数据
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> mytest &lt; /mnt/mytest_bak.sql 
+</span></span><span style="display:flex;"><span>c、查看数据
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -e <span style="color:#e6db74">&#34;select * from mytest.student;&#34;</span>
+</span></span></code></pre></div><p><strong>（2）-B参数备份和恢复（建议使用）</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>（1）备份操作
+</span></span><span style="display:flex;"><span>a、备份
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -B mytest &gt; /mnt/mytest_bak_B.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>说明：加了-B参数后，备份文件中多的Create database和use mytest的命令
+</span></span><span style="display:flex;"><span>加-B参数的好处：
+</span></span><span style="display:flex;"><span>加上-B参数后，导出的数据文件中已存在创建库和使用库的语句，不需要手动在原库是创建库的操作，在恢复过程中不需要手动建库，可以直接还原恢复。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>（2）恢复操作
+</span></span><span style="display:flex;"><span>a、删除mytest库
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -e <span style="color:#e6db74">&#34;drop database mytest;&#34;</span>
+</span></span><span style="display:flex;"><span>b、恢复数据
+</span></span><span style="display:flex;"><span>（1）使用不带参数的导出文件导入（导入时不指定要恢复的数据库），报错
+</span></span><span style="display:flex;"><span>mysql -uroot - p<span style="color:#e6db74">&#39;123456&#39;</span> &lt; /mnt/mytest_bak.sql   
+</span></span><span style="display:flex;"><span>ERROR <span style="color:#ae81ff">1046</span> <span style="color:#f92672">(</span>3D000<span style="color:#f92672">)</span> at line 22: No database selected
+</span></span><span style="display:flex;"><span>（2）使用带-B参数的导出文件导入（导入时也不指定要恢复的数据库），成功
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> &lt; /mnt/mytest_bak_B.sql 
+</span></span><span style="display:flex;"><span>c、查看数据
+</span></span><span style="display:flex;"><span>mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -e <span style="color:#e6db74">&#34;select * from mytest.student;&#34;</span>
+</span></span></code></pre></div><p><strong>（3）&ndash;compact参数优化备份文小大小，减少输出注释（一般用于Debug调试）</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>（1）备份
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> --compact -B mytest &gt; /mnt/mytest_bak_Compact.sql
+</span></span><span style="display:flex;"><span>说明：
+</span></span><span style="display:flex;"><span>使用--compact参数，可以优化输出内容的大小，让容量更少，适合调试。便会忽略--skip-add-drop-table，--no-set-names，--skip-disable-keys，--skip-add-locks等几个参数的功能。
+</span></span></code></pre></div><p><strong>（4）指定压缩命令来压缩备份文件</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>（1）备份
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span>  -B mytest | gzip &gt; /mnt/mytest_bak_.sql.gz
+</span></span><span style="display:flex;"><span>说明：
+</span></span><span style="display:flex;"><span>mysqldump导出的文件是文本文件，压缩效率很高
+</span></span></code></pre></div><p><strong>（5）备份多个数据库</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>（1）说明
+</span></span><span style="display:flex;"><span>通过-B参数指定相关数据库，每个数据库名之前用空格分格。当使用-B参数后，将所有数据库全部列全，则此时等同于-A参数。
+</span></span><span style="display:flex;"><span>（2）备份
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -B mytest wiki | gzip &gt; /mnt/mytestAndWiki_bak.sql.gz
+</span></span></code></pre></div><p><strong>（6）分库备份</strong></p>
+<p>　　分库备份实际上就是执行一个备份语句就备份一个库，有多个库时，就执行多条相同的备份语句，只是备份的库名和备份文件名不同而已。可能通过shell脚本自动生成并执行相应的操作，也可以把所有单个备份语句写在一个shell脚本中，通过cron定时任务来备份。</p>
+<p>分库备份的意义是在所有库都备份成一个备份文件时，恢复其中一个库的数据是比较麻烦的，所以分库备份，利于恢复。分库备份脚本如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> dbname in <span style="color:#e6db74">`</span> mysql -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -e <span style="color:#e6db74">&#34;show databases;&#34;</span> | grep -Evi <span style="color:#e6db74">&#34;database|infor|perfor&#34;</span><span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    mysqldump -uroot -p<span style="color:#e6db74">&#34;123456&#34;</span> --events -B $dbname | gzip &gt; /mnt/<span style="color:#e6db74">${</span>dbname<span style="color:#e6db74">}</span>_bak.sql.gz
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><p><strong>说明：${dbname}_bak</strong>**，由于要求备份文件名以$dbname_bak.sql.gz<strong><strong>格式命令，但系统无法辨别变量是$dbname</strong></strong>还是$dbname_bak****，所以此时就需要用大括号“{}<strong><strong>”将变量括起来，就是${dbname}_bak.sql.gz</strong></strong>了。**</p>
+<p><strong>（7）-d参数，只备份数据库中表结构</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -d mytest &gt; /mnt/mytestDesc_bak.sql
+</span></span></code></pre></div><p><strong>（8）-A参数备份全库，并且-F刷新和切换binlog</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -A -B -F &gt; /mnt/All_bak.sql
+</span></span></code></pre></div><p><strong>（9）&ndash;master-data参数在备份文件中写入当前binlog文件号</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> --master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> --compact mytest &gt; /mnt/All_bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> --master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> --compact mytest &gt; /mnt/All_bak.sql
+</span></span></code></pre></div><h3 id="二备份单个表"><strong>二、备份单个表</strong><a hidden class="anchor" aria-hidden="true" href="#二备份单个表">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>语法（Syntax）：不能加-B参数
+</span></span><span style="display:flex;"><span>mysqldump -u&lt;username&gt; -p&lt;password&gt; dbname tablename1 tablename2... &gt; /path/to/***.sql
+</span></span></code></pre></div><p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>示例1：备份mytest库中的student表
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> mytest student &gt; /mnt/table_bak/student_bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>示例2：备份mytest库中所有表，就是备份mytest库
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> mytest  &gt; /mnt/table_bak/all_bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>示例3：备份mytest库中的student和test表
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> mytest student test &gt; /mnt/table_bak/two_bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>示例4：-d参数，只备份表结构
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> -d mytest stusent &gt; /mnt/studentDesc_bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>示例5：-t参数，只备份数据
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p<span style="color:#e6db74">&#39;123456&#39;</span> --compact -t mytest stusent &gt; /mnt/studentData_bak.sql
+</span></span><span style="display:flex;"><span>INSERT INTO <span style="color:#e6db74">`</span>student<span style="color:#e6db74">`</span> VALUES <span style="color:#f92672">(</span>1,<span style="color:#e6db74">&#39;Tom&#39;</span>,20,<span style="color:#e6db74">&#39;S11&#39;</span><span style="color:#f92672">)</span>,<span style="color:#f92672">(</span>2,<span style="color:#e6db74">&#39;Jary&#39;</span>,21,<span style="color:#e6db74">&#39;S12&#39;</span><span style="color:#f92672">)</span>,<span style="color:#f92672">(</span>3,<span style="color:#e6db74">&#39;King&#39;</span>,25,<span style="color:#e6db74">&#39;S10&#39;</span><span style="color:#f92672">)</span>,<span style="color:#f92672">(</span>4,<span style="color:#e6db74">&#39;Smith&#39;</span>,19,<span style="color:#e6db74">&#39;S11&#39;</span><span style="color:#f92672">)</span>,<span style="color:#f92672">(</span>5,<span style="color:#e6db74">&#39;??&#39;</span>,20,<span style="color:#e6db74">&#39;S11&#39;</span><span style="color:#f92672">)</span>,<span style="color:#f92672">(</span>6,<span style="color:#e6db74">&#39;张三&#39;</span>,20,<span style="color:#e6db74">&#39;S11&#39;</span><span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h3 id="三企业生产场景不同引擎备份命令参数"><strong>三、企业生产场景不同引擎备份命令参数</strong><a hidden class="anchor" aria-hidden="true" href="#三企业生产场景不同引擎备份命令参数">#</a></h3>
+<p><strong>1、mysqldump的关键参数</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-B：指定多个库，在备份文件中增加建库语句和use语句
+</span></span><span style="display:flex;"><span>--compact：去掉备份文件中的注释，适合调试，生产场景不用
+</span></span><span style="display:flex;"><span>-A：备份所有库
+</span></span><span style="display:flex;"><span>-F：刷新binlog日志
+</span></span><span style="display:flex;"><span>--master-data：在备份文件中增加binlog日志文件名及对应的位置点
+</span></span><span style="display:flex;"><span>-x  --lock-all-tables：锁表
+</span></span><span style="display:flex;"><span>-l：只读锁表
+</span></span><span style="display:flex;"><span>-d：只备份表结构
+</span></span><span style="display:flex;"><span>-t：只备份数据
+</span></span><span style="display:flex;"><span>--single-transaction：适合innodb事务数据库的备份
+</span></span><span style="display:flex;"><span>   InnoDB表在备份时，通常启用选项--single-transaction来保证备份的一致性，原理是设定本次会话的隔离级别为Repeatable read，来保证本次会话（也就是dump）时，不会看到其它会话已经提交了的数据。
+</span></span></code></pre></div><p><strong>2、不同引擎备份命令参数用法</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>1）Myisam引擎：
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p123456 -A -B --master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> -x| gzip &gt; /data/all_<span style="color:#66d9ef">$(</span>date +%F<span style="color:#66d9ef">)</span>.sql.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>（2）InnoDB引擎：
+</span></span><span style="display:flex;"><span>mysqldump -uroot -p123456 -A -B  --master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> --single-transaction &gt; /data/bak.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>（3）生产环境DBA给出的命令
+</span></span><span style="display:flex;"><span>a、for MyISAM
+</span></span><span style="display:flex;"><span>mysqldump --user<span style="color:#f92672">=</span>root --all-databases --flush-privileges --lock-all-tables <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> --flush-logs --triggers --routines --events <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--hex-blob &gt; $BACKUP_DIR/full_dump_$BACKUP_TIMESTAMP.sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>b、for InnoDB
+</span></span><span style="display:flex;"><span>mysqldump --user<span style="color:#f92672">=</span>root --all-databases --flush-privileges --single-transaction <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--master-data<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> --flush-logs --triggers --routines --events <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--hex-blob &gt; $BACKUP_DIR/full_dump_$BACKUP_TIMESTAMP.sql
+</span></span></code></pre></div><p><strong>常见错误</strong></p>
+<p>但是意外发生了出现&quot;Warning: Using a password on the command line interface can be insecure.</p>
+<p><strong>第一种方法、修改数据库配置文件</strong></p>
+<p>1、我们需要修改数据库配置文件，这个要看我们数据库的配置的，有些是在/etc/my.cnf，有些是/etc/my.conf</p>
+<p>我们需要在[client]部分添加脚本（可以自己创建个文件，导入时指定）：</p>
+<blockquote>
+<p>host=localhost
+user=数据库用户
+password=&lsquo;数据库密码&rsquo;</p>
+</blockquote>
+<p>2、采用命令导出和导入数据库</p>
+<p>#导出数据库</p>
+<blockquote>
+<p>mysqldump &ndash;defaults-extra-file=/etc/my.cnf database &gt; database.sql</p>
+</blockquote>
+<p>#导入数据库</p>
+<blockquote>
+<p>mysql &ndash;defaults-extra-file=/etc/my.cnf database &lt; database.sql</p>
+</blockquote>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/mysqldump/">mysqldump</a></li>
+      <li><a href="https://iblog.zone/tags/%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D/">备份和恢复</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dxtrabackup%E6%96%B9%E5%BC%8F/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Mysql备份和恢复（Xtrabackup方式）</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Mysql用户操作</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

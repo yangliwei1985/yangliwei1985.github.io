@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>linux on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/linux/</link>
+    <description>Recent content in linux on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 25 May 2022 16:03:39 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux计划任务没有正常执行</title>
+      <link>https://iblog.zone/archives/linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E6%B2%A1%E6%9C%89%E6%AD%A3%E5%B8%B8%E6%89%A7%E8%A1%8C/</link>
+      <pubDate>Wed, 25 May 2022 16:03:39 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E6%B2%A1%E6%9C%89%E6%AD%A3%E5%B8%B8%E6%89%A7%E8%A1%8C/</guid>
+      <description>1、查看日志，报错如下：
+May 25 15:50:01 localhost crond[42423]: (root) FAILED to authorize user with PAM (Authentication token is no longer valid; new one required) May 25 15:51:01 localhost crond[43791]: (root) PAM ERROR (Authentication token is no longer valid; new one required) 2、查找原因，可能为密码过期
+查看密码过期时间
+[root@localhost log]# chage -l root Last password change : Feb 21, 2022 Password expires : May 22, 2022 Password inactive : never Account expires : never Minimum number of days between password change : 0 Maximum number of days between password change : 90 Number of days of warning before password expires : 7 今天25日，22日就过期了</description>
+    </item>
+    
+    <item>
+      <title>CentOS8安装oracle客户端</title>
+      <link>https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/</link>
+      <pubDate>Tue, 15 Feb 2022 17:44:41 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid>
+      <description>1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA.</description>
+    </item>
+    
+    <item>
+      <title>常用 Git 命令清单</title>
+      <link>https://iblog.zone/archives/%E5%B8%B8%E7%94%A8-git-%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</link>
+      <pubDate>Fri, 11 Feb 2022 11:50:49 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%B8%B8%E7%94%A8-git-%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</guid>
+      <description>仓库 # 在当前目录新建一个Git代码库 $ git init  # 新建一个目录，将其初始化为Git代码库 $ git init [project-name]  # 下载一个项目和它的整个代码历史 $ git clone [url] 配置 # 显示当前的Git配置 $ git config --list  # 编辑Git配置文件 $ git config -e [--global]  # 设置提交代码时的用户信息 $ git config [--global] user.name &amp;#34;[name]&amp;#34; $ git config [--global] user.email &amp;#34;[email address]&amp;#34; 增加/删除文件 # 添加指定文件到暂存区 $ git add [file1] [file2] ...  # 添加指定目录到暂存区，包括子目录 $ git add [dir]  # 添加当前目录的所有文件到暂存区 $ git add .</description>
+    </item>
+    
+    <item>
+      <title>Nginx安装和高可用</title>
+      <link>https://iblog.zone/archives/nginx%E5%AE%89%E8%A3%85%E5%92%8C%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
+      <pubDate>Fri, 11 Feb 2022 10:50:49 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx%E5%AE%89%E8%A3%85%E5%92%8C%E9%AB%98%E5%8F%AF%E7%94%A8/</guid>
+      <description>一、Nginx安装 1、去官网http://nginx.org/下载对应的nginx包，推荐使用稳定版本 2、上传nginx到linux系统 3、安装依赖环境 (1)安装gcc环境
+yum install gcc-c++ (2)安装PCRE库，用于解析正则表达式
+yum install -y pcre pcre-devel (3)zlib压缩和解压缩依赖
+yum install -y zlib zlib-devel (4)SSL 安全的加密的套接字协议层，用于HTTP安全传输，也就是https
+yum install -y openssl openssl-devel 4、解压，需要注意，解压后得到的是源码，源码需要编译后才能安装 tar -zxvf nginx-1.16.1.tar.gz 5、编译之前，先创建nginx临时目录，如果不创建，在启动nginx的过程中会报错 mkdir /var/temp/nginx -p 6、在nginx目录，输入如下命令进行配置，目的是为了创建makefile文件 ./configure \  --prefix=/usr/local/nginx \  --pid-path=/var/run/nginx/nginx.pid \  --lock-path=/var/lock/nginx.lock \  --error-log-path=/var/log/nginx/error.log \  --http-log-path=/var/log/nginx/access.log \  --with-http_gzip_static_module \  --http-client-body-temp-path=/var/temp/nginx/client \  --http-proxy-temp-path=/var/temp/nginx/proxy \  --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \  --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \  --http-scgi-temp-path=/var/temp/nginx/scgi 注：代表在命令行中换行，用于提高可读性配置命令：</description>
+    </item>
+    
+    <item>
+      <title>Firewall防火墙常用操作</title>
+      <link>https://iblog.zone/archives/firewall%E9%98%B2%E7%81%AB%E5%A2%99%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Thu, 10 Feb 2022 16:24:38 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/firewall%E9%98%B2%E7%81%AB%E5%A2%99%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+      <description>  查看防火墙某个端口是否开放
+firewall-cmd &amp;ndash;query-port=3306/tcp
+  开放防火墙端口3306
+firewall-cmd &amp;ndash;zone=public &amp;ndash;add-port=3306/tcp &amp;ndash;permanent
+注意：开放端口后要重启防火墙生效
+  重启防火墙
+systemctl restart firewalld
+  关闭防火墙端口
+firewall-cmd &amp;ndash;remove-port=3306/tcp &amp;ndash;permanent
+  查看防火墙状态
+systemctl status firewalld
+  关闭防火墙
+systemctl stop firewalld
+  打开防火墙
+systemctl start firewalld
+  开放一段端口
+firewall-cmd &amp;ndash;zone=public &amp;ndash;add-port=40000-45000/tcp &amp;ndash;permanent
+  查看开放的端口列表
+firewall-cmd &amp;ndash;zone=public &amp;ndash;list-ports
+  </description>
+    </item>
+    
+    <item>
+      <title>Centos6 yum源配置</title>
+      <link>https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Fri, 28 Jan 2022 16:57:19 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/</guid>
+      <description>截止2022-01-28日有效
+CentOS-Base.repo
+[extras] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/extras/$basearch/ name=Qcloud centos extras - $basearch  [os] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/os/$basearch/ name=Qcloud centos os - $basearch  [updates] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/updates/$basearch/ name=Qcloud centos updates - $basearch epel.repo
+[epel] name=epel for redhat/centos $releasever - $basearch failovermethod=priority enable=1 baseurl=https://mirrors.cloud.tencent.com/epel-archive/6/$basearch/ </description>
+    </item>
+    
+    <item>
+      <title>rsync工具使用</title>
+      <link>https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 28 Jan 2022 15:28:34 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</guid>
+      <description>一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。
+它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。
+它名称里面的r指的是 remote，rsync 其实就是&amp;quot;远程同步&amp;quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。
+二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
+ # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。
+三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。
+ $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。
+如果有多个文件或目录需要同步，可以写成下面这样。
+ $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。</description>
+    </item>
+    
+    <item>
+      <title>The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错</title>
+      <link>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</link>
+      <pubDate>Thu, 20 Jan 2022 16:30:33 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</guid>
+      <description>由于oracle jdk1.8_301扫描出漏洞，故升级jdk到openjdk 1.8.0_312，升级后出现兼容性问题，访问数据库出现以下错误
+The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 查询后为新版的 JDK 不推荐使用旧的 TLSV1.0 的协议，所以默认删除 TLS10 的支持导致，可按照下面方法修复
+cd /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-1.el7_9.x86_64/jre  cd lib/security/  vim java.security  # 698行，将 TLSv1, TLSv1.1, 3DES_EDE_CBC 删除，删除后为以下内容 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \  DH keySize &amp;lt; 1024, EC keySize &amp;lt; 224, anon, NULL, \  include jdk.disabled.namedCurves 再次访问，问题解决</description>
+    </item>
+    
+    <item>
+      <title>使用xrdp连接kali远程桌面</title>
+      <link>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8xrdp%E8%BF%9E%E6%8E%A5kali%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</link>
+      <pubDate>Thu, 20 Jan 2022 16:23:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8xrdp%E8%BF%9E%E6%8E%A5kali%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</guid>
+      <description>1、安装xrdp
+apt-get install xrdp 2、接下来安装xfce4
+apt-get instlal xfce4 3、最重要的一步
+用vim打开 /etc/xrdp/startwm.sh
+vim /etc/xrdp/startwm.sh 4、在里面添加
+ echo “xfce4-session” &amp;gt;~/.xsession 5、启动xrdp
+service xrdp start 6、创建vnc用户
+useradd -m vnc passwd vnc 7、连接</description>
+    </item>
+    
+    <item>
+      <title>kali-linux-2021.2安装openvas</title>
+      <link>https://iblog.zone/archives/kali-linux-2021.2%E5%AE%89%E8%A3%85openvas/</link>
+      <pubDate>Thu, 20 Jan 2022 16:05:36 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kali-linux-2021.2%E5%AE%89%E8%A3%85openvas/</guid>
+      <description>kali-linux-2021.2安装openvas 1.安装 sudo apt-get update // 软件库更新  sudo apt-get upgrade // 软件升级  sudo apt-get dist-upgrade // 升级系统  # 由于在2021.1版本中，openvas已经改名为gvm，所以使用以下命令安装openvas sudo apt-get install gvm 使用gvm-setup安装openvas
+安装完成，注意这里的密码，你可以通过gvmd &amp;ndash;user=admin &amp;ndash;new-password=admin修改密码为admin（如果修改无效，请参考最下面的操作命令）
+启动服务gvm-start，并通过netstat -antp查看状态
+访问https://127.0.0.1:9392即可,注意这里是https
+如果需要在其他地址访问，则需要修改服务监听地址
+vim /lib/systemd/system/greenbone-security-assistant.service 2.操作命令 这里附上完整流程所需的命令
+//安装过程命令 sudo apt-get update // 软件库更新 sudo apt-get upgrade // 软件升级 sudo apt-get dist-upgrade // 升级系统 apt-get install gvm //下载安装包 gvm-setup //安装 安装完成 //这里得注意记住初始密码 gvm-check-setup //检查安装是否成功 gvm-start //启动服务 netstat -antp //查看状态，特别注意这里有个空格 浏览器访问https://127.0.0.1:9392 //这里注意是https vim /lib/systemd/system/greenbone-security-assistant.</description>
+    </item>
+    
+    <item>
+      <title>基于Istio实现微服务治理</title>
+      <link>https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Eistio%E5%AE%9E%E7%8E%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/</link>
+      <pubDate>Wed, 12 Jan 2022 17:38:42 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Eistio%E5%AE%9E%E7%8E%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/</guid>
+      <description>基于Istio实现微服务治理 微服务架构可谓是当前软件开发领域的技术热点，它在各种博客、社交媒体和会议演讲上的出镜率非常之高，无论是做基础架构还是做业务系统的工程师，对微服务都相当关注，而这个现象与热度到目前为止，已经持续了近 5 年之久。
+尤其是近些年来，微服务架构逐渐发展成熟，从最初的星星之火到现在的大规模的落地与实践，几乎已经成为分布式环境下的首选架构。微服务成为时下技术热点，大量互联网公司都在做微服务架构的落地和推广。同时，也有很多传统企业基于微服务和容器，在做互联网技术转型。
+而在这个技术转型中，国内有一个趋势，以 Spring Cloud 与 Dubbo 为代表的微服务开发框架非常普及和受欢迎。然而软件开发没有银弹，基于这些传统微服务框架构建的应用系统在享受其优势的同时，痛点也越加明显。这些痛点包括但不限于以下几点：
+ 侵入性强。想要集成 SDK 的能力，除了需要添加相关依赖，往往还需要在业务代码中增加一部分的代码、或注解、或配置；业务代码与治理层代码界限不清晰。 升级成本高。每次升级都需要业务应用修改 SDK 版本，重新进行功能回归测试，并且对每一台机器进行部署上线，而这对于业务方来说，与业务的快速迭代开发是有冲突的，大多不愿意停下来做这些与业务目标不太相关的事情。 版本碎片化严重。由于升级成本高，而中间件却不会停止向前发展的步伐，久而久之，就会导致线上不同服务引用的 SDK 版本不统一、能力参差不齐，造成很难统一治理。 中间件演变困难。由于版本碎片化严重，导致中间件向前演进的过程中就需要在代码中兼容各种各样的老版本逻辑，带着 “枷锁” 前行，无法实现快速迭代。 内容多、门槛高。Spring Cloud 被称为微服务治理的全家桶，包含大大小小几十个组件，内容相当之多，往往需要几年时间去熟悉其中的关键组件。而要想使用 Spring Cloud 作为完整的治理框架，则需要深入了解其中原理与实现，否则遇到问题还是很难定位。 治理功能不全。不同于 RPC 框架，Spring Cloud 作为治理全家桶的典型，也不是万能的，诸如协议转换支持、多重授权机制、动态请求路由、故障注入、灰度发布等高级功能并没有覆盖到。而这些功能往往是企业大规模落地不可获缺的功能，因此公司往往还需要投入其它人力进行相关功能的自研或者调研其它组件作为补充。  Service Mesh 服务网格 架构和概念 目的是解决系统架构微服务化后的服务间通信和治理问题。设计初衷是提供一种通用的服务治理方案。
+Sidecar 在软件系统架构中特指边车模式。这个模式的灵感来源于我们生活中的边三轮：即在两轮摩托车的旁边添加一个边车的方式扩展现有的服务和功能。
+这个模式的精髓在于实现了数据面（业务逻辑）和控制面的解耦：原来两轮摩托车的驾驶者集中注意力跑赛道，边车上的领航员专注周围信息和地图，专注导航。
+Service Mesh 这个服务网络专注于处理服务和服务间的通讯。其主要负责构造一个稳定可靠的服务通讯的基础设施，并让整个架构更为的先进和 Cloud Native。在工程中，Service Mesh 基本来说是一组轻量级的与应用逻辑服务部署在一起的服务代理，并且对于应用服务是透明的。
+开源实现 第一代服务网格 Linkerd和Envoy Linkerd 使用Scala编写，是业界第一个开源的service mesh方案。作者 William Morgan 是 service mesh 的布道师和践行者。Envoy 基于C++ 11编写，无论是理论上还是实际上，后者性能都比 Linkderd 更好。这两个开源实现都是以 sidecar 为核心，绝大部分关注点都是如何做好proxy，并完成一些通用控制面的功能。 但是，当你在容器中大量部署 sidecar 以后，如何管理和控制这些 sidecar 本身就是一个不小的挑战。于是，第二代 Service Mesh 应运而生。</description>
+    </item>
+    
+    <item>
+      <title>SpringBoot与SpringCloud微服务项目交付</title>
+      <link>https://iblog.zone/archives/springboot%E4%B8%8Espringcloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BB%98/</link>
+      <pubDate>Tue, 11 Jan 2022 15:30:27 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/springboot%E4%B8%8Espringcloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BB%98/</guid>
+      <description>Spring Cloud微服务项目交付 微服务扫盲篇 微服务并没有一个官方的定义，想要直接描述微服务比较困难，我们可以通过对比传统WEB应用，来理解什么是微服务。
+单体应用架构 如下是传统打车软件架构图：
+这种单体应用比较适合于小项目，优点是：
+ 开发简单直接，集中式管理 基本不会重复开发 功能都在本地，没有分布式的管理开销和调用开销  当然它的缺点也十分明显，特别对于互联网公司来说：
+ 开发效率低：所有的开发在一个项目改代码，递交代码相互等待，代码冲突不断 代码维护难：代码功能耦合在一起，新人不知道何从下手 部署不灵活：构建时间长，任何小修改必须重新构建整个项目，这个过程往往很长 稳定性不高：一个微不足道的小问题，可以导致整个应用挂掉 扩展性不够：无法满足高并发情况下的业务需求  微服务应用架构 微服务架构的设计思路不是开发一个巨大的单体式应用，而是将应用分解为小的、互相连接的微服务。一个微服务完成某个特定功能，比如乘客管理和下单管理等。每个微服务都有自己的业务逻辑和适配器。一些微服务还会提供API接口给其他微服务和应用客户端使用。
+比如，前面描述的系统可被分解为：
+每个业务逻辑都被分解为一个微服务，微服务之间通过REST API通信。一些微服务也会向终端用户或客户端开发API接口。但通常情况下，这些客户端并不能直接访问后台微服务，而是通过API Gateway来传递请求。API Gateway一般负责服务路由、负载均衡、缓存、访问控制和鉴权等任务。
+微服务架构优点：
+ 解决了复杂性问题。它将单体应用分解为一组服务。虽然功能总量不变，但应用程序已被分解为可管理的模块或服务 体系结构使得每个服务都可以由专注于此服务的团队独立开发。只要符合服务API契约，开发人员可以自由选择开发技术。这就意味着开发人员可以采用新技术编写或重构服务，由于服务相对较小，所以这并不会对整体应用造成太大影响 微服务架构可以使每个微服务独立部署。这些更改可以在测试通过后立即部署。所以微服务架构也使得CI／CD成为可能  微服务架构问题及挑战 微服务的一个主要缺点是微服务的分布式特点带来的复杂性。开发人员需要基于RPC或者消息实现微服务之间的调用和通信，而这就使得服务之间的发现、服务调用链的跟踪和质量问题变得的相当棘手。
+ 微服务的一大挑战是跨多个服务的更改  比如在传统单体应用中，若有A、B、C三个服务需要更改，A依赖B，B依赖C。我们只需更改相应的模块，然后一次性部署即可。 在微服务架构中，我们需要仔细规划和协调每个服务的变更部署。我们需要先更新C，然后更新B，最后更新A。   部署基于微服务的应用也要复杂得多  单体应用可以简单的部署在一组相同的服务器上，然后前端使用负载均衡即可。 微服务由不同的大量服务构成。每种服务可能拥有自己的配置、应用实例数量以及基础服务地址。这里就需要不同的配置、部署、扩展和监控组件。此外，我们还需要服务发现机制，以便服务可以发现与其通信的其他服务的地址    以上问题和挑战可大体概括为：
+ API Gateway 服务间调用 服务发现 服务容错 服务部署 数据调用  https://www.kancloud.cn/owenwangwen/open-capacity-platform/1480155，自助餐吃吃喝喝，竟然秒懂微服务
+微服务框架 如何应对上述挑战，出现了如下微服务领域的框架：
+  Spring Cloud（各个微服务基于Spring Boot实现）
+  Dubbo</description>
+    </item>
+    
+    <item>
+      <title>基于sharedLibrary进行CICD流程的优化</title>
+      <link>https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Esharedlibrary%E8%BF%9B%E8%A1%8Ccicd%E6%B5%81%E7%A8%8B%E7%9A%84%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Mon, 10 Jan 2022 18:27:44 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%9F%BA%E4%BA%8Esharedlibrary%E8%BF%9B%E8%A1%8Ccicd%E6%B5%81%E7%A8%8B%E7%9A%84%E4%BC%98%E5%8C%96/</guid>
+      <description>基于sharedLibrary进行CI/CD流程的优化 由于公司内部项目众多，大量的项目使用同一套流程做CICD
+ 那么势必会存在大量的重复代码 一旦某个公共的地方需要做调整，每个项目都需要修改  因此本章主要通过使用groovy实现Jenkins的sharedLibrary的开发，以提取项目在CICD实践过程中的公共逻辑，提供一系列的流程的接口供公司内各项目调用。
+开发完成后，对项目进行Jenkinsfile的改造，最后仅需通过简单的Jenkinsfile的配置，即可优雅的完成CICD流程的整个过程，此方式已在大型企业内部落地应用。
+Library工作模式 由于流水线被组织中越来越多的项目所采用，常见的模式很可能会出现。 在多个项目之间共享流水线有助于减少冗余并保持代码 &amp;ldquo;DRY&amp;rdquo;。
+流水线支持引用 &amp;ldquo;共享库&amp;rdquo; ，可以在外部源代码控制仓库中定义并加载到现有的流水线中。
+@Library(&amp;#39;my-shared-library&amp;#39;) _ 在实际运行过程中，会把library中定义的groovy功能添加到构建目录中：
+/var/jenkins_home/jobs/test-maven-build/branches/feature-CDN-2904.cm507o/builds/2/libs/my-shared-library/vars/devops.groovy 使用library后，Jenkinsfile大致的样子如下：
+@Library(&amp;#39;my-shared-library&amp;#39;) _  ...  stages {  stage(&amp;#39;build image&amp;#39;) {  steps {  container(&amp;#39;tools&amp;#39;) {  devops.buildImage(&amp;#34;Dockerfile&amp;#34;,&amp;#34;172.21.51.67:5000/demo:latest&amp;#34;)  }  }  }  }   post {  success {  script {  container(&amp;#39;tools&amp;#39;) {  devops.notificationSuccess(&amp;#34;dingTalk&amp;#34;)  }  }  }  } .</description>
+    </item>
+    
+    <item>
+      <title>从零开始构建基于Kubernetes的Devops平台</title>
+      <link>https://iblog.zone/archives/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84devops%E5%B9%B3%E5%8F%B0/</link>
+      <pubDate>Fri, 07 Jan 2022 14:26:43 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84devops%E5%B9%B3%E5%8F%B0/</guid>
+      <description>基于Kubernetes的DevOps平台实践 持续集成工具：
+ Jenkins gitlabci Tekton  本章基于k8s集群部署gitlab、sonarQube、Jenkins等工具，并把上述工具集成到Jenkins中，以Django项目和SpringBoot项目为例，通过多分支流水线及Jenkinsfile实现项目代码提交到不同的仓库分支，实现自动代码扫描、单元测试、docker容器构建、k8s服务的自动部署。
+ DevOps、CI、CD介绍 Jenkins、sonarQube、gitlab的快速部署 Jenkins初体验 流水线入门及Jenkinsfile使用 Jenkins与Kubernetes的集成 sonarQube代码扫描与Jenkins的集成 实践Django项目的基于Jenkinsfile实现开发、测试环境的CI/CD  DevOps、CI、CD介绍 Continuous Integration (CI) / Continuous Delivery (CD)
+软件交付流程
+一个软件从零开始到最终交付，大概包括以下几个阶段：规划、编码、构建、测试、发布、部署和维护，基于这些阶段，我们的软件交付模型大致经历了几个阶段：
+瀑布式流程 前期需求确立之后，软件开发人员花费数周和数月编写代码，把所有需求一次性开发完，然后将代码交给QA（质量保障）团队进行测试，然后将最终的发布版交给运维团队去部署。瀑布模型，简单来说，就是等一个阶段所有工作完成之后，再进入下一个阶段。这种模式的问题也很明显，产品迭代周期长，灵活性差。一个周期动辄几周几个月，适应不了当下产品需要快速迭代的场景。
+敏捷开发 任务由大拆小，开发、测试协同工作，注重开发敏捷，不重视交付敏捷
+DevOps 开发、测试、运维协同工作, 持续开发+持续交付。
+我们是否可以认为DevOps = 提倡开发、测试、运维协同工作来实现持续开发、持续交付的一种软件交付模式？
+大家想一下为什么最初的开发模式没有直接进入DevOps的时代？
+原因是：沟通成本。
+各角色人员去沟通协作的时候都是手动去做，交流靠嘴，靠人去指挥，很显然会出大问题。所以说不能认为DevOps就是一种交付模式，因为解决不了沟通协作成本，这种模式就不具备可落地性。
+那DevOps时代如何解决角色之间的成本问题？DevOps的核心就是自动化。自动化的能力靠什么来支撑，工具和技术。
+DevOps工具链
+靠这些工具和技术，才实现了自动化流程，进而解决了协作成本，使得devops具备了可落地性。因此我们可以大致给devops一个定义：
+devops = 提倡开发、测试、运维协同工作来实现持续开发、持续交付的一种软件交付模式 + 基于工具和技术支撑的自动化流程的落地实践。
+因此devops不是某一个具体的技术，而是一种思想+自动化能力，来使得构建、测试、发布软件能够更加地便捷、频繁和可靠的落地实践。本次课程核心内容就是要教会大家如何利用工具和技术来实现完整的DevOps平台的建设。我们主要使用的工具有：
+ gitlab，代码仓库，企业内部使用最多的代码版本管理工具。 Jenkins， 一个可扩展的持续集成引擎，用于自动化各种任务，包括构建、测试和部署软件。 robotFramework， 基于Python的自动化测试框架 sonarqube，代码质量管理平台 maven，java包构建管理工具 Kubernetes Docker  Jenkins初体验 Kubernetes环境中部署jenkins 其他部署方式
+注意点：
+ 第一次启动很慢 因为后面Jenkins会与kubernetes集群进行集成，会需要调用kubernetes集群的api，因此安装的时候创建了ServiceAccount并赋予了cluster-admin的权限 默认部署到jenkins=true的节点 初始化容器来设置权限 ingress来外部访问 数据存储通过hostpath挂载到宿主机中  jenkins/jenkins-all.</description>
+    </item>
+    
+    <item>
+      <title>Linux iowait高问题排查及处理</title>
+      <link>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</link>
+      <pubDate>Fri, 07 Jan 2022 14:11:47 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</guid>
+      <description>一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &amp;#39;Sleep&amp;#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes集群的日志及监控</title>
+      <link>https://iblog.zone/archives/kubernetes%E9%9B%86%E7%BE%A4%E7%9A%84%E6%97%A5%E5%BF%97%E5%8F%8A%E7%9B%91%E6%8E%A7/</link>
+      <pubDate>Thu, 06 Jan 2022 17:22:02 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kubernetes%E9%9B%86%E7%BE%A4%E7%9A%84%E6%97%A5%E5%BF%97%E5%8F%8A%E7%9B%91%E6%8E%A7/</guid>
+      <description>第四天 Kubernetes集群的日志及监控 k8s日志收集架构 https://kubernetes.io/docs/concepts/cluster-administration/logging/
+总体分为三种方式：
+ 使用在每个节点上运行的节点级日志记录代理。 在应用程序的 pod 中，包含专门记录日志的 sidecar 容器。 将日志直接从应用程序中推送到日志记录后端。  使用节点级日志代理 容器日志驱动：
+https://docs.docker.com/config/containers/logging/configure/
+查看当前的docker主机的驱动：
+$ docker info --format &amp;#39;{{.LoggingDriver}}&amp;#39; json-file格式，docker会默认将标准和错误输出保存为宿主机的文件，路径为：
+/var/lib/docker/containers/&amp;lt;container-id&amp;gt;/&amp;lt;container-id&amp;gt;-json.log
+并且可以设置日志轮转：
+{  &amp;#34;log-driver&amp;#34;: &amp;#34;json-file&amp;#34;,  &amp;#34;log-opts&amp;#34;: {  &amp;#34;max-size&amp;#34;: &amp;#34;10m&amp;#34;,  &amp;#34;max-file&amp;#34;: &amp;#34;3&amp;#34;,  &amp;#34;labels&amp;#34;: &amp;#34;production_status&amp;#34;,  &amp;#34;env&amp;#34;: &amp;#34;os,customer&amp;#34;  } } 优势：
+ 部署方便，使用DaemonSet类型控制器来部署agent即可 对业务应用的影响最小，没有侵入性  劣势:
+ 只能收集标准和错误输出，对于容器内的文件日志，暂时收集不到  使用 sidecar 容器和日志代理   方式一：sidecar 容器将应用程序日志传送到自己的标准输出。 思路：在pod中启动一个sidecar容器，把容器内的日志文件吐到标准输出，由宿主机中的日志收集agent进行采集。
+$ cat count-pod.yaml apiVersion: v1 kind: Pod metadata:  name: counter spec:  containers:  - name: count  image: busybox  args:  - /bin/sh  - -c  - &amp;gt;  i=0;  while true;  do  echo &amp;#34;$i: $(date)&amp;#34; &amp;gt;&amp;gt; /var/log/1.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes进阶实践</title>
+      <link>https://iblog.zone/archives/kubernetes%E8%BF%9B%E9%98%B6%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Wed, 05 Jan 2022 11:13:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kubernetes%E8%BF%9B%E9%98%B6%E5%AE%9E%E8%B7%B5/</guid>
+      <description>第三天 Kubernetes进阶实践 本章介绍Kubernetes的进阶内容，包含Kubernetes集群调度、CNI插件、认证授权安全体系、分布式存储的对接、Helm的使用等，让学员可以更加深入的学习Kubernetes的核心内容。
+ ETCD数据的访问 kube-scheduler调度策略实践  预选与优选流程 生产中常用的调度配置实践   k8s集群网络模型  CNI介绍及集群网络选型 Flannel网络模型的实现  vxlan Backend hostgw Backend     集群认证与授权  APIServer安全控制模型 Kubectl的认证授权 RBAC kubelet的认证授权 Service Account   使用Helm管理复杂应用的部署  Helm工作原理详解 Helm的模板开发 实战：使用Helm部署Harbor仓库   kubernetes对接分部式存储  pv、pvc介绍 k8s集群如何使用cephfs作为分布式存储后端 利用storageClass实现动态存储卷的管理 实战：使用分部署存储实现有状态应用的部署   本章知识梳理及回顾  ETCD常用操作 拷贝etcdctl命令行工具：
+$ docker exec -ti etcd_container which etcdctl $ docker cp etcd_container:/usr/local/bin/etcdctl /usr/bin/etcdctl 查看etcd集群的成员节点：
+$ export ETCDCTL_API=3 $ etcdctl --endpoints=https://[127.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes落地实践之旅</title>
+      <link>https://iblog.zone/archives/kubernetes%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E4%B9%8B%E6%97%85/</link>
+      <pubDate>Tue, 04 Jan 2022 15:11:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kubernetes%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E4%B9%8B%E6%97%85/</guid>
+      <description>第二天 Kubernetes落地实践之旅 本章学习kubernetes的架构及工作流程，重点介绍如何使用Workload管理业务应用的生命周期，实现服务不中断的滚动更新，通过服务发现和集群内负载均衡来实现集群内部的服务间访问，并通过ingress实现外部使用域名访问集群内部的服务。
+学习过程中会逐步对Django项目做k8s改造，从零开始编写所需的资源文件。通过本章的学习，学员会掌握高可用k8s集群的搭建，同时Django demo项目已经可以利用k8s的控制器、服务发现、负载均衡、配置管理等特性来实现生命周期的管理。
+纯容器模式的问题  业务容器数量庞大，哪些容器部署在哪些节点，使用了哪些端口，如何记录、管理，需要登录到每台机器去管理？ 跨主机通信，多个机器中的容器之间相互调用如何做，iptables规则手动维护？ 跨主机容器间互相调用，配置如何写？写死固定IP+端口？ 如何实现业务高可用？多个容器对外提供服务如何实现负载均衡？ 容器的业务中断了，如何可以感知到，感知到以后，如何自动启动新的容器? 如何实现滚动升级保证业务的连续性？ &amp;hellip;&amp;hellip;  容器调度管理平台 Docker Swarm Mesos Google Kubernetes
+2017年开始Kubernetes凭借强大的容器集群管理功能, 逐步占据市场,目前在容器编排领域一枝独秀
+https://kubernetes.io/
+架构图 分布式系统，两类角色：管理节点和工作节点
+核心组件   ETCD：分布式高性能键值数据库,存储整个集群的所有元数据
+  ApiServer: API服务器,集群资源访问控制入口,提供restAPI及安全访问控制
+  Scheduler：调度器,负责把业务容器调度到最合适的Node节点
+  Controller Manager：控制器管理,确保集群资源按照期望的方式运行
+ Replication Controller Node controller ResourceQuota Controller Namespace Controller ServiceAccount Controller Token Controller Service Controller Endpoints Controller    kubelet：运行在每个节点上的主要的“节点代理”，脏活累活
+ pod 管理：kubelet 定期从所监听的数据源获取节点上 pod/container 的期望状态（运行什么容器、运行的副本数量、网络或者存储如何配置等等），并调用对应的容器平台接口达到这个状态。 容器健康检查：kubelet 创建了容器之后还要查看容器是否正常运行，如果容器运行出错，就要根据 pod 设置的重启策略进行处理.</description>
+    </item>
+    
+    <item>
+      <title>Etcd v3备份与恢复</title>
+      <link>https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <pubDate>Thu, 30 Dec 2021 17:56:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <description>ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.</description>
+    </item>
+    
+    <item>
+      <title>走进Docker的世界</title>
+      <link>https://iblog.zone/archives/%E8%B5%B0%E8%BF%9Bdocker%E7%9A%84%E4%B8%96%E7%95%8C/</link>
+      <pubDate>Thu, 30 Dec 2021 15:35:39 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E8%B5%B0%E8%BF%9Bdocker%E7%9A%84%E4%B8%96%E7%95%8C/</guid>
+      <description>第一天 走进Docker的世界 介绍docker的前世今生，了解docker的实现原理，以Django项目为例，带大家如何编写最佳的Dockerfile构建镜像。通过本章的学习，大家会知道docker的概念及基本操作，并学会构建自己的业务镜像，并通过抓包的方式掌握Docker最常用的bridge网络模式的通信。
+认识docker  why what how  为什么出现docker 需要一种轻量、高效的虚拟化能力
+Docker 公司位于旧金山,原名dotCloud，底层利用了Linux容器技术（LXC）（在操作系统中实现资源隔离与限制）。为了方便创建和管理这些容器，dotCloud 开发了一套内部工具，之后被命名为“Docker”。Docker就是这样诞生的。
+Hypervisor： 一种运行在基础物理服务器和操作系统之间的中间软件层，可允许多个操作系统和应用共享硬件 。常见的VMware的 Workstation 、ESXi、微软的Hyper-V或者思杰的XenServer。
+Container Runtime：通过Linux内核虚拟化能力管理多个容器，多个容器共享一套操作系统内核。因此摘掉了内核占用的空间及运行所需要的耗时，使得容器极其轻量与快速。
+什么是docker 基于操作系统内核，提供轻量级虚拟化功能的CS架构的软件产品。
+基于轻量的特性，解决软件交付过程中的环境依赖
+docker能做什么  可以把应用程序代码及运行依赖环境打包成镜像，作为交付介质，在各环境部署 可以将镜像（image）启动成为容器(container)，并且提供多容器的生命周期进行管理（启、停、删） container容器之间相互隔离，且每个容器可以设置资源限额 提供轻量级虚拟化功能，容器就是在宿主机中的一个个的虚拟的空间，彼此相互隔离，完全独立  版本管理  Docker 引擎主要有两个版本：企业版（EE）和社区版（CE） 每个季度(1-3,4-6,7-9,10-12)，企业版和社区版都会发布一个稳定版本(Stable)。社区版本会提供 4 个月的支持，而企业版本会提供 12 个月的支持 每个月社区版还会通过 Edge 方式发布月度版 从 2017 年第一季度开始，Docker 版本号遵循 YY.MM-xx 格式，类似于 Ubuntu 等项目。例如，2018 年 6 月第一次发布的社区版本为 18.06.0-ce  发展史 13年成立，15年开始，迎来了飞速发展。
+Docker 1.8之前，使用LXC，Docker在上层做了封装， 把LXC复杂的容器创建与使用方式简化为自己的一套命令体系。
+之后，为了实现跨平台等复杂的场景，Docker抽出了libcontainer项目，把对namespace、cgroup的操作封装在libcontainer项目里，支持不同的平台类型。
+2015年6月，Docker牵头成立了 OCI（Open Container Initiative开放容器计划）组织，这个组织的目的是建立起一个围绕容器的通用标准 。 容器格式标准是一种不受上层结构绑定的协议，即不限于某种特定操作系统、硬件、CPU架构、公有云等 ， 允许任何人在遵循该标准的情况下开发应用容器技术，这使得容器技术有了一个更广阔的发展空间。</description>
+    </item>
+    
+    <item>
+      <title>nginx php-fpm安装配置</title>
+      <link>https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Wed, 29 Dec 2021 15:38:23 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</guid>
+      <description>nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx
+本文以php-fpm为例介绍如何使nginx支持PHP
+一、编译安装php-fpm
+什么是PHP-FPM
+PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.
+PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。
+新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。
+安装前准备 centos下执行
+yum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c++ glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)
+wget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5.</description>
+    </item>
+    
+    <item>
+      <title>CentOS7.9.2009 卸载自带的python及yum并重装</title>
+      <link>https://iblog.zone/archives/centos7.9.2009-%E5%8D%B8%E8%BD%BD%E8%87%AA%E5%B8%A6%E7%9A%84python%E5%8F%8Ayum%E5%B9%B6%E9%87%8D%E8%A3%85/</link>
+      <pubDate>Wed, 29 Dec 2021 15:27:19 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7.9.2009-%E5%8D%B8%E8%BD%BD%E8%87%AA%E5%B8%A6%E7%9A%84python%E5%8F%8Ayum%E5%B9%B6%E9%87%8D%E8%A3%85/</guid>
+      <description>一：删除之前的python和yum 1、删除python rpm -qa|grep python|xargs rpm -ev --allmatches --nodeps ##强制删除已安装程序及其关联 whereis python |xargs rm -frv ##删除所有残余文件 ##xargs，允许你对输出执行其他某些命令 whereis python ##验证删除，返回无结果 2、删除现有的yum rpm -qa|grep yum|xargs rpm -ev --allmatches --nodeps whereis yum |xargs rm -frv whereis yum ##验证删除，返回无结果 二：下载安装包 https://mirrors.ustc.edu.cn/centos/7.9.2009/os/x86_64/Packages/
+三：安装 rpm -Uvh --replacepkgs *.rpm #意思是安装当前目录下所有的rpm文件 </description>
+    </item>
+    
+    <item>
+      <title>CentOS7升级python2.7.5到python3.7以上版本</title>
+      <link>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/</link>
+      <pubDate>Wed, 29 Dec 2021 15:19:27 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/</guid>
+      <description>CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。
+安装Python3.7.3 官网下载地址：https://www.python.org/downlo&amp;hellip;
+这里选择下载python 3.7.3。
+# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make &amp;amp;&amp;amp; make install 关于Python3.7以上的版本，需要多安装一个依赖包:
+ yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named &#39;_ctypes&#39;的报错。
+在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。
+然后将系统默认的python2备份
+mv /usr/bin/python /usr/bin/python.bak 创建新的软连接
+ln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本
+[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。</description>
+    </item>
+    
+    <item>
+      <title>yum下载全量rpm依赖包及离线安装</title>
+      <link>https://iblog.zone/archives/yum%E4%B8%8B%E8%BD%BD%E5%85%A8%E9%87%8Frpm%E4%BE%9D%E8%B5%96%E5%8C%85%E5%8F%8A%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Tue, 28 Dec 2021 18:15:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/yum%E4%B8%8B%E8%BD%BD%E5%85%A8%E9%87%8Frpm%E4%BE%9D%E8%B5%96%E5%8C%85%E5%8F%8A%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/</guid>
+      <description>简介 通常生产环境由于安全原因都无法访问互联网。此时就需要进行离线安装，主要有两种方式：源码编译、rpm包安装。源码编译耗费时间长且缺乏编译环境，所以一般都选择使用离线 rpm 包安装。
+验证环境 Centos 7.2
+查看依赖包 可以使用“yum deplist”命令来查找 rpm 包的依赖列表。例如，要查找“ansible”rpm的依赖包：
+$ yum deplist ansible 软件包：ansible.noarch 2.9.3-1.el7  依赖：/usr/bin/env  provider: coreutils.x86_64 8.22-24.el7  依赖：/usr/bin/python2  provider: python.x86_64 2.7.5-86.el7  依赖：PyYAML  provider: PyYAML.x86_64 3.10-11.el7  依赖：python(abi) = 2.7  provider: python.x86_64 2.7.5-86.el7  依赖：python-httplib2  provider: python-httplib2.noarch 0.9.2-1.el7  依赖：python-jinja2  provider: python-jinja2.noarch 2.7.2-4.el7  依赖：python-paramiko  provider: python-paramiko.noarch 2.1.1-9.el7  依赖：python-setuptools  provider: python-setuptools.noarch 0.9.8-7.el7  依赖：python-six  provider: python-six.</description>
+    </item>
+    
+    <item>
+      <title>centos7 openssh升级到最新版本</title>
+      <link>https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/</link>
+      <pubDate>Fri, 24 Dec 2021 11:13:27 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/</guid>
+      <description>注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。
+安装之前可以先试试yum更新,若是可以更新，就不需要往下看了
+# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz
+$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略
+1.安装
+$ yum install telnet telnet-server -y 2.启动
+$ systemctl enable telnet.socket $ systemctl start telnet.</description>
+    </item>
+    
+    <item>
+      <title>Centos7升级内核版本</title>
+      <link>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/</link>
+      <pubDate>Thu, 23 Dec 2021 11:38:27 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/</guid>
+      <description>小版本升级
+1. 查看当前和可升级版本
+[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级
+[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查
+ [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级
+1. 载入公钥
+[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo
+[root@jksb_qz ~]# rpm -Uvh http://www.</description>
+    </item>
+    
+    <item>
+      <title>配置Nginx访问网页需要密码</title>
+      <link>https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/</link>
+      <pubDate>Tue, 21 Dec 2021 14:28:29 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/</guid>
+      <description>1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码
+$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码
+如果要修改密码，或者删除密码，请参考下面操作
+删除用户和密码
+$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码
+$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file
+server {  listen 80;  server_name localhost;  # .</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes1.16安装[kubadm方式]</title>
+      <link>https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Wed, 15 Dec 2021 14:58:45 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/</guid>
+      <description>集群信息 1. 节点规划 部署k8s集群的节点按照用途可以划分为如下2类角色：
+ master：集群的master节点，集群的初始化节点，基础配置不低于2C4G slave：集群的slave节点，可以多台，基础配置不低于2C4G  本例为了演示slave节点的添加，会部署一台master+2台slave，节点规划如下：
+   主机名 节点ip 角色 部署组件     k8s-master 192.168.136.128 master etcd, kube-apiserver, kube-controller-manager, kubectl, kubeadm, kubelet, kube-proxy, flannel   k8s-slave1 192.168.136.131 slave kubectl, kubelet, kube-proxy, flannel   k8s-slave2 192.168.136.132 slave kubectl, kubelet, kube-proxy, flannel    2. 组件版本    组件 版本 说明     CentOS 7.6.1810    Kernel Linux 3.</description>
+    </item>
+    
+    <item>
+      <title>k8s搭建consul集群</title>
+      <link>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Tue, 14 Dec 2021 14:44:57 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</guid>
+      <description>部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.</description>
+    </item>
+    
+    <item>
+      <title>Docker 常用命令大全</title>
+      <link>https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/</link>
+      <pubDate>Sat, 11 Dec 2021 18:14:07 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/</guid>
+      <description>本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。
+容器生命周期管理命令 run 创建一个新的容器。
+# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：</description>
+    </item>
+    
+    <item>
+      <title>Java中的常见OOM及原因</title>
+      <link>https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/</link>
+      <pubDate>Fri, 10 Dec 2021 16:20:43 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/</guid>
+      <description>Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。
+java.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。
+堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。
+引起空间不足的原因主要有：
+ 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。
+引起元数据区空间不足的原因主要有：
+ 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。
+java.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。
+永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。
+java.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：
+ 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈+JVM的虚拟机栈 = 8MB + 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。
+解决办法从原因中找：
+ 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。
+java.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。</description>
+    </item>
+    
+    <item>
+      <title>使用宝塔面板将Hexo部署到腾讯轻量级应用服务器</title>
+      <link>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E5%B0%86hexo%E9%83%A8%E7%BD%B2%E5%88%B0%E8%85%BE%E8%AE%AF%E8%BD%BB%E9%87%8F%E7%BA%A7%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <pubDate>Thu, 09 Dec 2021 11:47:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E5%B0%86hexo%E9%83%A8%E7%BD%B2%E5%88%B0%E8%85%BE%E8%AE%AF%E8%BD%BB%E9%87%8F%E7%BA%A7%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <description>一、安装宝塔面板 yum install -y wget &amp;amp;&amp;amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;amp;&amp;amp; sh install.sh 安装成功后，显示如下内容
+外网面板地址: http://xx:8888/xx 内网面板地址: http://10.0.16.13:8888/xx username: xx password: xx If you cannot access the panel, release the following panel port [8888] in the security group 若无法访问面板，请检查防火墙/安全组是否有放行面板[8888]端口 在宝塔面板网站管理中，添加站点（第一次进入需要安装nginx，点击快速安装即可）
+二、Git仓库创建 1、服务端增加git用户
+adduser git passwd git 2、给git用户授权
+vim /etc/sudoers  #在root ALL=(ALL) ALL 下方添加一行  git ALL=(ALL) ALL 3、用户端跟服务端做免密登录
+用户端生成密钥对
+ssh-keygen 将秘钥传到服务端
+ssh-copy-id git@server_ip # 输入git刚创建的git用户的密码 验证
+ssh git@server_ip # 如果没有要求输入密码就登录进去了 说明免密成功 4、创建git仓库</description>
+    </item>
+    
+    <item>
+      <title>OpenVPN 设置账号密码登录</title>
+      <link>https://iblog.zone/archives/openvpn-%E8%AE%BE%E7%BD%AE%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</link>
+      <pubDate>Wed, 08 Dec 2021 17:09:00 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/openvpn-%E8%AE%BE%E7%BD%AE%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</guid>
+      <description>前面我们是使用openvpn 秘钥的方式登录，这种登录安全性比较高。但是运维操作起来比较麻烦，如果有ldap的也推荐使用ldap集成openvpn。但是这里我们偷个懒，通过设置账号密码的方式连接vpn
+配置OpenVPN 首先我们需要编写一个用户认证的脚本 (脚本是由openvpn官网提供的)
+vim /etc/openvpn/checkpsw.sh #!/bin/sh ########################################################### # checkpsw.sh (C) 2004 Mathias Sundman  # # This script will authenticate OpenVPN users against # a plain text file. The passfile should simply contain # one row per user with the username first followed by # one or more space(s) or tab(s) and then the password.  PASSFILE=&amp;#34;/etc/openvpn/psw-file&amp;#34; LOG_FILE=&amp;#34;/etc/openvpn/openvpn-password.log&amp;#34; TIME_STAMP=`date &amp;#34;+%Y-%m-%d %T&amp;#34;`  ###########################################################  if [ ! -r &amp;#34;${PASSFILE}&amp;#34; ]; then  echo &amp;#34;${TIME_STAMP}: Could not open password file \&amp;#34;${PASSFILE}\&amp;#34; for reading.</description>
+    </item>
+    
+    <item>
+      <title>centos7.4 安装mysql 5.7</title>
+      <link>https://iblog.zone/archives/centos7.4-%E5%AE%89%E8%A3%85mysql-5.7/</link>
+      <pubDate>Tue, 07 Dec 2021 14:39:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7.4-%E5%AE%89%E8%A3%85mysql-5.7/</guid>
+      <description>以centos为例(以root身份登录)
+目录约定  安装文件下载目录：/data/software mysql目录安装位置：/usr/local/mysql 数据库保存位置：/data/mysql 日志保存位置：/data/log/mysql  #如果这3个文件夹不存在，先创建 mkdir -p /data/software mkdir -p /data/mysql mkdir -p /data/log/mysql  #创建错误日志文件 cd /data/log/mysql touch error.log  #/usr/local/mysql这个目录待会解压安装包的时候一并创建 下载并解压 在官网选择mysql5.7.24 Linux - Generic版本下载
+ 文件较大推荐服务器使用wget命令下载，或者本地使用迅雷下载，然后上传到服务器
+ cd /data/software wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  tar -zxvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz #这里注意mysql后面没有/ mv mysql-5.7.24-linux-glibc2.12-x86_64 /usr/local/mysql 新建mysql组、用户 groupadd mysql #新建msyql用户禁止登录shell useradd -r -g mysql mysql -s /sbin/nologin  #更改目录权限 chown -R mysql:mysql /usr/local/mysql chown -R mysql:mysql /data/log/mysql 配置参数 bin/mysqld --initialize-insecure --user=mysql --basedir=/usr/local/mysql --datadir=/data/mysql  bin/mysql_ssl_rsa_setup --datadir=/data/mysql  cd /usr/local/mysql/support-files cp mysql.</description>
+    </item>
+    
+    <item>
+      <title>解决npm install下载chromedriver@2.46.0依赖包超级慢问题</title>
+      <link>https://iblog.zone/archives/%E8%A7%A3%E5%86%B3npm-install%E4%B8%8B%E8%BD%BDchromedriver2.46.0%E4%BE%9D%E8%B5%96%E5%8C%85%E8%B6%85%E7%BA%A7%E6%85%A2%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 06 Dec 2021 18:06:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E8%A7%A3%E5%86%B3npm-install%E4%B8%8B%E8%BD%BDchromedriver2.46.0%E4%BE%9D%E8%B5%96%E5%8C%85%E8%B6%85%E7%BA%A7%E6%85%A2%E9%97%AE%E9%A2%98/</guid>
+      <description>一、问题出现原因 使用gitlab-runner部署前端js项目时，下载chromedriver@2.46.0有时候相当的慢。
+主要原因是npm install老去国外github下载
+&amp;gt; chromedriver@2.45.0 install /app/node_modules/chromedriver &amp;gt; node install.js  Current existing ChromeDriver binary is unavailable, proceding with download and extraction. Downloading from file: https://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip Saving to file: /app/node_modules/chromedriver/chromedriver/chromedriver_linux64.zip ... 后来去放置gitlab-runner那台主机wget一下，结果一直响应中
+cuiyf@gitlabrunner:~$ wget https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip --2019-08-05 17:46:32-- https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip Resolving chromedriver.storage.googleapis.com (chromedriver.storage.googleapis.com)... 216.58.200.48, 2404:6800:4008:801::2010 Connecting to chromedriver.storage.googleapis.com (chromedriver.storage.googleapis.com)|216.58.200.48|:443... connected. HTTP request sent, awaiting response... 二、解决思路 设法使其去淘宝镜像源地址下载
+https://registry.npm.taobao.org/ 三、解决方案 由于我是用docker部署的，修改Dockerfile添加如下配置 npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+FROMcuiyf/node:8.12.0-alpine as build-stageCOPY . /appWORKDIR/appRUN npm config set registry http://172.</description>
+    </item>
+    
+    <item>
+      <title>CentOS 7 搭建OpenVPN服务器</title>
+      <link>https://iblog.zone/archives/centos-7-%E6%90%AD%E5%BB%BAopenvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <pubDate>Sun, 05 Dec 2021 22:02:39 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos-7-%E6%90%AD%E5%BB%BAopenvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <description>OpenVPN的工作原理 在Linux2.4版本以上，操作系统支持一个名为tun的设备，tun设备的驱动程序中包含两个部分，一部分是字符设备驱动，一部分是网卡驱动。网卡的驱动把从TCP/IP协议栈收到的数据包结构skb放于tun设备的读取队列，用户进程通过调用字符设备接口read获得完整的IP数据包，字符驱动read函数的功能是从设备的读取队列读取数据，将核心态的skb传递给用户；反过来字符驱动write函数给用户提供了把用户态的数据写入核心态的接口，write函数把用户数据写入核心空间并穿入TCP/IP协议栈。该设备既能以字符设备的方式被读写，作为系统的虚拟网卡，也具有和物理网卡相同的特点：能够配置IP地址和路由。对虚拟网卡的使用是OpenVPN实现其SSL VPN功能的关键。
+OpenVPN服务器一般需要配置一个虚拟IP地址池和一个自用的静态虚拟IP地址（静态地址和地址池必须在同一个子网中），然后为每一个成功建立SSL连接的客户端动态分配一个虚拟IP地址池中未分配的地址。这样，物理网络中的客户端和OpenVPN服务器就连接成一个虚拟网络上的星型结构局域网，OpenVPN服务器成为每个客户端在虚拟网络上的网关。OpenVPN服务器同时提供对客户端虚拟网卡的路由管理。当客户端对OpenVPN服务器后端的应用服务器的任何访问时，数据包都会经过路由流经虚拟网卡，OpenVPN程序在虚拟网卡上截获数据IP报文，然后使用SSL协议将这些IP报文封装起来，再经过物理网卡发送出去。OpenVPN的服务器和客户端在虚拟网卡之上建立起一个虚拟的局域网络，这个虚拟的局域网对系统的用户来说是透明的。
+OpenVPN的服务器和客户端支持tcp和udp两种连接方式，只需在服务端和客户端预先定义好使用的连接方式（tcp或udp）和端口号，客户端和服务端在这个连接的基础上进行SSL握手。连接过程包括SSL的握手以及虚拟网络上的管理信息，OpenVPN将虚拟网上的网段、地址、路由发送给客户端。连接成功后，客户端和服务端建立起SSL安全连接，客户端和服务端的数据都流入虚拟网卡做SSL的处理，再在tcp或udp的连接上从物理网卡发送出去
+环境说明 192.168.0.10外网 10.4.82.10 内网  系统环境 [root@vpn ~]# cat /etc/redhat-release CentOS Linux release 7.7.1908 (Core) [root@vpn ~]# uname -r 3.10.0-1062.9.1.el7.x86_64  网卡为双网卡 [root@vpn ~]# ifconfig eth0: flags=4163&amp;lt;UP,BROADCAST,RUNNING,MULTICAST&amp;gt; mtu 1500  inet 192.168.0.11 netmask 255.255.255.0 broadcast 192.168.0.255  inet6 fe80::6b5a:9ab8:1bb:5f8d prefixlen 64 scopeid 0x20  ether 00:0c:29:32:b2:36 txqueuelen 1000 (Ethernet)  RX packets 15104 bytes 16993218 (16.2 MiB)  RX errors 0 dropped 0 overruns 0 frame 0  TX packets 8661 bytes 889872 (869.</description>
+    </item>
+    
+  </channel>
+</rss>

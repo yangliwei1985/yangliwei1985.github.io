@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>私服 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E7%A7%81%E6%9C%8D/</link>
+    <description>Recent content in 私服 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 08 Apr 2022 18:08:30 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/%E7%A7%81%E6%9C%8D/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>前端npm私服搭建</title>
+      <link>https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Fri, 08 Apr 2022 18:08:30 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/</guid>
+      <description>前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。
+cnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/
+2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: &amp;#39;127.0.0.1&amp;#39;,  // 数据库配置  database: {  db: &amp;#39;cnpmjs&amp;#39;, // 数据库  username: &amp;#39;root&amp;#39;, // 数据库用户名  password: &amp;#39;&amp;#39;, // 数据库密码  dialect: &amp;#39;mysql&amp;#39;, // 数据库类型 &amp;#39;mysql&amp;#39;, &amp;#39;sqlite&amp;#39;, &amp;#39;postgres&amp;#39;, &amp;#39;mariadb&amp;#39;  host: &amp;#39;&amp;#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: &amp;#39;yanghui3021@163.</description>
+    </item>
+    
+    <item>
+      <title>Maven私服Nexus的搭建与使用</title>
+      <link>https://iblog.zone/archives/maven%E7%A7%81%E6%9C%8Dnexus%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 08 Apr 2022 17:11:04 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/maven%E7%A7%81%E6%9C%8Dnexus%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/</guid>
+      <description>一、基本介绍 1、如果没有搭建私服会有什么问题？  如果没有私服，我们所需的所有构件都需要通过 Maven 的中央仓库或者第三方的 Maven 仓库下载到本地，而一个团队中的所有人都重复的从 Maven 仓库下载构件无疑加大了仓库的负载和浪费了外网带宽，如果网速慢的话，还会影响项目的进程。 另外，很多情况下项目的开发都是在内网进行的，可能根本连接不了 Maven 的中央仓库和第三方的 Maven 仓库。 我们开发的公共构件如果需要提供给其它项目使用，也需要搭建私服。  2、搭建私服的优点 Maven 私服的概念就是在本地架设一个 Maven 仓库服务器，在代理远程仓库的同时维护本地仓库。当我们需要下载一些构件（artifact）时，如果本地仓库没有，再去私服下载，私服没有，再去中央仓库下载。这样做会有如下一些优点：
+ 减少网络带宽流量 加速 Maven 构建 部署第三方构件 提高稳定性、增强控制 降低中央仓库的负载  3、Nexus 介绍 Nexus 是一个专门的 Maven 仓库管理软件，它不仅能搭建 Maven 私服，还具备如下一些优点使其日趋成为最流行的 Maven 仓库管理器：
+ 提供了强大的仓库管理功能，构件搜索功能 它基于 REST，友好的 UI 是一个 ext.js 的 REST 客户端 它占用较少的内存 基于简单文件系统而非数据库  二、Nexus 服务的安装 使用 Docker 镜像进行安装 （1）首先执行如下命令下载 Nexus3 镜像：
+docker pull sonatype/nexus3 （2）接着执行如下命令，创建宿主机挂载目录：
+mkdir -p /data/nexus-data （3）最后执行如下命令运行 Nexus3 容器即可：</description>
+    </item>
+    
+  </channel>
+</rss>

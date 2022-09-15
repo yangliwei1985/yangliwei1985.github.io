@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>logs on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/logs/</link>
+    <description>Recent content in logs on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 06 May 2022 10:09:27 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/logs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker容器日志查看与清理</title>
+      <link>https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/</link>
+      <pubDate>Fri, 06 May 2022 10:09:27 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/</guid>
+      <description>1. 问题 docker容器日志导致主机磁盘空间满了。docker logs -f container_name噼里啪啦一大堆，很占用空间，不用的日志可以清理掉了。
+2. 解决方法 2.1 找出Docker容器日志 在linux上，容器日志一般存放在/var/lib/docker/containers/container_id/下面， 以json.log结尾的文件（业务日志）很大，查看各个日志文件大小的脚本docker_log_size.sh，内容如下：
+#!/bin/sh  echo &amp;#34;======== docker containers logs file size ========&amp;#34;  logs=$(find /var/lib/docker/containers/ -name *-json.log)  for log in $logs  do  ls -lh $log  done # chmod +x docker_log_size.sh  # ./docker_log_size.sh 2.2 清理Docker容器日志（治标) 如果docker容器正在运行，那么使用rm -rf方式删除日志后，通过df -h会发现磁盘空间并没有释放。原因是在Linux或者Unix系统中，通过rm -rf或者文件管理器删除文件，将会从文件系统的目录结构上解除链接（unlink）。如果文件是被打开的（有一个进程正在使用），那么进程将仍然可以读取该文件，磁盘空间也一直被占用。正确姿势是cat /dev/null &amp;gt; *-json.log，当然你也可以通过rm -rf删除后重启docker。接下来，提供一个日志清理脚本clean_docker_log.sh，内容如下：
+#!/bin/sh  echo &amp;#34;======== start clean docker containers logs ========&amp;#34;  logs=$(find /var/lib/docker/containers/ -name *-json.</description>
+    </item>
+    
+  </channel>
+</rss>

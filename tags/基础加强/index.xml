@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>基础加强 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA/</link>
+    <description>Recent content in 基础加强 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 24 Apr 2022 16:08:43 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java基础加强03</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/</link>
+      <pubDate>Sun, 24 Apr 2022 16:08:43 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/</guid>
+      <description>1.管理系统与服务器集成 1.1准备工作【应用】   需求
+对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能
+  准备工作
+  将资料中的黑马管理系统代码拷贝到当前模块下
+  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下
+    业务分析
+ 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构
+  1.2HttpRequest类代码实现【应用】   实现步骤
+ 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现
+// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map&amp;lt;String,String&amp;gt; paramterHashMap = new HashMap&amp;lt;&amp;gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey.</description>
+    </item>
+    
+    <item>
+      <title>Java基础加强02</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/</link>
+      <pubDate>Sun, 24 Apr 2022 15:49:35 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/</guid>
+      <description>1.xml 1.1概述【理解】   万维网联盟(W3C)
+万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，
+  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、
+  可扩展标记语言XML（标准通用标记语言下的一个子集）
+  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等
+    xml概述
+XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的
+  作用
+ 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势
+ 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成
+&amp;lt;student&amp;gt;   标签必须成对出现
+&amp;lt;student&amp;gt; &amp;lt;/student&amp;gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记
+&amp;lt;address/&amp;gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来
+&amp;lt;student id=&amp;#34;1&amp;#34;&amp;gt; &amp;lt;/student&amp;gt;   标签需要正确的嵌套</description>
+    </item>
+    
+    <item>
+      <title>Java基础加强01</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA01/</link>
+      <pubDate>Sun, 24 Apr 2022 15:31:20 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA01/</guid>
+      <description>1.类加载器 1.1类加载器【理解】   作用
+负责将.class文件（存储的物理文件）加载在到内存中
+  1.2类加载的过程【理解】   类加载时机
+ 创建类的实例（对象） 调用类的类方法 访问类或者接口的类变量，或者为该类变量赋值 使用反射方式来强制创建某个类或接口对应的java.lang.Class对象 初始化某个类的子类 直接使用java.exe命令来运行某个主类    类加载过程
+  加载
+ 通过包名 + 类名，获取这个类，准备用流进行传输 在这个类加载到内存中 加载完毕创建一个class对象    链接
+  验证
+确保Class文件字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身安全
+(文件中的信息是否符合虚拟机规范有没有安全隐患)
+    准备
+负责为类的类变量（被static修饰的变量）分配内存，并设置默认初始化值
+(初始化静态变量)
+    解析
+将类的二进制数据流中的符号引用替换为直接引用
+(本类中如果用到了其他类，此时就需要找到对应的类)
+    初始化
+根据程序员通过程序制定的主观计划去初始化类变量和其他资源
+(静态变量赋值以及初始化其他资源)
+    小结
+ 当一个类被使用的时候，才会加载到内存 类加载的过程: 加载、验证、准备、解析、初始化    1.</description>
+    </item>
+    
+  </channel>
+</rss>

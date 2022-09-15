@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java IO流02 | ylw&#39;s blog</title>
+<meta name="keywords" content="IO流" />
+<meta name="description" content="1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍
+由于字节流操作中文不是特别的方便，所以Java就提供字符流
+字符流 = 字节流 &#43; 编码表
+  中文的字节存储方式
+用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？
+汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数
+  1.2编码表【理解】   什么是字符集
+是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等
+  常见的字符集
+  ASCII字符集：
+lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)
+基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+  GBXXX字符集：
+GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等
+  Unicode字符集：
+UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码
+编码规则：
+128个US-ASCII字符，只需一个字节编码
+拉丁文等字符，需要二个字节编码
+大部分常用字（含中文），使用三个字节编码
+其他极少使用的Unicode辅助字符，使用四字节编码
+    1.3字符串中的编码解码问题【应用】   相关方法
+   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java-io%E6%B5%8102/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java IO流02" />
+<meta property="og:description" content="1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍
+由于字节流操作中文不是特别的方便，所以Java就提供字符流
+字符流 = 字节流 &#43; 编码表
+  中文的字节存储方式
+用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？
+汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数
+  1.2编码表【理解】   什么是字符集
+是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等
+  常见的字符集
+  ASCII字符集：
+lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)
+基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+  GBXXX字符集：
+GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等
+  Unicode字符集：
+UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码
+编码规则：
+128个US-ASCII字符，只需一个字节编码
+拉丁文等字符，需要二个字节编码
+大部分常用字（含中文），使用三个字节编码
+其他极少使用的Unicode辅助字符，使用四字节编码
+    1.3字符串中的编码解码问题【应用】   相关方法
+   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java-io%E6%B5%8102/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-14T14:15:53&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-14T14:15:53&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java IO流02"/>
+<meta name="twitter:description" content="1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍
+由于字节流操作中文不是特别的方便，所以Java就提供字符流
+字符流 = 字节流 &#43; 编码表
+  中文的字节存储方式
+用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？
+汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数
+  1.2编码表【理解】   什么是字符集
+是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等
+  常见的字符集
+  ASCII字符集：
+lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)
+基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+  GBXXX字符集：
+GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等
+  Unicode字符集：
+UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码
+编码规则：
+128个US-ASCII字符，只需一个字节编码
+拉丁文等字符，需要二个字节编码
+大部分常用字（含中文），使用三个字节编码
+其他极少使用的Unicode辅助字符，使用四字节编码
+    1.3字符串中的编码解码问题【应用】   相关方法
+   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java IO流02",
+      "item": "https://iblog.zone/archives/java-io%E6%B5%8102/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java IO流02",
+  "name": "Java IO流02",
+  "description": "1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍\n由于字节流操作中文不是特别的方便，所以Java就提供字符流\n字符流 = 字节流 + 编码表\n  中文的字节存储方式\n用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？\n汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数\n  1.2编码表【理解】   什么是字符集\n是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等\nl计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等\n  常见的字符集\n  ASCII字符集：\nlASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)\n基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等\n  GBXXX字符集：\nGBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等\n  Unicode字符集：\nUTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码\n编码规则：\n128个US-ASCII字符，只需一个字节编码\n拉丁文等字符，需要二个字节编码\n大部分常用字（含中文），使用三个字节编码\n其他极少使用的Unicode辅助字符，使用四字节编码\n    1.3字符串中的编码解码问题【应用】   相关方法\n   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示",
+  "keywords": [
+    "IO流"
+  ],
+  "articleBody": "1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍\n由于字节流操作中文不是特别的方便，所以Java就提供字符流\n字符流 = 字节流 + 编码表\n  中文的字节存储方式\n用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？\n汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数\n  1.2编码表【理解】   什么是字符集\n是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等\nl计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等\n  常见的字符集\n  ASCII字符集：\nlASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)\n基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等\n  GBXXX字符集：\nGBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等\n  Unicode字符集：\nUTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码\n编码规则：\n128个US-ASCII字符，只需一个字节编码\n拉丁文等字符，需要二个字节编码\n大部分常用字（含中文），使用三个字节编码\n其他极少使用的Unicode辅助字符，使用四字节编码\n    1.3字符串中的编码解码问题【应用】   相关方法\n   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示\npublic class StringDemo {  public static void main(String[] args) throws UnsupportedEncodingException {  //定义一个字符串  String s = \"中国\";   //byte[] bys = s.getBytes(); //[-28, -72, -83, -27, -101, -67]  //byte[] bys = s.getBytes(\"UTF-8\"); //[-28, -72, -83, -27, -101, -67]  byte[] bys = s.getBytes(\"GBK\"); //[-42, -48, -71, -6]  System.out.println(Arrays.toString(bys));   //String ss = new String(bys);  //String ss = new String(bys,\"UTF-8\");  String ss = new String(bys,\"GBK\");  System.out.println(ss);  } }   1.4字符流写数据【应用】   介绍\nWriter: 用于写入字符流的抽象父类\nFileWriter: 用于写入字符流的常用子类\n  构造方法\n   方法名 说明     FileWriter(File file) 根据给定的 File 对象构造一个 FileWriter 对象   FileWriter(File file, boolean append) 根据给定的 File 对象构造一个 FileWriter 对象   FileWriter(String fileName) 根据给定的文件名构造一个 FileWriter 对象   FileWriter(String fileName, boolean append) 根据给定的文件名以及指示是否附加写入数据的 boolean 值来构造 FileWriter 对象      成员方法\n   方法名 说明     void write(int c) 写一个字符   void write(char[] cbuf) 写入一个字符数组   void write(char[] cbuf, int off, int len) 写入字符数组的一部分   void write(String str) 写一个字符串   void write(String str, int off, int len) 写一个字符串的一部分      刷新和关闭的方法\n   方法名 说明     flush() 刷新流，之后还可以继续写数据   close() 关闭流，释放资源，但是在关闭之前会先刷新流。一旦关闭，就不能再写数据      代码演示\npublic class OutputStreamWriterDemo {  public static void main(String[] args) throws IOException {  FileWriter fw = new FileWriter(\"myCharStream\\\\a.txt\");   //void write(int c)：写一个字符 // fw.write(97); // fw.write(98); // fw.write(99);   //void writ(char[] cbuf)：写入一个字符数组  char[] chs = {'a', 'b', 'c', 'd', 'e'}; // fw.write(chs);   //void write(char[] cbuf, int off, int len)：写入字符数组的一部分 // fw.write(chs, 0, chs.length); // fw.write(chs, 1, 3);   //void write(String str)：写一个字符串 // fw.write(\"abcde\");   //void write(String str, int off, int len)：写一个字符串的一部分 // fw.write(\"abcde\", 0, \"abcde\".length());  fw.write(\"abcde\", 1, 3);   //释放资源  fw.close();  } }   1.5字符流读数据【应用】   介绍\nReader: 用于读取字符流的抽象父类\nFileReader: 用于读取字符流的常用子类\n  构造方法\n   方法名 说明     FileReader(File file) 在给定从中读取数据的 File 的情况下创建一个新 FileReader   FileReader(String fileName) 在给定从中读取数据的文件名的情况下创建一个新 FileReader        成员方法\n   方法名 说明     int read() 一次读一个字符数据   int read(char[] cbuf) 一次读一个字符数组数据      代码演示\npublic class InputStreamReaderDemo {  public static void main(String[] args) throws IOException {   FileReader fr = new FileReader(\"myCharStream\\\\b.txt\");   //int read()：一次读一个字符数据 // int ch; // while ((ch=fr.read())!=-1) { // System.out.print((char)ch); // }   //int read(char[] cbuf)：一次读一个字符数组数据  char[] chs = new char[1024];  int len;  while ((len = fr.read(chs)) != -1) {  System.out.print(new String(chs, 0, len));  }   //释放资源  fr.close();  } }   1.6字符流用户注册案例【应用】   案例需求\n将键盘录入的用户名和密码保存到本地实现永久化存储\n  实现步骤\n 获取用户输入的用户名和密码 将用户输入的用户名和密码写入到本地文件中 关流,释放资源    代码实现\npublic class CharStreamDemo8 {  public static void main(String[] args) throws IOException {  //需求: 将键盘录入的用户名和密码保存到本地实现永久化存储  //要求：用户名独占一行，密码独占一行   //分析：  //1，实现键盘录入，把用户名和密码录入进来  Scanner sc = new Scanner(System.in);  System.out.println(\"请录入用户名\");  String username = sc.next();  System.out.println(\"请录入密码\");  String password = sc.next();   //2.分别把用户名和密码写到本地文件。  FileWriter fw = new FileWriter(\"charstream\\\\a.txt\");  //将用户名和密码写到文件中  fw.write(username);  //表示写出一个回车换行符 windows \\r\\n MacOS \\r Linux \\n  fw.write(\"\\r\\n\");  fw.write(password);  //刷新流  fw.flush();  //3.关流,释放资源  fw.close();  } }   1.7字符缓冲流【应用】   字符缓冲流介绍\n  BufferedWriter：将文本写入字符输出流，缓冲字符，以提供单个字符，数组和字符串的高效写入，可以指定缓冲区大小，或者可以接受默认大小。默认值足够大，可用于大多数用途\n  BufferedReader：从字符输入流读取文本，缓冲字符，以提供字符，数组和行的高效读取，可以指定缓冲区大小，或者可以使用默认大小。 默认值足够大，可用于大多数用途\n    构造方法\n   方法名 说明     BufferedWriter(Writer out) 创建字符缓冲输出流对象   BufferedReader(Reader in) 创建字符缓冲输入流对象      代码演示\npublic class BufferedStreamDemo01 {  public static void main(String[] args) throws IOException {  //BufferedWriter(Writer out)  BufferedWriter bw = new BufferedWriter(new FileWriter(\"myCharStream\\\\bw.txt\"));  bw.write(\"hello\\r\\n\");  bw.write(\"world\\r\\n\");  bw.close();   //BufferedReader(Reader in)  BufferedReader br = new BufferedReader(new FileReader(\"myCharStream\\\\bw.txt\"));   //一次读取一个字符数据 // int ch; // while ((ch=br.read())!=-1) { // System.out.print((char)ch); // }   //一次读取一个字符数组数据  char[] chs = new char[1024];  int len;  while ((len=br.read(chs))!=-1) {  System.out.print(new String(chs,0,len));  }   br.close();  } }   1.8字符缓冲流特有功能【应用】   方法介绍\nBufferedWriter：\n   方法名 说明     void newLine() 写一行行分隔符，行分隔符字符串由系统属性定义    BufferedReader:\n   方法名 说明     String readLine() 读一行文字。 结果包含行的内容的字符串，不包括任何行终止字符如果流的结尾已经到达，则为null      代码演示\npublic class BufferedStreamDemo02 {  public static void main(String[] args) throws IOException {   //创建字符缓冲输出流  BufferedWriter bw = new BufferedWriter(new FileWriter(\"myCharStream\\\\bw.txt\"));   //写数据  for (int i = 0; i  10; i++) {  bw.write(\"hello\" + i);  //bw.write(\"\\r\\n\");  bw.newLine();  bw.flush();  }   //释放资源  bw.close();   //创建字符缓冲输入流  BufferedReader br = new BufferedReader(new FileReader(\"myCharStream\\\\bw.txt\"));   String line;  while ((line=br.readLine())!=null) {  System.out.println(line);  }   br.close();  } }   1.9字符缓冲流操作文件中数据排序案例【应用】   案例需求\n使用字符缓冲流读取文件中的数据，排序后再次写到本地文件\n  实现步骤\n 将文件中的数据读取到程序中 对读取到的数据进行处理 将处理后的数据添加到集合中 对集合中的数据进行排序 将排序后的集合中的数据写入到文件中    代码实现\npublic class CharStreamDemo14 {  public static void main(String[] args) throws IOException {  //需求：读取文件中的数据，排序后再次写到本地文件  //分析：  //1.要把文件中的数据读取进来。  BufferedReader br = new BufferedReader(new FileReader(\"charstream\\\\sort.txt\"));  //输出流一定不能写在这里，因为会清空文件中的内容  //BufferedWriter bw = new BufferedWriter(new FileWriter(\"charstream\\\\sort.txt\"));   String line = br.readLine();  System.out.println(\"读取到的数据为\" + line);  br.close();   //2.按照空格进行切割  String[] split = line.split(\" \");//9 1 2 5 3 10 4 6 7 8  //3.把字符串类型的数组变成int类型  int [] arr = new int[split.length];  //遍历split数组，可以进行类型转换。  for (int i = 0; i  split.length; i++) {  String smallStr = split[i];  //类型转换  int number = Integer.parseInt(smallStr);  //把转换后的结果存入到arr中  arr[i] = number;  }  //4.排序  Arrays.sort(arr);  System.out.println(Arrays.toString(arr));   //5.把排序之后结果写回到本地 1 2 3 4...  BufferedWriter bw = new BufferedWriter(new FileWriter(\"charstream\\\\sort.txt\"));  //写出  for (int i = 0; i  arr.length; i++) {  bw.write(arr[i] + \" \");  bw.flush();  }  //释放资源  bw.close();   } }   1.10IO流小结【理解】   IO流小结\n  2.转换流 2.1字符流中和编码解码问题相关的两个类【理解】   InputStreamReader：是从字节流到字符流的桥梁,父类是Reader\n​\t它读取字节，并使用指定的编码将其解码为字符\n​\t它使用的字符集可以由名称指定，也可以被明确指定，或者可以接受平台的默认字符集\n  OutputStreamWriter：是从字符流到字节流的桥梁,父类是Writer\n​\t是从字符流到字节流的桥梁，使用指定的编码将写入的字符编码为字节\n​\t它使用的字符集可以由名称指定，也可以被明确指定，或者可以接受平台的默认字符集\n  2.2转换流读写数据【应用】   构造方法\n   方法名 说明     InputStreamReader(InputStream in) 使用默认字符编码创建InputStreamReader对象   InputStreamReader(InputStream in,String chatset) 使用指定的字符编码创建InputStreamReader对象   OutputStreamWriter(OutputStream out) 使用默认字符编码创建OutputStreamWriter对象   OutputStreamWriter(OutputStream out,String charset) 使用指定的字符编码创建OutputStreamWriter对象      代码演示\npublic class ConversionStreamDemo {  public static void main(String[] args) throws IOException {  //OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(\"myCharStream\\\\osw.txt\"));  OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(\"myCharStream\\\\osw.txt\"),\"GBK\");  osw.write(\"中国\");  osw.close();   //InputStreamReader isr = new InputStreamReader(new FileInputStream(\"myCharStream\\\\osw.txt\"));  InputStreamReader isr = new InputStreamReader(new FileInputStream(\"myCharStream\\\\osw.txt\"),\"GBK\");  //一次读取一个字符数据  int ch;  while ((ch=isr.read())!=-1) {  System.out.print((char)ch);  }  isr.close();  } }   3.对象操作流 3.1对象序列化流【应用】   对象序列化介绍\n 对象序列化：就是将对象保存到磁盘中，或者在网络中传输对象 这种机制就是使用一个字节序列表示一个对象，该字节序列包含：对象的类型、对象的数据和对象中存储的属性等信息 字节序列写到文件之后，相当于文件中持久保存了一个对象的信息 反之，该字节序列还可以从文件中读取回来，重构对象，对它进行反序列化    对象序列化流： ObjectOutputStream\n 将Java对象的原始数据类型和图形写入OutputStream。 可以使用ObjectInputStream读取（重构）对象。 可以通过使用流的文件来实现对象的持久存储。 如果流是网络套接字流，则可以在另一个主机上或另一个进程中重构对象    构造方法\n   方法名 说明     ObjectOutputStream(OutputStream out) 创建一个写入指定的OutputStream的ObjectOutputStream      序列化对象的方法\n   方法名 说明     void writeObject(Object obj) 将指定的对象写入ObjectOutputStream      示例代码\n学生类\npublic class Student implements Serializable {  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  } } 测试类\npublic class ObjectOutputStreamDemo {  public static void main(String[] args) throws IOException {  //ObjectOutputStream(OutputStream out)：创建一个写入指定的OutputStream的ObjectOutputStream  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(\"myOtherStream\\\\oos.txt\"));   //创建对象  Student s = new Student(\"佟丽娅\",30);   //void writeObject(Object obj)：将指定的对象写入ObjectOutputStream  oos.writeObject(s);   //释放资源  oos.close();  } }   注意事项\n 一个对象要想被序列化，该对象所属的类必须必须实现Serializable 接口 Serializable是一个标记接口，实现该接口，不需要重写任何方法    3.2对象反序列化流【应用】   对象反序列化流： ObjectInputStream\n ObjectInputStream反序列化先前使用ObjectOutputStream编写的原始数据和对象    构造方法\n   方法名 说明     ObjectInputStream(InputStream in) 创建从指定的InputStream读取的ObjectInputStream      反序列化对象的方法\n   方法名 说明     Object readObject() 从ObjectInputStream读取一个对象      示例代码\npublic class ObjectInputStreamDemo {  public static void main(String[] args) throws IOException, ClassNotFoundException {  //ObjectInputStream(InputStream in)：创建从指定的InputStream读取的ObjectInputStream  ObjectInputStream ois = new ObjectInputStream(new FileInputStream(\"myOtherStream\\\\oos.txt\"));   //Object readObject()：从ObjectInputStream读取一个对象  Object obj = ois.readObject();   Student s = (Student) obj;  System.out.println(s.getName() + \",\" + s.getAge());   ois.close();  } }   3.3serialVersionUID\u0026transient【应用】   serialVersionUID\n 用对象序列化流序列化了一个对象后，假如我们修改了对象所属的类文件，读取数据会不会出问题呢？  会出问题，会抛出InvalidClassException异常   如果出问题了，如何解决呢？  重新序列化 给对象所属的类加一个serialVersionUID  private static final long serialVersionUID = 42L;        transient\n 如果一个对象中的某个成员变量的值不想被序列化，又该如何实现呢？  给该成员变量加transient关键字修饰，该关键字标记的成员变量不参与序列化过程      示例代码\n学生类\npublic class Student implements Serializable {  private static final long serialVersionUID = 42L;  private String name; // private int age;  private transient int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }  // @Override // public String toString() { // return \"Student{\" + // \"name='\" + name + '\\'' + // \", age=\" + age + // '}'; // } } 测试类\npublic class ObjectStreamDemo {  public static void main(String[] args) throws IOException, ClassNotFoundException { // write();  read();  }   //反序列化  private static void read() throws IOException, ClassNotFoundException {  ObjectInputStream ois = new ObjectInputStream(new FileInputStream(\"myOtherStream\\\\oos.txt\"));  Object obj = ois.readObject();  Student s = (Student) obj;  System.out.println(s.getName() + \",\" + s.getAge());  ois.close();  }   //序列化  private static void write() throws IOException {  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(\"myOtherStream\\\\oos.txt\"));  Student s = new Student(\"佟丽娅\", 30);  oos.writeObject(s);  oos.close();  } }   3.4对象操作流练习【应用】   案例需求\n创建多个学生类对象写到文件中,再次读取到内存中\n  实现步骤\n 创建序列化流对象 创建多个学生对象 将学生对象添加到集合中 将集合对象序列化到文件中 创建反序列化流对象 将文件中的对象数据,读取到内存中    代码实现\n学生类\npublic class Student implements Serializable{   private static final long serialVersionUID = 2L;   private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  } } 测试类\npublic class Demo03 {  /** * read(): * 读取到文件末尾返回值是 -1 * readLine(): * 读取到文件的末尾返回值 null * readObject(): * 读取到文件的末尾 直接抛出异常 * 如果要序列化的对象有多个,不建议直接将多个对象序列化到文件中,因为反序列化时容易出异常 * 建议: 将要序列化的多个对象存储到集合中,然后将集合序列化到文件中 */  public static void main(String[] args) throws Exception {  /*// 序列化 //1.创建序列化流对象 ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(\"myCode\\\\oos.txt\")); ArrayList arrayList = new ArrayList(); //2.创建多个学生对象 Student s = new Student(\"佟丽娅\",30); Student s01 = new Student(\"佟丽娅\",30); //3.将学生对象添加到集合中 arrayList.add(s); arrayList.add(s01); //4.将集合对象序列化到文件中 oos.writeObject(arrayList); oos.close();*/   // 反序列化  //5.创建反序列化流对象  ObjectInputStream ois = new ObjectInputStream(new FileInputStream(\"myCode\\\\oos.txt\"));  //6.将文件中的对象数据,读取到内存中  Object obj = ois.readObject();  ArrayListStudent arrayList = (ArrayListStudent)obj;  ois.close();  for (Student s : arrayList) {  System.out.println(s.getName() + \",\" + s.getAge());  }  } }   4.Properties集合 4.1Properties作为Map集合的使用【应用】   Properties介绍\n 是一个Map体系的集合类 Properties可以保存到流中或从流中加载 属性列表中的每个键及其对应的值都是一个字符串    Properties基本使用\npublic class PropertiesDemo01 {  public static void main(String[] args) {  //创建集合对象 // Properties prop = new Properties(); //错误  Properties prop = new Properties();   //存储元素  prop.put(\"itheima001\", \"佟丽娅\");  prop.put(\"itheima002\", \"赵丽颖\");  prop.put(\"itheima003\", \"刘诗诗\");   //遍历集合  SetObject keySet = prop.keySet();  for (Object key : keySet) {  Object value = prop.get(key);  System.out.println(key + \",\" + value);  }  } }   4.2Properties作为Map集合的特有方法【应用】   特有方法\n   方法名 说明     Object setProperty(String key, String value) 设置集合的键和值，都是String类型，底层调用 Hashtable方法 put   String getProperty(String key) 使用此属性列表中指定的键搜索属性   Set stringPropertyNames() 从该属性列表中返回一个不可修改的键集，其中键及其对应的值是字符串      示例代码\npublic class PropertiesDemo02 {  public static void main(String[] args) {  //创建集合对象  Properties prop = new Properties();   //Object setProperty(String key, String value)：设置集合的键和值，都是String类型  prop.setProperty(\"itheima001\", \"佟丽娅\");  prop.setProperty(\"itheima002\", \"赵丽颖\");  prop.setProperty(\"itheima003\", \"刘诗诗\");   //String getProperty(String key)：使用此属性列表中指定的键搜索属性 // System.out.println(prop.getProperty(\"itheima001\")); // System.out.println(prop.getProperty(\"itheima0011\"));  // System.out.println(prop);   //Set stringPropertyNames()：从该属性列表中返回一个不可修改的键集，其中键及其对应的值是字符串  SetString names = prop.stringPropertyNames();  for (String key : names) { // System.out.println(key);  String value = prop.getProperty(key);  System.out.println(key + \",\" + value);  }  } }   4.3Properties和IO流相结合的方法【应用】   和IO流结合的方法\n   方法名 说明     void load(Reader reader) 从输入字符流读取属性列表（键和元素对）   void store(Writer writer, String comments) 将此属性列表（键和元素对）写入此 Properties表中，以适合使用 load(Reader)方法的格式写入输出字符流      示例代码\npublic class PropertiesDemo03 {  public static void main(String[] args) throws IOException {  //把集合中的数据保存到文件 // myStore();   //把文件中的数据加载到集合  myLoad();   }   private static void myLoad() throws IOException {  Properties prop = new Properties();   //void load(Reader reader)：  FileReader fr = new FileReader(\"myOtherStream\\\\fw.txt\");  prop.load(fr);  fr.close();   System.out.println(prop);  }   private static void myStore() throws IOException {  Properties prop = new Properties();   prop.setProperty(\"itheima001\",\"佟丽娅\");  prop.setProperty(\"itheima002\",\"赵丽颖\");  prop.setProperty(\"itheima003\",\"刘诗诗\");   //void store(Writer writer, String comments)：  FileWriter fw = new FileWriter(\"myOtherStream\\\\fw.txt\");  prop.store(fw,null);  fw.close();  } }   4.4Properties集合练习【应用】   案例需求\n在Properties文件中手动写上姓名和年龄,读取到集合中,将该数据封装成学生对象,写到本地文件\n  实现步骤\n 创建Properties集合,将本地文件中的数据加载到集合中 获取集合中的键值对数据,封装到学生对象中 创建序列化流对象,将学生对象序列化到本地文件中    代码实现\n学生类\npublic class Student implements Serializable {  private static final long serialVersionUID = 1L;   private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  } } 测试类\npublic class Test {   public static void main(String[] args) throws IOException {  //1.创建Properties集合,将本地文件中的数据加载到集合中  Properties prop = new Properties();  FileReader fr = new FileReader(\"prop.properties\");  prop.load(fr);  fr.close(); \t//2.获取集合中的键值对数据,封装到学生对象中  String name = prop.getProperty(\"name\");  int age = Integer.parseInt(prop.getProperty(\"age\"));  Student s = new Student(name,age); \t//3.创建序列化流对象,将学生对象序列化到本地文件中  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(\"a.txt\"));  oos.writeObject(s);  oos.close();  } }   ",
+  "wordCount" : "1737",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-14T14:15:53Z",
+  "dateModified": "2022-03-14T14:15:53Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java-io%E6%B5%8102/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java IO流02
+    </h1>
+    <div class="post-meta"><span title='2022-03-14 14:15:53 +0000 UTC'>2022-03-14</span>&nbsp;·&nbsp;9 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1%e5%ad%97%e7%ac%a6%e6%b5%81" aria-label="1.字符流">1.字符流</a><ul>
+                            
+                    <li>
+                        <a href="#11%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e5%87%ba%e7%8e%b0%e5%ad%97%e7%ac%a6%e6%b5%81%e7%90%86%e8%a7%a3" aria-label="1.1为什么会出现字符流【理解】">1.1为什么会出现字符流【理解】</a></li>
+                    <li>
+                        <a href="#12%e7%bc%96%e7%a0%81%e8%a1%a8%e7%90%86%e8%a7%a3" aria-label="1.2编码表【理解】">1.2编码表【理解】</a></li>
+                    <li>
+                        <a href="#13%e5%ad%97%e7%ac%a6%e4%b8%b2%e4%b8%ad%e7%9a%84%e7%bc%96%e7%a0%81%e8%a7%a3%e7%a0%81%e9%97%ae%e9%a2%98%e5%ba%94%e7%94%a8" aria-label="1.3字符串中的编码解码问题【应用】">1.3字符串中的编码解码问题【应用】</a></li>
+                    <li>
+                        <a href="#14%e5%ad%97%e7%ac%a6%e6%b5%81%e5%86%99%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="1.4字符流写数据【应用】">1.4字符流写数据【应用】</a></li>
+                    <li>
+                        <a href="#15%e5%ad%97%e7%ac%a6%e6%b5%81%e8%af%bb%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="1.5字符流读数据【应用】">1.5字符流读数据【应用】</a></li>
+                    <li>
+                        <a href="#16%e5%ad%97%e7%ac%a6%e6%b5%81%e7%94%a8%e6%88%b7%e6%b3%a8%e5%86%8c%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="1.6字符流用户注册案例【应用】">1.6字符流用户注册案例【应用】</a></li>
+                    <li>
+                        <a href="#17%e5%ad%97%e7%ac%a6%e7%bc%93%e5%86%b2%e6%b5%81%e5%ba%94%e7%94%a8" aria-label="1.7字符缓冲流【应用】">1.7字符缓冲流【应用】</a></li>
+                    <li>
+                        <a href="#18%e5%ad%97%e7%ac%a6%e7%bc%93%e5%86%b2%e6%b5%81%e7%89%b9%e6%9c%89%e5%8a%9f%e8%83%bd%e5%ba%94%e7%94%a8" aria-label="1.8字符缓冲流特有功能【应用】">1.8字符缓冲流特有功能【应用】</a></li>
+                    <li>
+                        <a href="#19%e5%ad%97%e7%ac%a6%e7%bc%93%e5%86%b2%e6%b5%81%e6%93%8d%e4%bd%9c%e6%96%87%e4%bb%b6%e4%b8%ad%e6%95%b0%e6%8d%ae%e6%8e%92%e5%ba%8f%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="1.9字符缓冲流操作文件中数据排序案例【应用】">1.9字符缓冲流操作文件中数据排序案例【应用】</a></li>
+                    <li>
+                        <a href="#110io%e6%b5%81%e5%b0%8f%e7%bb%93%e7%90%86%e8%a7%a3" aria-label="1.10IO流小结【理解】">1.10IO流小结【理解】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2%e8%bd%ac%e6%8d%a2%e6%b5%81" aria-label="2.转换流">2.转换流</a><ul>
+                            
+                    <li>
+                        <a href="#21%e5%ad%97%e7%ac%a6%e6%b5%81%e4%b8%ad%e5%92%8c%e7%bc%96%e7%a0%81%e8%a7%a3%e7%a0%81%e9%97%ae%e9%a2%98%e7%9b%b8%e5%85%b3%e7%9a%84%e4%b8%a4%e4%b8%aa%e7%b1%bb%e7%90%86%e8%a7%a3" aria-label="2.1字符流中和编码解码问题相关的两个类【理解】">2.1字符流中和编码解码问题相关的两个类【理解】</a></li>
+                    <li>
+                        <a href="#22%e8%bd%ac%e6%8d%a2%e6%b5%81%e8%af%bb%e5%86%99%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="2.2转换流读写数据【应用】">2.2转换流读写数据【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e5%af%b9%e8%b1%a1%e6%93%8d%e4%bd%9c%e6%b5%81" aria-label="3.对象操作流">3.对象操作流</a><ul>
+                            
+                    <li>
+                        <a href="#31%e5%af%b9%e8%b1%a1%e5%ba%8f%e5%88%97%e5%8c%96%e6%b5%81%e5%ba%94%e7%94%a8" aria-label="3.1对象序列化流【应用】">3.1对象序列化流【应用】</a></li>
+                    <li>
+                        <a href="#32%e5%af%b9%e8%b1%a1%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%b5%81%e5%ba%94%e7%94%a8" aria-label="3.2对象反序列化流【应用】">3.2对象反序列化流【应用】</a></li>
+                    <li>
+                        <a href="#33serialversionuidtransient%e5%ba%94%e7%94%a8" aria-label="3.3serialVersionUID&amp;amp;transient【应用】">3.3serialVersionUID&amp;transient【应用】</a></li>
+                    <li>
+                        <a href="#34%e5%af%b9%e8%b1%a1%e6%93%8d%e4%bd%9c%e6%b5%81%e7%bb%83%e4%b9%a0%e5%ba%94%e7%94%a8" aria-label="3.4对象操作流练习【应用】">3.4对象操作流练习【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4properties%e9%9b%86%e5%90%88" aria-label="4.Properties集合">4.Properties集合</a><ul>
+                            
+                    <li>
+                        <a href="#41properties%e4%bd%9c%e4%b8%bamap%e9%9b%86%e5%90%88%e7%9a%84%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="4.1Properties作为Map集合的使用【应用】">4.1Properties作为Map集合的使用【应用】</a></li>
+                    <li>
+                        <a href="#42properties%e4%bd%9c%e4%b8%bamap%e9%9b%86%e5%90%88%e7%9a%84%e7%89%b9%e6%9c%89%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="4.2Properties作为Map集合的特有方法【应用】">4.2Properties作为Map集合的特有方法【应用】</a></li>
+                    <li>
+                        <a href="#43properties%e5%92%8cio%e6%b5%81%e7%9b%b8%e7%bb%93%e5%90%88%e7%9a%84%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="4.3Properties和IO流相结合的方法【应用】">4.3Properties和IO流相结合的方法【应用】</a></li>
+                    <li>
+                        <a href="#44properties%e9%9b%86%e5%90%88%e7%bb%83%e4%b9%a0%e5%ba%94%e7%94%a8" aria-label="4.4Properties集合练习【应用】">4.4Properties集合练习【应用】</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1字符流">1.字符流<a hidden class="anchor" aria-hidden="true" href="#1字符流">#</a></h2>
+<h3 id="11为什么会出现字符流理解">1.1为什么会出现字符流【理解】<a hidden class="anchor" aria-hidden="true" href="#11为什么会出现字符流理解">#</a></h3>
+<ul>
+<li>
+<p>字符流的介绍</p>
+<p>由于字节流操作中文不是特别的方便，所以Java就提供字符流</p>
+<p>字符流 = 字节流 + 编码表</p>
+</li>
+<li>
+<p>中文的字节存储方式</p>
+<p>用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？</p>
+<p>汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数</p>
+</li>
+</ul>
+<h3 id="12编码表理解">1.2编码表【理解】<a hidden class="anchor" aria-hidden="true" href="#12编码表理解">#</a></h3>
+<ul>
+<li>
+<p>什么是字符集</p>
+<p>是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等</p>
+<p>l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等</p>
+</li>
+<li>
+<p>常见的字符集</p>
+<ul>
+<li>
+<p>ASCII字符集：</p>
+<p>lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)</p>
+<p>基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等</p>
+</li>
+<li>
+<p>GBXXX字符集：</p>
+<p>GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等</p>
+</li>
+<li>
+<p>Unicode字符集：</p>
+<p>UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码</p>
+<p>编码规则：</p>
+<p>128个US-ASCII字符，只需一个字节编码</p>
+<p>拉丁文等字符，需要二个字节编码</p>
+<p>大部分常用字（含中文），使用三个字节编码</p>
+<p>其他极少使用的Unicode辅助字符，使用四字节编码</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="13字符串中的编码解码问题应用">1.3字符串中的编码解码问题【应用】<a hidden class="anchor" aria-hidden="true" href="#13字符串中的编码解码问题应用">#</a></h3>
+<ul>
+<li>
+<p>相关方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte[] getBytes()</td>
+<td>使用平台的默认字符集将该 String编码为一系列字节</td>
+</tr>
+<tr>
+<td>byte[] getBytes(String charsetName)</td>
+<td>使用指定的字符集将该 String编码为一系列字节</td>
+</tr>
+<tr>
+<td>String(byte[] bytes)</td>
+<td>使用平台的默认字符集解码指定的字节数组来创建字符串</td>
+</tr>
+<tr>
+<td>String(byte[] bytes, String charsetName)</td>
+<td>通过指定的字符集解码指定的字节数组来创建字符串</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> UnsupportedEncodingException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//定义一个字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中国&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//byte[] bys = s.getBytes(); //[-28, -72, -83, -27, -101, -67]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//byte[] bys = s.getBytes(&#34;UTF-8&#34;); //[-28, -72, -83, -27, -101, -67]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;GBK&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">//[-42, -48, -71, -6]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//String ss = new String(bys);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//String ss = new String(bys,&#34;UTF-8&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String ss <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span><span style="color:#e6db74">&#34;GBK&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>ss<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="14字符流写数据应用">1.4字符流写数据【应用】<a hidden class="anchor" aria-hidden="true" href="#14字符流写数据应用">#</a></h3>
+<ul>
+<li>
+<p>介绍</p>
+<p>Writer: 用于写入字符流的抽象父类</p>
+<p>FileWriter: 用于写入字符流的常用子类</p>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FileWriter(File file)</td>
+<td>根据给定的 File 对象构造一个 FileWriter 对象</td>
+</tr>
+<tr>
+<td>FileWriter(File file, boolean append)</td>
+<td>根据给定的 File 对象构造一个 FileWriter 对象</td>
+</tr>
+<tr>
+<td>FileWriter(String fileName)</td>
+<td>根据给定的文件名构造一个 FileWriter 对象</td>
+</tr>
+<tr>
+<td>FileWriter(String fileName, boolean append)</td>
+<td>根据给定的文件名以及指示是否附加写入数据的 boolean 值来构造 FileWriter 对象</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>成员方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void   write(int c)</td>
+<td>写一个字符</td>
+</tr>
+<tr>
+<td>void   write(char[] cbuf)</td>
+<td>写入一个字符数组</td>
+</tr>
+<tr>
+<td>void write(char[] cbuf, int off, int len)</td>
+<td>写入字符数组的一部分</td>
+</tr>
+<tr>
+<td>void write(String str)</td>
+<td>写一个字符串</td>
+</tr>
+<tr>
+<td>void write(String str, int off, int len)</td>
+<td>写一个字符串的一部分</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>刷新和关闭的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>flush()</td>
+<td>刷新流，之后还可以继续写数据</td>
+</tr>
+<tr>
+<td>close()</td>
+<td>关闭流，释放资源，但是在关闭之前会先刷新流。一旦关闭，就不能再写数据</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OutputStreamWriterDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        FileWriter fw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(int c)：写一个字符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(97);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(98);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(99);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void writ(char[] cbuf)：写入一个字符数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> chs <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#39;a&#39;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;b&#39;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;c&#39;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;d&#39;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;e&#39;</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(chs);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(char[] cbuf, int off, int len)：写入字符数组的一部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(chs, 0, chs.length);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(chs, 1, 3);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(String str)：写一个字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(&#34;abcde&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(String str, int off, int len)：写一个字符串的一部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fw.write(&#34;abcde&#34;, 0, &#34;abcde&#34;.length());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abcde&#34;</span><span style="color:#f92672">,</span> 1<span style="color:#f92672">,</span> 3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="15字符流读数据应用">1.5字符流读数据【应用】<a hidden class="anchor" aria-hidden="true" href="#15字符流读数据应用">#</a></h3>
+<ul>
+<li>
+<p>介绍</p>
+<p>Reader: 用于读取字符流的抽象父类</p>
+<p>FileReader: 用于读取字符流的常用子类</p>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FileReader(File file)</td>
+<td>在给定从中读取数据的 File 的情况下创建一个新 FileReader</td>
+</tr>
+<tr>
+<td>FileReader(String fileName)</td>
+<td>在给定从中读取数据的文件名的情况下创建一个新 FileReader</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<ul>
+<li>
+<p>成员方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int read()</td>
+<td>一次读一个字符数据</td>
+</tr>
+<tr>
+<td>int read(char[] cbuf)</td>
+<td>一次读一个字符数组数据</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InputStreamReaderDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        FileReader fr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\b.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//int read()：一次读一个字符数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        int ch;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        while ((ch=fr.read())!=-1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.print((char)ch);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//int read(char[] cbuf)：一次读一个字符数组数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> chs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len <span style="color:#f92672">=</span> fr<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>chs<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>chs<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> len<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fr<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="16字符流用户注册案例应用">1.6字符流用户注册案例【应用】<a hidden class="anchor" aria-hidden="true" href="#16字符流用户注册案例应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>将键盘录入的用户名和密码保存到本地实现永久化存储</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>获取用户输入的用户名和密码</li>
+<li>将用户输入的用户名和密码写入到本地文件中</li>
+<li>关流,释放资源</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CharStreamDemo8</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求: 将键盘录入的用户名和密码保存到本地实现永久化存储
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//要求：用户名独占一行，密码独占一行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//分析：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//1，实现键盘录入，把用户名和密码录入进来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Scanner sc <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Scanner<span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">in</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;请录入用户名&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String username <span style="color:#f92672">=</span> sc<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;请录入密码&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String password <span style="color:#f92672">=</span> sc<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.分别把用户名和密码写到本地文件。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileWriter fw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;charstream\\a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//将用户名和密码写到文件中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>username<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//表示写出一个回车换行符 windows \r\n  MacOS \r  Linux \n
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;\r\n&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>password<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//刷新流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">flush</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.关流,释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="17字符缓冲流应用">1.7字符缓冲流【应用】<a hidden class="anchor" aria-hidden="true" href="#17字符缓冲流应用">#</a></h3>
+<ul>
+<li>
+<p>字符缓冲流介绍</p>
+<ul>
+<li>
+<p>BufferedWriter：将文本写入字符输出流，缓冲字符，以提供单个字符，数组和字符串的高效写入，可以指定缓冲区大小，或者可以接受默认大小。默认值足够大，可用于大多数用途</p>
+</li>
+<li>
+<p>BufferedReader：从字符输入流读取文本，缓冲字符，以提供字符，数组和行的高效读取，可以指定缓冲区大小，或者可以使用默认大小。 默认值足够大，可用于大多数用途</p>
+</li>
+</ul>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BufferedWriter(Writer out)</td>
+<td>创建字符缓冲输出流对象</td>
+</tr>
+<tr>
+<td>BufferedReader(Reader in)</td>
+<td>创建字符缓冲输入流对象</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BufferedStreamDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//BufferedWriter(Writer out)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedWriter bw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedWriter<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                            FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\bw.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        bw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello\r\n&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        bw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;world\r\n&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        bw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//BufferedReader(Reader in)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedReader br <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                           FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\bw.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//一次读取一个字符数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        int ch;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        while ((ch=br.read())!=-1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.print((char)ch);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//一次读取一个字符数组数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> chs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len<span style="color:#f92672">=</span>br<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>chs<span style="color:#f92672">))!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>chs<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        br<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="18字符缓冲流特有功能应用">1.8字符缓冲流特有功能【应用】<a hidden class="anchor" aria-hidden="true" href="#18字符缓冲流特有功能应用">#</a></h3>
+<ul>
+<li>
+<p>方法介绍</p>
+<p>BufferedWriter：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void newLine()</td>
+<td>写一行行分隔符，行分隔符字符串由系统属性定义</td>
+</tr>
+</tbody>
+</table>
+<p>BufferedReader:</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String readLine()</td>
+<td>读一行文字。 结果包含行的内容的字符串，不包括任何行终止字符如果流的结尾已经到达，则为null</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BufferedStreamDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字符缓冲输出流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedWriter bw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedWriter<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                          FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\bw.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//写数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 10<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            bw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//bw.write(&#34;\r\n&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            bw<span style="color:#f92672">.</span><span style="color:#a6e22e">newLine</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            bw<span style="color:#f92672">.</span><span style="color:#a6e22e">flush</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字符缓冲输入流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedReader br <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                          FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\bw.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String line<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>line<span style="color:#f92672">=</span>br<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">())!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>line<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        br<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="19字符缓冲流操作文件中数据排序案例应用">1.9字符缓冲流操作文件中数据排序案例【应用】<a hidden class="anchor" aria-hidden="true" href="#19字符缓冲流操作文件中数据排序案例应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>使用字符缓冲流读取文件中的数据，排序后再次写到本地文件</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>将文件中的数据读取到程序中</li>
+<li>对读取到的数据进行处理</li>
+<li>将处理后的数据添加到集合中</li>
+<li>对集合中的数据进行排序</li>
+<li>将排序后的集合中的数据写入到文件中</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CharStreamDemo14</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求：读取文件中的数据，排序后再次写到本地文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//分析：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//1.要把文件中的数据读取进来。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedReader br <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;charstream\\sort.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//输出流一定不能写在这里，因为会清空文件中的内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//BufferedWriter bw = new BufferedWriter(new FileWriter(&#34;charstream\\sort.txt&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        String line <span style="color:#f92672">=</span> br<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;读取到的数据为&#34;</span> <span style="color:#f92672">+</span> line<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        br<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.按照空格进行切割
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span><span style="color:#75715e">//9 1 2 5 3 10 4 6 7 8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//3.把字符串类型的数组变成int类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> <span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>split<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历split数组，可以进行类型转换。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> split<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            String smallStr <span style="color:#f92672">=</span> split<span style="color:#f92672">[</span>i<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//类型转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>smallStr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//把转换后的结果存入到arr中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> number<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//4.排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">sort</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//5.把排序之后结果写回到本地 1 2 3 4...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedWriter bw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedWriter<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;charstream\\sort.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//写出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            bw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            bw<span style="color:#f92672">.</span><span style="color:#a6e22e">flush</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="110io流小结理解">1.10IO流小结【理解】<a hidden class="anchor" aria-hidden="true" href="#110io流小结理解">#</a></h3>
+<ul>
+<li>
+<p>IO流小结</p>
+<p><img loading="lazy" src="/images/Java-IO%e6%b5%8102/01_IO%e6%b5%81%e5%b0%8f%e7%bb%93.png" alt=""  />
+</p>
+</li>
+</ul>
+<h2 id="2转换流">2.转换流<a hidden class="anchor" aria-hidden="true" href="#2转换流">#</a></h2>
+<h3 id="21字符流中和编码解码问题相关的两个类理解">2.1字符流中和编码解码问题相关的两个类【理解】<a hidden class="anchor" aria-hidden="true" href="#21字符流中和编码解码问题相关的两个类理解">#</a></h3>
+<ul>
+<li>
+<p>InputStreamReader：是从字节流到字符流的桥梁,父类是Reader</p>
+<p>​	它读取字节，并使用指定的编码将其解码为字符</p>
+<p>​	它使用的字符集可以由名称指定，也可以被明确指定，或者可以接受平台的默认字符集</p>
+</li>
+<li>
+<p>OutputStreamWriter：是从字符流到字节流的桥梁,父类是Writer</p>
+<p>​	是从字符流到字节流的桥梁，使用指定的编码将写入的字符编码为字节</p>
+<p>​	它使用的字符集可以由名称指定，也可以被明确指定，或者可以接受平台的默认字符集</p>
+</li>
+</ul>
+<h3 id="22转换流读写数据应用">2.2转换流读写数据【应用】<a hidden class="anchor" aria-hidden="true" href="#22转换流读写数据应用">#</a></h3>
+<ul>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>InputStreamReader(InputStream in)</td>
+<td>使用默认字符编码创建InputStreamReader对象</td>
+</tr>
+<tr>
+<td>InputStreamReader(InputStream in,String chatset)</td>
+<td>使用指定的字符编码创建InputStreamReader对象</td>
+</tr>
+<tr>
+<td>OutputStreamWriter(OutputStream out)</td>
+<td>使用默认字符编码创建OutputStreamWriter对象</td>
+</tr>
+<tr>
+<td>OutputStreamWriter(OutputStream out,String charset)</td>
+<td>使用指定的字符编码创建OutputStreamWriter对象</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConversionStreamDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//OutputStreamWriter osw = new OutputStreamWriter(new                                             FileOutputStream(&#34;myCharStream\\osw.txt&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        OutputStreamWriter osw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> OutputStreamWriter<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\osw.txt&#34;</span><span style="color:#f92672">),</span><span style="color:#e6db74">&#34;GBK&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        osw<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中国&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        osw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//InputStreamReader isr = new InputStreamReader(new 	                                         FileInputStream(&#34;myCharStream\\osw.txt&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        InputStreamReader isr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> InputStreamReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                 FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCharStream\\osw.txt&#34;</span><span style="color:#f92672">),</span><span style="color:#e6db74">&#34;GBK&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//一次读取一个字符数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> ch<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>ch<span style="color:#f92672">=</span>isr<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">())!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">((</span><span style="color:#66d9ef">char</span><span style="color:#f92672">)</span>ch<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        isr<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="3对象操作流">3.对象操作流<a hidden class="anchor" aria-hidden="true" href="#3对象操作流">#</a></h2>
+<h3 id="31对象序列化流应用">3.1对象序列化流【应用】<a hidden class="anchor" aria-hidden="true" href="#31对象序列化流应用">#</a></h3>
+<ul>
+<li>
+<p>对象序列化介绍</p>
+<ul>
+<li>对象序列化：就是将对象保存到磁盘中，或者在网络中传输对象</li>
+<li>这种机制就是使用一个字节序列表示一个对象，该字节序列包含：对象的类型、对象的数据和对象中存储的属性等信息</li>
+<li>字节序列写到文件之后，相当于文件中持久保存了一个对象的信息</li>
+<li>反之，该字节序列还可以从文件中读取回来，重构对象，对它进行反序列化</li>
+</ul>
+</li>
+<li>
+<p>对象序列化流： ObjectOutputStream</p>
+<ul>
+<li>将Java对象的原始数据类型和图形写入OutputStream。 可以使用ObjectInputStream读取（重构）对象。 可以通过使用流的文件来实现对象的持久存储。 如果流是网络套接字流，则可以在另一个主机上或另一个进程中重构对象</li>
+</ul>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ObjectOutputStream(OutputStream out)</td>
+<td>创建一个写入指定的OutputStream的ObjectOutputStream</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>序列化对象的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void writeObject(Object obj)</td>
+<td>将指定的对象写入ObjectOutputStream</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Serializable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectOutputStreamDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//ObjectOutputStream(OutputStream out)：创建一个写入指定的OutputStream的ObjectOutputStream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\oos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;佟丽娅&#34;</span><span style="color:#f92672">,</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void writeObject(Object obj)：将指定的对象写入ObjectOutputStream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">writeObject</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>注意事项</p>
+<ul>
+<li>一个对象要想被序列化，该对象所属的类必须必须实现Serializable 接口</li>
+<li>Serializable是一个标记接口，实现该接口，不需要重写任何方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="32对象反序列化流应用">3.2对象反序列化流【应用】<a hidden class="anchor" aria-hidden="true" href="#32对象反序列化流应用">#</a></h3>
+<ul>
+<li>
+<p>对象反序列化流： ObjectInputStream</p>
+<ul>
+<li>ObjectInputStream反序列化先前使用ObjectOutputStream编写的原始数据和对象</li>
+</ul>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ObjectInputStream(InputStream in)</td>
+<td>创建从指定的InputStream读取的ObjectInputStream</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>反序列化对象的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object readObject()</td>
+<td>从ObjectInputStream读取一个对象</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectInputStreamDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException<span style="color:#f92672">,</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//ObjectInputStream(InputStream in)：创建从指定的InputStream读取的ObjectInputStream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\oos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Object readObject()：从ObjectInputStream读取一个对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Object obj <span style="color:#f92672">=</span> ois<span style="color:#f92672">.</span><span style="color:#a6e22e">readObject</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Student s <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Student<span style="color:#f92672">)</span> obj<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ois<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="33serialversionuidtransient应用">3.3serialVersionUID&amp;transient【应用】<a hidden class="anchor" aria-hidden="true" href="#33serialversionuidtransient应用">#</a></h3>
+<ul>
+<li>
+<p>serialVersionUID</p>
+<ul>
+<li>用对象序列化流序列化了一个对象后，假如我们修改了对象所属的类文件，读取数据会不会出问题呢？
+<ul>
+<li>会出问题，会抛出InvalidClassException异常</li>
+</ul>
+</li>
+<li>如果出问题了，如何解决呢？
+<ul>
+<li>重新序列化</li>
+<li>给对象所属的类加一个serialVersionUID
+<ul>
+<li>private static final long serialVersionUID = 42L;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>transient</p>
+<ul>
+<li>如果一个对象中的某个成员变量的值不想被序列化，又该如何实现呢？
+<ul>
+<li>给该成员变量加transient关键字修饰，该关键字标记的成员变量不参与序列化过程</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Serializable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> serialVersionUID <span style="color:#f92672">=</span> 42L<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    private int age;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    @Override
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    public String toString() {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        return &#34;Student{&#34; +
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                &#34;name=&#39;&#34; + name + &#39;\&#39;&#39; +
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                &#34;, age=&#34; + age +
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                &#39;}&#39;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectStreamDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException<span style="color:#f92672">,</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        write();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        read<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//反序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">read</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException<span style="color:#f92672">,</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\oos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        Object obj <span style="color:#f92672">=</span> ois<span style="color:#f92672">.</span><span style="color:#a6e22e">readObject</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        Student s <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Student<span style="color:#f92672">)</span> obj<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        ois<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\oos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;佟丽娅&#34;</span><span style="color:#f92672">,</span> 30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">writeObject</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="34对象操作流练习应用">3.4对象操作流练习【应用】<a hidden class="anchor" aria-hidden="true" href="#34对象操作流练习应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>创建多个学生类对象写到文件中,再次读取到内存中</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>创建序列化流对象</li>
+<li>创建多个学生对象</li>
+<li>将学生对象添加到集合中</li>
+<li>将集合对象序列化到文件中</li>
+<li>创建反序列化流对象</li>
+<li>将文件中的对象数据,读取到内存中</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Serializable<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> serialVersionUID <span style="color:#f92672">=</span> 2L<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo03</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *  read():
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *      读取到文件末尾返回值是 -1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *  readLine():
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *      读取到文件的末尾返回值 null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *  readObject():
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *      读取到文件的末尾 直接抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *  如果要序列化的对象有多个,不建议直接将多个对象序列化到文件中,因为反序列化时容易出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *      建议: 将要序列化的多个对象存储到集合中,然后将集合序列化到文件中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*// 序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        //1.创建序列化流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&#34;myCode\\oos.txt&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        ArrayList&lt;Student&gt; arrayList = new ArrayList&lt;&gt;();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        //2.创建多个学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        Student s = new Student(&#34;佟丽娅&#34;,30);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        Student s01 = new Student(&#34;佟丽娅&#34;,30);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        //3.将学生对象添加到集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        arrayList.add(s);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        arrayList.add(s01);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        //4.将集合对象序列化到文件中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        oos.writeObject(arrayList);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        oos.close();*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 反序列化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      	<span style="color:#75715e">//5.创建反序列化流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myCode\\oos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//6.将文件中的对象数据,读取到内存中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Object obj <span style="color:#f92672">=</span> ois<span style="color:#f92672">.</span><span style="color:#a6e22e">readObject</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> arrayList <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ArrayList<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;)</span>obj<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        ois<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student s <span style="color:#f92672">:</span> arrayList<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="4properties集合">4.Properties集合<a hidden class="anchor" aria-hidden="true" href="#4properties集合">#</a></h2>
+<h3 id="41properties作为map集合的使用应用">4.1Properties作为Map集合的使用【应用】<a hidden class="anchor" aria-hidden="true" href="#41properties作为map集合的使用应用">#</a></h3>
+<ul>
+<li>
+<p>Properties介绍</p>
+<ul>
+<li>是一个Map体系的集合类</li>
+<li>Properties可以保存到流中或从流中加载</li>
+<li>属性列表中的每个键及其对应的值都是一个字符串</li>
+</ul>
+</li>
+<li>
+<p>Properties基本使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PropertiesDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        Properties&lt;String,String&gt; prop = new Properties&lt;String,String&gt;(); //错误
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Properties prop <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//存储元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima001&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;佟丽娅&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima002&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;赵丽颖&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima003&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;刘诗诗&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Set<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> keySet <span style="color:#f92672">=</span> prop<span style="color:#f92672">.</span><span style="color:#a6e22e">keySet</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Object key <span style="color:#f92672">:</span> keySet<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Object value <span style="color:#f92672">=</span> prop<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>key<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>key <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> value<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="42properties作为map集合的特有方法应用">4.2Properties作为Map集合的特有方法【应用】<a hidden class="anchor" aria-hidden="true" href="#42properties作为map集合的特有方法应用">#</a></h3>
+<ul>
+<li>
+<p>特有方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object   setProperty(String key, String value)</td>
+<td>设置集合的键和值，都是String类型，底层调用   Hashtable方法 put</td>
+</tr>
+<tr>
+<td>String   getProperty(String key)</td>
+<td>使用此属性列表中指定的键搜索属性</td>
+</tr>
+<tr>
+<td>Set<String>   stringPropertyNames()</td>
+<td>从该属性列表中返回一个不可修改的键集，其中键及其对应的值是字符串</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PropertiesDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Properties prop <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Object setProperty(String key, String value)：设置集合的键和值，都是String类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima001&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;佟丽娅&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima002&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;赵丽颖&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima003&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;刘诗诗&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//String getProperty(String key)：使用此属性列表中指定的键搜索属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(prop.getProperty(&#34;itheima001&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(prop.getProperty(&#34;itheima0011&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(prop);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Set&lt;String&gt; stringPropertyNames()：从该属性列表中返回一个不可修改的键集，其中键及其对应的值是字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Set<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> names <span style="color:#f92672">=</span> prop<span style="color:#f92672">.</span><span style="color:#a6e22e">stringPropertyNames</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>String key <span style="color:#f92672">:</span> names<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(key);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String value <span style="color:#f92672">=</span> prop<span style="color:#f92672">.</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span>key<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>key <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> value<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="43properties和io流相结合的方法应用">4.3Properties和IO流相结合的方法【应用】<a hidden class="anchor" aria-hidden="true" href="#43properties和io流相结合的方法应用">#</a></h3>
+<ul>
+<li>
+<p>和IO流结合的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void   load(Reader reader)</td>
+<td>从输入字符流读取属性列表（键和元素对）</td>
+</tr>
+<tr>
+<td>void   store(Writer writer, String comments)</td>
+<td>将此属性列表（键和元素对）写入此   Properties表中，以适合使用   load(Reader)方法的格式写入输出字符流</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PropertiesDemo03</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//把集合中的数据保存到文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        myStore();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//把文件中的数据加载到集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        myLoad<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">myLoad</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Properties prop <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void load(Reader reader)：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileReader fr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\fw.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>fr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        fr<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>prop<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">myStore</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Properties prop <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima001&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;佟丽娅&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima002&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;赵丽颖&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;itheima003&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;刘诗诗&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void store(Writer writer, String comments)：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileWriter fw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileWriter<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myOtherStream\\fw.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">store</span><span style="color:#f92672">(</span>fw<span style="color:#f92672">,</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        fw<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="44properties集合练习应用">4.4Properties集合练习【应用】<a hidden class="anchor" aria-hidden="true" href="#44properties集合练习应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>在Properties文件中手动写上姓名和年龄,读取到集合中,将该数据封装成学生对象,写到本地文件</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>创建Properties集合,将本地文件中的数据加载到集合中</li>
+<li>获取集合中的键值对数据,封装到学生对象中</li>
+<li>创建序列化流对象,将学生对象序列化到本地文件中</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Serializable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> serialVersionUID <span style="color:#f92672">=</span> 1L<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//1.创建Properties集合,将本地文件中的数据加载到集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Properties prop <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        FileReader fr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileReader<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;prop.properties&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        prop<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>fr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        fr<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//2.获取集合中的键值对数据,封装到学生对象中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String name <span style="color:#f92672">=</span> prop<span style="color:#f92672">.</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> age <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>prop<span style="color:#f92672">.</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;age&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span>name<span style="color:#f92672">,</span>age<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//3.创建序列化流对象,将学生对象序列化到本地文件中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">writeObject</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        oos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/io%E6%B5%81/">IO流</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java多线程01</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/nginx%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5cspcontent-security-policy%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>nginx解决内容安全策略CSP（Content-Security-Policy）配置方式</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

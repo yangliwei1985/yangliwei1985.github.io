@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>yum源 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/yum%E6%BA%90/</link>
+    <description>Recent content in yum源 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 28 Jan 2022 16:57:19 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/yum%E6%BA%90/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Centos6 yum源配置</title>
+      <link>https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Fri, 28 Jan 2022 16:57:19 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/</guid>
+      <description>截止2022-01-28日有效
+CentOS-Base.repo
+[extras] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/extras/$basearch/ name=Qcloud centos extras - $basearch  [os] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/os/$basearch/ name=Qcloud centos os - $basearch  [updates] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/updates/$basearch/ name=Qcloud centos updates - $basearch epel.repo
+[epel] name=epel for redhat/centos $releasever - $basearch failovermethod=priority enable=1 baseurl=https://mirrors.cloud.tencent.com/epel-archive/6/$basearch/ </description>
+    </item>
+    
+  </channel>
+</rss>

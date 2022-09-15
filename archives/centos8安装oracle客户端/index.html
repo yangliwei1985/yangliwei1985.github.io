@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS8安装oracle客户端 | ylw&#39;s blog</title>
+<meta name="keywords" content="oracle" />
+<meta name="description" content="1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS8安装oracle客户端" />
+<meta property="og:description" content="1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-15T17:44:41&#43;00:00" />
+<meta property="article:modified_time" content="2022-02-15T17:44:41&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS8安装oracle客户端"/>
+<meta name="twitter:description" content="1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS8安装oracle客户端",
+      "item": "https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS8安装oracle客户端",
+  "name": "CentOS8安装oracle客户端",
+  "description": "1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html\n下载：\noracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：\nrpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；\n2、创建监听文件，并添加内容\ncd /usr/lib/oracle/21/client64/lib/network/admin\nvi tnsnames.ora\nORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid\n配置环境变量 vi /etc/profile，添加\n#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA.",
+  "keywords": [
+    "oracle"
+  ],
+  "articleBody": "1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html\n下载：\noracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：\nrpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；\n2、创建监听文件，并添加内容\ncd /usr/lib/oracle/21/client64/lib/network/admin\nvi tnsnames.ora\nORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid\n配置环境变量 vi /etc/profile，添加\n#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA.AL32UTF8 #export NLS_LANG=\"Simplified Chinese_china\".ZHS16GBK export PATH=$PATH:$HOME/bin:$ORACLE_HOME/bin 配置保存后 source /etc/profile 即可使配置即时生效 之后连接数据库测试 sqlplus username/password@ORCL\n",
+  "wordCount" : "81",
+  "inLanguage": "zh",
+  "datePublished": "2022-02-15T17:44:41Z",
+  "dateModified": "2022-02-15T17:44:41Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS8安装oracle客户端
+    </h1>
+    <div class="post-meta"><span title='2022-02-15 17:44:41 +0000 UTC'>2022-02-15</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p>1、进入oracle官网 <a href="https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html">https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html</a></p>
+<p>下载：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span><span style="display:flex;"><span>oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span><span style="display:flex;"><span>oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span></code></pre></div><p>依次安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span><span style="display:flex;"><span>rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span><span style="display:flex;"><span>rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm
+</span></span></code></pre></div><p>安装的文件默认放在两个位置：
+头文件：<code>/usr/include/oracle/21/client64</code> 下，如果在使用时报错找不到头文件，记得看路径是否是这个。
+包文件：<code>/usr/lib/oracle/21/client64</code>下，包含{bin、lib}两个文件夹；</p>
+<p>2、创建监听文件，并添加内容</p>
+<p><code>cd /usr/lib/oracle/21/client64/lib/network/admin</code></p>
+<p><code>vi tnsnames.ora</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ORCL <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">(</span>DESCRIPTION <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>ADDRESS <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>PROTOCOL <span style="color:#f92672">=</span> TCP<span style="color:#f92672">)(</span>HOST <span style="color:#f92672">=</span> 192.169.1.109<span style="color:#f92672">)(</span>PORT <span style="color:#f92672">=</span> 1521<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>CONNECT_DATA <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">(</span>SERVER <span style="color:#f92672">=</span> DEDICATED<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">(</span>SERVICE_NAME <span style="color:#f92672">=</span> orcl<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Note:host是远程数据库的ip地址，service_name为远程数据库的sid</p>
+<p>配置环境变量 vi /etc/profile，添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#配置ORACLE环境变量 vi /etc/profile</span>
+</span></span><span style="display:flex;"><span>export ORACLE_BASE<span style="color:#f92672">=</span>/usr/lib/oracle/21
+</span></span><span style="display:flex;"><span>export ORACLE_VERSION<span style="color:#f92672">=</span><span style="color:#ae81ff">21</span>
+</span></span><span style="display:flex;"><span>export ORACLE_HOME<span style="color:#f92672">=</span>/usr/lib/oracle/21/client64
+</span></span><span style="display:flex;"><span>export LD_LIBRARY_PATH<span style="color:#f92672">=</span>$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+</span></span><span style="display:flex;"><span>export SQLPATH<span style="color:#f92672">=</span>$ORACLE_HOME/lib/network/admin
+</span></span><span style="display:flex;"><span>export TNS_ADMIN<span style="color:#f92672">=</span>$ORACLE_HOME/lib/network/admin
+</span></span><span style="display:flex;"><span>export NLS_LANG<span style="color:#f92672">=</span>AMERICAN_AMERICA.AL32UTF8
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#export NLS_LANG=&#34;Simplified Chinese_china&#34;.ZHS16GBK</span>
+</span></span><span style="display:flex;"><span>export PATH<span style="color:#f92672">=</span>$PATH:$HOME/bin:$ORACLE_HOME/bin
+</span></span></code></pre></div><p>配置保存后
+<code>source /etc/profile</code>
+即可使配置即时生效
+之后连接数据库测试
+<code>sqlplus username/password@ORCL</code></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/oracle/">oracle</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java常用API</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/rabbitmq%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>RabbitMQ安装和使用</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

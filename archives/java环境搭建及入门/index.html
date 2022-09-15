@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java环境搭建及入门 | ylw&#39;s blog</title>
+<meta name="keywords" content="基础语法" />
+<meta name="description" content="1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式
+计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言
+Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言
+Java之父：詹姆斯·高斯林（James Gosling）
+2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com
+java语言的三个版本：
+​	JavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础
+​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备
+​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发
+1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。
+1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。
+1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK
+http://www.oracle.com
+注意：针对不同的操作系统，需要下载对应版本的JDK。
+1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。
+注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。
+1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java环境搭建及入门" />
+<meta property="og:description" content="1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式
+计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言
+Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言
+Java之父：詹姆斯·高斯林（James Gosling）
+2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com
+java语言的三个版本：
+​	JavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础
+​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备
+​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发
+1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。
+1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。
+1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK
+http://www.oracle.com
+注意：针对不同的操作系统，需要下载对应版本的JDK。
+1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。
+注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。
+1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-26T18:19:37&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-26T18:19:37&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java环境搭建及入门"/>
+<meta name="twitter:description" content="1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式
+计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言
+Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言
+Java之父：詹姆斯·高斯林（James Gosling）
+2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com
+java语言的三个版本：
+​	JavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础
+​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备
+​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发
+1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。
+1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。
+1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK
+http://www.oracle.com
+注意：针对不同的操作系统，需要下载对应版本的JDK。
+1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。
+注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。
+1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java环境搭建及入门",
+      "item": "https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java环境搭建及入门",
+  "name": "Java环境搭建及入门",
+  "description": "1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式\n计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言\nJava语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言\nJava之父：詹姆斯·高斯林（James Gosling）\n2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com\njava语言的三个版本：\n​\tJavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础\n​\tJavaME: Java 语言的（小型版），用于嵌入式消费类电子设备\n​\tJavaEE: Java 语言的（企业版），用于 Web 方向的网站开发\n1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。\n1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机\nJRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）\nJDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具\n总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。\n1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK\nhttp://www.oracle.com\n注意：针对不同的操作系统，需要下载对应版本的JDK。\n1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\\develop。\n注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。\n1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2.",
+  "keywords": [
+    "基础语法"
+  ],
+  "articleBody": "1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式\n计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言\nJava语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言\nJava之父：詹姆斯·高斯林（James Gosling）\n2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com\njava语言的三个版本：\n​\tJavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础\n​\tJavaME: Java 语言的（小型版），用于嵌入式消费类电子设备\n​\tJavaEE: Java 语言的（企业版），用于 Web 方向的网站开发\n1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。\n1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机\nJRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）\nJDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具\n总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。\n1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK\nhttp://www.oracle.com\n注意：针对不同的操作系统，需要下载对应版本的JDK。\n1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\\develop。\n注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。\n1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2. 第一个演示程序 2.1 常用DOS命令（应用） 在接触集成开发环境之前，我们需要使用命令行窗口对java程序进行编译和运行，所以需要知道一些常用DOS命令。\n1、打开命令行窗口的方式：win + r打开运行窗口，输入cmd，回车。\n2、常用命令及其作用\n   操作 说明     盘符名称: 盘符切换。E:回车，表示切换到E盘。   dir 查看当前路径下的内容。   cd 目录 进入单级目录。cd itheima   cd .. 回退到上一级目录。   cd 目录1\\目录2... 进入多级目录。cd itheima\\JavaSE   cd \\ 回退到盘符目录。   cls 清屏。   exit 退出命令提示符窗口。    2.2 Path环境变量的配置（应用） 2.2.1 为什么配置环境变量 开发Java程序，需要使用JDK提供的开发工具（比如javac.exe、java.exe等命令），而这些工具在JDK的安装目录的bin目录下，如果不配置环境变量，那么这些命令只可以在该目录下执行。我们不可能把所有的java文件都放到JDK的bin目录下，所以配置环境变量的作用就是可以使bin目录下的java相关命令可以在任意目录下使用。\n2.3 HelloWorld案例（应用） HelloWorld案例是指在计算机屏幕上输出“HelloWorld”这行文字。\n各种计算机语言都习惯使用该案例作为第一个演示案例。\n2.3.1 Java程序开发运行流程 开发Java程序，需要三个步骤：编写程序，编译程序，运行程序。\n2.3.2 HelloWorld案例的编写 1、新建文本文档文件，修改名称为HelloWorld.java。\n2、用记事本打开HelloWorld.java文件，输写程序内容。\npublic class HelloWorld { \tpublic static void main(String[] args) { \tSystem.out.println(\"HelloWorld\"); \t} } 2.3.3 HelloWorld案例的编译和运行 存文件，打开命令行窗口，将目录切换至java文件所在目录，编译java文件生成class文件，运行class文件。\n 编译：javac 文件名.java\n范例：javac HelloWorld.java\n执行：java 类名\n范例：java HelloWorld\n 2.4 HelloWorld案例详解（理解） 2.5 HelloWorld案例常见问题（理解） 2.5.1 BUG 在电脑系统或程序中，隐藏着的一些未被发现的缺陷或问题统称为bug（漏洞）。\n2.5.2 BUG的解决 1、具备识别BUG的能力：多看\n2、具备分析BUG的能力：多思考，多查资料\n3、具备解决BUG的能力：多尝试，多总结\n2.5.3 HelloWorld案例常见问题 1、非法字符问题。Java中的符号都是英文格式的。\n2、大小写问题。Java语言对大小写敏感（区分大小写）。\n3、在系统中显示文件的扩展名，避免出现HelloWorld.java.txt文件。\n4、编译命令后的java文件名需要带文件后缀.java\n5、运行命令后的class文件名（类名）不带文件后缀\n2.6 Notepad++软件的安装和使用（应用） 2.6.1 什么要使用Notepad++软件 Notepad++功能比windows中的自带记事本功能强大，除了可以用来制作一般的纯文字说明文件，也十分适合编写计算机程序代码。Notepad++有行号，能够快速定位问题位置，还有语法高亮度显示、代码折叠等功能。而且它是免费的。\n2.6.2 Notepad++软件安装 安装：傻瓜式安装，一直下一步即可。建议也安装到统一的开发软件目录下，比如E:\\develop。\n2.6.3Notepad++软件配置 安装完毕之后，为了使用方便，做一个简单的配置：修改默认语言和编码。\n3. java基础语法 3.1 注释（理解） 注释是对代码的解释和说明文字，可以提高程序的可读性，因此在程序中添加必要的注释文字十分重要。Java中的注释分为三种：\n单行注释。单行注释的格式是使用//，从//开始至本行结尾的文字将作为注释文字。\n// 这是单行注释文字 多行注释。多行注释的格式是使用/* 和 */将一段较长的注释括起来。\n/* 这是多行注释文字 这是多行注释文字 这是多行注释文字 */ 注意：多行注释不能嵌套使用。 文档注释。文档注释以/**开始，以*/结束。（以后讲）\n3.2 关键字（理解） 关键字是指被java语言赋予了特殊含义的单词。\n关键字的特点：\n​\t关键字的字母全部小写。\n​\t常用的代码编辑器对关键字都有高亮显示，比如现在我们能看到的public、class、static等。\n3.3 常量（应用） 常量：在程序运行过程中，其值不可以发生改变的量。\nJava中的常量分类：\n​\t字符串常量 用双引号括起来的多个字符（可以包含0个、一个或多个），例如\"a\"、“abc”、“中国\"等\n​\t整数常量 整数，例如：-10、0、88等\n​\t小数常量 小数，例如：-5.5、1.0、88.88等\n​\t字符常量 用单引号括起来的一个字符，例如：‘a’、‘5’、‘B’、‘中’等\n​\t布尔常量 布尔值，表示真假，只有两个值true和false\n​\t空常量 一个特殊的值，空值，值为null\n除空常量外，其他常量均可使用输出语句直接输出。\npublic class Demo {  public static void main(String[] args) {  System.out.println(10); // 输出一个整数  System.out.println(5.5); // 输出一个小数  System.out.println('a'); // 输出一个字符  System.out.println(true); // 输出boolean值true  System.out.println(\"欢迎来到黑马程序员\"); // 输出字符串  } } 3.4 变量的介绍(理解) 变量的定义格式：\n​\t数据类型 变量名 = 数据值；\n​\t数据类型：为空间中存储的数据加入类型限制。整数？小数？\n​\t变量名：自己要为空间起的名字，没有难度\n​\t数据值： 空间中要存储的数值，没有难度\n3.5 数据类型（应用） 3.5.1 计算机存储单元 我们知道计算机是可以用来存储数据的，但是无论是内存还是硬盘，计算机存储设备的最小信息单元叫“位（bit）”，我们又称之为“比特位”，通常用小写的字母”b”表示。而计算机中最基本的存储单元叫“字节（byte）”，\n通常用大写字母”B”表示，字节是由连续的8个位组成。\n除了字节外还有一些常用的存储单位，其换算单位如下：\n1B（字节） = 8bit\n1KB = 1024B\n1MB = 1024KB\n1GB = 1024MB\n1TB = 1024GB\n3.5.2 Java中的数据类型 Java是一个强类型语言，Java中的数据必须明确数据类型。在Java中的数据类型包括基本数据类型和引用数据类型两种。\nJava中的基本数据类型：\n   数据类型 关键字 内存占用 取值范围     整数类型 byte 1 -128~127    short 2 -32768~32767    int(默认) 4 -2的31次方到2的31次方-1    long 8 -2的63次方到2的63次方-1   浮点类型 float 4 负数：-3.402823E+38到-1.401298E-45 正数： 1.401298E-45到3.402823E+38    double(默认) 8 负数：-1.797693E+308到-4.9000000E-324 正数：4.9000000E-324 到1.797693E+308   字符类型 char 2 0-65535   布尔类型 boolean 1 true，false    说明：\n​\te+38表示是乘以10的38次方，同样，e-45表示乘以10的负45次方。\n​\t在java中整数默认是int类型，浮点数默认是double类型。\n3.6 变量（应用） 3.6.1 变量的定义 变量：在程序运行过程中，其值可以发生改变的量。\n从本质上讲，变量是内存中的一小块区域，其值可以在一定范围内变化。\n变量的定义格式：\n数据类型 变量名 = 初始化值; // 声明变量并赋值 int age = 18; System.out.println(age); 或者(扩展)\n// 先声明，后赋值（使用前赋值即可） 数据类型 变量名; 变量名 = 初始化值; double money; money = 55.5; System.out.println(money); 还可以(扩展)\n在同一行定义多个同一种数据类型的变量，中间使用逗号隔开。但不建议使用这种方式，降低程序的可读性。\nint a = 10, b = 20; // 定义int类型的变量a和b，中间使用逗号隔开 System.out.println(a); System.out.println(b);  int c,d; // 声明int类型的变量c和d，中间使用逗号隔开 c = 30; d = 40; System.out.println(c); System.out.println(d); 3.6.2 变量的修改 int a = 10; a = 30; //修改变量的值 System.out.println(a); 变量前面不加数据类型时，表示修改已存在的变量的值。\n3.7 变量的注意事项(理解)  在同一对花括号中，变量名不能重复。 变量在使用之前，必须初始化（赋值）。 定义long类型的变量时，需要在整数的后面加L（大小写均可，建议大写）。因为整数默认是int类型，整数太大可能超出int范围。 定义float类型的变量时，需要在小数的后面加F（大小写均可，建议大写）。因为浮点数的默认类型是double， double的取值范围是大于float的，类型不兼容。  3.8 键盘录入（理解） 我们可以通过 Scanner 类来获取用户的输入。使用步骤如下：\n1、导包。Scanner 类在java.util包下，所以需要将该类导入。导包的语句需要定义在类的上面。\nimport java.util.Scanner; 2、创建Scanner对象。\nScanner sc = new Scanner(System.in);// 创建Scanner对象，sc表示变量名，其他均不可变 3、接收数据\nint i = sc.nextInt(); // 表示将键盘录入的值作为int数返回。 示例：\nimport java.util.Scanner; public class ScannerDemo { \tpublic static void main(String[] args) { \t//创建对象 \tScanner sc = new Scanner(System.in); \t//接收数据 \tint a = sc.nextInt(); \t//输出数据 \tSystem.out.println(a); \t} } 3.9 标识符（理解） 标识符是用户编程时使用的名字，用于给类、方法、变量、常量等命名。\nJava中标识符的组成规则：\n​\t由字母、数字、下划线“_”、美元符号“$”组成，第一个字符不能是数字。\n​\t不能使用java中的关键字作为标识符。\n​\t标识符对大小写敏感（区分大小写）。\nJava中标识符的命名约定：\n​\t小驼峰式命名：变量名、方法名\n​\t首字母小写，从第二个单词开始每个单词的首字母大写。\n​\t大驼峰式命名：类名\n​\t每个单词的首字母都大写。\n​\t另外，标识符的命名最好可以做到见名知意\n​\t例如：username、studentNumber等。\n",
+  "wordCount" : "481",
+  "inLanguage": "zh",
+  "datePublished": "2022-01-26T18:19:37Z",
+  "dateModified": "2022-01-26T18:19:37Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java环境搭建及入门
+    </h1>
+    <div class="post-meta"><span title='2022-01-26 18:19:37 +0000 UTC'>2022-01-26</span>&nbsp;·&nbsp;3 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1-java%e6%a6%82%e8%bf%b0" aria-label="1. Java概述">1. Java概述</a><ul>
+                            
+                    <li>
+                        <a href="#11-java%e8%af%ad%e8%a8%80%e8%83%8c%e6%99%af%e4%bb%8b%e7%bb%8d%e4%ba%86%e8%a7%a3" aria-label="1.1 Java语言背景介绍（了解）">1.1 Java语言背景介绍（了解）</a></li>
+                    <li>
+                        <a href="#12-java%e8%af%ad%e8%a8%80%e8%b7%a8%e5%b9%b3%e5%8f%b0%e5%8e%9f%e7%90%86%e7%90%86%e8%a7%a3" aria-label="1.2 Java语言跨平台原理（理解）">1.2 Java语言跨平台原理（理解）</a></li>
+                    <li>
+                        <a href="#13-jre%e5%92%8cjdk%e8%ae%b0%e5%bf%86" aria-label="1.3 JRE和JDK（记忆）">1.3 JRE和JDK（记忆）</a></li>
+                    <li>
+                        <a href="#14-jdk%e7%9a%84%e4%b8%8b%e8%bd%bd%e5%92%8c%e5%ae%89%e8%a3%85%e5%ba%94%e7%94%a8" aria-label="1.4 JDK的下载和安装（应用）">1.4 JDK的下载和安装（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#141-%e4%b8%8b%e8%bd%bd" aria-label="1.4.1 下载">1.4.1 下载</a></li>
+                    <li>
+                        <a href="#142-%e5%ae%89%e8%a3%85" aria-label="1.4.2 安装">1.4.2 安装</a></li>
+                    <li>
+                        <a href="#143-jdk%e7%9a%84%e5%ae%89%e8%a3%85%e7%9b%ae%e5%bd%95%e4%bb%8b%e7%bb%8d" aria-label="1.4.3 JDK的安装目录介绍">1.4.3 JDK的安装目录介绍</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#2-%e7%ac%ac%e4%b8%80%e4%b8%aa%e6%bc%94%e7%a4%ba%e7%a8%8b%e5%ba%8f" aria-label="2. 第一个演示程序">2. 第一个演示程序</a><ul>
+                            
+                    <li>
+                        <a href="#21-%e5%b8%b8%e7%94%a8dos%e5%91%bd%e4%bb%a4%e5%ba%94%e7%94%a8" aria-label="2.1 常用DOS命令（应用）">2.1 常用DOS命令（应用）</a></li>
+                    <li>
+                        <a href="#22-path%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e7%9a%84%e9%85%8d%e7%bd%ae%e5%ba%94%e7%94%a8" aria-label="2.2 Path环境变量的配置（应用）">2.2 Path环境变量的配置（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#221-%e4%b8%ba%e4%bb%80%e4%b9%88%e9%85%8d%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="2.2.1 为什么配置环境变量">2.2.1 为什么配置环境变量</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#23-helloworld%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="2.3 HelloWorld案例（应用）">2.3 HelloWorld案例（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#231-java%e7%a8%8b%e5%ba%8f%e5%bc%80%e5%8f%91%e8%bf%90%e8%a1%8c%e6%b5%81%e7%a8%8b" aria-label="2.3.1 Java程序开发运行流程">2.3.1 Java程序开发运行流程</a></li>
+                    <li>
+                        <a href="#232-helloworld%e6%a1%88%e4%be%8b%e7%9a%84%e7%bc%96%e5%86%99" aria-label="2.3.2 HelloWorld案例的编写">2.3.2 HelloWorld案例的编写</a></li>
+                    <li>
+                        <a href="#233-helloworld%e6%a1%88%e4%be%8b%e7%9a%84%e7%bc%96%e8%af%91%e5%92%8c%e8%bf%90%e8%a1%8c" aria-label="2.3.3 HelloWorld案例的编译和运行">2.3.3 HelloWorld案例的编译和运行</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#24-helloworld%e6%a1%88%e4%be%8b%e8%af%a6%e8%a7%a3%e7%90%86%e8%a7%a3" aria-label="2.4 HelloWorld案例详解（理解）">2.4 HelloWorld案例详解（理解）</a></li>
+                    <li>
+                        <a href="#25-helloworld%e6%a1%88%e4%be%8b%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98%e7%90%86%e8%a7%a3" aria-label="2.5 HelloWorld案例常见问题（理解）">2.5 HelloWorld案例常见问题（理解）</a><ul>
+                            
+                    <li>
+                        <a href="#251-bug" aria-label="2.5.1 BUG">2.5.1 BUG</a></li>
+                    <li>
+                        <a href="#252-bug%e7%9a%84%e8%a7%a3%e5%86%b3" aria-label="2.5.2 BUG的解决">2.5.2 BUG的解决</a></li>
+                    <li>
+                        <a href="#253-helloworld%e6%a1%88%e4%be%8b%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" aria-label="2.5.3 HelloWorld案例常见问题">2.5.3 HelloWorld案例常见问题</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#26-notepad%e8%bd%af%e4%bb%b6%e7%9a%84%e5%ae%89%e8%a3%85%e5%92%8c%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="2.6 Notepad&#43;&#43;软件的安装和使用（应用）">2.6 Notepad++软件的安装和使用（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#261-%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8notepad%e8%bd%af%e4%bb%b6" aria-label="2.6.1 什么要使用Notepad&#43;&#43;软件">2.6.1 什么要使用Notepad++软件</a></li>
+                    <li>
+                        <a href="#262-notepad%e8%bd%af%e4%bb%b6%e5%ae%89%e8%a3%85" aria-label="2.6.2 Notepad&#43;&#43;软件安装">2.6.2 Notepad++软件安装</a></li>
+                    <li>
+                        <a href="#263notepad%e8%bd%af%e4%bb%b6%e9%85%8d%e7%bd%ae" aria-label="2.6.3Notepad&#43;&#43;软件配置">2.6.3Notepad++软件配置</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#3-java%e5%9f%ba%e7%a1%80%e8%af%ad%e6%b3%95" aria-label="3. java基础语法">3. java基础语法</a><ul>
+                            
+                    <li>
+                        <a href="#31-%e6%b3%a8%e9%87%8a%e7%90%86%e8%a7%a3" aria-label="3.1 注释（理解）">3.1 注释（理解）</a></li>
+                    <li>
+                        <a href="#32-%e5%85%b3%e9%94%ae%e5%ad%97%e7%90%86%e8%a7%a3" aria-label="3.2 关键字（理解）">3.2 关键字（理解）</a></li>
+                    <li>
+                        <a href="#33-%e5%b8%b8%e9%87%8f%e5%ba%94%e7%94%a8" aria-label="3.3 常量（应用）">3.3 常量（应用）</a></li>
+                    <li>
+                        <a href="#34-%e5%8f%98%e9%87%8f%e7%9a%84%e4%bb%8b%e7%bb%8d%e7%90%86%e8%a7%a3" aria-label="3.4 变量的介绍(理解)">3.4 变量的介绍(理解)</a></li>
+                    <li>
+                        <a href="#35-%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b%e5%ba%94%e7%94%a8" aria-label="3.5 数据类型（应用）">3.5 数据类型（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#351-%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ad%98%e5%82%a8%e5%8d%95%e5%85%83" aria-label="3.5.1 计算机存储单元">3.5.1 计算机存储单元</a></li>
+                    <li>
+                        <a href="#352-java%e4%b8%ad%e7%9a%84%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b" aria-label="3.5.2 Java中的数据类型">3.5.2 Java中的数据类型</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#36-%e5%8f%98%e9%87%8f%e5%ba%94%e7%94%a8" aria-label="3.6 变量（应用）">3.6 变量（应用）</a><ul>
+                            
+                    <li>
+                        <a href="#361-%e5%8f%98%e9%87%8f%e7%9a%84%e5%ae%9a%e4%b9%89" aria-label="3.6.1 变量的定义">3.6.1 变量的定义</a></li>
+                    <li>
+                        <a href="#362-%e5%8f%98%e9%87%8f%e7%9a%84%e4%bf%ae%e6%94%b9" aria-label="3.6.2 变量的修改">3.6.2 变量的修改</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#37-%e5%8f%98%e9%87%8f%e7%9a%84%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9%e7%90%86%e8%a7%a3" aria-label="3.7 变量的注意事项(理解)">3.7 变量的注意事项(理解)</a></li>
+                    <li>
+                        <a href="#38-%e9%94%ae%e7%9b%98%e5%bd%95%e5%85%a5%e7%90%86%e8%a7%a3" aria-label="3.8 键盘录入（理解）">3.8 键盘录入（理解）</a></li>
+                    <li>
+                        <a href="#39-%e6%a0%87%e8%af%86%e7%ac%a6%e7%90%86%e8%a7%a3" aria-label="3.9 标识符（理解）">3.9 标识符（理解）</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1-java概述">1. Java概述<a hidden class="anchor" aria-hidden="true" href="#1-java概述">#</a></h2>
+<h3 id="11-java语言背景介绍了解">1.1 Java语言背景介绍（了解）<a hidden class="anchor" aria-hidden="true" href="#11-java语言背景介绍了解">#</a></h3>
+<p>语言：人与人交流沟通的表达方式</p>
+<p>计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言</p>
+<p>Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言</p>
+<p>Java之父：詹姆斯·高斯林（James Gosling）</p>
+<p>2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：<a href="https://www.oracle.com/">https://www.oracle.com</a></p>
+<p>java语言的三个版本：</p>
+<p>​	JavaSE:  Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础</p>
+<p>​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备</p>
+<p>​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发</p>
+<h3 id="12-java语言跨平台原理理解">1.2 Java语言跨平台原理（理解）<a hidden class="anchor" aria-hidden="true" href="#12-java语言跨平台原理理解">#</a></h3>
+<p>Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。</p>
+<h3 id="13-jre和jdk记忆">1.3 JRE和JDK（记忆）<a hidden class="anchor" aria-hidden="true" href="#13-jre和jdk记忆">#</a></h3>
+<p>JVM（Java Virtual Machine），Java虚拟机</p>
+<p>JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）</p>
+<p>JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具</p>
+<p>总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。</p>
+<h3 id="14-jdk的下载和安装应用">1.4 JDK的下载和安装（应用）<a hidden class="anchor" aria-hidden="true" href="#14-jdk的下载和安装应用">#</a></h3>
+<h4 id="141-下载">1.4.1 下载<a hidden class="anchor" aria-hidden="true" href="#141-下载">#</a></h4>
+<p>通过官方网站获取JDK</p>
+<p><a href="http://www.oracle.com/">http://www.oracle.com</a></p>
+<p><strong>注意</strong>：针对不同的操作系统，需要下载对应版本的JDK。</p>
+<h4 id="142-安装">1.4.2 安装<a hidden class="anchor" aria-hidden="true" href="#142-安装">#</a></h4>
+<p>傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。</p>
+<p><strong>注意</strong>：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。</p>
+<h4 id="143-jdk的安装目录介绍">1.4.3 JDK的安装目录介绍<a hidden class="anchor" aria-hidden="true" href="#143-jdk的安装目录介绍">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>目录名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bin</td>
+<td>该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。</td>
+</tr>
+<tr>
+<td>conf</td>
+<td>该路径下存放了JDK的相关配置文件。</td>
+</tr>
+<tr>
+<td>include</td>
+<td>该路径下存放了一些平台特定的头文件。</td>
+</tr>
+<tr>
+<td>jmods</td>
+<td>该路径下存放了JDK的各种模块。</td>
+</tr>
+<tr>
+<td>legal</td>
+<td>该路径下存放了JDK各模块的授权文档。</td>
+</tr>
+<tr>
+<td>lib</td>
+<td>该路径下存放了JDK工具的一些补充JAR包。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-第一个演示程序">2. 第一个演示程序<a hidden class="anchor" aria-hidden="true" href="#2-第一个演示程序">#</a></h2>
+<h3 id="21-常用dos命令应用">2.1 常用DOS命令（应用）<a hidden class="anchor" aria-hidden="true" href="#21-常用dos命令应用">#</a></h3>
+<p>在接触集成开发环境之前，我们需要使用命令行窗口对java程序进行编译和运行，所以需要知道一些常用DOS命令。</p>
+<p>1、打开命令行窗口的方式：win + r打开运行窗口，输入cmd，回车。</p>
+<p>2、常用命令及其作用</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>盘符名称:</td>
+<td>盘符切换。E:回车，表示切换到E盘。</td>
+</tr>
+<tr>
+<td>dir</td>
+<td>查看当前路径下的内容。</td>
+</tr>
+<tr>
+<td>cd 目录</td>
+<td>进入单级目录。cd itheima</td>
+</tr>
+<tr>
+<td>cd ..</td>
+<td>回退到上一级目录。</td>
+</tr>
+<tr>
+<td>cd 目录1\目录2...</td>
+<td>进入多级目录。cd itheima\JavaSE</td>
+</tr>
+<tr>
+<td>cd \</td>
+<td>回退到盘符目录。</td>
+</tr>
+<tr>
+<td>cls</td>
+<td>清屏。</td>
+</tr>
+<tr>
+<td>exit</td>
+<td>退出命令提示符窗口。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-path环境变量的配置应用">2.2 Path环境变量的配置（应用）<a hidden class="anchor" aria-hidden="true" href="#22-path环境变量的配置应用">#</a></h3>
+<h4 id="221-为什么配置环境变量">2.2.1 为什么配置环境变量<a hidden class="anchor" aria-hidden="true" href="#221-为什么配置环境变量">#</a></h4>
+<p>开发Java程序，需要使用JDK提供的开发工具（比如javac.exe、java.exe等命令），而这些工具在JDK的安装目录的bin目录下，如果不配置环境变量，那么这些命令只可以在该目录下执行。我们不可能把所有的java文件都放到JDK的bin目录下，所以配置环境变量的作用就是可以使bin目录下的java相关命令可以在任意目录下使用。</p>
+<h3 id="23-helloworld案例应用">2.3 HelloWorld案例（应用）<a hidden class="anchor" aria-hidden="true" href="#23-helloworld案例应用">#</a></h3>
+<p>HelloWorld案例是指在计算机屏幕上输出“HelloWorld”这行文字。</p>
+<p>各种计算机语言都习惯使用该案例作为第一个演示案例。</p>
+<h4 id="231-java程序开发运行流程">2.3.1 Java程序开发运行流程<a hidden class="anchor" aria-hidden="true" href="#231-java程序开发运行流程">#</a></h4>
+<p>开发Java程序，需要三个步骤：编写程序，编译程序，运行程序。</p>
+<h4 id="232-helloworld案例的编写">2.3.2 HelloWorld案例的编写<a hidden class="anchor" aria-hidden="true" href="#232-helloworld案例的编写">#</a></h4>
+<p>1、新建文本文档文件，修改名称为HelloWorld.java。</p>
+<p>2、用记事本打开HelloWorld.java文件，输写程序内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloWorld</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HelloWorld&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="233-helloworld案例的编译和运行">2.3.3 HelloWorld案例的编译和运行<a hidden class="anchor" aria-hidden="true" href="#233-helloworld案例的编译和运行">#</a></h4>
+<p>存文件，打开命令行窗口，将目录切换至java文件所在目录，编译java文件生成class文件，运行class文件。</p>
+<blockquote>
+<p>编译：javac 文件名.java</p>
+<p>范例：javac HelloWorld.java</p>
+<p>执行：java 类名</p>
+<p>范例：java HelloWorld</p>
+</blockquote>
+<h3 id="24-helloworld案例详解理解">2.4 HelloWorld案例详解（理解）<a hidden class="anchor" aria-hidden="true" href="#24-helloworld案例详解理解">#</a></h3>
+<p><img loading="lazy" src="/images/Java%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba%e5%8f%8a%e5%85%a5%e9%97%a8/%e5%9b%be%e7%89%871.jpg" alt=""  />
+</p>
+<h3 id="25-helloworld案例常见问题理解">2.5 HelloWorld案例常见问题（理解）<a hidden class="anchor" aria-hidden="true" href="#25-helloworld案例常见问题理解">#</a></h3>
+<h4 id="251-bug">2.5.1 BUG<a hidden class="anchor" aria-hidden="true" href="#251-bug">#</a></h4>
+<p>在电脑系统或程序中，隐藏着的一些未被发现的缺陷或问题统称为bug（漏洞）。</p>
+<h4 id="252-bug的解决">2.5.2 BUG的解决<a hidden class="anchor" aria-hidden="true" href="#252-bug的解决">#</a></h4>
+<p>1、具备识别BUG的能力：多看</p>
+<p>2、具备分析BUG的能力：多思考，多查资料</p>
+<p>3、具备解决BUG的能力：多尝试，多总结</p>
+<h4 id="253-helloworld案例常见问题">2.5.3 HelloWorld案例常见问题<a hidden class="anchor" aria-hidden="true" href="#253-helloworld案例常见问题">#</a></h4>
+<p>1、非法字符问题。Java中的符号都是英文格式的。</p>
+<p>2、大小写问题。Java语言对大小写敏感（区分大小写）。</p>
+<p>3、在系统中显示文件的扩展名，避免出现HelloWorld.java.txt文件。</p>
+<p>4、编译命令后的java文件名需要带文件后缀.java</p>
+<p>5、运行命令后的class文件名（类名）不带文件后缀</p>
+<h3 id="26-notepad软件的安装和使用应用">2.6 Notepad++软件的安装和使用（应用）<a hidden class="anchor" aria-hidden="true" href="#26-notepad软件的安装和使用应用">#</a></h3>
+<h4 id="261-什么要使用notepad软件">2.6.1 什么要使用Notepad++软件<a hidden class="anchor" aria-hidden="true" href="#261-什么要使用notepad软件">#</a></h4>
+<p>Notepad++功能比windows中的自带记事本功能强大，除了可以用来制作一般的纯文字说明文件，也十分适合编写计算机程序代码。Notepad++有行号，能够快速定位问题位置，还有语法高亮度显示、代码折叠等功能。而且它是免费的。</p>
+<h4 id="262-notepad软件安装">2.6.2 Notepad++软件安装<a hidden class="anchor" aria-hidden="true" href="#262-notepad软件安装">#</a></h4>
+<p>安装：傻瓜式安装，一直下一步即可。建议也安装到统一的开发软件目录下，比如E:\develop。</p>
+<h4 id="263notepad软件配置">2.6.3Notepad++软件配置<a hidden class="anchor" aria-hidden="true" href="#263notepad软件配置">#</a></h4>
+<p>安装完毕之后，为了使用方便，做一个简单的配置：修改默认语言和编码。</p>
+<h2 id="3-java基础语法">3. java基础语法<a hidden class="anchor" aria-hidden="true" href="#3-java基础语法">#</a></h2>
+<h3 id="31-注释理解">3.1 注释（理解）<a hidden class="anchor" aria-hidden="true" href="#31-注释理解">#</a></h3>
+<p>注释是对代码的解释和说明文字，可以提高程序的可读性，因此在程序中添加必要的注释文字十分重要。Java中的注释分为三种：</p>
+<p>单行注释。单行注释的格式是使用//，从//开始至本行结尾的文字将作为注释文字。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 这是单行注释文字
+</span></span></span></code></pre></div><p>多行注释。多行注释的格式是使用/* 和 */将一段较长的注释括起来。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这是多行注释文字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这是多行注释文字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这是多行注释文字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>注意<span style="color:#960050;background-color:#1e0010">：</span>多行注释不能嵌套使用<span style="color:#960050;background-color:#1e0010">。</span>
+</span></span></code></pre></div><p>文档注释。文档注释以<code>/**</code>开始，以<code>*/</code>结束。（以后讲）</p>
+<h3 id="32-关键字理解">3.2 关键字（理解）<a hidden class="anchor" aria-hidden="true" href="#32-关键字理解">#</a></h3>
+<p>关键字是指被java语言赋予了特殊含义的单词。</p>
+<p>关键字的特点：</p>
+<p>​	关键字的字母全部小写。</p>
+<p>​	常用的代码编辑器对关键字都有高亮显示，比如现在我们能看到的public、class、static等。</p>
+<h3 id="33-常量应用">3.3 常量（应用）<a hidden class="anchor" aria-hidden="true" href="#33-常量应用">#</a></h3>
+<p>常量：在程序运行过程中，其值不可以发生改变的量。</p>
+<p>Java中的常量分类：</p>
+<p>​	字符串常量  用双引号括起来的多个字符（可以包含0个、一个或多个），例如&quot;a&quot;、&ldquo;abc&rdquo;、&ldquo;中国&quot;等</p>
+<p>​	整数常量  整数，例如：-10、0、88等</p>
+<p>​	小数常量  小数，例如：-5.5、1.0、88.88等</p>
+<p>​	字符常量  用单引号括起来的一个字符，例如：&lsquo;a&rsquo;、&lsquo;5&rsquo;、&lsquo;B&rsquo;、&lsquo;中&rsquo;等</p>
+<p>​	布尔常量  布尔值，表示真假，只有两个值true和false</p>
+<p>​	空常量  一个特殊的值，空值，值为null</p>
+<p>除空常量外，其他常量均可使用输出语句直接输出。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>10<span style="color:#f92672">);</span> <span style="color:#75715e">// 输出一个整数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>5<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 输出一个小数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;a&#39;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 输出一个字符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 输出boolean值true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;欢迎来到黑马程序员&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 输出字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="34-变量的介绍理解">3.4 变量的介绍(理解)<a hidden class="anchor" aria-hidden="true" href="#34-变量的介绍理解">#</a></h3>
+<p>变量的定义格式：</p>
+<p>​	数据类型 变量名 = 数据值；</p>
+<p>​	数据类型：为空间中存储的数据加入类型限制。整数？小数？</p>
+<p>​	变量名：自己要为空间起的名字，没有难度</p>
+<p>​	数据值： 空间中要存储的数值，没有难度</p>
+<h3 id="35-数据类型应用">3.5 数据类型（应用）<a hidden class="anchor" aria-hidden="true" href="#35-数据类型应用">#</a></h3>
+<h4 id="351-计算机存储单元">3.5.1 计算机存储单元<a hidden class="anchor" aria-hidden="true" href="#351-计算机存储单元">#</a></h4>
+<p>我们知道计算机是可以用来存储数据的，但是无论是内存还是硬盘，计算机存储设备的最小信息单元叫“位（bit）”，我们又称之为“比特位”，通常用小写的字母”b”表示。而计算机中最基本的存储单元叫“字节（byte）”，</p>
+<p>通常用大写字母”B”表示，字节是由连续的8个位组成。</p>
+<p>除了字节外还有一些常用的存储单位，其换算单位如下：</p>
+<p>1B（字节） = 8bit</p>
+<p>1KB = 1024B</p>
+<p>1MB = 1024KB</p>
+<p>1GB = 1024MB</p>
+<p>1TB = 1024GB</p>
+<h4 id="352-java中的数据类型">3.5.2 Java中的数据类型<a hidden class="anchor" aria-hidden="true" href="#352-java中的数据类型">#</a></h4>
+<p>Java是一个强类型语言，Java中的数据必须明确数据类型。在Java中的数据类型包括基本数据类型和引用数据类型两种。</p>
+<p>Java中的基本数据类型：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">数据类型</th>
+<th>关键字</th>
+<th>内存占用</th>
+<th style="text-align:left">取值范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">整数类型</td>
+<td>byte</td>
+<td>1</td>
+<td style="text-align:left">-128~127</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td>short</td>
+<td>2</td>
+<td style="text-align:left">-32768~32767</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td>int(默认)</td>
+<td>4</td>
+<td style="text-align:left">-2的31次方到2的31次方-1</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td>long</td>
+<td>8</td>
+<td style="text-align:left">-2的63次方到2的63次方-1</td>
+</tr>
+<tr>
+<td style="text-align:left">浮点类型</td>
+<td>float</td>
+<td>4</td>
+<td style="text-align:left">负数：-3.402823E+38到-1.401298E-45                                                             正数：   1.401298E-45到3.402823E+38</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td>double(默认)</td>
+<td>8</td>
+<td style="text-align:left">负数：-1.797693E+308到-4.9000000E-324                                              正数：4.9000000E-324   到1.797693E+308</td>
+</tr>
+<tr>
+<td style="text-align:left">字符类型</td>
+<td>char</td>
+<td>2</td>
+<td style="text-align:left">0-65535</td>
+</tr>
+<tr>
+<td style="text-align:left">布尔类型</td>
+<td>boolean</td>
+<td>1</td>
+<td style="text-align:left">true，false</td>
+</tr>
+</tbody>
+</table>
+<p>说明：</p>
+<p>​	e+38表示是乘以10的38次方，同样，e-45表示乘以10的负45次方。</p>
+<p>​	在java中整数默认是int类型，浮点数默认是double类型。</p>
+<h3 id="36-变量应用">3.6 变量（应用）<a hidden class="anchor" aria-hidden="true" href="#36-变量应用">#</a></h3>
+<h4 id="361-变量的定义">3.6.1 变量的定义<a hidden class="anchor" aria-hidden="true" href="#361-变量的定义">#</a></h4>
+<p>变量：在程序运行过程中，其值可以发生改变的量。</p>
+<p>从本质上讲，变量是内存中的一小块区域，其值可以在一定范围内变化。</p>
+<p>变量的定义格式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>数据类型 变量名 <span style="color:#f92672">=</span> 初始化值<span style="color:#f92672">;</span> <span style="color:#75715e">// 声明变量并赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> age <span style="color:#f92672">=</span> 18<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>age<span style="color:#f92672">);</span>
+</span></span></code></pre></div><p>或者(扩展)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 先声明，后赋值（使用前赋值即可）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>数据类型 变量名<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>变量名 <span style="color:#f92672">=</span> 初始化值<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">double</span> money<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>money <span style="color:#f92672">=</span> 55<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>money<span style="color:#f92672">);</span>
+</span></span></code></pre></div><p>还可以(扩展)</p>
+<p>在同一行定义多个同一种数据类型的变量，中间使用逗号隔开。但不建议使用这种方式，降低程序的可读性。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 10<span style="color:#f92672">,</span> b <span style="color:#f92672">=</span> 20<span style="color:#f92672">;</span> <span style="color:#75715e">// 定义int类型的变量a和b，中间使用逗号隔开
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>b<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">,</span>d<span style="color:#f92672">;</span> <span style="color:#75715e">// 声明int类型的变量c和d，中间使用逗号隔开
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>c <span style="color:#f92672">=</span> 30<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>d <span style="color:#f92672">=</span> 40<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>d<span style="color:#f92672">);</span>
+</span></span></code></pre></div><h4 id="362-变量的修改">3.6.2 变量的修改<a hidden class="anchor" aria-hidden="true" href="#362-变量的修改">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 10<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> 30<span style="color:#f92672">;</span>  <span style="color:#75715e">//修改变量的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">);</span>
+</span></span></code></pre></div><p>变量前面不加数据类型时，表示修改已存在的变量的值。</p>
+<h3 id="37-变量的注意事项理解">3.7 变量的注意事项(理解)<a hidden class="anchor" aria-hidden="true" href="#37-变量的注意事项理解">#</a></h3>
+<ol>
+<li>在同一对花括号中，变量名不能重复。</li>
+<li>变量在使用之前，必须初始化（赋值）。</li>
+<li>定义long类型的变量时，需要在整数的后面加L（大小写均可，建议大写）。因为整数默认是int类型，整数太大可能超出int范围。</li>
+<li>定义float类型的变量时，需要在小数的后面加F（大小写均可，建议大写）。因为浮点数的默认类型是double， double的取值范围是大于float的，类型不兼容。</li>
+</ol>
+<h3 id="38-键盘录入理解">3.8 键盘录入（理解）<a hidden class="anchor" aria-hidden="true" href="#38-键盘录入理解">#</a></h3>
+<p>我们可以通过 Scanner 类来获取用户的输入。使用步骤如下：</p>
+<p>1、导包。Scanner 类在java.util包下，所以需要将该类导入。导包的语句需要定义在类的上面。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Scanner<span style="color:#f92672">;</span> 
+</span></span></code></pre></div><p>2、创建Scanner对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Scanner sc <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Scanner<span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">in</span><span style="color:#f92672">);</span><span style="color:#75715e">// 创建Scanner对象，sc表示变量名，其他均不可变
+</span></span></span></code></pre></div><p>3、接收数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> sc<span style="color:#f92672">.</span><span style="color:#a6e22e">nextInt</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 表示将键盘录入的值作为int数返回。
+</span></span></span></code></pre></div><p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Scanner<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScannerDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//创建对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Scanner sc <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Scanner<span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">in</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//接收数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> sc<span style="color:#f92672">.</span><span style="color:#a6e22e">nextInt</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//输出数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="39-标识符理解">3.9 标识符（理解）<a hidden class="anchor" aria-hidden="true" href="#39-标识符理解">#</a></h3>
+<p>标识符是用户编程时使用的名字，用于给类、方法、变量、常量等命名。</p>
+<p>Java中标识符的组成规则：</p>
+<p>​	由字母、数字、下划线“_”、美元符号“$”组成，第一个字符不能是数字。</p>
+<p>​	不能使用java中的关键字作为标识符。</p>
+<p>​	标识符对大小写敏感（区分大小写）。</p>
+<p>Java中标识符的命名约定：</p>
+<p>​	小驼峰式命名：变量名、方法名</p>
+<p>​		首字母小写，从第二个单词开始每个单词的首字母大写。</p>
+<p>​	大驼峰式命名：类名</p>
+<p>​		每个单词的首字母都大写。</p>
+<p>​	另外，标识符的命名最好可以做到见名知意</p>
+<p>​		例如：username、studentNumber等。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/">基础语法</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E8%BF%90%E7%AE%97%E7%AC%A6/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java运算符</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

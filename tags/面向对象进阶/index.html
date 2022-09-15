@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>面向对象进阶 | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="面向对象进阶" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="面向对象进阶"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/tags/">Tags</a></div>
+  <h1>面向对象进阶</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Java接口和内部类
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1.接口 1.1黑马信息管理系统集合改进 (应用)   使用数组容器的弊端
+ 容器长度是固定的，不能根据添加功能自动增长 没有提供用于赠删改查的方法    优化步骤
+  创建新的StudentDao类，OtherStudentDao
+  创建ArrayList集合容器对象
+  OtherStudentDao中的方法声明，需要跟StudentDao保持一致
+注意：如果不一致，StudentService中的代码就需要进行修改
+  完善方法（添加、删除、修改、查看）
+  替换StudentService中的Dao对象
+    代码实现
+OtherStudentDao类
+public class OtherStudentDao {  // 集合容器  private static ArrayList&lt;Student&gt; stus = new ArrayList&lt;&gt;();   static {  Student stu1 = new Student(&#34;heima001&#34;,&#34;张三&#34;,&#34;23&#34;,&#34;1999-11-11&#34;);  Student stu2 = new Student(&#34;heima002&#34;,&#34;李四&#34;,&#34;24&#34;,&#34;2000-11-11&#34;);   stus.add(stu1);  stus....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-28 10:42:17 +0000 UTC'>2022-02-28</span>&nbsp;·&nbsp;9 分钟</footer>
+  <a class="entry-link" aria-label="post link to Java接口和内部类" href="https://iblog.zone/archives/java%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%86%85%E9%83%A8%E7%B1%BB/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Java继承
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1. 继承 1.1 继承的实现（掌握）   继承的概念
+ 继承是面向对象三大特征之一，可以使得子类具有父类的属性和方法，还可以在子类中重新定义，以及追加属性和方法    实现继承的格式
+ 继承通过extends实现 格式：class 子类 extends 父类 { }  举例：class Dog extends Animal { }      继承带来的好处
+ 继承可以让类与类之间产生关系，子父类关系，产生子父类后，子类则可以使用父类中非私有的成员。    示例代码
+public class Fu {  public void show() {  System.out.println(&#34;show方法被调用&#34;);  } } public class Zi extends Fu {  public void method() {  System.out.println(&#34;method方法被调用&#34;);  } } public class Demo {  public static void main(String[] args) {  //创建对象，调用方法  Fu f = new Fu();  f....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-23 18:25:50 +0000 UTC'>2022-02-23</span>&nbsp;·&nbsp;9 分钟</footer>
+  <a class="entry-link" aria-label="post link to Java继承" href="https://iblog.zone/archives/java%E7%BB%A7%E6%89%BF/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Java分类和static
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1.案例驱动模式 1.1案例驱动模式概述 (理解) 通过我们已掌握的知识点,先实现一个案例,然后找出这个案例中,存在的一些问题,在通过新知识点解决问题
+1.2案例驱动模式的好处 (理解)  解决重复代码过多的冗余,提高代码的复用性 解决业务逻辑聚集紧密导致的可读性差,提高代码的可读性 解决代码可维护性差,提高代码的维护性  2.分类思想 2.1分类思想概述 (理解) 分工协作,专人干专事
+2.2黑马信息管理系统 (理解)   Student类 标准学生类,封装键盘录入的学生信息(id , name , age , birthday)
+  StudentDao类 Dao : (Data Access Object 缩写) 用于访问存储数据的数组或集合
+  StudentService类 用来进行业务逻辑的处理(例如: 判断录入的id是否存在)
+  StudentController类 和用户打交道(接收用户需求,采集用户信息,打印数据到控制台)
+  3.分包思想 3.1分包思想概述 (理解) 如果将所有的类文件都放在同一个包下,不利于管理和后期维护,所以,对于不同功能的类文件,可以放在不同的包下进行管理
+3.2包的概述 (记忆)   包
+本质上就是文件夹
+  创建包
+多级包之间使用 &#34; . &#34; 进行分割 多级包的定义规范：公司的网站地址翻转(去掉www) 比如：黑马程序员的网站址为www.itheima.com 后期我们所定义的包的结构就是：com.itheima.其他的包名
+  包的命名规则...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-23 16:44:32 +0000 UTC'>2022-02-23</span>&nbsp;·&nbsp;9 分钟</footer>
+  <a class="entry-link" aria-label="post link to Java分类和static" href="https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

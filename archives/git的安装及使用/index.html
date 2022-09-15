@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Git的安装及使用 | ylw&#39;s blog</title>
+<meta name="keywords" content="git的安装及使用" />
+<meta name="description" content="1.Git介绍 1.1版本控制(理解) 无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况
+1.2开发中存在的问题(理解)  程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！  几个月来的努力付之东流
+  老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。 可是这被改得面目全非的代码已经回不到从前了。
+  小明和老王先后从文件服务器上下载了同一个文件
+  因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的
+  开发中要解决的问题
+ 代码备份 版本控制 协同工作 责任追溯    1.3SVN版本控制(理解) SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑， 所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。
+  服务器单点故障
+将会导致所有人员无法工作
+  而服务器硬盘损坏
+这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。
+  1.4Git版本控制(理解) Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发 而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。
+  每一个客户端都保存了完整的历史记录
+服务器的故障，都可以通过客户端的记录得以恢复。
+  2.Git下载和安装 2.1Git的下载(应用) 官网下载地址：https://git-scm.com/downloads
+2.2Git的安装(应用)   双击安装包，进入安装向导界面
+  指定安装目录
+  一路next下一步
+  等待安装
+  安装完成">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/git%E7%9A%84%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Git的安装及使用" />
+<meta property="og:description" content="1.Git介绍 1.1版本控制(理解) 无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况
+1.2开发中存在的问题(理解)  程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！  几个月来的努力付之东流
+  老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。 可是这被改得面目全非的代码已经回不到从前了。
+  小明和老王先后从文件服务器上下载了同一个文件
+  因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的
+  开发中要解决的问题
+ 代码备份 版本控制 协同工作 责任追溯    1.3SVN版本控制(理解) SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑， 所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。
+  服务器单点故障
+将会导致所有人员无法工作
+  而服务器硬盘损坏
+这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。
+  1.4Git版本控制(理解) Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发 而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。
+  每一个客户端都保存了完整的历史记录
+服务器的故障，都可以通过客户端的记录得以恢复。
+  2.Git下载和安装 2.1Git的下载(应用) 官网下载地址：https://git-scm.com/downloads
+2.2Git的安装(应用)   双击安装包，进入安装向导界面
+  指定安装目录
+  一路next下一步
+  等待安装
+  安装完成" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/git%E7%9A%84%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-21T17:31:16&#43;00:00" />
+<meta property="article:modified_time" content="2022-02-21T17:31:16&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Git的安装及使用"/>
+<meta name="twitter:description" content="1.Git介绍 1.1版本控制(理解) 无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况
+1.2开发中存在的问题(理解)  程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！  几个月来的努力付之东流
+  老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。 可是这被改得面目全非的代码已经回不到从前了。
+  小明和老王先后从文件服务器上下载了同一个文件
+  因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的
+  开发中要解决的问题
+ 代码备份 版本控制 协同工作 责任追溯    1.3SVN版本控制(理解) SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑， 所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。
+  服务器单点故障
+将会导致所有人员无法工作
+  而服务器硬盘损坏
+这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。
+  1.4Git版本控制(理解) Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发 而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。
+  每一个客户端都保存了完整的历史记录
+服务器的故障，都可以通过客户端的记录得以恢复。
+  2.Git下载和安装 2.1Git的下载(应用) 官网下载地址：https://git-scm.com/downloads
+2.2Git的安装(应用)   双击安装包，进入安装向导界面
+  指定安装目录
+  一路next下一步
+  等待安装
+  安装完成"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Git的安装及使用",
+      "item": "https://iblog.zone/archives/git%E7%9A%84%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Git的安装及使用",
+  "name": "Git的安装及使用",
+  "description": "1.Git介绍 1.1版本控制(理解) 无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况\n1.2开发中存在的问题(理解)  程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！  几个月来的努力付之东流\n  老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。 可是这被改得面目全非的代码已经回不到从前了。\n  小明和老王先后从文件服务器上下载了同一个文件\n  因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的\n  开发中要解决的问题\n 代码备份 版本控制 协同工作 责任追溯    1.3SVN版本控制(理解) SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑， 所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。\n  服务器单点故障\n将会导致所有人员无法工作\n  而服务器硬盘损坏\n这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。\n  1.4Git版本控制(理解) Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发 而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。\n  每一个客户端都保存了完整的历史记录\n服务器的故障，都可以通过客户端的记录得以恢复。\n  2.Git下载和安装 2.1Git的下载(应用) 官网下载地址：https://git-scm.com/downloads\n2.2Git的安装(应用)   双击安装包，进入安装向导界面\n  指定安装目录\n  一路next下一步\n  等待安装\n  安装完成",
+  "keywords": [
+    "git的安装及使用"
+  ],
+  "articleBody": "1.Git介绍 1.1版本控制(理解) 无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况\n1.2开发中存在的问题(理解)  程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！  几个月来的努力付之东流\n  老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。 可是这被改得面目全非的代码已经回不到从前了。\n  小明和老王先后从文件服务器上下载了同一个文件\n  因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的\n  开发中要解决的问题\n 代码备份 版本控制 协同工作 责任追溯    1.3SVN版本控制(理解) SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑， 所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。\n  服务器单点故障\n将会导致所有人员无法工作\n  而服务器硬盘损坏\n这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。\n  1.4Git版本控制(理解) Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发 而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。\n  每一个客户端都保存了完整的历史记录\n服务器的故障，都可以通过客户端的记录得以恢复。\n  2.Git下载和安装 2.1Git的下载(应用) 官网下载地址：https://git-scm.com/downloads\n2.2Git的安装(应用)   双击安装包，进入安装向导界面\n  指定安装目录\n  一路next下一步\n  等待安装\n  安装完成\n  安装完成后在电脑桌面（也可以是其他目录）点击右键，如果能够看到如下两个菜单则说明Git安装成功。\n  运行Git命令客户端，使用git –version 命令，可以查看git版本\n  2.3TortoiseGit的安装(应用)   双击安装包，进入安装向导界面\n  一路next下一步\n  指定安装目录\n  安装\n  配置\n  安装TortoiseGit中文语言包,一路next即可\n  配置TortoiseGit中文语言\n  3.Git操作入门 3.1Git基本工作流程(理解) 本地仓库\n3.2Git命令行操作(应用)   git常用命令\n   命令 作用     git init 初始化，创建 git 仓库   git status 查看 git 状态 （文件是否进行了添加、提交操作）   git add 文件名 添加，将指定文件添加到暂存区   git commit -m ‘提交信息’ 提交，将暂存区文件提交到历史仓库   git log 查看日志（ git 提交的历史日志）      操作步骤\n  创建工作目录、初始化本地 git 仓库\n  新建一个 test.txt 文件（暂不执行添加操作）\n  使用 status 命令，查看状态\n  使用 add 命令添加，并查看状态\n  使用 commit 命令，提交到本地历史仓库\n  使用 log 命令，查看日志\n  修改 test.txt 文件\n  添加并提交，查看日志\n    3.3Git图形化工具操作(理解)   创建工作目录、初始化本地 git 仓库\n  新建一个 test.txt 文件（暂不执行添加操作）\n  选中文件右键，选择TortoiseGit，之后选择添加\n  空白处右键,Git提交,提交到本地历史仓库\n  空白处右键,TortoiseGit,显示日志,可以产看日志信息\n  修改 test.txt 文件\n  添加并提交，查看日志\n  4.Git版本管理 4.1历史版本切换(理解)   准备动作\n 查看 my_project 的 log 日志 git reflog ：可以查看所有分支的所有操作记录（包括已经被删除的 commit 记录的操作） 增加一次新的修改记录    需求: 将代码切换到第二次修改的版本\n指令：git reset –hard 版本唯一索引值\n  4.2分支管理介绍(理解)   分支\n 由每次提交的代码，串成的一条时间线 使用分支意味着你可以把你的工作从开发主线上分离开来,以免影响开发主线    分支的使用场景\n 周期较长的模块开发 假设你准备开发一个新功能，但是需要一个月才能完成 第一周写了20%的代码，突然发现原来已经写好的功能出现了一个严重的Bug 那现在就需要放下手中的新功能，去修复Bug 但这20%的代码不能舍弃，并且也担心丢失，这就需要开启一个新的版本控制。 尝试性的模块开发 业务人员给我们提出了一个需求，经过我们的思考和分析 该需求应该可以使用技术手段进行实现。 但是我们还不敢确定，我们就可以去创建一个分支基于分支进行尝试性开发。    分支工作流程\n  Master: 指向提交的代码版本\n  Header: 指向当前所使用的的分支\n    4.3分支管理操作(应用)   创建和切换\n创建命令：git branch 分支名 切换命令：git checkout 分支名\n  新分支添加文件\n查看文件命令：ls\n总结：不同分支之间的关系是平行的关系，不会相互影响\n  合并分支\n合并命令：git merge 分支名\n  删除分支\n删除命令：git branch -d 分支名\n  查看分支列表\n查看命令：git branch\n  5.远程仓库 5.1远程仓库工作流程(理解) 5.2远程仓库平台介绍(理解)   GitHub\n域名：https://github.com 介绍：GitHub是全球最大的开源项目托管平台，俗称大型程序员社区化交友网站\n​\t各类好玩有趣的开源项目，只有想不到，没有找不到。\n  码云\n域名：https://gitee.com 介绍：码云是全国最大的开源项目托管平台，良心平台，速度快，提供免费私有库\n  5.3码云的注册(应用) 5.4先有本地项目,远程为空(应用)   步骤\n 创建本地仓库 创建或修改文件，添加（add）文件到暂存区，提交（commit）到本地仓库 创建远程仓库 推送到远程仓库    创建远程仓库\n  生成SSH公钥\n  推送代码之前，需要先配置SSH公钥\n  生成SSH公钥步骤\n  设置Git账户\n  git config user.name（查看git账户）\n  git config user.email（查看git邮箱）\n  git config –global user.name “账户名”（设置全局账户名）\n  git config –global user.email “邮箱”（设置全局邮箱）\n  cd ~/.ssh（查看是否生成过SSH公钥）\n    生成SSH公钥\n  生成命令: ssh-keygen –t rsa –C “邮箱” ( 注意：这里需要敲3次回车)\n  查看命令: cat ~/.ssh/id-rsa.pub\n    设置账户公钥\n  公钥测试\n  命令: ssh -T git@gitee.com\n        推送到远程仓库\n  步骤\n 为远程仓库的URL（网址），自定义仓库名称 推送    命令 git remote add 远程名称 远程仓库URL git push -u 仓库名称 分支名\n    5.5先有远程仓库,本地为空(应用)  步骤  将远程仓库的代码，克隆到本地仓库 克隆命令：git clone 仓库地址 创建新文件，添加并提交到本地仓库 推送至远程仓库 项目拉取更新 拉取命令：git pull 远程仓库名 分支名    5.6代码冲突(应用)   产生原因:\n两个程序员操作同一个文件,其中一个程序员在修改文件后,push到远程仓库,另一个程序员应该先pull将最新的代码更新到本地仓库后,在修改代码,之后push到远程仓库,结果他没有先pull将最新的代码更新到本地仓库,而是直接将自己的代码push到远程仓库,这样就可能会导致代码冲突\n    如何解决冲突\n«««中间的内容,就是冲突部分\n 修改冲突行，保存，即可解决冲突。 重新add冲突文件并commit到本地仓库，重新push到远程    6.IDEA集成Git 6.1IDEA中配置Git(应用)   File - Settings\n  Version Control - Git - 指定git.exe存放目录\n  点击Test测试\n  6.2创建本地仓库(应用)   VCS-Import into Version Control-Create Git Repository\n  选择工程所在的目录,这样就创建好本地仓库了\n  点击git后边的对勾,将当前项目代码提交到本地仓库\n注意: 项目中的配置文件不需要提交到本地仓库中,提交时,忽略掉即可\n  6.3版本切换(应用)   方式一: 控制台Version Control-Log-Reset Current Branch…-Reset\n这种切换的特点是会抛弃原来的提交记录\n  方式二:控制台Version Control-Log-Revert Commit-Merge-处理代码-commit\n这种切换的特点是会当成一个新的提交记录,之前的提交记录也都保留\n  6.4分支管理(应用)   创建分支\nVCS-Git-Branches-New Branch-给分支起名字-ok\n  切换分支\nidea右下角Git-选择要切换的分支-checkout\n  合并分支\nVCS-Git-Merge changes-选择要合并的分支-merge\n处理分支中的代码\n  删除分支\nidea右下角-选中要删除的分支-Delete\n  6.5本地仓库推送到远程仓库(应用)   VCS-Git-Push-点击master Define remote\n  将远程仓库的路径复制过来-Push\n  6.6远程仓库克隆到本地仓库(应用) File-Close Project-Checkout from Version Control-Git-指定远程仓库的路径-指定本地存放的路径-clone\n",
+  "wordCount" : "331",
+  "inLanguage": "zh",
+  "datePublished": "2022-02-21T17:31:16Z",
+  "dateModified": "2022-02-21T17:31:16Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/git%E7%9A%84%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Git的安装及使用
+    </h1>
+    <div class="post-meta"><span title='2022-02-21 17:31:16 +0000 UTC'>2022-02-21</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1git%e4%bb%8b%e7%bb%8d" aria-label="1.Git介绍">1.Git介绍</a><ul>
+                            
+                    <li>
+                        <a href="#11%e7%89%88%e6%9c%ac%e6%8e%a7%e5%88%b6%e7%90%86%e8%a7%a3" aria-label="1.1版本控制(理解)">1.1版本控制(理解)</a></li>
+                    <li>
+                        <a href="#12%e5%bc%80%e5%8f%91%e4%b8%ad%e5%ad%98%e5%9c%a8%e7%9a%84%e9%97%ae%e9%a2%98%e7%90%86%e8%a7%a3" aria-label="1.2开发中存在的问题(理解)">1.2开发中存在的问题(理解)</a></li>
+                    <li>
+                        <a href="#13svn%e7%89%88%e6%9c%ac%e6%8e%a7%e5%88%b6%e7%90%86%e8%a7%a3" aria-label="1.3SVN版本控制(理解)">1.3SVN版本控制(理解)</a></li>
+                    <li>
+                        <a href="#14git%e7%89%88%e6%9c%ac%e6%8e%a7%e5%88%b6%e7%90%86%e8%a7%a3" aria-label="1.4Git版本控制(理解)">1.4Git版本控制(理解)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2git%e4%b8%8b%e8%bd%bd%e5%92%8c%e5%ae%89%e8%a3%85" aria-label="2.Git下载和安装">2.Git下载和安装</a><ul>
+                            
+                    <li>
+                        <a href="#21git%e7%9a%84%e4%b8%8b%e8%bd%bd%e5%ba%94%e7%94%a8" aria-label="2.1Git的下载(应用)">2.1Git的下载(应用)</a></li>
+                    <li>
+                        <a href="#22git%e7%9a%84%e5%ae%89%e8%a3%85%e5%ba%94%e7%94%a8" aria-label="2.2Git的安装(应用)">2.2Git的安装(应用)</a></li>
+                    <li>
+                        <a href="#23tortoisegit%e7%9a%84%e5%ae%89%e8%a3%85%e5%ba%94%e7%94%a8" aria-label="2.3TortoiseGit的安装(应用)">2.3TortoiseGit的安装(应用)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3git%e6%93%8d%e4%bd%9c%e5%85%a5%e9%97%a8" aria-label="3.Git操作入门">3.Git操作入门</a><ul>
+                            
+                    <li>
+                        <a href="#31git%e5%9f%ba%e6%9c%ac%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b%e7%90%86%e8%a7%a3" aria-label="3.1Git基本工作流程(理解)">3.1Git基本工作流程(理解)</a></li>
+                    <li>
+                        <a href="#32git%e5%91%bd%e4%bb%a4%e8%a1%8c%e6%93%8d%e4%bd%9c%e5%ba%94%e7%94%a8" aria-label="3.2Git命令行操作(应用)">3.2Git命令行操作(应用)</a></li>
+                    <li>
+                        <a href="#33git%e5%9b%be%e5%bd%a2%e5%8c%96%e5%b7%a5%e5%85%b7%e6%93%8d%e4%bd%9c%e7%90%86%e8%a7%a3" aria-label="3.3Git图形化工具操作(理解)">3.3Git图形化工具操作(理解)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4git%e7%89%88%e6%9c%ac%e7%ae%a1%e7%90%86" aria-label="4.Git版本管理">4.Git版本管理</a><ul>
+                            
+                    <li>
+                        <a href="#41%e5%8e%86%e5%8f%b2%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2%e7%90%86%e8%a7%a3" aria-label="4.1历史版本切换(理解)">4.1历史版本切换(理解)</a></li>
+                    <li>
+                        <a href="#42%e5%88%86%e6%94%af%e7%ae%a1%e7%90%86%e4%bb%8b%e7%bb%8d%e7%90%86%e8%a7%a3" aria-label="4.2分支管理介绍(理解)">4.2分支管理介绍(理解)</a></li>
+                    <li>
+                        <a href="#43%e5%88%86%e6%94%af%e7%ae%a1%e7%90%86%e6%93%8d%e4%bd%9c%e5%ba%94%e7%94%a8" aria-label="4.3分支管理操作(应用)">4.3分支管理操作(应用)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#5%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93" aria-label="5.远程仓库">5.远程仓库</a><ul>
+                            
+                    <li>
+                        <a href="#51%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b%e7%90%86%e8%a7%a3" aria-label="5.1远程仓库工作流程(理解)">5.1远程仓库工作流程(理解)</a></li>
+                    <li>
+                        <a href="#52%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e5%b9%b3%e5%8f%b0%e4%bb%8b%e7%bb%8d%e7%90%86%e8%a7%a3" aria-label="5.2远程仓库平台介绍(理解)">5.2远程仓库平台介绍(理解)</a></li>
+                    <li>
+                        <a href="#53%e7%a0%81%e4%ba%91%e7%9a%84%e6%b3%a8%e5%86%8c%e5%ba%94%e7%94%a8" aria-label="5.3码云的注册(应用)">5.3码云的注册(应用)</a></li>
+                    <li>
+                        <a href="#54%e5%85%88%e6%9c%89%e6%9c%ac%e5%9c%b0%e9%a1%b9%e7%9b%ae%e8%bf%9c%e7%a8%8b%e4%b8%ba%e7%a9%ba%e5%ba%94%e7%94%a8" aria-label="5.4先有本地项目,远程为空(应用)">5.4先有本地项目,远程为空(应用)</a></li>
+                    <li>
+                        <a href="#55%e5%85%88%e6%9c%89%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e6%9c%ac%e5%9c%b0%e4%b8%ba%e7%a9%ba%e5%ba%94%e7%94%a8" aria-label="5.5先有远程仓库,本地为空(应用)">5.5先有远程仓库,本地为空(应用)</a></li>
+                    <li>
+                        <a href="#56%e4%bb%a3%e7%a0%81%e5%86%b2%e7%aa%81%e5%ba%94%e7%94%a8" aria-label="5.6代码冲突(应用)">5.6代码冲突(应用)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#6idea%e9%9b%86%e6%88%90git" aria-label="6.IDEA集成Git">6.IDEA集成Git</a><ul>
+                            
+                    <li>
+                        <a href="#61idea%e4%b8%ad%e9%85%8d%e7%bd%aegit%e5%ba%94%e7%94%a8" aria-label="6.1IDEA中配置Git(应用)">6.1IDEA中配置Git(应用)</a></li>
+                    <li>
+                        <a href="#62%e5%88%9b%e5%bb%ba%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e5%ba%94%e7%94%a8" aria-label="6.2创建本地仓库(应用)">6.2创建本地仓库(应用)</a></li>
+                    <li>
+                        <a href="#63%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2%e5%ba%94%e7%94%a8" aria-label="6.3版本切换(应用)">6.3版本切换(应用)</a></li>
+                    <li>
+                        <a href="#64%e5%88%86%e6%94%af%e7%ae%a1%e7%90%86%e5%ba%94%e7%94%a8" aria-label="6.4分支管理(应用)">6.4分支管理(应用)</a></li>
+                    <li>
+                        <a href="#65%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e6%8e%a8%e9%80%81%e5%88%b0%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e5%ba%94%e7%94%a8" aria-label="6.5本地仓库推送到远程仓库(应用)">6.5本地仓库推送到远程仓库(应用)</a></li>
+                    <li>
+                        <a href="#66%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e5%85%8b%e9%9a%86%e5%88%b0%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e5%ba%94%e7%94%a8" aria-label="6.6远程仓库克隆到本地仓库(应用)">6.6远程仓库克隆到本地仓库(应用)</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1git介绍">1.Git介绍<a hidden class="anchor" aria-hidden="true" href="#1git介绍">#</a></h2>
+<h3 id="11版本控制理解">1.1版本控制(理解)<a hidden class="anchor" aria-hidden="true" href="#11版本控制理解">#</a></h3>
+<p>无论是代码编写，还是文档编写，我们都会遇到对文档内容反复修改的情况</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/01_%e7%89%88%e6%9c%ac%e6%8e%a7%e5%88%b6%e4%bb%8b%e7%bb%8d.png" alt=""  />
+</p>
+<h3 id="12开发中存在的问题理解">1.2开发中存在的问题(理解)<a hidden class="anchor" aria-hidden="true" href="#12开发中存在的问题理解">#</a></h3>
+<ul>
+<li>程序员小明负责的模块就要完成了，就在即将提交发布之前的一瞬间，电脑突然蓝屏，硬盘光荣下岗！</li>
+</ul>
+<p>几个月来的努力付之东流</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/02_%e5%bc%80%e5%8f%91%e4%b8%ad%e7%9a%84%e9%ba%bb%e7%83%a6.png" alt=""  />
+</p>
+<ul>
+<li>
+<p>老王需要在项目中加入一个很复杂的功能，一边尝试，一边修改代码，就这样摸索了一个星期。
+可是这被改得面目全非的代码已经回不到从前了。</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/03_%e5%bc%80%e5%8f%91%e4%b8%ad%e7%9a%84%e9%ba%bb%e7%83%a6.png" alt=""  />
+</p>
+</li>
+<li>
+<p>小明和老王先后从文件服务器上下载了同一个文件</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/04_%e5%bc%80%e5%8f%91%e4%b8%ad%e7%9a%84%e9%ba%bb%e7%83%a6.png" alt=""  />
+</p>
+</li>
+<li>
+<p>因项目中Bug过多，导致项目进度拖延，项目经理老徐因此被骂，但不清楚Bug是手下哪一个程序员写的</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/05_%e5%bc%80%e5%8f%91%e4%b8%ad%e7%9a%84%e9%ba%bb%e7%83%a6.png" alt=""  />
+</p>
+</li>
+<li>
+<p>开发中要解决的问题</p>
+<ul>
+<li>代码备份</li>
+<li>版本控制</li>
+<li>协同工作</li>
+<li>责任追溯</li>
+</ul>
+</li>
+</ul>
+<h3 id="13svn版本控制理解">1.3SVN版本控制(理解)<a hidden class="anchor" aria-hidden="true" href="#13svn版本控制理解">#</a></h3>
+<p>SVN是集中式版本控制系统，版本库是集中放在中央服务器的，而开发人员工作的时候，用的都是自己的电脑，
+所以首先要从中央服务器下载最新的版本，然后开发，开发完后，需要把自己开发的代码提交到中央服务器。</p>
+<ul>
+<li>
+<p>服务器单点故障</p>
+<p>将会导致所有人员无法工作</p>
+</li>
+<li>
+<p>而服务器硬盘损坏</p>
+<p>这意味着，你可能失去了该项目的所有历史记录，这是毁灭性的。</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/06_svn%e5%92%8cgit%e7%9a%84%e5%af%b9%e6%af%94.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="14git版本控制理解">1.4Git版本控制(理解)<a hidden class="anchor" aria-hidden="true" href="#14git版本控制理解">#</a></h3>
+<p>Git是在2005年，Linux系统的创建者Linus Torvalds,为了帮助全球的开发者，维护Linux系统内核的开发
+而开发了自己的开源分布式版本控制工具,分为两种类型的仓库：本地仓库和远程仓库。</p>
+<ul>
+<li>
+<p>每一个客户端都保存了完整的历史记录</p>
+<p>服务器的故障，都可以通过客户端的记录得以恢复。</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/07_svn%e5%92%8cgit%e7%9a%84%e5%af%b9%e6%af%94.png" alt=""  />
+</p>
+</li>
+</ul>
+<h2 id="2git下载和安装">2.Git下载和安装<a hidden class="anchor" aria-hidden="true" href="#2git下载和安装">#</a></h2>
+<h3 id="21git的下载应用">2.1Git的下载(应用)<a hidden class="anchor" aria-hidden="true" href="#21git的下载应用">#</a></h3>
+<p>官网下载地址：https://git-scm.com/downloads</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/08_Git%e7%9a%84%e4%b8%8b%e8%bd%bd.png" alt=""  />
+</p>
+<h3 id="22git的安装应用">2.2Git的安装(应用)<a hidden class="anchor" aria-hidden="true" href="#22git的安装应用">#</a></h3>
+<ol>
+<li>
+<p>双击安装包，进入安装向导界面</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/09_Git%e7%9a%84%e5%ae%89%e8%a3%8501.png" alt=""  />
+</p>
+</li>
+<li>
+<p>指定安装目录</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/10_Git%e7%9a%84%e5%ae%89%e8%a3%8502.png" alt=""  />
+</p>
+</li>
+<li>
+<p>一路next下一步</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/11_Git%e7%9a%84%e5%ae%89%e8%a3%8503.png" alt=""  />
+</p>
+</li>
+<li>
+<p>等待安装</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/12_Git%e7%9a%84%e5%ae%89%e8%a3%8504.png" alt=""  />
+</p>
+</li>
+<li>
+<p>安装完成</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/13_Git%e7%9a%84%e5%ae%89%e8%a3%8505.png" alt=""  />
+</p>
+</li>
+<li>
+<p>安装完成后在电脑桌面（也可以是其他目录）点击右键，如果能够看到如下两个菜单则说明Git安装成功。</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/14_Git%e7%9a%84%e5%ae%89%e8%a3%8506.png" alt=""  />
+</p>
+</li>
+<li>
+<p>运行Git命令客户端，使用git &ndash;version 命令，可以查看git版本</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/15_Git%e7%9a%84%e5%ae%89%e8%a3%8507.png" alt=""  />
+</p>
+</li>
+</ol>
+<h3 id="23tortoisegit的安装应用">2.3TortoiseGit的安装(应用)<a hidden class="anchor" aria-hidden="true" href="#23tortoisegit的安装应用">#</a></h3>
+<ol>
+<li>
+<p>双击安装包，进入安装向导界面</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/16_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>一路next下一步</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/17_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>指定安装目录</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/18_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>安装</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/19_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>配置</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/20_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/21_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/22_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/23_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/24_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/25_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>安装TortoiseGit中文语言包,一路next即可</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/26_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+<li>
+<p>配置TortoiseGit中文语言</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/27_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/28_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/29_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/30_TortiseGit%e7%9a%84%e5%ae%89%e8%a3%85.png" alt=""  />
+</p>
+</li>
+</ol>
+<h2 id="3git操作入门">3.Git操作入门<a hidden class="anchor" aria-hidden="true" href="#3git操作入门">#</a></h2>
+<h3 id="31git基本工作流程理解">3.1Git基本工作流程(理解)<a hidden class="anchor" aria-hidden="true" href="#31git基本工作流程理解">#</a></h3>
+<p>本地仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/31_Git%e5%9f%ba%e6%9c%ac%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+<h3 id="32git命令行操作应用">3.2Git命令行操作(应用)<a hidden class="anchor" aria-hidden="true" href="#32git命令行操作应用">#</a></h3>
+<ul>
+<li>
+<p>git常用命令</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git init</td>
+<td>初始化，创建 git 仓库</td>
+</tr>
+<tr>
+<td>git status</td>
+<td>查看 git 状态 （文件是否进行了添加、提交操作）</td>
+</tr>
+<tr>
+<td>git add 文件名</td>
+<td>添加，将指定文件添加到暂存区</td>
+</tr>
+<tr>
+<td>git commit -m &lsquo;提交信息&rsquo;</td>
+<td>提交，将暂存区文件提交到历史仓库</td>
+</tr>
+<tr>
+<td>git log</td>
+<td>查看日志（ git 提交的历史日志）</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>操作步骤</p>
+<ol>
+<li>
+<p>创建工作目录、初始化本地 git 仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/32_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>新建一个 test.txt 文件（暂不执行添加操作）</p>
+</li>
+<li>
+<p>使用 status 命令，查看状态</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/33_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>使用 add 命令添加，并查看状态</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/34_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>使用 commit 命令，提交到本地历史仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/35_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>使用 log 命令，查看日志</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/36_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>修改 test.txt 文件</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/37_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>添加并提交，查看日志</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/38_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="33git图形化工具操作理解">3.3Git图形化工具操作(理解)<a hidden class="anchor" aria-hidden="true" href="#33git图形化工具操作理解">#</a></h3>
+<ol>
+<li>
+<p>创建工作目录、初始化本地 git 仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/39_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/40_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>新建一个 test.txt 文件（暂不执行添加操作）</p>
+</li>
+<li>
+<p>选中文件右键，选择TortoiseGit，之后选择添加</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/41_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>空白处右键,Git提交,提交到本地历史仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/42_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>空白处右键,TortoiseGit,显示日志,可以产看日志信息</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/43_Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b.png" alt=""  />
+</p>
+</li>
+<li>
+<p>修改 test.txt 文件</p>
+</li>
+<li>
+<p>添加并提交，查看日志</p>
+</li>
+</ol>
+<h2 id="4git版本管理">4.Git版本管理<a hidden class="anchor" aria-hidden="true" href="#4git版本管理">#</a></h2>
+<h3 id="41历史版本切换理解">4.1历史版本切换(理解)<a hidden class="anchor" aria-hidden="true" href="#41历史版本切换理解">#</a></h3>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/44_%e5%8e%86%e5%8f%b2%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2.png" alt=""  />
+</p>
+<ul>
+<li>
+<p>准备动作</p>
+<ol>
+<li>查看 my_project 的 log 日志
+git reflog ：可以查看所有分支的所有操作记录（包括已经被删除的 commit 记录的操作）</li>
+<li>增加一次新的修改记录</li>
+</ol>
+</li>
+<li>
+<p>需求: 将代码切换到第二次修改的版本</p>
+<p>指令：git reset &ndash;hard 版本唯一索引值</p>
+</li>
+</ul>
+<h3 id="42分支管理介绍理解">4.2分支管理介绍(理解)<a hidden class="anchor" aria-hidden="true" href="#42分支管理介绍理解">#</a></h3>
+<ul>
+<li>
+<p>分支</p>
+<ul>
+<li>由每次提交的代码，串成的一条时间线</li>
+<li>使用分支意味着你可以把你的工作从开发主线上分离开来,以免影响开发主线</li>
+</ul>
+</li>
+<li>
+<p>分支的使用场景</p>
+<ol>
+<li>周期较长的模块开发
+假设你准备开发一个新功能，但是需要一个月才能完成
+第一周写了20%的代码，突然发现原来已经写好的功能出现了一个严重的Bug
+那现在就需要放下手中的新功能，去修复Bug
+但这20%的代码不能舍弃，并且也担心丢失，这就需要开启一个新的版本控制。</li>
+<li>尝试性的模块开发
+业务人员给我们提出了一个需求，经过我们的思考和分析
+该需求应该可以使用技术手段进行实现。
+但是我们还不敢确定，我们就可以去创建一个分支基于分支进行尝试性开发。</li>
+</ol>
+</li>
+<li>
+<p>分支工作流程</p>
+<ul>
+<li>
+<p>Master: 指向提交的代码版本</p>
+</li>
+<li>
+<p>Header: 指向当前所使用的的分支</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/45_%e5%88%86%e6%94%af%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b%e4%bb%8b%e7%bb%8d.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="43分支管理操作应用">4.3分支管理操作(应用)<a hidden class="anchor" aria-hidden="true" href="#43分支管理操作应用">#</a></h3>
+<ul>
+<li>
+<p>创建和切换</p>
+<p>创建命令：git branch 分支名
+切换命令：git checkout 分支名</p>
+</li>
+<li>
+<p>新分支添加文件</p>
+<p>查看文件命令：ls</p>
+<p>总结：不同分支之间的关系是平行的关系，不会相互影响</p>
+</li>
+<li>
+<p>合并分支</p>
+<p>合并命令：git merge 分支名</p>
+</li>
+<li>
+<p>删除分支</p>
+<p>删除命令：git branch -d 分支名</p>
+</li>
+<li>
+<p>查看分支列表</p>
+<p>查看命令：git branch</p>
+</li>
+</ul>
+<h2 id="5远程仓库">5.远程仓库<a hidden class="anchor" aria-hidden="true" href="#5远程仓库">#</a></h2>
+<h3 id="51远程仓库工作流程理解">5.1远程仓库工作流程(理解)<a hidden class="anchor" aria-hidden="true" href="#51远程仓库工作流程理解">#</a></h3>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/46_%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+<h3 id="52远程仓库平台介绍理解">5.2远程仓库平台介绍(理解)<a hidden class="anchor" aria-hidden="true" href="#52远程仓库平台介绍理解">#</a></h3>
+<ul>
+<li>
+<p>GitHub</p>
+<p>域名：https://github.com
+介绍：GitHub是全球最大的开源项目托管平台，俗称大型程序员社区化交友网站</p>
+<p>​	    各类好玩有趣的开源项目，只有想不到，没有找不到。</p>
+</li>
+<li>
+<p>码云</p>
+<p>域名：https://gitee.com
+介绍：码云是全国最大的开源项目托管平台，良心平台，速度快，提供免费私有库</p>
+</li>
+</ul>
+<h3 id="53码云的注册应用">5.3码云的注册(应用)<a hidden class="anchor" aria-hidden="true" href="#53码云的注册应用">#</a></h3>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/47_%e7%a0%81%e4%ba%91%e7%9a%84%e6%b3%a8%e5%86%8c.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/48_%e7%a0%81%e4%ba%91%e7%9a%84%e6%b3%a8%e5%86%8c.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/49_%e7%a0%81%e4%ba%91%e7%9a%84%e6%b3%a8%e5%86%8c.png" alt=""  />
+</p>
+<h3 id="54先有本地项目远程为空应用">5.4先有本地项目,远程为空(应用)<a hidden class="anchor" aria-hidden="true" href="#54先有本地项目远程为空应用">#</a></h3>
+<ul>
+<li>
+<p>步骤</p>
+<ol>
+<li>创建本地仓库</li>
+<li>创建或修改文件，添加（add）文件到暂存区，提交（commit）到本地仓库</li>
+<li>创建远程仓库</li>
+<li>推送到远程仓库</li>
+</ol>
+</li>
+<li>
+<p>创建远程仓库</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/50_%e5%88%9b%e5%bb%ba%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/51_%e5%88%9b%e5%bb%ba%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+<li>
+<p>生成SSH公钥</p>
+<ul>
+<li>
+<p>推送代码之前，需要先配置SSH公钥</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/52_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+<li>
+<p>生成SSH公钥步骤</p>
+<ol>
+<li>
+<p>设置Git账户</p>
+<ul>
+<li>
+<p>git config user.name（查看git账户）</p>
+</li>
+<li>
+<p>git config user.email（查看git邮箱）</p>
+</li>
+<li>
+<p>git config &ndash;global user.name “账户名”（设置全局账户名）</p>
+</li>
+<li>
+<p>git config &ndash;global user.email “邮箱”（设置全局邮箱）</p>
+</li>
+<li>
+<p>cd ~/.ssh（查看是否生成过SSH公钥）</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/53_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>生成SSH公钥</p>
+<ul>
+<li>
+<p>生成命令: ssh-keygen –t rsa –C “邮箱” ( 注意：这里需要敲3次回车)</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/54_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+<li>
+<p>查看命令: cat ~/.ssh/id-rsa.pub</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/55_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>设置账户公钥</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/56_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/57_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+<li>
+<p>公钥测试</p>
+<ul>
+<li>
+<p>命令: ssh -T <a href="mailto:git@gitee.com">git@gitee.com</a></p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/58_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>推送到远程仓库</p>
+<ul>
+<li>
+<p>步骤</p>
+<ol>
+<li>为远程仓库的URL（网址），自定义仓库名称</li>
+<li>推送</li>
+</ol>
+</li>
+<li>
+<p>命令
+git remote add 远程名称 远程仓库URL
+git push -u 仓库名称 分支名</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/59_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/60_%e9%85%8d%e7%bd%aeSSH%e5%85%ac%e9%92%a5.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="55先有远程仓库本地为空应用">5.5先有远程仓库,本地为空(应用)<a hidden class="anchor" aria-hidden="true" href="#55先有远程仓库本地为空应用">#</a></h3>
+<ul>
+<li>步骤
+<ol>
+<li>将远程仓库的代码，克隆到本地仓库
+克隆命令：git clone 仓库地址</li>
+<li>创建新文件，添加并提交到本地仓库</li>
+<li>推送至远程仓库</li>
+<li>项目拉取更新
+拉取命令：git pull 远程仓库名 分支名</li>
+</ol>
+</li>
+</ul>
+<h3 id="56代码冲突应用">5.6代码冲突(应用)<a hidden class="anchor" aria-hidden="true" href="#56代码冲突应用">#</a></h3>
+<ul>
+<li>
+<p>产生原因:</p>
+<p>两个程序员操作同一个文件,其中一个程序员在修改文件后,push到远程仓库,另一个程序员应该先pull将最新的代码更新到本地仓库后,在修改代码,之后push到远程仓库,结果他没有先pull将最新的代码更新到本地仓库,而是直接将自己的代码push到远程仓库,这样就可能会导致代码冲突</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/61_%e4%bb%a3%e7%a0%81%e5%86%b2%e7%aa%81.png" alt=""  />
+</p>
+</li>
+</ul>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/62_%e4%bb%a3%e7%a0%81%e5%86%b2%e7%aa%81.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/63_%e4%bb%a3%e7%a0%81%e5%86%b2%e7%aa%81.png" alt=""  />
+</p>
+<ul>
+<li>
+<p>如何解决冲突</p>
+<p>&laquo;&laquo;&laquo;&lt;和&raquo;&raquo;&raquo;&gt;中间的内容,就是冲突部分</p>
+<ol>
+<li>修改冲突行，保存，即可解决冲突。</li>
+<li>重新add冲突文件并commit到本地仓库，重新push到远程</li>
+</ol>
+</li>
+</ul>
+<h2 id="6idea集成git">6.IDEA集成Git<a hidden class="anchor" aria-hidden="true" href="#6idea集成git">#</a></h2>
+<h3 id="61idea中配置git应用">6.1IDEA中配置Git(应用)<a hidden class="anchor" aria-hidden="true" href="#61idea中配置git应用">#</a></h3>
+<ol>
+<li>
+<p>File -&gt; Settings</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/64_IDEA%e4%b8%ad%e9%85%8d%e7%bd%aeGit.png" alt=""  />
+</p>
+</li>
+<li>
+<p>Version Control -&gt; Git -&gt; 指定git.exe存放目录</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/65_IDEA%e4%b8%ad%e9%85%8d%e7%bd%aeGit.png" alt=""  />
+</p>
+</li>
+<li>
+<p>点击Test测试</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/66_IDEA%e4%b8%ad%e9%85%8d%e7%bd%aeGit.png" alt=""  />
+</p>
+</li>
+</ol>
+<h3 id="62创建本地仓库应用">6.2创建本地仓库(应用)<a hidden class="anchor" aria-hidden="true" href="#62创建本地仓库应用">#</a></h3>
+<ol>
+<li>
+<p>VCS-&gt;Import into Version Control-&gt;Create Git Repository</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/67_%e5%88%9b%e5%bb%ba%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+<li>
+<p>选择工程所在的目录,这样就创建好本地仓库了</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/68_%e5%88%9b%e5%bb%ba%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+<li>
+<p>点击git后边的对勾,将当前项目代码提交到本地仓库</p>
+<p>注意: 项目中的配置文件不需要提交到本地仓库中,提交时,忽略掉即可</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/69_%e5%88%9b%e5%bb%ba%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+</ol>
+<h3 id="63版本切换应用">6.3版本切换(应用)<a hidden class="anchor" aria-hidden="true" href="#63版本切换应用">#</a></h3>
+<ul>
+<li>
+<p>方式一: 控制台Version Control-&gt;Log-&gt;Reset Current Branch&hellip;-&gt;Reset</p>
+<p>这种切换的特点是会抛弃原来的提交记录</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/70_%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2.png" alt=""  />
+</p>
+</li>
+<li>
+<p>方式二:控制台Version Control-&gt;Log-&gt;Revert Commit-&gt;Merge-&gt;处理代码-&gt;commit</p>
+<p>这种切换的特点是会当成一个新的提交记录,之前的提交记录也都保留</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/71_%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/72_%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/73_%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="64分支管理应用">6.4分支管理(应用)<a hidden class="anchor" aria-hidden="true" href="#64分支管理应用">#</a></h3>
+<ul>
+<li>
+<p>创建分支</p>
+<p>VCS-&gt;Git-&gt;Branches-&gt;New Branch-&gt;给分支起名字-&gt;ok</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/74_%e5%88%9b%e5%bb%ba%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+</li>
+<li>
+<p>切换分支</p>
+<p>idea右下角Git-&gt;选择要切换的分支-&gt;checkout</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/75_%e5%88%87%e6%8d%a2%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+</li>
+<li>
+<p>合并分支</p>
+<p>VCS-&gt;Git-&gt;Merge changes-&gt;选择要合并的分支-&gt;merge</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/76_%e5%90%88%e5%b9%b6%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+<p>处理分支中的代码</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/77_%e5%90%88%e5%b9%b6%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/78_%e5%90%88%e5%b9%b6%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/79_%e5%90%88%e5%b9%b6%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+</li>
+<li>
+<p>删除分支</p>
+<p>idea右下角-&gt;选中要删除的分支-&gt;Delete</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/80_%e5%88%a0%e9%99%a4%e5%88%86%e6%94%af.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="65本地仓库推送到远程仓库应用">6.5本地仓库推送到远程仓库(应用)<a hidden class="anchor" aria-hidden="true" href="#65本地仓库推送到远程仓库应用">#</a></h3>
+<ol>
+<li>
+<p>VCS-&gt;Git-&gt;Push-&gt;点击master Define remote</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/81_%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e6%8e%a8%e9%80%81%e5%88%b0%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+<li>
+<p>将远程仓库的路径复制过来-&gt;Push</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/82_%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e6%8e%a8%e9%80%81%e5%88%b0%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+</li>
+</ol>
+<h3 id="66远程仓库克隆到本地仓库应用">6.6远程仓库克隆到本地仓库(应用)<a hidden class="anchor" aria-hidden="true" href="#66远程仓库克隆到本地仓库应用">#</a></h3>
+<p>File-&gt;Close Project-&gt;Checkout from Version Control-&gt;Git-&gt;指定远程仓库的路径-&gt;指定本地存放的路径-&gt;clone</p>
+<p><img loading="lazy" src="/images/Git%e7%9a%84%e5%ae%89%e8%a3%85%e5%8f%8a%e4%bd%bf%e7%94%a8/83_%e8%bf%9c%e7%a8%8b%e4%bb%93%e5%ba%93%e5%85%8b%e9%9a%86%e5%88%b0%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93.png" alt=""  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/git%E7%9A%84%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/">git的安装及使用</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java分类和static</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java-arraylist%E9%9B%86%E5%90%88%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java ArrayList集合&amp;学生管理系统</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

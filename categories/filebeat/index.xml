@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>filebeat on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/filebeat/</link>
+    <description>Recent content in filebeat on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 14 Apr 2022 18:16:46 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/filebeat/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Filebeat7.6安装配置</title>
+      <link>https://iblog.zone/archives/filebeat7.6%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Thu, 14 Apr 2022 18:16:46 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/filebeat7.6%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</guid>
+      <description>安装 yum -y install https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-x86_64.rpm 配置 filebeat.inputs: - type: log  enabled: true  paths:  - /data/logs/server.ser  tags: [&amp;#34;online_server&amp;#34;] - type: log  enabled: true  paths:  - /data/logs/pay.ser  tags: [&amp;#34;online_pay&amp;#34;] - type: log  enabled: true  paths:  - /data/logs/log.*  tags: [&amp;#34;online_admin&amp;#34;]  output.elasticsearch:  hosts: [&amp;#34;10.0.0.1:9200&amp;#34;]  indices:  - index: &amp;#34;online_server-%{+yyyy.MM.dd}&amp;#34;  when.contains:  tags: &amp;#34;online_server&amp;#34;  - index: &amp;#34;online_pay-%{+yyyy.MM.dd}&amp;#34;  when.</description>
+    </item>
+    
+  </channel>
+</rss>

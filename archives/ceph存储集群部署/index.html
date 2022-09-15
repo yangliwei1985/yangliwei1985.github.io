@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Ceph存储集群部署 | ylw&#39;s blog</title>
+<meta name="keywords" content="ceph" />
+<meta name="description" content="一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。
+ **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active&#43;clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Ceph存储集群部署" />
+<meta property="og:description" content="一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。
+ **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active&#43;clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-01T10:50:57&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-01T10:50:57&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ceph存储集群部署"/>
+<meta name="twitter:description" content="一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。
+ **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active&#43;clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Ceph存储集群部署",
+      "item": "https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ceph存储集群部署",
+  "name": "Ceph存储集群部署",
+  "description": "一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。\n **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active+clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。",
+  "keywords": [
+    "ceph"
+  ],
+  "articleBody": "一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。\n **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active+clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。\n 官网文档：http://docs.ceph.org.cn/start/intro/  二、环境描述  硬件推荐：http://docs.ceph.org.cn/start/hardware-recommendations/ 本文测试环境资源规格如下     主机名 IP地址 角色     Ceph-admin 192.168.66.200 Admin，ceph-deploy   Ceph-node1 192.168.66.201 Mon，Mgr，osd   Ceph-node2 192.168.66.202 Mon，Osd   Ceph-node3 192.168.66.203 Mon，Osd   Ceph-Client 192.168.66.204 客户端      **注意：**给三台Node节点单独挂载一块磁盘，大小必须大于5G；生产环境下磁盘建议1TB以上大小的容量，CPU推荐16C以上，内存24G以上，且官方建议ceph集群部署到物理机上；注意磁盘添加后不需要我们手动进行格式化分区等操作，后面通过ceph工具自动创建。\n  **mon：**Monitors, 节点映射管理, 身份验证管理, 需要达到冗余和高可用至少需要3个节点\n  **osd：**object storage daemon, 对象存储服务, 需要达到冗余和高可用至少需要3个节点\n  **mgr：**Manager, 用于跟踪运行指标和集群状态, 性能.\n  **mds：**Metadata Serve, 提供cephfs的元数据存储\n  三、环境准备   第二步中我们将机器准备好，并且三台node节点上除了系统盘之外，单独挂载了一块20G大小的数据盘\n  **注意：**环境准备阶段，除了node节点需要单独挂载磁盘之外，其余节点不需要；所有ceph集群节点都需要执行以下准备阶段的所有步骤，无特殊提示的话则所有节点均需要执行相应的命令。\n  1、安装常用命令  所有集群节点安装我们会经常使用到的一些软件依赖包和命令程序  yum -y install vim lrzsz wget curl rsync git gcc make lsof pcre pcre-devel zlib zlib-devel openssl openssl-devel dos2unix sysstat iotop net-tools httpd-tools 2、更改主机名  所有节点按照第二步中的事先规划好的主机名进行更改，并实现集群主机名之间互相解析  hostnamectl set-hostname ceph-admin hostnamectl set-hostname ceph-node1 hostnamectl set-hostname ceph-node2 hostnamectl set-hostname ceph-node3 hostnamectl set-hostname ceph-client  #所有节点都需要添加到hosts文件中，实现主机名解析 ~]# vim /etc/hosts 192.168.66.200 ceph-admin 192.168.66.201\tceph-node1 192.168.66.202\tceph-node2 192.168.66.203\tceph-node3 192.168.66.204\tceph-client  #配置好后，我们在任意一个节点去ping其他节点的主机名，看是否解析成功 [root@ceph-client ~]# ping ceph-admin PING ceph-admin (192.168.66.200) 56(84) bytes of data. 64 bytes from ceph-admin (192.168.66.200): icmp_seq=1 ttl=64 time=0.211 ms 64 bytes from ceph-admin (192.168.66.200): icmp_seq=2 ttl=64 time=0.854 ms 64 bytes from ceph-admin (192.168.66.200): icmp_seq=3 ttl=64 time=0.806 ms 64 bytes from ceph-admin (192.168.66.200): icmp_seq=4 ttl=64 time=0.985 ms 3、关闭防火墙  关闭防火墙和Selinux  systemctl stop firewalld systemctl disable firewalld  sed -i 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux sed -i 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config setenforce 0 getenforce 4、安装时间服务  在所有节点执行该操作  yum install ntp ntpdate ntp-doc systemctl start ntpd systemctl enable ntpd 5、创建Ceph用户  官网文档中已经说明，运行ceph必须使用普通用户，并且需要保证该用户有无密码使用 sudo 的权限 各Ceph节点均需创建该用户  useradd cephu echo 123456 | passwd --stdin cephu  echo \"cephu ALL=(ALL) NOPASSWD:ALL\" | tee /etc/sudoers.d/ceph chmod 0440 /etc/sudoers.d/ceph 6、配置免密认证  实现cephu用户ssh免密登入各ceph节点，在admin节点进行操作  [root@ceph-admin ~]# su - cephu [cephu@ceph-admin ~]$ ssh-keygen -t rsa [cephu@ceph-admin ~]$ ssh-copy-id cephu@ceph-node1 [cephu@ceph-admin ~]$ ssh-copy-id cephu@ceph-node2 [cephu@ceph-admin ~]$ ssh-copy-id cephu@ceph-node3 [cephu@ceph-admin ~]$ ssh-copy-id cephu@ceph-client 7、添加配置文件  在admin节点用登入root用户，并在~/.ssh目录下创建config文件，并将下面的配置信息添加进去  [root@ceph-admin ~]# mkdir ~/.ssh [root@ceph-admin ~]# vim ~/.ssh/config Host ceph-node1 Hostname ceph-node1 User cephu  Host ceph-node2 Hostname ceph-node2 User cephu  Host ceph-node3 Hostname ceph-node3 User cephu 8、添加下载源  在admin节点配置ceph源，并将ce文章来源(Source)：浅时光博客ph源拷贝给所有node节点和客户端节点  [root@ceph-admin ~]# vim /etc/yum.repos.d/ceph.repo [Ceph] name=Ceph packages for $basearch baseurl=https://mirrors.aliyun.com/ceph/rpm-luminous/el7/$basearch enabled=1 gpgcheck=1 type=rpm-md gpgkey=https://download.ceph.com/keys/release.asc  [Ceph-noarch] name=Ceph noarch packages baseurl=https://mirrors.aliyun.com/ceph/rpm-luminous/el7/noarch/ enabled=1 gpgcheck=1 type=rpm-md gpgkey=https://download.ceph.com/keys/release.asc  [ceph-source] name=Ceph source packages baseurl=https://mirrors.aliyun.com/ceph/rpm-luminous/el7/SRPMS/ enabled=1 gpgcheck=1 type=rpm-md gpgkey=https://download.ceph.com/keys/release.asc   [root@ceph-admin ~]# scp /etc/yum.repos.d/ceph.repo root@192.168.66.201:/etc/yum.repos.d/ [root@ceph-admin ~]# scp /etc/yum.repos.d/ceph.repo root@192.168.66.202:/etc/yum.repos.d/ [root@ceph-admin ~]# scp /etc/yum.repos.d/ceph.repo root@192.168.66.203:/etc/yum.repos.d/ [root@ceph-admin ~]# scp /etc/yum.repos.d/ceph.repo root@192.168.66.204:/etc/yum.repos.d/   #所有节点执行创建缓存 yum clean all yum makecache  在admin节点安装ceph-deploy  [root@ceph-admin ~]# yum -y install ceph-deploy 四、部署ceph集群  注意：如果没有特殊说明，那么接下来的操作则在admin节点上进行操作  1、创建操作目录 [root@ceph-admin ~]# su - cephu [cephu@ceph-admin ~]$ mkdir my-cluster #之后所有的ceph-deploy操作必须在该目录下执行 2、创建ceph集群 2.1：安装distribute包  先下载安装python的distribute包，不然后面部署ceph集群会报错 下载地址：https://pypi.org/project/distribute/#modal-close  [cephu@ceph-admin ~]$ unzip distribute-0.7.3.zip [cephu@ceph-admin ~]$ cd distribute-0.7.3 [cephu@ceph-admin distribute-0.7.3]$ sudo python setup.py install 2.2：进行创建集群  **注意：**new后面跟的是各个节点的主机名,且可以文章来源(Source)：浅时光博客实现admin节点与各node节点主机名之间互相解析  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy new ceph-node1 ceph-node2 ceph-node3  没有报错表示创建成功  [cephu@ceph-admin my-cluster]$ ls ceph.conf ceph-deploy-ceph.log ceph.mon.keyring  问题：创建集群时提示缺少pkg_resources模块的问题解决  [cephu@ceph-admin my-cluster]$ sudo pip install --upgrade setuptools 2.3：安装luminous  三台node节点下载epel源，注意我们已经在环境准备阶段配置了ceph源，所以这里只需要安装epel源就可以了  yum -y install epel*  分别在三台node节点执行以下命令进行安装软件，注意切换为ceph普通用户  su - cephu  通过以下命令查看当前的最新版本  $ sudo yum --showduplicates list ceph | expand  通过以下命令进行安装ceph  $ sudo yum install ceph ceph-radosgw 2.4：测试安装情况  分别在3台node节点执行下面的命令，来确认我们是否安装成功  $ ceph --version ceph version 12.2.13 (584a20eb0237c657dc0567da126be145106aa47e) luminous (stable) 3、初始化mon  在admin节点用cephu这个普通用户执行  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mon create-initial #没有ERROR报错则安装成功  **注意：**如果之前ceph.conf配置文件中已经存在了内容，则需要添加--overwrite-conf参数进行覆盖，命令如下：  [cephu@ceph-admin my-cluster]$ ceph-deploy --overwrite-conf mon create-initial  授予3个node节点使用命令免用户名权限  [cephu@ceph-admin my-cluster]$ ceph-deploy admin ceph-node1 ceph-node2 ceph-node3 #没有ERROR报错则安装成功 4、安装ceph-mgr  安装在node1节点上，执行安装命令在admin节点上；为安装dashboard做准备  [cephu@ceph-admin my-cluster]$ ceph-deploy mgr create ceph-node1 #没有ERROR报错则安装成功 5、添加OSD  分别为3台node节点添加OSD，注意磁盘名称，我这里为sdb，可通过命令lsblk或者fdisk命令查看磁盘 官网文档：http://docs.ceph.org.cn/rados/deployment/ceph-deploy-osd/ **注意：**我这里只创建data盘，db和wal我这里没单独指定，如果需要单独指定则需要添加参数 --block-db /dev/sdc --block-wal /dev/sdd  #用 create 命令一次完成准备 OSD 、部署到 OSD 节点、并激活它 [cephu@ceph-admin my-cluster]$ ceph-deploy osd create ceph-node1 --data /dev/sdb [cephu@ceph-admin my-cluster]$ ceph-deploy osd create ceph-node2 --data /dev/sdb [cephu@ceph-admin my-cluster]$ ceph-deploy osd create ceph-node3 --data /dev/sdb  通过lsblk -f命令可查看到磁盘分区情况  [cephu@ceph-admin my-cluster]$ ssh ceph-node1 lsblk -f  通过以下命令查看集群状态  [cephu@ceph-admin my-cluster]$ ssh ceph-node1 sudo ceph -s 6、部署Dashboard  在node1节点上部署dashboard  6.1：创建管理域秘钥 [root@ceph-node1 ~]# su - cephu [cephu@ceph-node1 ~]$ sudo ceph auth get-or-create mgr.ceph-node1 mon 'allow profile mgr' osd 'allow *' mds 'allow *'  [mgr.ceph-node1] \tkey = AQDmiQhfDrBDEhAAnfwRTMv5clhbSEuetlrwyw== 6.2：开启mgr管理域 [cephu@ceph-node1 ~]$ sudo ceph-mgr -i ceph-node1 6.3：检查mgr状态  确保mgr的状态为active  [cephu@ceph-node1 ~]$ sudo ceph status 6.4：打开dashboard模块 [cephu@ceph-node1 ~]$ sudo ceph mgr module enable dashboard 6.5：绑定模板mgr节点 [cephu@ceph-node1 ~]$ sudo ceph config-key set 'mgr/dashboard/ceph-node1/server_addr' '192.168.66.201' set mgr/dashboard/ceph-node1/server_addr  [cephu@ceph-node1 ~]$ ss -tnlp|grep 7000 LISTEN 0 5 192.168.66.201:7000 *:* 6.6：浏览器访问  http://mgr地址:7000  五、配置客户端  创建客户端使用rdb(块存储)；创建块设备之前需要创建存储池；执行创建存储的命令需要在mon节点上执行，也就是node1节点  1、创建存储池 [root@ceph-node1 ~]# su – cephu [cephu@ceph-node1 ~]$ sudo ceph osd pool create rbd 128 128 pool 'rbd' created  参数说明：  128表示如果创建的pool少于5个OSD，那么就是128个pg，5-10为512；10-50为4096    2、初始化存储池 [cephu@ceph-node1 ~]$ sudo rbd pool init rbd 3、准备客户端  这里的客户端就是我们规划的那台，确保客户端是可以跟admin节点实现主机名互通的  3.1：升级内核 官方推荐的客户端服务器内核版本：\n 4.1.4 or later 3.16.3 or later (rbd deadlock regression in 3.16.[0-2]) NOT v3.15.* (rbd deadlock regression) 3.14.* 升级内核版本到4.x以上，接下来在客户端机器上进行操作  [root@ceph-client ~]# uname -r 3.10.0-957.el7.x86_64  导入key  [root@ceph-client ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 3.2：安装elrepo源 [root@ceph-client ~]# rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm  查看可用的系统内核包  [root@ceph-client ~]# yum --disablerepo=\"*\" --enablerepo=\"elrepo-kernel\" list available 3.3：安装最新内核 [root@ceph-client ~]# yum --enablerepo=elrepo-kernel install kernel-ml-devel kernel-ml -y   如果yum安装很慢的话，通过rpm包的方式进行安装\n  获取rpm包：https://elrepo.org/linux/kernel/el7/x86_64/RPMS/\n  内核选择：\n kernel-lt（lt=long-term）长期有效 kernel-ml（ml=mainline）主流版本    安装\n  [root@ceph-client ~]# rpm -ivh kernel-ml-* 3.4：修改内核启动顺序  查看内核默认启动顺序  [root@ceph-client ~]# awk -F\\' '$1==\"menuentry \" {print $2}' /etc/grub2.cfg  CentOS Linux (5.7.8-1.el7.elrepo.x86_64) 7 (Core) CentOS Linux (3.10.0-957.el7.x86_64) 7 (Core) CentOS Linux (0-rescue-7ba72ac2cf764cf39417d13528419374) 7 (Core)  修改启动顺序  [root@ceph-client ~]# grub2-set-default 0  重启服务器  [root@ceph-client ~]# reboot  再次检测系统内核版本  [root@ceph-client ~]# uname -a Linux ceph-client 5.7.8-1.el7.elrepo.x86_64 #1 SMP Tue Jul 7 18:43:16 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux  删除旧的内核  [root@ceph-client ~]# yum remove kernel -y 删除:  kernel.x86_64 0:3.10.0-957.el7 完毕！ 4、客户端安装ceph 4.1：环境检查  先下载安装python的distribute包，不然部署ceph集群会报错；在client节点操作 下载地址：https://pypi.org/project/distribute/#modal-close  [root@ceph-client ~]# su - cephu [cephu@ceph-client ~]$ wget https://files.pythonhosted.org/packages/5f/ad/1fde06877a8d7d5c9b60eff7de2d452f639916ae1d48f0b8f97bf97e570a/distribute-0.7.3.zip [cephu@ceph-client ~]$ unzip distribute-0.7.3.zip [cephu@ceph-client ~]$ cd distribute-0.7.3 [cephu@ceph-client distribute-0.7.3]$ sudo python setup.py install [cephu@ceph-client distribute-0.7.3]$ sudo yum -y install python-setuptools [cephu@ceph-client distribute-0.7.3]$ sudo yum -y install epel* 4.2：安装ceph  确保已经在环境准备阶段时客户端也配置了ceph源  [root@ceph-client ~]# su - cephu  [cephu@ceph-client ~]$ sudo yum install ceph ceph-radosgw [cephu@ceph-client ~]$ ceph --version ceph version 12.2.13 (584a20eb0237c657dc0567da126be145106aa47e) luminous (stable) 4.3：拷贝秘钥  在admin【管理节点】节点上，用 ceph-deploy 把 Ceph 配置文件和 ceph.client.admin.keyring 拷贝到 ceph-client 。  [cephu@ceph-admin ~]$ cd my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy admin ceph-client #ceph-deploy 工具会把密钥环复制到 /etc/ceph 目录，要确保此密钥环文件有读权限（如 sudo chmod +r /etc/ceph/ceph.client.admin.keyring ）  修改client节点该文件的权限  [cephu@ceph-client ~]$ sudo chmod +r /etc/ceph/ceph.client.admin.keyring 4.4：修改配置  修改client节点下的ceph配置文件，为了解决映射镜像时出错问题。  [cephu@ceph-client ~]$ sudo vim /etc/ceph/ceph.conf #最后添加 rbd_default_features = 1 4.5：配置块设备  在 ceph-client 节点上创建一个块设备 image，默认单位为M 语法：rbd create foo –size 4096 [-m {mon-IP}] [-k /path/to/ceph.client.admin.keyring]  [cephu@ceph-client ~]$ rbd create foo --size 4096  在 ceph-client 节点上，把 image 映射为块设备。 语法：sudo rbd map foo –name client.admin [-m {mon-IP}] [-k /path/to/ceph.client.admin.keyring]  [cephu@ceph-client ~]$ sudo rbd map foo --name client.admin /dev/rbd0  在 ceph-client 节点上，创建文件系统后就可以使用块设备了。  [cephu@ceph-client ~]$ sudo mkfs.ext4 -m0 /dev/rbd/rbd/foo  注意：此命令可能耗时较长。  mke2fs 1.42.9 (28-Dec-2013) Discarding device blocks: 完成 文件系统标签= OS type: Linux 块大小=4096 (log=2) 分块大小=4096 (log=2) Stride=16 blocks, Stripe width=16 blocks 262144 inodes, 1048576 blocks 0 blocks (0.00%) reserved for the super user 第一个数据块=0 Maximum filesystem blocks=1073741824 32 block groups 32768 blocks per group, 32768 fragments per group 8192 inodes per group Superblock backups stored on blocks: \t32768, 98304, 163840, 229376, 294912, 819200, 884736  Allocating group tables: 完成 正在写入inode表: 完成 Creating journal (32768 blocks): 完成 Writing superblocks and filesystem accounting information: 完成  在 ceph-client 节点上挂载此文件系统。  [cephu@ceph-client ~]$ sudo mkdir /mnt/ceph-block-device #创建挂载点 [cephu@ceph-client ~]$ sudo mount /dev/rbd/rbd/foo /mnt/ceph-block-device #挂载 [cephu@ceph-client ~]$ cd /mnt/ceph-block-device [cephu@ceph-client ceph-block-device]$ sudo touch dqzboy.txt [cephu@ceph-client ceph-block-device]$ ls dqzboy.txt lost+found ",
+  "wordCount" : "1114",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-01T10:50:57Z",
+  "dateModified": "2022-03-01T10:50:57Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Ceph存储集群部署
+    </h1>
+    <div class="post-meta"><span title='2022-03-01 10:50:57 +0000 UTC'>2022-03-01</span>&nbsp;·&nbsp;6 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80ceph-%e7%ae%80%e4%bb%8b" aria-label="一、CEPH 简介">一、CEPH 简介</a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e7%8e%af%e5%a2%83%e6%8f%8f%e8%bf%b0" aria-label="二、环境描述">二、环境描述</a></li>
+                    <li>
+                        <a href="#%e4%b8%89%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" aria-label="三、环境准备">三、环境准备</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%ae%89%e8%a3%85%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4" aria-label="1、安装常用命令">1、安装常用命令</a></li>
+                    <li>
+                        <a href="#2%e6%9b%b4%e6%94%b9%e4%b8%bb%e6%9c%ba%e5%90%8d" aria-label="2、更改主机名">2、更改主机名</a></li>
+                    <li>
+                        <a href="#3%e5%85%b3%e9%97%ad%e9%98%b2%e7%81%ab%e5%a2%99" aria-label="3、关闭防火墙">3、关闭防火墙</a></li>
+                    <li>
+                        <a href="#4%e5%ae%89%e8%a3%85%e6%97%b6%e9%97%b4%e6%9c%8d%e5%8a%a1" aria-label="4、安装时间服务">4、安装时间服务</a></li>
+                    <li>
+                        <a href="#5%e5%88%9b%e5%bb%baceph%e7%94%a8%e6%88%b7" aria-label="5、创建Ceph用户">5、创建Ceph用户</a></li>
+                    <li>
+                        <a href="#6%e9%85%8d%e7%bd%ae%e5%85%8d%e5%af%86%e8%ae%a4%e8%af%81" aria-label="6、配置免密认证">6、配置免密认证</a></li>
+                    <li>
+                        <a href="#7%e6%b7%bb%e5%8a%a0%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="7、添加配置文件">7、添加配置文件</a></li>
+                    <li>
+                        <a href="#8%e6%b7%bb%e5%8a%a0%e4%b8%8b%e8%bd%bd%e6%ba%90" aria-label="8、添加下载源">8、添加下载源</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9b%9b%e9%83%a8%e7%bd%b2ceph%e9%9b%86%e7%be%a4" aria-label="四、部署ceph集群">四、部署ceph集群</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%88%9b%e5%bb%ba%e6%93%8d%e4%bd%9c%e7%9b%ae%e5%bd%95" aria-label="1、创建操作目录">1、创建操作目录</a></li>
+                    <li>
+                        <a href="#2%e5%88%9b%e5%bb%baceph%e9%9b%86%e7%be%a4" aria-label="2、创建ceph集群">2、创建ceph集群</a><ul>
+                            
+                    <li>
+                        <a href="#21%e5%ae%89%e8%a3%85distribute%e5%8c%85" aria-label="2.1：安装distribute包">2.1：安装distribute包</a></li>
+                    <li>
+                        <a href="#22%e8%bf%9b%e8%a1%8c%e5%88%9b%e5%bb%ba%e9%9b%86%e7%be%a4" aria-label="2.2：进行创建集群">2.2：进行创建集群</a></li>
+                    <li>
+                        <a href="#23%e5%ae%89%e8%a3%85luminous" aria-label="2.3：安装luminous">2.3：安装luminous</a></li>
+                    <li>
+                        <a href="#24%e6%b5%8b%e8%af%95%e5%ae%89%e8%a3%85%e6%83%85%e5%86%b5" aria-label="2.4：测试安装情况">2.4：测试安装情况</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e5%88%9d%e5%a7%8b%e5%8c%96mon" aria-label="3、初始化mon">3、初始化mon</a></li>
+                    <li>
+                        <a href="#4%e5%ae%89%e8%a3%85ceph-mgr" aria-label="4、安装ceph-mgr">4、安装ceph-mgr</a></li>
+                    <li>
+                        <a href="#5%e6%b7%bb%e5%8a%a0osd" aria-label="5、添加OSD">5、添加OSD</a></li>
+                    <li>
+                        <a href="#6%e9%83%a8%e7%bd%b2dashboard" aria-label="6、部署Dashboard">6、部署Dashboard</a><ul>
+                            
+                    <li>
+                        <a href="#61%e5%88%9b%e5%bb%ba%e7%ae%a1%e7%90%86%e5%9f%9f%e7%a7%98%e9%92%a5" aria-label="6.1：创建管理域秘钥">6.1：创建管理域秘钥</a></li>
+                    <li>
+                        <a href="#62%e5%bc%80%e5%90%afmgr%e7%ae%a1%e7%90%86%e5%9f%9f" aria-label="6.2：开启mgr管理域">6.2：开启mgr管理域</a></li>
+                    <li>
+                        <a href="#63%e6%a3%80%e6%9f%a5mgr%e7%8a%b6%e6%80%81" aria-label="6.3：检查mgr状态">6.3：检查mgr状态</a></li>
+                    <li>
+                        <a href="#64%e6%89%93%e5%bc%80dashboard%e6%a8%a1%e5%9d%97" aria-label="6.4：打开dashboard模块">6.4：打开dashboard模块</a></li>
+                    <li>
+                        <a href="#65%e7%bb%91%e5%ae%9a%e6%a8%a1%e6%9d%bfmgr%e8%8a%82%e7%82%b9" aria-label="6.5：绑定模板mgr节点">6.5：绑定模板mgr节点</a></li>
+                    <li>
+                        <a href="#66%e6%b5%8f%e8%a7%88%e5%99%a8%e8%ae%bf%e9%97%ae" aria-label="6.6：浏览器访问">6.6：浏览器访问</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e4%ba%94%e9%85%8d%e7%bd%ae%e5%ae%a2%e6%88%b7%e7%ab%af" aria-label="五、配置客户端">五、配置客户端</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%88%9b%e5%bb%ba%e5%ad%98%e5%82%a8%e6%b1%a0" aria-label="1、创建存储池">1、创建存储池</a></li>
+                    <li>
+                        <a href="#2%e5%88%9d%e5%a7%8b%e5%8c%96%e5%ad%98%e5%82%a8%e6%b1%a0" aria-label="2、初始化存储池">2、初始化存储池</a></li>
+                    <li>
+                        <a href="#3%e5%87%86%e5%a4%87%e5%ae%a2%e6%88%b7%e7%ab%af" aria-label="3、准备客户端">3、准备客户端</a><ul>
+                            
+                    <li>
+                        <a href="#31%e5%8d%87%e7%ba%a7%e5%86%85%e6%a0%b8" aria-label="3.1：升级内核">3.1：升级内核</a></li>
+                    <li>
+                        <a href="#32%e5%ae%89%e8%a3%85elrepo%e6%ba%90" aria-label="3.2：安装elrepo源">3.2：安装elrepo源</a></li>
+                    <li>
+                        <a href="#33%e5%ae%89%e8%a3%85%e6%9c%80%e6%96%b0%e5%86%85%e6%a0%b8" aria-label="3.3：安装最新内核">3.3：安装最新内核</a></li>
+                    <li>
+                        <a href="#34%e4%bf%ae%e6%94%b9%e5%86%85%e6%a0%b8%e5%90%af%e5%8a%a8%e9%a1%ba%e5%ba%8f" aria-label="3.4：修改内核启动顺序">3.4：修改内核启动顺序</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4%e5%ae%a2%e6%88%b7%e7%ab%af%e5%ae%89%e8%a3%85ceph" aria-label="4、客户端安装ceph">4、客户端安装ceph</a><ul>
+                            
+                    <li>
+                        <a href="#41%e7%8e%af%e5%a2%83%e6%a3%80%e6%9f%a5" aria-label="4.1：环境检查">4.1：环境检查</a></li>
+                    <li>
+                        <a href="#42%e5%ae%89%e8%a3%85ceph" aria-label="4.2：安装ceph">4.2：安装ceph</a></li>
+                    <li>
+                        <a href="#43%e6%8b%b7%e8%b4%9d%e7%a7%98%e9%92%a5" aria-label="4.3：拷贝秘钥">4.3：拷贝秘钥</a></li>
+                    <li>
+                        <a href="#44%e4%bf%ae%e6%94%b9%e9%85%8d%e7%bd%ae" aria-label="4.4：修改配置">4.4：修改配置</a></li>
+                    <li>
+                        <a href="#45%e9%85%8d%e7%bd%ae%e5%9d%97%e8%ae%be%e5%a4%87" aria-label="4.5：配置块设备">4.5：配置块设备</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一ceph-简介">一、CEPH 简介<a hidden class="anchor" aria-hidden="true" href="#一ceph-简介">#</a></h2>
+<p>不管你是想为<em>云平台</em>提供<code>Ceph 对象存储</code>或<code>Ceph 块设备</code>，还是想部署一个<code>Ceph 文件系统</code>或者把 Ceph 作为他用，所有<code>Ceph 存储集群</code>的部署都始于部署一个个<code>Ceph 节点</code>、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 <code>Ceph Monitor</code> 和两个 <code>OSD 守护进程</code>。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ <code>Metadata Server</code> ）。</p>
+<p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph1.png" alt=""  />
+</p>
+<ul>
+<li>**<code>Ceph OSDs</code>：**<em>Ceph OSD 守护进程</em>（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active+clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。</li>
+<li>**<code>Monitors</code>：**<em>Ceph Monitor</em>维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。</li>
+<li>**<code>MDSs</code>：**<em>Ceph 元数据服务器</em>（ MDS ）为 <em>Ceph 文件系统</em>存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。</li>
+</ul>
+<p>Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。</p>
+<ul>
+<li>官网文档：<a href="https://www.dqzboy.com/go.php?url=http://docs.ceph.org.cn/start/intro/">http://docs.ceph.org.cn/start/intro/</a></li>
+</ul>
+<h2 id="二环境描述">二、环境描述<a hidden class="anchor" aria-hidden="true" href="#二环境描述">#</a></h2>
+<ul>
+<li>硬件推荐：<a href="https://www.dqzboy.com/go.php?url=http://docs.ceph.org.cn/start/hardware-recommendations/">http://docs.ceph.org.cn/start/hardware-recommendations/</a></li>
+<li>本文测试环境资源规格如下</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>主机名</strong></th>
+<th><strong>IP地址</strong></th>
+<th><strong>角色</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ceph-admin</td>
+<td>192.168.66.200</td>
+<td>Admin，ceph-deploy</td>
+</tr>
+<tr>
+<td>Ceph-node1</td>
+<td>192.168.66.201</td>
+<td>Mon，Mgr，osd</td>
+</tr>
+<tr>
+<td>Ceph-node2</td>
+<td>192.168.66.202</td>
+<td>Mon，Osd</td>
+</tr>
+<tr>
+<td>Ceph-node3</td>
+<td>192.168.66.203</td>
+<td>Mon，Osd</td>
+</tr>
+<tr>
+<td>Ceph-Client</td>
+<td>192.168.66.204</td>
+<td>客户端</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>**注意：**给三台Node节点单独挂载一块磁盘，大小必须大于5G；生产环境下磁盘建议1TB以上大小的容量，CPU推荐16C以上，内存24G以上，且官方建议ceph集群部署到物理机上；注意磁盘添加后不需要我们手动进行格式化分区等操作，后面通过ceph工具自动创建。</p>
+</li>
+<li>
+<p>**<code>mon</code>：**Monitors, 节点映射管理, 身份验证管理, 需要达到冗余和高可用至少需要3个节点</p>
+</li>
+<li>
+<p>**<code>osd</code>：**object storage daemon, 对象存储服务, 需要达到冗余和高可用至少需要3个节点</p>
+</li>
+<li>
+<p>**<code>mgr</code>：**Manager, 用于跟踪运行指标和集群状态, 性能.</p>
+</li>
+<li>
+<p>**<code>mds</code>：**Metadata Serve, 提供cephfs的元数据存储</p>
+</li>
+</ul>
+<h2 id="三环境准备">三、环境准备<a hidden class="anchor" aria-hidden="true" href="#三环境准备">#</a></h2>
+<ul>
+<li>
+<p>第二步中我们将机器准备好，并且三台node节点上除了系统盘之外，单独挂载了一块20G大小的数据盘</p>
+</li>
+<li>
+<p>**注意：**环境准备阶段，除了node节点需要单独挂载磁盘之外，其余节点不需要；所有ceph集群节点都需要执行以下准备阶段的所有步骤，无特殊提示的话则所有节点均需要执行相应的命令。</p>
+</li>
+</ul>
+<h3 id="1安装常用命令">1、安装常用命令<a hidden class="anchor" aria-hidden="true" href="#1安装常用命令">#</a></h3>
+<ul>
+<li>所有集群节点安装我们会经常使用到的一些软件依赖包和命令程序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum -y install vim lrzsz wget curl rsync git gcc make lsof pcre pcre-devel zlib zlib-devel openssl openssl-devel dos2unix sysstat iotop net-tools httpd-tools
+</span></span></code></pre></div><h3 id="2更改主机名">2、更改主机名<a hidden class="anchor" aria-hidden="true" href="#2更改主机名">#</a></h3>
+<ul>
+<li>所有节点按照第二步中的事先规划好的主机名进行更改，并实现集群主机名之间互相解析</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>hostnamectl set-hostname ceph-admin
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname ceph-node1
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname ceph-node2
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname ceph-node3
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname ceph-client
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#所有节点都需要添加到hosts文件中，实现主机名解析</span>
+</span></span><span style="display:flex;"><span>~<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/hosts</span>
+</span></span><span style="display:flex;"><span>192.168.66.200  ceph-admin
+</span></span><span style="display:flex;"><span>192.168.66.201	ceph-node1
+</span></span><span style="display:flex;"><span>192.168.66.202	ceph-node2
+</span></span><span style="display:flex;"><span>192.168.66.203	ceph-node3
+</span></span><span style="display:flex;"><span>192.168.66.204	ceph-client
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#配置好后，我们在任意一个节点去ping其他节点的主机名，看是否解析成功</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># ping ceph-admin</span>
+</span></span><span style="display:flex;"><span>PING ceph-admin <span style="color:#f92672">(</span>192.168.66.200<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from ceph-admin <span style="color:#f92672">(</span>192.168.66.200<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.211 ms
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from ceph-admin <span style="color:#f92672">(</span>192.168.66.200<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.854 ms
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from ceph-admin <span style="color:#f92672">(</span>192.168.66.200<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.806 ms
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from ceph-admin <span style="color:#f92672">(</span>192.168.66.200<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.985 ms
+</span></span></code></pre></div><h3 id="3关闭防火墙">3、关闭防火墙<a hidden class="anchor" aria-hidden="true" href="#3关闭防火墙">#</a></h3>
+<ul>
+<li>关闭防火墙和Selinux</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl stop firewalld
+</span></span><span style="display:flex;"><span>systemctl disable firewalld
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s/^SELINUX=enforcing/SELINUX=disabled/g&#39;</span> /etc/sysconfig/selinux
+</span></span><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s/^SELINUX=enforcing/SELINUX=disabled/g&#39;</span> /etc/selinux/config
+</span></span><span style="display:flex;"><span>setenforce <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>getenforce
+</span></span></code></pre></div><h3 id="4安装时间服务">4、安装时间服务<a hidden class="anchor" aria-hidden="true" href="#4安装时间服务">#</a></h3>
+<ul>
+<li>在所有节点执行该操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install ntp ntpdate ntp-doc
+</span></span><span style="display:flex;"><span>systemctl start ntpd
+</span></span><span style="display:flex;"><span>systemctl enable ntpd
+</span></span></code></pre></div><h3 id="5创建ceph用户">5、创建Ceph用户<a hidden class="anchor" aria-hidden="true" href="#5创建ceph用户">#</a></h3>
+<ul>
+<li>官网文档中已经说明，运行ceph必须使用<code>普通用户</code>，并且需要保证该用户有无密码使用 sudo 的权限</li>
+<li>各Ceph节点均需创建该用户</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>useradd cephu
+</span></span><span style="display:flex;"><span>echo <span style="color:#ae81ff">123456</span> | passwd --stdin cephu
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;cephu ALL=(ALL) NOPASSWD:ALL&#34;</span> | tee /etc/sudoers.d/ceph
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">0440</span> /etc/sudoers.d/ceph
+</span></span></code></pre></div><h3 id="6配置免密认证">6、配置免密认证<a hidden class="anchor" aria-hidden="true" href="#6配置免密认证">#</a></h3>
+<ul>
+<li>实现cephu用户ssh免密登入各ceph节点，在admin节点进行操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ ssh-keygen -t rsa
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ ssh-copy-id cephu@ceph-node1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ ssh-copy-id cephu@ceph-node2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ ssh-copy-id cephu@ceph-node3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ ssh-copy-id cephu@ceph-client
+</span></span></code></pre></div><h3 id="7添加配置文件">7、添加配置文件<a hidden class="anchor" aria-hidden="true" href="#7添加配置文件">#</a></h3>
+<ul>
+<li>在admin节点用登入root用户，并在<code>~/.ssh</code>目录下创建config文件，并将下面的配置信息添加进去</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir ~/.ssh</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># vim ~/.ssh/config</span>
+</span></span><span style="display:flex;"><span>Host ceph-node1
+</span></span><span style="display:flex;"><span>Hostname ceph-node1
+</span></span><span style="display:flex;"><span>User cephu
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>Host ceph-node2
+</span></span><span style="display:flex;"><span>Hostname ceph-node2
+</span></span><span style="display:flex;"><span>User cephu
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>Host ceph-node3
+</span></span><span style="display:flex;"><span>Hostname ceph-node3
+</span></span><span style="display:flex;"><span>User cephu
+</span></span></code></pre></div><h3 id="8添加下载源">8、添加下载源<a hidden class="anchor" aria-hidden="true" href="#8添加下载源">#</a></h3>
+<ul>
+<li>在admin节点配置ceph源，并将ce文章来源(Source)：浅时光博客ph源拷贝给所有node节点和客户端节点</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/yum.repos.d/ceph.repo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Ceph<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>Ceph packages <span style="color:#66d9ef">for</span> $basearch
+</span></span><span style="display:flex;"><span>baseurl<span style="color:#f92672">=</span>https://mirrors.aliyun.com/ceph/rpm-luminous/el7/$basearch
+</span></span><span style="display:flex;"><span>enabled<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>type<span style="color:#f92672">=</span>rpm-md
+</span></span><span style="display:flex;"><span>gpgkey<span style="color:#f92672">=</span>https://download.ceph.com/keys/release.asc
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Ceph-noarch<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>Ceph noarch packages
+</span></span><span style="display:flex;"><span>baseurl<span style="color:#f92672">=</span>https://mirrors.aliyun.com/ceph/rpm-luminous/el7/noarch/
+</span></span><span style="display:flex;"><span>enabled<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>type<span style="color:#f92672">=</span>rpm-md
+</span></span><span style="display:flex;"><span>gpgkey<span style="color:#f92672">=</span>https://download.ceph.com/keys/release.asc
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ceph-source<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>Ceph source packages
+</span></span><span style="display:flex;"><span>baseurl<span style="color:#f92672">=</span>https://mirrors.aliyun.com/ceph/rpm-luminous/el7/SRPMS/
+</span></span><span style="display:flex;"><span>enabled<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>type<span style="color:#f92672">=</span>rpm-md
+</span></span><span style="display:flex;"><span>gpgkey<span style="color:#f92672">=</span>https://download.ceph.com/keys/release.asc
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp /etc/yum.repos.d/ceph.repo root@192.168.66.201:/etc/yum.repos.d/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp /etc/yum.repos.d/ceph.repo root@192.168.66.202:/etc/yum.repos.d/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp /etc/yum.repos.d/ceph.repo root@192.168.66.203:/etc/yum.repos.d/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp /etc/yum.repos.d/ceph.repo root@192.168.66.204:/etc/yum.repos.d/</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#所有节点执行创建缓存</span>
+</span></span><span style="display:flex;"><span>yum clean all
+</span></span><span style="display:flex;"><span>yum makecache
+</span></span></code></pre></div><ul>
+<li>在admin节点安装ceph-deploy</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum -y install ceph-deploy</span>
+</span></span></code></pre></div><h2 id="四部署ceph集群">四、部署ceph集群<a hidden class="anchor" aria-hidden="true" href="#四部署ceph集群">#</a></h2>
+<ul>
+<li>注意：如果没有特殊说明，那么接下来的操作则在admin节点上进行操作</li>
+</ul>
+<h3 id="1创建操作目录">1、创建操作目录<a hidden class="anchor" aria-hidden="true" href="#1创建操作目录">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ mkdir my-cluster 		<span style="color:#75715e">#之后所有的ceph-deploy操作必须在该目录下执行</span>
+</span></span></code></pre></div><h3 id="2创建ceph集群">2、创建ceph集群<a hidden class="anchor" aria-hidden="true" href="#2创建ceph集群">#</a></h3>
+<h4 id="21安装distribute包">2.1：安装distribute包<a hidden class="anchor" aria-hidden="true" href="#21安装distribute包">#</a></h4>
+<ul>
+<li>先下载安装python的distribute包，不然后面部署ceph集群会报错</li>
+<li>下载地址：<a href="https://www.dqzboy.com/go.php?url=https://pypi.org/project/distribute/#modal-close">https://pypi.org/project/distribute/#modal-close</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ unzip distribute-0.7.3.zip
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ cd distribute-0.7.3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin distribute-0.7.3<span style="color:#f92672">]</span>$ sudo python setup.py install
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph3.png" alt=""  />
+</p>
+<h4 id="22进行创建集群">2.2：进行创建集群<a hidden class="anchor" aria-hidden="true" href="#22进行创建集群">#</a></h4>
+<ul>
+<li>**注意：**new后面跟的是各个节点的主机名,且可以文章来源(Source)：浅时光博客实现admin节点与各node节点主机名之间互相解析</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ cd ~/my-cluster/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy new ceph-node1 ceph-node2 ceph-node3
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-mon1.png" alt=""  />
+</p>
+<ul>
+<li>没有报错表示创建成功</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ls
+</span></span><span style="display:flex;"><span>ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring
+</span></span></code></pre></div><ul>
+<li>问题：创建集群时提示缺少<code>pkg_resources</code>模块的问题解决</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ sudo pip install --upgrade setuptools
+</span></span></code></pre></div><h4 id="23安装luminous">2.3：安装luminous<a hidden class="anchor" aria-hidden="true" href="#23安装luminous">#</a></h4>
+<ul>
+<li>三台node节点下载epel源，注意我们已经在环境准备阶段配置了ceph源，所以这里只需要安装epel源就可以了</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum -y install epel*
+</span></span></code></pre></div><ul>
+<li>分别在三台node节点执行以下命令进行安装软件，注意切换为ceph普通用户</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>su - cephu
+</span></span></code></pre></div><ul>
+<li>通过以下命令查看当前的最新版本</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo yum --showduplicates list ceph | expand
+</span></span></code></pre></div><ul>
+<li>通过以下命令进行安装ceph</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo yum install ceph ceph-radosgw
+</span></span></code></pre></div><h4 id="24测试安装情况">2.4：测试安装情况<a hidden class="anchor" aria-hidden="true" href="#24测试安装情况">#</a></h4>
+<ul>
+<li>分别在3台node节点执行下面的命令，来确认我们是否安装成功</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ceph --version
+</span></span><span style="display:flex;"><span>ceph version 12.2.13 <span style="color:#f92672">(</span>584a20eb0237c657dc0567da126be145106aa47e<span style="color:#f92672">)</span> luminous <span style="color:#f92672">(</span>stable<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h3 id="3初始化mon">3、初始化mon<a hidden class="anchor" aria-hidden="true" href="#3初始化mon">#</a></h3>
+<ul>
+<li>在admin节点用cephu这个普通用户执行</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ cd ~/my-cluster/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy mon create-initial
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#没有ERROR报错则安装成功</span>
+</span></span></code></pre></div><ul>
+<li>**注意：**如果之前ceph.conf配置文件中已经存在了内容，则需要添加<code>--overwrite-conf</code>参数进行覆盖，命令如下：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy --overwrite-conf mon create-initial
+</span></span></code></pre></div><ul>
+<li>授予3个node节点使用命令免用户名权限</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy admin ceph-node1 ceph-node2 ceph-node3
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#没有ERROR报错则安装成功</span>
+</span></span></code></pre></div><h3 id="4安装ceph-mgr">4、安装ceph-mgr<a hidden class="anchor" aria-hidden="true" href="#4安装ceph-mgr">#</a></h3>
+<ul>
+<li>安装在node1节点上，执行安装命令在admin节点上；为安装dashboard做准备</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy mgr create ceph-node1
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#没有ERROR报错则安装成功</span>
+</span></span></code></pre></div><h3 id="5添加osd">5、添加OSD<a hidden class="anchor" aria-hidden="true" href="#5添加osd">#</a></h3>
+<ul>
+<li>分别为3台node节点添加OSD，注意磁盘名称，我这里为sdb，可通过命令lsblk或者fdisk命令查看磁盘</li>
+<li>官网文档：<a href="https://www.dqzboy.com/go.php?url=http://docs.ceph.org.cn/rados/deployment/ceph-deploy-osd/">http://docs.ceph.org.cn/rados/deployment/ceph-deploy-osd/</a></li>
+<li>**注意：**我这里只创建data盘，db和wal我这里没单独指定，如果需要单独指定则需要添加参数  <code>--block-db /dev/sdc</code> <code>--block-wal /dev/sdd</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#用 create 命令一次完成准备 OSD 、部署到 OSD 节点、并激活它</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy osd create ceph-node1 --data /dev/sdb
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy osd create ceph-node2 --data /dev/sdb
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy osd create ceph-node3 --data /dev/sdb
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-osd.png" alt=""  />
+</p>
+<ul>
+<li>通过<code>lsblk -f</code>命令可查看到磁盘分区情况</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ssh ceph-node1 lsblk -f
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-osd1.png" alt=""  />
+</p>
+<ul>
+<li>通过以下命令查看集群状态</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ssh ceph-node1 sudo ceph -s
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-osd3.png" alt=""  />
+</p>
+<h3 id="6部署dashboard">6、部署Dashboard<a hidden class="anchor" aria-hidden="true" href="#6部署dashboard">#</a></h3>
+<ul>
+<li>在node1节点上部署dashboard</li>
+</ul>
+<h4 id="61创建管理域秘钥">6.1：创建管理域秘钥<a hidden class="anchor" aria-hidden="true" href="#61创建管理域秘钥">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-node1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph auth get-or-create mgr.ceph-node1 mon <span style="color:#e6db74">&#39;allow profile mgr&#39;</span> osd <span style="color:#e6db74">&#39;allow *&#39;</span> mds <span style="color:#e6db74">&#39;allow *&#39;</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>mgr.ceph-node1<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	key <span style="color:#f92672">=</span> AQDmiQhfDrBDEhAAnfwRTMv5clhbSEuetlrwyw<span style="color:#f92672">==</span>
+</span></span></code></pre></div><h4 id="62开启mgr管理域">6.2：开启mgr管理域<a hidden class="anchor" aria-hidden="true" href="#62开启mgr管理域">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph-mgr -i ceph-node1
+</span></span></code></pre></div><h4 id="63检查mgr状态">6.3：检查mgr状态<a hidden class="anchor" aria-hidden="true" href="#63检查mgr状态">#</a></h4>
+<ul>
+<li>确保mgr的状态为<code>active</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph status
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-mgr1.png" alt=""  />
+</p>
+<h4 id="64打开dashboard模块">6.4：打开dashboard模块<a hidden class="anchor" aria-hidden="true" href="#64打开dashboard模块">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph mgr module enable dashboard
+</span></span></code></pre></div><h4 id="65绑定模板mgr节点">6.5：绑定模板mgr节点<a hidden class="anchor" aria-hidden="true" href="#65绑定模板mgr节点">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph config-key set <span style="color:#e6db74">&#39;mgr/dashboard/ceph-node1/server_addr&#39;</span> <span style="color:#e6db74">&#39;192.168.66.201&#39;</span>
+</span></span><span style="display:flex;"><span>set mgr/dashboard/ceph-node1/server_addr
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ ss -tnlp|grep <span style="color:#ae81ff">7000</span>
+</span></span><span style="display:flex;"><span>LISTEN     <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">5</span>      192.168.66.201:7000                     *:*  
+</span></span></code></pre></div><h4 id="66浏览器访问">6.6：浏览器访问<a hidden class="anchor" aria-hidden="true" href="#66浏览器访问">#</a></h4>
+<ul>
+<li><a href="https://www.dqzboy.com/go.php?url=http://mgr%E5%9C%B0%E5%9D%80:7000">http://mgr地址:7000</a></li>
+</ul>
+<p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-mgr2.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-mgr3.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph-mgr4.png" alt=""  />
+</p>
+<h2 id="五配置客户端">五、配置客户端<a hidden class="anchor" aria-hidden="true" href="#五配置客户端">#</a></h2>
+<ul>
+<li>创建客户端使用rdb(块存储)；创建块设备之前需要创建存储池；执行创建存储的命令需要在mon节点上执行，也就是node1节点</li>
+</ul>
+<h3 id="1创建存储池">1、创建存储池<a hidden class="anchor" aria-hidden="true" href="#1创建存储池">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-node1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># su – cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph osd pool create  rbd <span style="color:#ae81ff">128</span> <span style="color:#ae81ff">128</span>
+</span></span><span style="display:flex;"><span>pool <span style="color:#e6db74">&#39;rbd&#39;</span> created
+</span></span></code></pre></div><ul>
+<li>参数说明：
+<ul>
+<li>128表示如果创建的pool少于5个OSD，那么就是128个pg，5-10为512；10-50为4096</li>
+</ul>
+</li>
+</ul>
+<h3 id="2初始化存储池">2、初始化存储池<a hidden class="anchor" aria-hidden="true" href="#2初始化存储池">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo rbd pool init rbd
+</span></span></code></pre></div><h3 id="3准备客户端">3、准备客户端<a hidden class="anchor" aria-hidden="true" href="#3准备客户端">#</a></h3>
+<ul>
+<li>这里的客户端就是我们规划的那台，确保客户端是可以跟admin节点实现主机名互通的</li>
+</ul>
+<h4 id="31升级内核">3.1：升级内核<a hidden class="anchor" aria-hidden="true" href="#31升级内核">#</a></h4>
+<p>官方推荐的客户端服务器内核版本：</p>
+<ul>
+<li>4.1.4 or later</li>
+<li>3.16.3 or later (rbd deadlock regression in 3.16.[0-2])</li>
+<li>NOT v3.15.* (rbd deadlock regression)</li>
+<li>3.14.*</li>
+<li>升级内核版本到4.x以上，接下来在客户端机器上进行操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -r</span>
+</span></span><span style="display:flex;"><span>3.10.0-957.el7.x86_64
+</span></span></code></pre></div><ul>
+<li>导入key</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span>
+</span></span></code></pre></div><h4 id="32安装elrepo源">3.2：安装elrepo源<a hidden class="anchor" aria-hidden="true" href="#32安装elrepo源">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span>
+</span></span></code></pre></div><ul>
+<li>查看可用的系统内核包</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --disablerepo=&#34;*&#34; --enablerepo=&#34;elrepo-kernel&#34; list available</span>
+</span></span></code></pre></div><h4 id="33安装最新内核">3.3：安装最新内核<a hidden class="anchor" aria-hidden="true" href="#33安装最新内核">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --enablerepo=elrepo-kernel install kernel-ml-devel kernel-ml -y</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>如果yum安装很慢的话，通过rpm包的方式进行安装</p>
+</li>
+<li>
+<p><strong>获取rpm包：</strong><a href="https://www.dqzboy.com/go.php?url=https://elrepo.org/linux/kernel/el7/x86_64/RPMS/">https://elrepo.org/linux/kernel/el7/x86_64/RPMS/</a></p>
+</li>
+<li>
+<p>内核选择：</p>
+<ul>
+<li>kernel-lt（lt=long-term）长期有效</li>
+<li>kernel-ml（ml=mainline）主流版本</li>
+</ul>
+</li>
+<li>
+<p><strong>安装</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># rpm -ivh kernel-ml-*</span>
+</span></span></code></pre></div><h4 id="34修改内核启动顺序">3.4：修改内核启动顺序<a hidden class="anchor" aria-hidden="true" href="#34修改内核启动顺序">#</a></h4>
+<ul>
+<li>查看内核默认启动顺序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># awk -F\&#39; &#39;$1==&#34;menuentry &#34; {print $2}&#39; /etc/grub2.cfg</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>5.7.8-1.el7.elrepo.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>3.10.0-957.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>0-rescue-7ba72ac2cf764cf39417d13528419374<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span></code></pre></div><ul>
+<li>修改启动顺序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-set-default 0</span>
+</span></span></code></pre></div><ul>
+<li>重启服务器</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># reboot</span>
+</span></span></code></pre></div><ul>
+<li>再次检测系统内核版本</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -a</span>
+</span></span><span style="display:flex;"><span>Linux ceph-client 5.7.8-1.el7.elrepo.x86_64 <span style="color:#75715e">#1 SMP Tue Jul 7 18:43:16 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux</span>
+</span></span></code></pre></div><ul>
+<li>删除旧的内核</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum remove kernel -y</span>
+</span></span><span style="display:flex;"><span>删除:
+</span></span><span style="display:flex;"><span>  kernel.x86_64 0:3.10.0-957.el7                                                          
+</span></span><span style="display:flex;"><span>完毕！
+</span></span></code></pre></div><h3 id="4客户端安装ceph">4、客户端安装ceph<a hidden class="anchor" aria-hidden="true" href="#4客户端安装ceph">#</a></h3>
+<h4 id="41环境检查">4.1：环境检查<a hidden class="anchor" aria-hidden="true" href="#41环境检查">#</a></h4>
+<ul>
+<li>先下载安装python的distribute包，不然部署ceph集群会报错；在client节点操作</li>
+<li><strong>下载地址：</strong><a href="https://www.dqzboy.com/go.php?url=https://pypi.org/project/distribute/#modal-close">https://pypi.org/project/distribute/#modal-close</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ wget https://files.pythonhosted.org/packages/5f/ad/1fde06877a8d7d5c9b60eff7de2d452f639916ae1d48f0b8f97bf97e570a/distribute-0.7.3.zip
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ unzip distribute-0.7.3.zip
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ cd distribute-0.7.3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client distribute-0.7.3<span style="color:#f92672">]</span>$ sudo python setup.py install
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client distribute-0.7.3<span style="color:#f92672">]</span>$ sudo yum -y install python-setuptools
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client distribute-0.7.3<span style="color:#f92672">]</span>$ sudo yum -y install epel*
+</span></span></code></pre></div><h4 id="42安装ceph">4.2：安装ceph<a hidden class="anchor" aria-hidden="true" href="#42安装ceph">#</a></h4>
+<ul>
+<li>确保已经在环境准备阶段时客户端也配置了ceph源</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo yum install ceph ceph-radosgw
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ ceph --version
+</span></span><span style="display:flex;"><span>ceph version 12.2.13 <span style="color:#f92672">(</span>584a20eb0237c657dc0567da126be145106aa47e<span style="color:#f92672">)</span> luminous <span style="color:#f92672">(</span>stable<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h4 id="43拷贝秘钥">4.3：拷贝秘钥<a hidden class="anchor" aria-hidden="true" href="#43拷贝秘钥">#</a></h4>
+<ul>
+<li>在admin【管理节点】节点上，用 ceph-deploy 把 Ceph 配置文件和 ceph.client.admin.keyring 拷贝到 ceph-client 。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ cd my-cluster/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy admin ceph-client
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ceph-deploy 工具会把密钥环复制到 /etc/ceph 目录，要确保此密钥环文件有读权限（如 sudo chmod +r /etc/ceph/ceph.client.admin.keyring ）</span>
+</span></span></code></pre></div><ul>
+<li>修改client节点该文件的权限</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo chmod +r /etc/ceph/ceph.client.admin.keyring
+</span></span></code></pre></div><h4 id="44修改配置">4.4：修改配置<a hidden class="anchor" aria-hidden="true" href="#44修改配置">#</a></h4>
+<ul>
+<li>修改client节点下的ceph配置文件，为了解决映射镜像时出错问题。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo vim /etc/ceph/ceph.conf
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#最后添加</span>
+</span></span><span style="display:flex;"><span>rbd_default_features <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h4 id="45配置块设备">4.5：配置块设备<a hidden class="anchor" aria-hidden="true" href="#45配置块设备">#</a></h4>
+<ul>
+<li>在 ceph-client 节点上创建一个块设备 image，默认单位为M</li>
+<li>语法：rbd create foo –size 4096 [-m {mon-IP}] [-k /path/to/ceph.client.admin.keyring]</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ rbd create foo --size <span style="color:#ae81ff">4096</span>
+</span></span></code></pre></div><ul>
+<li>在 ceph-client 节点上，把 image 映射为块设备。</li>
+<li>语法：sudo rbd map foo –name client.admin [-m {mon-IP}] [-k /path/to/ceph.client.admin.keyring]</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo rbd map foo --name client.admin
+</span></span><span style="display:flex;"><span>/dev/rbd0
+</span></span></code></pre></div><ul>
+<li>在 ceph-client 节点上，创建文件系统后就可以使用块设备了。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo mkfs.ext4 -m0 /dev/rbd/rbd/foo
+</span></span></code></pre></div><ul>
+<li>注意：此命令可能耗时较长。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mke2fs 1.42.9 <span style="color:#f92672">(</span>28-Dec-2013<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Discarding device blocks: 完成                            
+</span></span><span style="display:flex;"><span>文件系统标签<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>OS type: Linux
+</span></span><span style="display:flex;"><span>块大小<span style="color:#f92672">=</span><span style="color:#ae81ff">4096</span> <span style="color:#f92672">(</span>log<span style="color:#f92672">=</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>分块大小<span style="color:#f92672">=</span><span style="color:#ae81ff">4096</span> <span style="color:#f92672">(</span>log<span style="color:#f92672">=</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Stride<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span> blocks, Stripe width<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span> blocks
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">262144</span> inodes, <span style="color:#ae81ff">1048576</span> blocks
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> blocks <span style="color:#f92672">(</span>0.00%<span style="color:#f92672">)</span> reserved <span style="color:#66d9ef">for</span> the super user
+</span></span><span style="display:flex;"><span>第一个数据块<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Maximum filesystem blocks<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span> block groups
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32768</span> blocks per group, <span style="color:#ae81ff">32768</span> fragments per group
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">8192</span> inodes per group
+</span></span><span style="display:flex;"><span>Superblock backups stored on blocks: 
+</span></span><span style="display:flex;"><span>	32768, 98304, 163840, 229376, 294912, 819200, <span style="color:#ae81ff">884736</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>Allocating group tables: 完成                            
+</span></span><span style="display:flex;"><span>正在写入inode表: 完成                            
+</span></span><span style="display:flex;"><span>Creating journal <span style="color:#f92672">(</span><span style="color:#ae81ff">32768</span> blocks<span style="color:#f92672">)</span>: 完成
+</span></span><span style="display:flex;"><span>Writing superblocks and filesystem accounting information: 完成
+</span></span></code></pre></div><ul>
+<li>在 ceph-client 节点上挂载此文件系统。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo mkdir /mnt/ceph-block-device    <span style="color:#75715e">#创建挂载点</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ sudo mount /dev/rbd/rbd/foo /mnt/ceph-block-device  <span style="color:#75715e">#挂载</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e5%ad%98%e5%82%a8%e9%9b%86%e7%be%a4%e9%83%a8%e7%bd%b2/ceph12.png" alt=""  />
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ~<span style="color:#f92672">]</span>$ cd /mnt/ceph-block-device
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ceph-block-device<span style="color:#f92672">]</span>$ sudo touch dqzboy.txt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-client ceph-block-device<span style="color:#f92672">]</span>$ ls
+</span></span><span style="display:flex;"><span>dqzboy.txt  lost+found
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/ceph/">ceph</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Ceph文件系统—CephFS部署</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E4%B8%BB%E6%B5%81%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%80%89%E5%9E%8B/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>主流分布式文件系统选型</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

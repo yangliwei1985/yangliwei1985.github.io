@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>IO流 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/io%E6%B5%81/</link>
+    <description>Recent content in IO流 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 14 Mar 2022 14:15:53 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/io%E6%B5%81/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java IO流02</title>
+      <link>https://iblog.zone/archives/java-io%E6%B5%8102/</link>
+      <pubDate>Mon, 14 Mar 2022 14:15:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-io%E6%B5%8102/</guid>
+      <description>1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍
+由于字节流操作中文不是特别的方便，所以Java就提供字符流
+字符流 = 字节流 + 编码表
+  中文的字节存储方式
+用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？
+汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数
+  1.2编码表【理解】   什么是字符集
+是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等
+  常见的字符集
+  ASCII字符集：
+lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)
+基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+  GBXXX字符集：
+GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等
+  Unicode字符集：
+UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码
+编码规则：
+128个US-ASCII字符，只需一个字节编码
+拉丁文等字符，需要二个字节编码
+大部分常用字（含中文），使用三个字节编码
+其他极少使用的Unicode辅助字符，使用四字节编码
+    1.3字符串中的编码解码问题【应用】   相关方法
+   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示</description>
+    </item>
+    
+    <item>
+      <title>Java IO流01</title>
+      <link>https://iblog.zone/archives/java-io%E6%B5%8101/</link>
+      <pubDate>Thu, 10 Mar 2022 16:22:30 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-io%E6%B5%8101/</guid>
+      <description>1.File类 1.1File类概述和构造方法【应用】   File类介绍
+ 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法
+   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码
+public class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(&amp;#34;E:\\itcast\\java.txt&amp;#34;);  System.</description>
+    </item>
+    
+  </channel>
+</rss>

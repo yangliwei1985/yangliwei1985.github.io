@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>配置Nginx访问网页需要密码 | ylw&#39;s blog</title>
+<meta name="keywords" content="nginx" />
+<meta name="description" content="1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码
+$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码
+如果要修改密码，或者删除密码，请参考下面操作
+删除用户和密码
+$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码
+$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file
+server {  listen 80;  server_name localhost;  # .">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="配置Nginx访问网页需要密码" />
+<meta property="og:description" content="1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码
+$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码
+如果要修改密码，或者删除密码，请参考下面操作
+删除用户和密码
+$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码
+$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file
+server {  listen 80;  server_name localhost;  # ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-21T14:28:29&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-21T14:28:29&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="配置Nginx访问网页需要密码"/>
+<meta name="twitter:description" content="1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码
+$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码
+如果要修改密码，或者删除密码，请参考下面操作
+删除用户和密码
+$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码
+$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file
+server {  listen 80;  server_name localhost;  # ."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "配置Nginx访问网页需要密码",
+      "item": "https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "配置Nginx访问网页需要密码",
+  "name": "配置Nginx访问网页需要密码",
+  "description": "1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码\n$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码\n如果要修改密码，或者删除密码，请参考下面操作\n删除用户和密码\n$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码\n$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file\nserver {  listen 80;  server_name localhost;  # .",
+  "keywords": [
+    "nginx"
+  ],
+  "articleBody": "1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码\n$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码\n如果要修改密码，或者删除密码，请参考下面操作\n删除用户和密码\n$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码\n$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file\nserver {  listen 80;  server_name localhost;  # ...   auth_basic \"请输入用户和密码\"; # 验证时的提示信息  auth_basic_user_file /usr/local/nginx/password; # 认证文件   location / {  root /var/www;  index index.html index.htm;  }  # ... } 4. 重启/重载Nginx使站点的认证生效 /usr/local/nginx/sbin/nginx -s reload ",
+  "wordCount" : "93",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-21T14:28:29Z",
+  "dateModified": "2021-12-21T14:28:29Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      配置Nginx访问网页需要密码
+    </h1>
+    <div class="post-meta"><span title='2021-12-21 14:28:29 +0000 UTC'>2021-12-21</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1-%e5%ae%89%e8%a3%85%e5%af%86%e7%a0%81%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7" aria-label="1. 安装密码生成工具">1. 安装密码生成工具</a></li>
+                    <li>
+                        <a href="#2-%e7%94%9f%e6%88%90%e7%94%a8%e6%88%b7%e5%92%8c%e5%af%86%e7%a0%81%e6%96%87%e4%bb%b6" aria-label="2. 生成用户和密码文件">2. 生成用户和密码文件</a></li>
+                    <li>
+                        <a href="#3-%e9%85%8d%e7%bd%aenginx%e8%ae%a4%e8%af%81" aria-label="3. 配置Nginx认证">3. 配置Nginx认证</a></li>
+                    <li>
+                        <a href="#4-%e9%87%8d%e5%90%af%e9%87%8d%e8%bd%bdnginx%e4%bd%bf%e7%ab%99%e7%82%b9%e7%9a%84%e8%ae%a4%e8%af%81%e7%94%9f%e6%95%88" aria-label="4. 重启/重载Nginx使站点的认证生效">4. 重启/重载Nginx使站点的认证生效</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h1 id="1-安装密码生成工具">1. 安装密码生成工具<a hidden class="anchor" aria-hidden="true" href="#1-安装密码生成工具">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ yum  -y install httpd-tools
+</span></span></code></pre></div><h1 id="2-生成用户和密码文件">2. 生成用户和密码文件<a hidden class="anchor" aria-hidden="true" href="#2-生成用户和密码文件">#</a></h1>
+<p>生成用户和密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ htpasswd -c /usr/local/nginx/password username
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 回车后输入密码</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -c 创建一个加密文件</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e9%85%8d%e7%bd%aeNginx%e8%ae%bf%e9%97%ae%e7%bd%91%e9%a1%b5%e9%9c%80%e8%a6%81%e5%af%86%e7%a0%81/3470780922-4d425b1eb617b9d2_fix732.png" alt=""  />
+</p>
+<p>查看生成的用户和密码</p>
+<p><img loading="lazy" src="/images/%e9%85%8d%e7%bd%aeNginx%e8%ae%bf%e9%97%ae%e7%bd%91%e9%a1%b5%e9%9c%80%e8%a6%81%e5%af%86%e7%a0%81/783430154-a4a8ec6e17f3e2bc_fix732.png" alt=""  />
+</p>
+<p><strong>如果要修改密码，或者删除密码，请参考下面操作</strong></p>
+<p>删除用户和密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ htpasswd -D /usr/local/nginx/password username
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -D 删除指定的用户</span>
+</span></span></code></pre></div><p>修改用户和密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ htpasswd -D /usr/local/nginx/password username
+</span></span><span style="display:flex;"><span>$ htpasswd -b /usr/local/nginx/password username pass
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -D 删除指定的用户</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -p htpassswd命令不对密码进行进行加密，即明文密码</span>
+</span></span></code></pre></div><h1 id="3-配置nginx认证">3. 配置Nginx认证<a hidden class="anchor" aria-hidden="true" href="#3-配置nginx认证">#</a></h1>
+<p>找到 nginx 配置文件，<strong>通常</strong>默认的配置文件在<code>/usr/local/nginx/conf/nginx.conf</code>，要对整个站点开启验证，需在配置文件中的<code>server</code>加上认证配置
+<code>auth_basic</code> 和 <code>auth_basic_user_file</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">listen</span> <span style="color:#ae81ff">80</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">server_name</span>  <span style="color:#e6db74">localhost</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">auth_basic</span> <span style="color:#e6db74">&#34;请输入用户和密码&#34;</span>; <span style="color:#75715e"># 验证时的提示信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">auth_basic_user_file</span> <span style="color:#e6db74">/usr/local/nginx/password</span>; <span style="color:#75715e"># 认证文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">location</span> <span style="color:#e6db74">/</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">root</span>   <span style="color:#e6db74">/var/www</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">index</span>  <span style="color:#e6db74">index.html</span> <span style="color:#e6db74">index.htm</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h1 id="4-重启重载nginx使站点的认证生效">4. 重启/重载Nginx使站点的认证生效<a hidden class="anchor" aria-hidden="true" href="#4-重启重载nginx使站点的认证生效">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>/usr/local/nginx/sbin/nginx -s reload
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/nginx/">nginx</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Windows配置端口转发</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Kubernetes1.16安装[kubadm方式]</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

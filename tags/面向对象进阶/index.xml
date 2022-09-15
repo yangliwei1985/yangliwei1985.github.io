@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>面向对象进阶 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/</link>
+    <description>Recent content in 面向对象进阶 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 28 Feb 2022 10:42:17 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java接口和内部类</title>
+      <link>https://iblog.zone/archives/java%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%86%85%E9%83%A8%E7%B1%BB/</link>
+      <pubDate>Mon, 28 Feb 2022 10:42:17 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%86%85%E9%83%A8%E7%B1%BB/</guid>
+      <description>1.接口 1.1黑马信息管理系统集合改进 (应用)   使用数组容器的弊端
+ 容器长度是固定的，不能根据添加功能自动增长 没有提供用于赠删改查的方法    优化步骤
+  创建新的StudentDao类，OtherStudentDao
+  创建ArrayList集合容器对象
+  OtherStudentDao中的方法声明，需要跟StudentDao保持一致
+注意：如果不一致，StudentService中的代码就需要进行修改
+  完善方法（添加、删除、修改、查看）
+  替换StudentService中的Dao对象
+    代码实现
+OtherStudentDao类
+public class OtherStudentDao {  // 集合容器  private static ArrayList&amp;lt;Student&amp;gt; stus = new ArrayList&amp;lt;&amp;gt;();   static {  Student stu1 = new Student(&amp;#34;heima001&amp;#34;,&amp;#34;张三&amp;#34;,&amp;#34;23&amp;#34;,&amp;#34;1999-11-11&amp;#34;);  Student stu2 = new Student(&amp;#34;heima002&amp;#34;,&amp;#34;李四&amp;#34;,&amp;#34;24&amp;#34;,&amp;#34;2000-11-11&amp;#34;);   stus.add(stu1);  stus.</description>
+    </item>
+    
+    <item>
+      <title>Java继承</title>
+      <link>https://iblog.zone/archives/java%E7%BB%A7%E6%89%BF/</link>
+      <pubDate>Wed, 23 Feb 2022 18:25:50 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%BB%A7%E6%89%BF/</guid>
+      <description>1. 继承 1.1 继承的实现（掌握）   继承的概念
+ 继承是面向对象三大特征之一，可以使得子类具有父类的属性和方法，还可以在子类中重新定义，以及追加属性和方法    实现继承的格式
+ 继承通过extends实现 格式：class 子类 extends 父类 { }  举例：class Dog extends Animal { }      继承带来的好处
+ 继承可以让类与类之间产生关系，子父类关系，产生子父类后，子类则可以使用父类中非私有的成员。    示例代码
+public class Fu {  public void show() {  System.out.println(&amp;#34;show方法被调用&amp;#34;);  } } public class Zi extends Fu {  public void method() {  System.out.println(&amp;#34;method方法被调用&amp;#34;);  } } public class Demo {  public static void main(String[] args) {  //创建对象，调用方法  Fu f = new Fu();  f.</description>
+    </item>
+    
+    <item>
+      <title>Java分类和static</title>
+      <link>https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/</link>
+      <pubDate>Wed, 23 Feb 2022 16:44:32 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/</guid>
+      <description>1.案例驱动模式 1.1案例驱动模式概述 (理解) 通过我们已掌握的知识点,先实现一个案例,然后找出这个案例中,存在的一些问题,在通过新知识点解决问题
+1.2案例驱动模式的好处 (理解)  解决重复代码过多的冗余,提高代码的复用性 解决业务逻辑聚集紧密导致的可读性差,提高代码的可读性 解决代码可维护性差,提高代码的维护性  2.分类思想 2.1分类思想概述 (理解) 分工协作,专人干专事
+2.2黑马信息管理系统 (理解)   Student类 标准学生类,封装键盘录入的学生信息(id , name , age , birthday)
+  StudentDao类 Dao : (Data Access Object 缩写) 用于访问存储数据的数组或集合
+  StudentService类 用来进行业务逻辑的处理(例如: 判断录入的id是否存在)
+  StudentController类 和用户打交道(接收用户需求,采集用户信息,打印数据到控制台)
+  3.分包思想 3.1分包思想概述 (理解) 如果将所有的类文件都放在同一个包下,不利于管理和后期维护,所以,对于不同功能的类文件,可以放在不同的包下进行管理
+3.2包的概述 (记忆)   包
+本质上就是文件夹
+  创建包
+多级包之间使用 &amp;quot; . &amp;quot; 进行分割 多级包的定义规范：公司的网站地址翻转(去掉www) 比如：黑马程序员的网站址为www.itheima.com 后期我们所定义的包的结构就是：com.itheima.其他的包名
+  包的命名规则</description>
+    </item>
+    
+  </channel>
+</rss>

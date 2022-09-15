@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS7上安装Apache Maven | ylw&#39;s blog</title>
+<meta name="keywords" content="maven" />
+<meta name="description" content="Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。
+在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。
+CentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。
+要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。
+先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。
+使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：
+sudo yum install maven 验证安装，通过键入mvn -version命令：
+mvn -version 输出应如下所示：
+Apache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;3.10.0-862.3.2.el7.x86_64&#34;, arch: &#34;amd64&#34;, family: &#34;unix&#34; 现在，Maven已安装在CentOS系统上。
+安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。
+1.安装OpenJDK Maven 3.3&#43;需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS7上安装Apache Maven" />
+<meta property="og:description" content="Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。
+在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。
+CentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。
+要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。
+先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。
+使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：
+sudo yum install maven 验证安装，通过键入mvn -version命令：
+mvn -version 输出应如下所示：
+Apache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;3.10.0-862.3.2.el7.x86_64&#34;, arch: &#34;amd64&#34;, family: &#34;unix&#34; 现在，Maven已安装在CentOS系统上。
+安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。
+1.安装OpenJDK Maven 3.3&#43;需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-07T17:51:55&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-07T17:51:55&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS7上安装Apache Maven"/>
+<meta name="twitter:description" content="Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。
+在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。
+CentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。
+要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。
+先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。
+使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：
+sudo yum install maven 验证安装，通过键入mvn -version命令：
+mvn -version 输出应如下所示：
+Apache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;3.10.0-862.3.2.el7.x86_64&#34;, arch: &#34;amd64&#34;, family: &#34;unix&#34; 现在，Maven已安装在CentOS系统上。
+安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。
+1.安装OpenJDK Maven 3.3&#43;需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包："/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS7上安装Apache Maven",
+      "item": "https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS7上安装Apache Maven",
+  "name": "CentOS7上安装Apache Maven",
+  "description": "Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。\n在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。\nCentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。\n要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。\n先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。\n使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：\nsudo yum install maven 验证安装，通过键入mvn -version命令：\nmvn -version 输出应如下所示：\nApache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: \u0026#34;linux\u0026#34;, version: \u0026#34;3.10.0-862.3.2.el7.x86_64\u0026#34;, arch: \u0026#34;amd64\u0026#34;, family: \u0026#34;unix\u0026#34; 现在，Maven已安装在CentOS系统上。\n安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。\n1.安装OpenJDK Maven 3.3+需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：",
+  "keywords": [
+    "maven"
+  ],
+  "articleBody": "Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。\n在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。\nCentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。\n要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。\n先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。\n使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：\nsudo yum install maven 验证安装，通过键入mvn -version命令：\nmvn -version 输出应如下所示：\nApache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: \"linux\", version: \"3.10.0-862.3.2.el7.x86_64\", arch: \"amd64\", family: \"unix\" 现在，Maven已安装在CentOS系统上。\n安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。\n1.安装OpenJDK Maven 3.3+需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：\nsudo yum install java-1.8.0-openjdk-devel 通过运行以下命令验证Java是否已成功安装：\njava -version 输出应如下所示：\nopenjdk version \"1.8.0_191\" OpenJDK Runtime Environment (build 1.8.0_191-b12) OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode) 2.下载Apache Maven 在撰写本文时，Apache Maven的最新版本为3.6.0。在继续下一步之前，您应该检查Maven下载页面，查看是否有较新的版本。首先使用wget命令下载Apache Maven到/tmp目录中：\nwget https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz -P /tmp 下载完成后，解压缩到/opt目录：\nsudo tar xf /tmp/apache-maven-3.6.0.tar.gz -C /opt 要拥有对Maven版本和更新的更多控制权，我们将创建一个maven的符号链接 ，链接将指向Maven安装目录：\nsudo ln -s /opt/apache-maven-3.6.0 /opt/maven 要升级您的Maven安装，只需解压缩较新的版本并更改符号链接以指向它即可。\n3.设置环境变量 接下来，我们需要设置环境变量。打开您的文本编辑器，然后在/etc/profile.d/目录中创建一个名为mavenenv.sh的新文件。\nsudo vim /etc/profile.d/maven.sh 复制粘贴以下几行：\nexport JAVA_HOME=/usr/lib/jvm/jre-openjdk export M2_HOME=/opt/maven export MAVEN_HOME=/opt/maven export PATH=${M2_HOME}/bin:${PATH} /etc/profile.d/maven.sh\n保存并关闭文件。脚本将在shell启动时运行。要让脚本可以在启动运行，我们为脚本添加可执行命令。通过运行以下chmod命令使脚本具有可执行权限：\nsudo chmod +x /etc/profile.d/maven.sh 使用source命令加载到环境变量：\nsource /etc/profile.d/maven.sh 4.验证安装 要验证已安装的Maven，请使用mvn -version命令，它将打印Maven版本：\nmvn -version 您应该会看到类似以下的内容：\nApache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z) Maven home: /opt/maven Java version: 1.8.0_191, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: \"linux\", version: \"3.10.0-862.3.2.el7.x86_64\", arch: \"amd64\", family: \"unix\" 现在，您的CentOS系统上已安装了最新版本的Maven\n",
+  "wordCount" : "181",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-07T17:51:55+08:00",
+  "dateModified": "2022-04-07T17:51:55+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS7上安装Apache Maven
+    </h1>
+    <div class="post-meta"><span title='2022-04-07 17:51:55 +0800 CST'>2022-04-07</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%85%88%e5%86%b3%e6%9d%a1%e4%bb%b6" aria-label="先决条件">先决条件</a></li>
+                    <li>
+                        <a href="#%e4%bd%bf%e7%94%a8yum%e5%9c%a8centos%e4%b8%8a%e5%ae%89%e8%a3%85apache-maven" aria-label="使用Yum在CentOS上安装Apache Maven">使用Yum在CentOS上安装Apache Maven</a></li>
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85apache-maven%e7%9a%84%e6%9c%80%e6%96%b0%e7%89%88%e6%9c%ac" aria-label="安装Apache Maven的最新版本">安装Apache Maven的最新版本</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%ae%89%e8%a3%85openjdk" aria-label="1.安装OpenJDK">1.安装OpenJDK</a></li>
+                    <li>
+                        <a href="#2%e4%b8%8b%e8%bd%bdapache-maven" aria-label="2.下载Apache Maven">2.下载Apache Maven</a></li>
+                    <li>
+                        <a href="#3%e8%ae%be%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="3.设置环境变量">3.设置环境变量</a></li>
+                    <li>
+                        <a href="#4%e9%aa%8c%e8%af%81%e5%ae%89%e8%a3%85" aria-label="4.验证安装">4.验证安装</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><p>Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。</p>
+<p>在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。</p>
+<p>CentOS 默认储存库包含可以通过<code>yum</code>软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。</p>
+<p>要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。</p>
+<h2 id="先决条件">先决条件<a hidden class="anchor" aria-hidden="true" href="#先决条件">#</a></h2>
+<p>您所登录的用户必须具有<a href="https://www.myfreax.com/create-a-sudo-user-on-centos/">sudo权限</a>，才能安装软件包。</p>
+<h2 id="使用yum在centos上安装apache-maven">使用Yum在CentOS上安装Apache Maven<a hidden class="anchor" aria-hidden="true" href="#使用yum在centos上安装apache-maven">#</a></h2>
+<p>使用<code>yum</code>在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install maven
+</span></span></code></pre></div><p>验证安装，通过键入<code>mvn -version</code>命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mvn -version
+</span></span></code></pre></div><p>输出应如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Apache Maven 3.0.5 <span style="color:#f92672">(</span>Red Hat 3.0.5-17<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Maven home: /usr/share/maven
+</span></span><span style="display:flex;"><span>Java version: 1.8.0_191, vendor: Oracle Corporation
+</span></span><span style="display:flex;"><span>Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre
+</span></span><span style="display:flex;"><span>Default locale: en_US, platform encoding: UTF-8
+</span></span><span style="display:flex;"><span>OS name: <span style="color:#e6db74">&#34;linux&#34;</span>, version: <span style="color:#e6db74">&#34;3.10.0-862.3.2.el7.x86_64&#34;</span>, arch: <span style="color:#e6db74">&#34;amd64&#34;</span>, family: <span style="color:#e6db74">&#34;unix&#34;</span>
+</span></span></code></pre></div><p>现在，Maven已安装在CentOS系统上。</p>
+<h2 id="安装apache-maven的最新版本">安装Apache Maven的最新版本<a hidden class="anchor" aria-hidden="true" href="#安装apache-maven的最新版本">#</a></h2>
+<p>以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。</p>
+<h3 id="1安装openjdk">1.安装OpenJDK<a hidden class="anchor" aria-hidden="true" href="#1安装openjdk">#</a></h3>
+<p>Maven 3.3+需要安装JDK 1.7或更高版本。我们将<a href="https://www.myfreax.com/install-java-on-centos-7/">安装OpenJDK </a>，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install java-1.8.0-openjdk-devel
+</span></span></code></pre></div><p>通过运行以下命令验证Java是否已成功安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>java -version
+</span></span></code></pre></div><p>输出应如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>openjdk version <span style="color:#e6db74">&#34;1.8.0_191&#34;</span>
+</span></span><span style="display:flex;"><span>OpenJDK Runtime Environment <span style="color:#f92672">(</span>build 1.8.0_191-b12<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>OpenJDK 64-Bit Server VM <span style="color:#f92672">(</span>build 25.191-b12, mixed mode<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h3 id="2下载apache-maven">2.下载Apache Maven<a hidden class="anchor" aria-hidden="true" href="#2下载apache-maven">#</a></h3>
+<p>在撰写本文时，Apache Maven的最新版本为<code>3.6.0</code>。在继续下一步之前，您应该检查<a href="https://maven.apache.org/download.cgi">Maven下载页面</a>，查看是否有较新的版本。首先<a href="https://www.myfreax.com/wget-command-examples/">使用</a><code>wget</code><a href="https://www.myfreax.com/wget-command-examples/">命令</a>下载Apache Maven到<code>/tmp</code>目录中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz -P /tmp
+</span></span></code></pre></div><p>下载完成后，<a href="https://www.myfreax.com/how-to-create-and-extract-archives-using-the-tar-command-in-linux/">解压缩到<code>/opt</code>目录</a>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo tar xf /tmp/apache-maven-3.6.0.tar.gz -C /opt
+</span></span></code></pre></div><p>要拥有对Maven版本和更新的更多控制权，我们将<a href="https://www.myfreax.com/how-to-create-symbolic-links-in-linux-using-the-ln-command/">创建一个</a><code>maven</code>的<a href="https://www.myfreax.com/how-to-create-symbolic-links-in-linux-using-the-ln-command/">符号链接</a> ，链接将指向Maven安装目录：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln -s /opt/apache-maven-3.6.0 /opt/maven
+</span></span></code></pre></div><p>要升级您的Maven安装，只需解压缩较新的版本并更改符号链接以指向它即可。</p>
+<h3 id="3设置环境变量">3.设置环境变量<a hidden class="anchor" aria-hidden="true" href="#3设置环境变量">#</a></h3>
+<p>接下来，我们需要设置环境变量。<a href="https://www.myfreax.com/tag/vim/">打开您的文本编辑器</a>，然后在<code>/etc/profile.d/</code>目录中创建一个名为<code>mavenenv.sh</code>的新文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo vim /etc/profile.d/maven.sh
+</span></span></code></pre></div><p>复制粘贴以下几行：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export JAVA_HOME<span style="color:#f92672">=</span>/usr/lib/jvm/jre-openjdk
+</span></span><span style="display:flex;"><span>export M2_HOME<span style="color:#f92672">=</span>/opt/maven
+</span></span><span style="display:flex;"><span>export MAVEN_HOME<span style="color:#f92672">=</span>/opt/maven
+</span></span><span style="display:flex;"><span>export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>M2_HOME<span style="color:#e6db74">}</span>/bin:<span style="color:#e6db74">${</span>PATH<span style="color:#e6db74">}</span>
+</span></span></code></pre></div><p>/etc/profile.d/maven.sh</p>
+<p><a href="https://www.myfreax.com/how-to-save-file-in-vim-quit-editor/">保存并关闭文件</a>。脚本将在shell启动时运行。要让脚本可以在启动运行，我们为脚本添加可执行命令。通过运行以下<code>chmod</code>命令使脚本具有可执行权限：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo chmod +x /etc/profile.d/maven.sh
+</span></span></code></pre></div><p>使用<code>source</code>命令加载到环境变量：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>source /etc/profile.d/maven.sh
+</span></span></code></pre></div><h3 id="4验证安装">4.验证安装<a hidden class="anchor" aria-hidden="true" href="#4验证安装">#</a></h3>
+<p>要验证已安装的Maven，请使用<code>mvn -version</code>命令，它将打印Maven版本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mvn -version
+</span></span></code></pre></div><p>您应该会看到类似以下的内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Apache Maven 3.6.0 <span style="color:#f92672">(</span>97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Maven home: /opt/maven
+</span></span><span style="display:flex;"><span>Java version: 1.8.0_191, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre
+</span></span><span style="display:flex;"><span>Default locale: en_US, platform encoding: UTF-8
+</span></span><span style="display:flex;"><span>OS name: <span style="color:#e6db74">&#34;linux&#34;</span>, version: <span style="color:#e6db74">&#34;3.10.0-862.3.2.el7.x86_64&#34;</span>, arch: <span style="color:#e6db74">&#34;amd64&#34;</span>, family: <span style="color:#e6db74">&#34;unix&#34;</span>
+</span></span></code></pre></div><p>现在，您的CentOS系统上已安装了最新版本的Maven</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/maven/">maven</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/docker-swarm%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86%E5%88%A9%E5%99%A8%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E6%89%AB%E7%9B%B2/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Docker Swarm集群管理利器核心概念扫盲</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/centos%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CentOS搭建Consul集群</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>linux | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/categories/linux/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/categories/linux/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="linux" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/categories/linux/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="linux"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/categories/">Categories</a></div>
+  <h1>linux</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Linux计划任务没有正常执行
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1、查看日志，报错如下：
+May 25 15:50:01 localhost crond[42423]: (root) FAILED to authorize user with PAM (Authentication token is no longer valid; new one required) May 25 15:51:01 localhost crond[43791]: (root) PAM ERROR (Authentication token is no longer valid; new one required) 2、查找原因，可能为密码过期
+查看密码过期时间
+[root@localhost log]# chage -l root Last password change : Feb 21, 2022 Password expires : May 22, 2022 Password inactive : never Account expires : never Minimum number of days between password change : 0 Maximum number of days between password change : 90 Number of days of warning before password expires : 7 今天25日，22日就过期了...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-05-25 16:03:39 +0800 CST'>2022-05-25</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Linux计划任务没有正常执行" href="https://iblog.zone/archives/linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E6%B2%A1%E6%9C%89%E6%AD%A3%E5%B8%B8%E6%89%A7%E8%A1%8C/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>CentOS8安装oracle客户端
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-15 17:44:41 +0000 UTC'>2022-02-15</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to CentOS8安装oracle客户端" href="https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>常用 Git 命令清单
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>仓库 # 在当前目录新建一个Git代码库 $ git init  # 新建一个目录，将其初始化为Git代码库 $ git init [project-name]  # 下载一个项目和它的整个代码历史 $ git clone [url] 配置 # 显示当前的Git配置 $ git config --list  # 编辑Git配置文件 $ git config -e [--global]  # 设置提交代码时的用户信息 $ git config [--global] user.name &#34;[name]&#34; $ git config [--global] user.email &#34;[email address]&#34; 增加/删除文件 # 添加指定文件到暂存区 $ git add [file1] [file2] ...  # 添加指定目录到暂存区，包括子目录 $ git add [dir]  # 添加当前目录的所有文件到暂存区 $ git add ....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-11 11:50:49 +0000 UTC'>2022-02-11</span>&nbsp;·&nbsp;3 分钟</footer>
+  <a class="entry-link" aria-label="post link to 常用 Git 命令清单" href="https://iblog.zone/archives/%E5%B8%B8%E7%94%A8-git-%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nginx安装和高可用
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、Nginx安装 1、去官网http://nginx.org/下载对应的nginx包，推荐使用稳定版本 2、上传nginx到linux系统 3、安装依赖环境 (1)安装gcc环境
+yum install gcc-c&#43;&#43; (2)安装PCRE库，用于解析正则表达式
+yum install -y pcre pcre-devel (3)zlib压缩和解压缩依赖
+yum install -y zlib zlib-devel (4)SSL 安全的加密的套接字协议层，用于HTTP安全传输，也就是https
+yum install -y openssl openssl-devel 4、解压，需要注意，解压后得到的是源码，源码需要编译后才能安装 tar -zxvf nginx-1.16.1.tar.gz 5、编译之前，先创建nginx临时目录，如果不创建，在启动nginx的过程中会报错 mkdir /var/temp/nginx -p 6、在nginx目录，输入如下命令进行配置，目的是为了创建makefile文件 ./configure \  --prefix=/usr/local/nginx \  --pid-path=/var/run/nginx/nginx.pid \  --lock-path=/var/lock/nginx.lock \  --error-log-path=/var/log/nginx/error.log \  --http-log-path=/var/log/nginx/access.log \  --with-http_gzip_static_module \  --http-client-body-temp-path=/var/temp/nginx/client \  --http-proxy-temp-path=/var/temp/nginx/proxy \  --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \  --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \  --http-scgi-temp-path=/var/temp/nginx/scgi 注：代表在命令行中换行，用于提高可读性配置命令：...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-11 10:50:49 +0000 UTC'>2022-02-11</span>&nbsp;·&nbsp;6 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nginx安装和高可用" href="https://iblog.zone/archives/nginx%E5%AE%89%E8%A3%85%E5%92%8C%E9%AB%98%E5%8F%AF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Firewall防火墙常用操作
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>  查看防火墙某个端口是否开放
+firewall-cmd –query-port=3306/tcp
+  开放防火墙端口3306
+firewall-cmd –zone=public –add-port=3306/tcp –permanent
+注意：开放端口后要重启防火墙生效
+  重启防火墙
+systemctl restart firewalld
+  关闭防火墙端口
+firewall-cmd –remove-port=3306/tcp –permanent
+  查看防火墙状态
+systemctl status firewalld
+  关闭防火墙
+systemctl stop firewalld
+  打开防火墙
+systemctl start firewalld
+  开放一段端口
+firewall-cmd –zone=public –add-port=40000-45000/tcp –permanent
+  查看开放的端口列表
+firewall-cmd –zone=public –list-ports
+  </p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-10 16:24:38 +0000 UTC'>2022-02-10</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Firewall防火墙常用操作" href="https://iblog.zone/archives/firewall%E9%98%B2%E7%81%AB%E5%A2%99%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Centos6 yum源配置
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>截止2022-01-28日有效
+CentOS-Base.repo
+[extras] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/extras/$basearch/ name=Qcloud centos extras - $basearch  [os] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/os/$basearch/ name=Qcloud centos os - $basearch  [updates] gpgcheck=0 gpgkey=http://mirrors.tencentyun.com/centos/RPM-GPG-KEY-Centos-6 enabled=1 baseurl=https://mirrors.cloud.tencent.com/centos-vault/6.9/updates/$basearch/ name=Qcloud centos updates - $basearch epel.repo
+[epel] name=epel for redhat/centos $releasever - $basearch failovermethod=priority enable=1 baseurl=https://mirrors.cloud.tencent.com/epel-archive/6/$basearch/ </p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-28 16:57:19 +0000 UTC'>2022-01-28</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Centos6 yum源配置" href="https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>rsync工具使用
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。
+它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。
+它名称里面的r指的是 remote，rsync 其实就是&#34;远程同步&#34;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。
+二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
+ # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。
+三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。
+ $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。
+如果有多个文件或目录需要同步，可以写成下面这样。
+ $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-28 15:28:34 +0000 UTC'>2022-01-28</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to rsync工具使用" href="https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>由于oracle jdk1.8_301扫描出漏洞，故升级jdk到openjdk 1.8.0_312，升级后出现兼容性问题，访问数据库出现以下错误
+The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 查询后为新版的 JDK 不推荐使用旧的 TLSV1.0 的协议，所以默认删除 TLS10 的支持导致，可按照下面方法修复
+cd /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-1.el7_9.x86_64/jre  cd lib/security/  vim java.security  # 698行，将 TLSv1, TLSv1.1, 3DES_EDE_CBC 删除，删除后为以下内容 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \  DH keySize &lt; 1024, EC keySize &lt; 224, anon, NULL, \  include jdk.disabled.namedCurves 再次访问，问题解决</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-20 16:30:33 +0000 UTC'>2022-01-20</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错" href="https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>使用xrdp连接kali远程桌面
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1、安装xrdp
+apt-get install xrdp 2、接下来安装xfce4
+apt-get instlal xfce4 3、最重要的一步
+用vim打开 /etc/xrdp/startwm.sh
+vim /etc/xrdp/startwm.sh 4、在里面添加
+ echo “xfce4-session” &gt;~/.xsession 5、启动xrdp
+service xrdp start 6、创建vnc用户
+useradd -m vnc passwd vnc 7、连接</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-20 16:23:03 +0000 UTC'>2022-01-20</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to 使用xrdp连接kali远程桌面" href="https://iblog.zone/archives/%E4%BD%BF%E7%94%A8xrdp%E8%BF%9E%E6%8E%A5kali%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>kali-linux-2021.2安装openvas
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>kali-linux-2021.2安装openvas 1.安装 sudo apt-get update // 软件库更新  sudo apt-get upgrade // 软件升级  sudo apt-get dist-upgrade // 升级系统  # 由于在2021.1版本中，openvas已经改名为gvm，所以使用以下命令安装openvas sudo apt-get install gvm 使用gvm-setup安装openvas
+安装完成，注意这里的密码，你可以通过gvmd –user=admin –new-password=admin修改密码为admin（如果修改无效，请参考最下面的操作命令）
+启动服务gvm-start，并通过netstat -antp查看状态
+访问https://127.0.0.1:9392即可,注意这里是https
+如果需要在其他地址访问，则需要修改服务监听地址
+vim /lib/systemd/system/greenbone-security-assistant.service 2.操作命令 这里附上完整流程所需的命令
+//安装过程命令 sudo apt-get update // 软件库更新 sudo apt-get upgrade // 软件升级 sudo apt-get dist-upgrade // 升级系统 apt-get install gvm //下载安装包 gvm-setup //安装 安装完成 //这里得注意记住初始密码 gvm-check-setup //检查安装是否成功 gvm-start //启动服务 netstat -antp //查看状态，特别注意这里有个空格 浏览器访问https://127.0.0.1:9392 //这里注意是https vim /lib/systemd/system/greenbone-security-assistant....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-20 16:05:36 +0000 UTC'>2022-01-20</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to kali-linux-2021.2安装openvas" href="https://iblog.zone/archives/kali-linux-2021.2%E5%AE%89%E8%A3%85openvas/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://iblog.zone/categories/linux/page/2/">下一页 »</a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

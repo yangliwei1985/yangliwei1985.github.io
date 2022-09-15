@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Centos7升级内核版本 | ylw&#39;s blog</title>
+<meta name="keywords" content="kernel" />
+<meta name="description" content="小版本升级
+1. 查看当前和可升级版本
+[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级
+[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查
+ [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级
+1. 载入公钥
+[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo
+[root@jksb_qz ~]# rpm -Uvh http://www.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Centos7升级内核版本" />
+<meta property="og:description" content="小版本升级
+1. 查看当前和可升级版本
+[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级
+[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查
+ [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级
+1. 载入公钥
+[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo
+[root@jksb_qz ~]# rpm -Uvh http://www." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-23T11:38:27&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-23T11:38:27&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Centos7升级内核版本"/>
+<meta name="twitter:description" content="小版本升级
+1. 查看当前和可升级版本
+[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级
+[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查
+ [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级
+1. 载入公钥
+[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo
+[root@jksb_qz ~]# rpm -Uvh http://www."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Centos7升级内核版本",
+      "item": "https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Centos7升级内核版本",
+  "name": "Centos7升级内核版本",
+  "description": "小版本升级\n1. 查看当前和可升级版本\n[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级\n[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查\n [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级\n1. 载入公钥\n[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo\n[root@jksb_qz ~]# rpm -Uvh http://www.",
+  "keywords": [
+    "kernel"
+  ],
+  "articleBody": "小版本升级\n1. 查看当前和可升级版本\n[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级\n[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查\n [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级\n1. 载入公钥\n[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo\n[root@jksb_qz ~]# rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm 3. 载入elrepo-kernel元数据\n[root@jksb_qz ~]# yum --disablerepo=\\* --enablerepo=elrepo-kernel repolist 4. 查看可用的rpm包\n[root@jksb_qz ~]# yum --disablerepo=\\* --enablerepo=elrepo-kernel list kernel* Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * elrepo-kernel: mirrors.tuna.tsinghua.edu.cn Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 kernel-devel.x86_64 3.10.0-693.el7 kernel-devel.x86_64 3.10.0-1160.49.1.el7 kernel-headers.x86_64 3.10.0-1160.49.1.el7 kernel-tools.x86_64 3.10.0-1160.49.1.el7 kernel-tools-libs.x86_64 3.10.0-1160.49.1.el7 Available Packages kernel-lt.x86_64 5.4.168-1.el7.elrepo kernel-lt-devel.x86_64 5.4.168-1.el7.elrepo kernel-lt-doc.noarch 5.4.168-1.el7.elrepo kernel-lt-headers.x86_64 5.4.168-1.el7.elrepo kernel-lt-tools.x86_64 5.4.168-1.el7.elrepo kernel-lt-tools-libs.x86_64 5.4.168-1.el7.elrepo kernel-lt-tools-libs-devel.x86_64 5.4.168-1.el7.elrepo kernel-ml.x86_64 5.15.11-1.el7.elrepo kernel-ml-devel.x86_64 5.15.11-1.el7.elrepo kernel-ml-doc.noarch 5.15.11-1.el7.elrepo kernel-ml-headers.x86_64 5.15.11-1.el7.elrepo kernel-ml-tools.x86_64 5.15.11-1.el7.elrepo kernel-ml-tools-libs.x86_64 5.15.11-1.el7.elrepo kernel-ml-tools-libs-devel.x86_64 5.15.11-1.el7.elrepo 说明：\n lt ：long term support，长期支持版本；\nml：mainline，主线版本；\n 5. 安装最新版本的kernel\n[root@jksb_qz ~]# yum --disablerepo=\\* --enablerepo=elrepo-kernel install kernel-ml.x86_64 -y 6. 删除旧版本工具包\n[root@jksb_qz ~]# yum remove kernel-tools-libs.x86_64 kernel-tools.x86_64 -y 7. 安装新版本工具包\n[root@jksb_qz ~]# yum --disablerepo=\\* --enablerepo=elrepo-kernel install kernel-ml-tools.x86_64 -y 8. 查看内核插入顺序\n[root@jksb_qz ~]# awk -F \\' '$1==\"menuentry \" {print i++ \" : \" $2}' /etc/grub2.cfg 0 : CentOS Linux (5.15.11-1.el7.elrepo.x86_64) 7 (Core) 1 : CentOS Linux (3.10.0-1160.49.1.el7.x86_64) 7 (Core) 2 : CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core) 3 : CentOS Linux (0-rescue-3492312c4af1455a9be8092117be49a4) 7 (Core) 说明：默认新内核是从头插入，默认启动顺序也是从0开始（当前顺序还未生效），或者使用：\n[root@jksb_qz ~]# grep \"^menuentry\" /boot/grub2/grub.cfg | cut -d \"'\" -f2 CentOS Linux (5.15.11-1.el7.elrepo.x86_64) 7 (Core) CentOS Linux (3.10.0-1160.49.1.el7.x86_64) 7 (Core) CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core) CentOS Linux (0-rescue-3492312c4af1455a9be8092117be49a4) 7 (Core) 其中文件 /etc/grub2.cfg 和 /boot/grub2/grub.cfg 内容一致。\n9. 查看当前实际启动顺序\n[root@jksb_qz ~]# grub2-editenv list saved_entry=CentOS Linux (3.10.0-1160.49.1.el7.x86_64) 7 (Core) 10. 设置默认启动\n[root@jksb_qz ~]# grub2-set-default 'CentOS Linux (5.15.11-1.el7.elrepo.x86_64) 7 (Core)' [root@jksb_qz ~]# grub2-editenv list saved_entry=CentOS Linux (5.15.11-1.el7.elrepo.x86_64) 7 (Core) 或者直接设置数值\n[root@jksb_qz ~]# grub2-set-default 0　// 0代表当前第一行，也就是上面的5.15.11版本那一行内容 [root@jksb_qz ~]# grub2-editenv list saved_entry=0 11. 重启并检查\n [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  ",
+  "wordCount" : "307",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-23T11:38:27Z",
+  "dateModified": "2021-12-23T11:38:27Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Centos7升级内核版本
+    </h1>
+    <div class="post-meta"><span title='2021-12-23 11:38:27 +0000 UTC'>2021-12-23</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p><strong>小版本升级</strong></p>
+<p><strong>1. 查看当前和可升级版本</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum list kernel</span>
+</span></span><span style="display:flex;"><span>Loaded plugins: fastestmirror, langpacks
+</span></span><span style="display:flex;"><span>Loading mirror speeds from cached hostfile
+</span></span><span style="display:flex;"><span> * base: mirrors.aliyun.com
+</span></span><span style="display:flex;"><span> * extras: mirrors.aliyun.com
+</span></span><span style="display:flex;"><span> * updates: mirrors.aliyun.com
+</span></span><span style="display:flex;"><span>Installed Packages
+</span></span><span style="display:flex;"><span>kernel.x86_64                        3.10.0-693.el7                                                                                                                                                       
+</span></span><span style="display:flex;"><span>kernel.x86_64                        3.10.0-1160.49.1.el7       
+</span></span></code></pre></div><p><strong>2. 升级</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum update kernel -y </span>
+</span></span></code></pre></div><p><strong>3. 重启并检查</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># reboot 　</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -r </span>
+</span></span></code></pre></div><p><strong>大版本升级</strong></p>
+<p><strong>1. 载入公钥</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span>
+</span></span></code></pre></div><p><strong>2. 升级安装ELRepo</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm</span>
+</span></span></code></pre></div><p><strong>3. 载入elrepo-kernel元数据</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --disablerepo=\* --enablerepo=elrepo-kernel repolist</span>
+</span></span></code></pre></div><p><strong>4. 查看可用的rpm包</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --disablerepo=\* --enablerepo=elrepo-kernel list kernel*</span>
+</span></span><span style="display:flex;"><span>Loaded plugins: fastestmirror, langpacks
+</span></span><span style="display:flex;"><span>Loading mirror speeds from cached hostfile
+</span></span><span style="display:flex;"><span> * elrepo-kernel: mirrors.tuna.tsinghua.edu.cn
+</span></span><span style="display:flex;"><span>Installed Packages
+</span></span><span style="display:flex;"><span>kernel.x86_64                                    3.10.0-693.el7                                                                          
+</span></span><span style="display:flex;"><span>kernel.x86_64                                    3.10.0-1160.49.1.el7                                                                       
+</span></span><span style="display:flex;"><span>kernel-devel.x86_64                              3.10.0-693.el7                                                                                                                                              
+</span></span><span style="display:flex;"><span>kernel-devel.x86_64                              3.10.0-1160.49.1.el7                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-headers.x86_64                            3.10.0-1160.49.1.el7                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-tools.x86_64                              3.10.0-1160.49.1.el7                                                                                                                                        
+</span></span><span style="display:flex;"><span>kernel-tools-libs.x86_64                         3.10.0-1160.49.1.el7                                                                                                                                         
+</span></span><span style="display:flex;"><span>Available Packages
+</span></span><span style="display:flex;"><span>kernel-lt.x86_64                                 5.4.168-1.el7.elrepo                                                                       
+</span></span><span style="display:flex;"><span>kernel-lt-devel.x86_64                           5.4.168-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-lt-doc.noarch                             5.4.168-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-lt-headers.x86_64                         5.4.168-1.el7.elrepo                                                                                                                                        
+</span></span><span style="display:flex;"><span>kernel-lt-tools.x86_64                           5.4.168-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-lt-tools-libs.x86_64                      5.4.168-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-lt-tools-libs-devel.x86_64                5.4.168-1.el7.elrepo                                                                                                                                        
+</span></span><span style="display:flex;"><span>kernel-ml.x86_64                                 5.15.11-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-ml-devel.x86_64                           5.15.11-1.el7.elrepo                                                                                                                                        
+</span></span><span style="display:flex;"><span>kernel-ml-doc.noarch                             5.15.11-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-ml-headers.x86_64                         5.15.11-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-ml-tools.x86_64                           5.15.11-1.el7.elrepo                                                                                                                                        
+</span></span><span style="display:flex;"><span>kernel-ml-tools-libs.x86_64                      5.15.11-1.el7.elrepo                                                                                                                                         
+</span></span><span style="display:flex;"><span>kernel-ml-tools-libs-devel.x86_64                5.15.11-1.el7.elrepo  
+</span></span></code></pre></div><p>说明：</p>
+<blockquote>
+<p>lt ：long term support，长期支持版本；</p>
+<p>ml：mainline，主线版本；</p>
+</blockquote>
+<p><strong>5. 安装最新版本的kernel</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --disablerepo=\* --enablerepo=elrepo-kernel install  kernel-ml.x86_64  -y</span>
+</span></span></code></pre></div><p><strong>6. 删除旧版本工具包</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum remove kernel-tools-libs.x86_64 kernel-tools.x86_64  -y</span>
+</span></span></code></pre></div><p><strong>7. 安装新版本工具包</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum --disablerepo=\* --enablerepo=elrepo-kernel install kernel-ml-tools.x86_64  -y</span>
+</span></span></code></pre></div><p><strong>8. 查看内核插入顺序</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># awk -F \&#39; &#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39; /etc/grub2.cfg</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> : CentOS Linux <span style="color:#f92672">(</span>5.15.11-1.el7.elrepo.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> : CentOS Linux <span style="color:#f92672">(</span>3.10.0-1160.49.1.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> : CentOS Linux <span style="color:#f92672">(</span>3.10.0-693.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> : CentOS Linux <span style="color:#f92672">(</span>0-rescue-3492312c4af1455a9be8092117be49a4<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>说明：默认新内核是从头插入，默认启动顺序也是从0开始（当前顺序还未生效），或者使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grep &#34;^menuentry&#34; /boot/grub2/grub.cfg | cut -d &#34;&#39;&#34; -f2</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>5.15.11-1.el7.elrepo.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>3.10.0-1160.49.1.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>3.10.0-693.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>CentOS Linux <span style="color:#f92672">(</span>0-rescue-3492312c4af1455a9be8092117be49a4<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>其中文件 /etc/grub2.cfg 和 /boot/grub2/grub.cfg 内容一致。</p>
+<p><strong>9. 查看当前实际启动顺序</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-editenv list</span>
+</span></span><span style="display:flex;"><span>saved_entry<span style="color:#f92672">=</span>CentOS Linux <span style="color:#f92672">(</span>3.10.0-1160.49.1.el7.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p><strong>10. 设置默认启动</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-set-default &#39;CentOS Linux (5.15.11-1.el7.elrepo.x86_64) 7 (Core)&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-editenv list</span>
+</span></span><span style="display:flex;"><span>saved_entry<span style="color:#f92672">=</span>CentOS Linux <span style="color:#f92672">(</span>5.15.11-1.el7.elrepo.x86_64<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>或者直接设置数值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-set-default 0　　// 0代表当前第一行，也就是上面的5.15.11版本那一行内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># grub2-editenv list</span>
+</span></span><span style="display:flex;"><span>saved_entry<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p><strong>11. 重启并检查</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># reboot </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">[</span>root@jksb_qz ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -r </span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/kernel/">kernel</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>centos7 openssh升级到最新版本</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Windows配置端口转发</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

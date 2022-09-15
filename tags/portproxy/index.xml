@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>portproxy on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/portproxy/</link>
+    <description>Recent content in portproxy on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 22 Dec 2021 17:02:53 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/portproxy/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Windows配置端口转发</title>
+      <link>https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</link>
+      <pubDate>Wed, 22 Dec 2021 17:02:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</guid>
+      <description>//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\&amp;gt;netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为&amp;#34;*&amp;#34;,使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\&amp;gt;netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\&amp;gt;netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为&amp;#34;*&amp;#34;,使用的协议为tcp,当前仅支持TCP协议。 C:\&amp;gt;netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\&amp;gt;netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\&amp;gt;netsh interface portproxy /?</description>
+    </item>
+    
+  </channel>
+</rss>

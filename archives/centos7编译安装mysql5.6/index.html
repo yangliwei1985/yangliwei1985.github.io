@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS7编译安装MySQL5.6 | ylw&#39;s blog</title>
+<meta name="keywords" content="mysql5.6, 安装" />
+<meta name="description" content="1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c&#43;&#43; make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &#39;s#SELINUX=enforcing#SELINUX=disabled#g&#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS7编译安装MySQL5.6" />
+<meta property="og:description" content="1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c&#43;&#43; make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &#39;s#SELINUX=enforcing#SELINUX=disabled#g&#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-29T17:04:41&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-29T17:04:41&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS7编译安装MySQL5.6"/>
+<meta name="twitter:description" content="1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c&#43;&#43; make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &#39;s#SELINUX=enforcing#SELINUX=disabled#g&#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS7编译安装MySQL5.6",
+      "item": "https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS7编译安装MySQL5.6",
+  "name": "CentOS7编译安装MySQL5.6",
+  "description": "1、下载mysql的安装包\n#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql\n#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c++ make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i \u0026#39;s#SELINUX=enforcing#SELINUX=disabled#g\u0026#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5.",
+  "keywords": [
+    "mysql5.6", "安装"
+  ],
+  "articleBody": "1、下载mysql的安装包\n#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql\n#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c++ make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i 's#SELINUX=enforcing#SELINUX=disabled#g' /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5.6.30.tar.gz cd mysql-5.6.30/ cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql-5.6.30 \\  #指定安装目录 -DMYSQL_DATADIR=/usr/local/mysql-5.6.30/data \\  #指定数据目录 -DMYSQL_UNIX_ADDR=/usr/local/mysql-5.6.30/mysql.sock \\  #指定sock文件位置 -DDEFAULT_CHARSET=utf8 \\  #默认字符集 -DDEFAULT_COLLATION=utf8_general_ci \\  #默认编码 -DWITH_EXTRA_CHARSETS=all \\  #其它额外字符集 -DWITH_INNOBASE_STORAGE_ENGINE=1 \\  #支持的存储引擎 -DWITH_FEDERATED_STORAGE_ENGINE=1 \\ -DWITH_BLACKHOLE_STORAGE_ENGINE=1 \\ -DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \\ -DWITH_SSL=bundled \\  #编译其它功能SSL、ZLIB等 -DWITH_ZLIB=bundled \\ -DENABLED_LOCAL_INFILE=1 \\ -DWITH_EMBEDDED_SERVER=1 \\ -DENABLE_DOWNLOADS=1 \\ -DWITH_DEBUG=0 -DSYSCONFDIR=/etc #编译并安装数据库 make \u0026\u0026 make install  #做软链接并给MySQL目录授权 ln -s /usr/local/mysql-5.6.30/ /usr/local/mysql # 必须要做 否则后面操作会报错 chown -R mysql.mysql /usr/local/mysql 3、初始化数据库\n#mysql 5.6初始化数据库的命令 cd /usr/local/mysql ./scripts/mysql_install_db --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql #mysql 5.7初始化数据库的命令 /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql 4、设置mysql启动服务脚本\ncp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld chmod 700 /etc/init.d/mysqld 5、设置mysql环境变量\necho 'PATH=/usr/local/mysql/bin:$PATH' /etc/profile source /etc/profile 6、设置mysql配置文件\n#编辑mysql配置文件 /etc/my.cnf vim /etc/my.cnf  #在my.cnf中写入如下内容 [mysqld] server_id=1 port=3306 basedir=/usr/local/mysql datadir=/usr/local/mysql/data socket=/usr/local/mysql/mysql.sock log_bin=/usr/local/mysql/mysql-bin log_error=/var/log/mysql.log character-set-server=utf8 [client] socket=/usr/local/mysql/mysql.sock 7、启动mysql服务\n#启动mysql服务 /etc/init.d/mysqld start  #关闭mysql服务 /etc/init.d/mysqld stop  #重启mysql服务 /etc/init.d/mysqld restart 8、设置mysql服务密码\nmysqladmin -u root password 123456 9、开启mysql远程连接\n#登录mysql，操作mysql系统数据库 mysql -u root -p  #以下为sql命令 use mysql; #查看用户表中信息 select User,authentication_string,Host,Password from user; #使用如下命令创建可以远程连接的账号和密码 GRANT ALL PRIVILEGES ON *.* TO '账号'@'%' IDENTIFIED BY '密码'; # \"%\"代表所有主机，也可以具体到你的主机IP地址  #刷新权限（从mysql数据库的grant表中重新加载权限数据到cache中，一定要做） flush privileges; ",
+  "wordCount" : "219",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-29T17:04:41+08:00",
+  "dateModified": "2022-03-29T17:04:41+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS7编译安装MySQL5.6
+    </h1>
+    <div class="post-meta"><span title='2022-03-29 17:04:41 +0800 CST'>2022-03-29</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p>1、下载mysql的安装包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#下载mysql</span>
+</span></span><span style="display:flex;"><span>wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz
+</span></span></code></pre></div><p>2、编译安装mysql</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#查看系统发行版本号</span>
+</span></span><span style="display:flex;"><span>cat /etc/redhat-release
+</span></span><span style="display:flex;"><span>CentOS Linux release 7.8.2003 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装依赖包</span>
+</span></span><span style="display:flex;"><span>yum install ncurses-devel libaio-devel -y
+</span></span><span style="display:flex;"><span>yum install cmake gcc gcc-c++ make autoconf -y
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#关闭SELinux</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#临时关闭selinux</span>
+</span></span><span style="display:flex;"><span>setenforce <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#永久关闭selinux</span>
+</span></span><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s#SELINUX=enforcing#SELINUX=disabled#g&#39;</span> /etc/selinux/config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#关闭防火墙</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#查看防火墙状态</span>
+</span></span><span style="display:flex;"><span>systemctl status firewalld.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#临时关闭防火墙</span>
+</span></span><span style="display:flex;"><span>systemctl stop firewalld.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#永久关闭防火墙</span>
+</span></span><span style="display:flex;"><span>systemctl disable firewalld.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建mysql帐号</span>
+</span></span><span style="display:flex;"><span>groupadd -r mysql
+</span></span><span style="display:flex;"><span>useradd -r -g mysql -s /sbin/nologin mysql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编译安装mysql</span>
+</span></span><span style="display:flex;"><span>tar xf mysql-5.6.30.tar.gz 
+</span></span><span style="display:flex;"><span>cd mysql-5.6.30/
+</span></span><span style="display:flex;"><span>cmake . -DCMAKE_INSTALL_PREFIX<span style="color:#f92672">=</span>/usr/local/mysql-5.6.30 <span style="color:#ae81ff">\ </span> <span style="color:#75715e">#指定安装目录</span>
+</span></span><span style="display:flex;"><span>-DMYSQL_DATADIR<span style="color:#f92672">=</span>/usr/local/mysql-5.6.30/data <span style="color:#ae81ff">\ </span>           <span style="color:#75715e">#指定数据目录</span>
+</span></span><span style="display:flex;"><span>-DMYSQL_UNIX_ADDR<span style="color:#f92672">=</span>/usr/local/mysql-5.6.30/mysql.sock <span style="color:#ae81ff">\ </span>   <span style="color:#75715e">#指定sock文件位置</span>
+</span></span><span style="display:flex;"><span>-DDEFAULT_CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#ae81ff">\ </span>              <span style="color:#75715e">#默认字符集</span>
+</span></span><span style="display:flex;"><span>-DDEFAULT_COLLATION<span style="color:#f92672">=</span>utf8_general_ci <span style="color:#ae81ff">\ </span> <span style="color:#75715e">#默认编码</span>
+</span></span><span style="display:flex;"><span>-DWITH_EXTRA_CHARSETS<span style="color:#f92672">=</span>all <span style="color:#ae81ff">\ </span>           <span style="color:#75715e">#其它额外字符集</span>
+</span></span><span style="display:flex;"><span>-DWITH_INNOBASE_STORAGE_ENGINE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\ </span>    <span style="color:#75715e">#支持的存储引擎</span>
+</span></span><span style="display:flex;"><span>-DWITH_FEDERATED_STORAGE_ENGINE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DWITH_BLACKHOLE_STORAGE_ENGINE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DWITHOUT_EXAMPLE_STORAGE_ENGINE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DWITH_SSL<span style="color:#f92672">=</span>bundled <span style="color:#ae81ff">\ </span>                  <span style="color:#75715e">#编译其它功能SSL、ZLIB等</span>
+</span></span><span style="display:flex;"><span>-DWITH_ZLIB<span style="color:#f92672">=</span>bundled <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DENABLED_LOCAL_INFILE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DWITH_EMBEDDED_SERVER<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DENABLE_DOWNLOADS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-DWITH_DEBUG<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> -DSYSCONFDIR<span style="color:#f92672">=</span>/etc
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#编译并安装数据库</span>
+</span></span><span style="display:flex;"><span>make <span style="color:#f92672">&amp;&amp;</span> make install
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#做软链接并给MySQL目录授权</span>
+</span></span><span style="display:flex;"><span>ln -s /usr/local/mysql-5.6.30/ /usr/local/mysql  <span style="color:#75715e"># 必须要做 否则后面操作会报错</span>
+</span></span><span style="display:flex;"><span>chown -R mysql.mysql /usr/local/mysql
+</span></span></code></pre></div><p>3、初始化数据库</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#mysql 5.6初始化数据库的命令</span>
+</span></span><span style="display:flex;"><span>cd /usr/local/mysql
+</span></span><span style="display:flex;"><span>./scripts/mysql_install_db --basedir<span style="color:#f92672">=</span>/usr/local/mysql --datadir<span style="color:#f92672">=</span>/usr/local/mysql/data --user<span style="color:#f92672">=</span>mysql
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#mysql 5.7初始化数据库的命令</span>
+</span></span><span style="display:flex;"><span>/usr/local/mysql/bin/mysqld --initialize-insecure --basedir<span style="color:#f92672">=</span>/usr/local/mysql --datadir<span style="color:#f92672">=</span>/usr/local/mysql/data --user<span style="color:#f92672">=</span>mysql
+</span></span></code></pre></div><p>4、设置mysql启动服务脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">700</span> /etc/init.d/mysqld
+</span></span></code></pre></div><p>5、设置mysql环境变量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;PATH=/usr/local/mysql/bin:$PATH&#39;</span> &gt;&gt;/etc/profile
+</span></span><span style="display:flex;"><span>source /etc/profile
+</span></span></code></pre></div><p>6、设置mysql配置文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#编辑mysql配置文件 /etc/my.cnf</span>
+</span></span><span style="display:flex;"><span>vim /etc/my.cnf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#在my.cnf中写入如下内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>mysqld<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>server_id<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>port<span style="color:#f92672">=</span><span style="color:#ae81ff">3306</span>
+</span></span><span style="display:flex;"><span>basedir<span style="color:#f92672">=</span>/usr/local/mysql
+</span></span><span style="display:flex;"><span>datadir<span style="color:#f92672">=</span>/usr/local/mysql/data
+</span></span><span style="display:flex;"><span>socket<span style="color:#f92672">=</span>/usr/local/mysql/mysql.sock 
+</span></span><span style="display:flex;"><span>log_bin<span style="color:#f92672">=</span>/usr/local/mysql/mysql-bin
+</span></span><span style="display:flex;"><span>log_error<span style="color:#f92672">=</span>/var/log/mysql.log
+</span></span><span style="display:flex;"><span>character-set-server<span style="color:#f92672">=</span>utf8
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>client<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>socket<span style="color:#f92672">=</span>/usr/local/mysql/mysql.sock
+</span></span></code></pre></div><p>7、启动mysql服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#启动mysql服务</span>
+</span></span><span style="display:flex;"><span>/etc/init.d/mysqld start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#关闭mysql服务</span>
+</span></span><span style="display:flex;"><span>/etc/init.d/mysqld stop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#重启mysql服务</span>
+</span></span><span style="display:flex;"><span>/etc/init.d/mysqld restart
+</span></span></code></pre></div><p>8、设置mysql服务密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysqladmin -u root password <span style="color:#ae81ff">123456</span>
+</span></span></code></pre></div><p>9、开启mysql远程连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#登录mysql，操作mysql系统数据库</span>
+</span></span><span style="display:flex;"><span>mysql -u root -p
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#以下为sql命令</span>
+</span></span><span style="display:flex;"><span>use mysql;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#查看用户表中信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> User,authentication_string,Host,Password from user; 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#使用如下命令创建可以远程连接的账号和密码</span>
+</span></span><span style="display:flex;"><span>GRANT ALL PRIVILEGES ON *.* TO <span style="color:#e6db74">&#39;账号&#39;</span>@<span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED BY <span style="color:#e6db74">&#39;密码&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># &#34;%&#34;代表所有主机，也可以具体到你的主机IP地址</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#刷新权限（从mysql数据库的grant表中重新加载权限数据到cache中，一定要做）</span>
+</span></span><span style="display:flex;"><span>flush privileges;
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/mysql5.6/">mysql5.6</a></li>
+      <li><a href="https://iblog.zone/tags/%E5%AE%89%E8%A3%85/">安装</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>CentOS7安装Redis4.0</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dxtrabackup%E6%96%B9%E5%BC%8F/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Mysql备份和恢复（Xtrabackup方式）</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

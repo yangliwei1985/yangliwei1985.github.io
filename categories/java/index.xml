@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>java on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/java/</link>
+    <description>Recent content in java on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 24 Apr 2022 16:08:43 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java基础加强03</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/</link>
+      <pubDate>Sun, 24 Apr 2022 16:08:43 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/</guid>
+      <description>1.管理系统与服务器集成 1.1准备工作【应用】   需求
+对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能
+  准备工作
+  将资料中的黑马管理系统代码拷贝到当前模块下
+  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下
+    业务分析
+ 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构
+  1.2HttpRequest类代码实现【应用】   实现步骤
+ 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现
+// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map&amp;lt;String,String&amp;gt; paramterHashMap = new HashMap&amp;lt;&amp;gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey.</description>
+    </item>
+    
+    <item>
+      <title>Java基础加强02</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/</link>
+      <pubDate>Sun, 24 Apr 2022 15:49:35 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/</guid>
+      <description>1.xml 1.1概述【理解】   万维网联盟(W3C)
+万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，
+  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、
+  可扩展标记语言XML（标准通用标记语言下的一个子集）
+  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等
+    xml概述
+XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的
+  作用
+ 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势
+ 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成
+&amp;lt;student&amp;gt;   标签必须成对出现
+&amp;lt;student&amp;gt; &amp;lt;/student&amp;gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记
+&amp;lt;address/&amp;gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来
+&amp;lt;student id=&amp;#34;1&amp;#34;&amp;gt; &amp;lt;/student&amp;gt;   标签需要正确的嵌套</description>
+    </item>
+    
+    <item>
+      <title>Java基础加强01</title>
+      <link>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA01/</link>
+      <pubDate>Sun, 24 Apr 2022 15:31:20 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA01/</guid>
+      <description>1.类加载器 1.1类加载器【理解】   作用
+负责将.class文件（存储的物理文件）加载在到内存中
+  1.2类加载的过程【理解】   类加载时机
+ 创建类的实例（对象） 调用类的类方法 访问类或者接口的类变量，或者为该类变量赋值 使用反射方式来强制创建某个类或接口对应的java.lang.Class对象 初始化某个类的子类 直接使用java.exe命令来运行某个主类    类加载过程
+  加载
+ 通过包名 + 类名，获取这个类，准备用流进行传输 在这个类加载到内存中 加载完毕创建一个class对象    链接
+  验证
+确保Class文件字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身安全
+(文件中的信息是否符合虚拟机规范有没有安全隐患)
+    准备
+负责为类的类变量（被static修饰的变量）分配内存，并设置默认初始化值
+(初始化静态变量)
+    解析
+将类的二进制数据流中的符号引用替换为直接引用
+(本类中如果用到了其他类，此时就需要找到对应的类)
+    初始化
+根据程序员通过程序制定的主观计划去初始化类变量和其他资源
+(静态变量赋值以及初始化其他资源)
+    小结
+ 当一个类被使用的时候，才会加载到内存 类加载的过程: 加载、验证、准备、解析、初始化    1.</description>
+    </item>
+    
+    <item>
+      <title>CentOS7上安装Apache Maven</title>
+      <link>https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/</link>
+      <pubDate>Thu, 07 Apr 2022 17:51:55 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/</guid>
+      <description>Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。
+在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。
+CentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。
+要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。
+先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。
+使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：
+sudo yum install maven 验证安装，通过键入mvn -version命令：
+mvn -version 输出应如下所示：
+Apache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: &amp;#34;linux&amp;#34;, version: &amp;#34;3.10.0-862.3.2.el7.x86_64&amp;#34;, arch: &amp;#34;amd64&amp;#34;, family: &amp;#34;unix&amp;#34; 现在，Maven已安装在CentOS系统上。
+安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。
+1.安装OpenJDK Maven 3.3+需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：</description>
+    </item>
+    
+    <item>
+      <title>Java网络编程02</title>
+      <link>https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B02/</link>
+      <pubDate>Fri, 18 Mar 2022 11:44:51 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B02/</guid>
+      <description>1.NIO 1.1 NIO通道客户端【应用】   客户端实现步骤
+ 打开通道 指定IP和端口号 写出数据 释放资源    示例代码
+public class NIOClient {  public static void main(String[] args) throws IOException {  //1.打开通道  SocketChannel socketChannel = SocketChannel.open();   //2.指定IP和端口号  socketChannel.connect(new InetSocketAddress(&amp;#34;127.0.0.1&amp;#34;,10000));   //3.写出数据  ByteBuffer byteBuffer = ByteBuffer.wrap(&amp;#34;一点寒毛先制&amp;#34;.getBytes());  socketChannel.write(byteBuffer);   //4.释放资源  socketChannel.close();  } }   1.2 NIO通道服务端【应用】   NIO通道
+  服务端通道
+只负责建立建立，不负责传递数据</description>
+    </item>
+    
+    <item>
+      <title>Java网络编程01</title>
+      <link>https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B01/</link>
+      <pubDate>Fri, 18 Mar 2022 11:30:56 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B01/</guid>
+      <description>1.网络编程入门 1.1 网络编程概述【理解】   计算机网络
+是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统
+  网络编程
+在网络通信协议下，不同计算机上运行的程序，可以进行数据传输
+  1.2 网络编程三要素【理解】   IP地址
+要想让网络中的计算机能够互相通信，必须为每台计算机指定一个标识号，通过这个标识号来指定要接收数据的计算机和识别发送的计算机，而IP地址就是这个标识号。也就是设备的标识
+  端口
+网络的通信，本质上是两个应用程序的通信。每台计算机都有很多的应用程序，那么在网络通信时，如何区分这些应用程序呢？如果说IP地址可以唯一标识网络中的设备，那么端口号就可以唯一标识设备中的应用程序了。也就是应用程序的标识
+  协议
+通过计算机网络可以使多台计算机实现连接，位于同一个网络中的计算机在进行连接和通信时需要遵守一定的规则，这就好比在道路中行驶的汽车一定要遵守交通规则一样。在计算机网络中，这些连接和通信的规则被称为网络通信协议，它对数据的传输格式、传输速率、传输步骤等做了统一规定，通信双方必须同时遵守才能完成数据交换。常见的协议有UDP协议和TCP协议
+  1.3 IP地址【理解】 IP地址：是网络中设备的唯一标识
+  IP地址分为两大类
+  IPv4：是给每个连接在网络上的主机分配一个32bit地址。按照TCP/IP规定，IP地址用二进制来表示，每个IP地址长32bit，也就是4个字节。例如一个采用二进制形式的IP地址是“11000000 10101000 00000001 01000010”，这么长的地址，处理起来也太费劲了。为了方便使用，IP地址经常被写成十进制的形式，中间使用符号“.”分隔不同的字节。于是，上面的IP地址可以表示为“192.168.1.66”。IP地址的这种表示法叫做“点分十进制表示法”，这显然比1和0容易记忆得多
+  IPv6：由于互联网的蓬勃发展，IP地址的需求量愈来愈大，但是网络地址资源有限，使得IP的分配越发紧张。为了扩大地址空间，通过IPv6重新定义地址空间，采用128位地址长度，每16个字节一组，分成8组十六进制数，这样就解决了网络地址资源数量不够的问题
+    DOS常用命令：
+  ipconfig：查看本机IP地址
+  ping IP地址：检查网络是否连通
+    特殊IP地址：
+ 127.0.0.1：是回送地址，可以代表本机地址，一般用来测试使用    1.4 InetAddress【应用】 InetAddress：此类表示Internet协议（IP）地址
+  相关方法</description>
+    </item>
+    
+    <item>
+      <title>Java多线程02</title>
+      <link>https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/</link>
+      <pubDate>Tue, 15 Mar 2022 17:30:37 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/</guid>
+      <description>1.线程池 1.1 线程状态介绍 当线程被创建并启动以后，它既不是一启动就进入了执行状态，也不是一直处于执行状态。线程对象在不同的时期有不同的状态。那么Java中的线程存在哪几种状态呢？Java中的线程
+状态被定义在了java.lang.Thread.State枚举类中，State枚举类的源码如下：
+public class Thread {   public enum State {   /* 新建 */  NEW ,   /* 可运行状态 */  RUNNABLE ,   /* 阻塞状态 */  BLOCKED ,   /* 无限等待状态 */  WAITING ,   /* 计时等待 */  TIMED_WAITING ,   /* 终止 */  TERMINATED;  	}   // 获取当前线程的状态  public State getState() {  return jdk.</description>
+    </item>
+    
+    <item>
+      <title>Java多线程01</title>
+      <link>https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/</link>
+      <pubDate>Tue, 15 Mar 2022 15:02:24 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/</guid>
+      <description>1.实现多线程 1.1简单了解多线程【理解】 是指从软件或者硬件上实现多个线程并发执行的技术。 具有多线程能力的计算机因有硬件支持而能够在同一时间执行多个线程，提升性能。
+1.2并发和并行【理解】   并行：在同一时刻，有多个指令在多个CPU上同时执行。
+  并发：在同一时刻，有多个指令在单个CPU上交替执行。
+  1.3进程和线程【理解】   进程：是正在运行的程序
+独立性：进程是一个能独立运行的基本单位，同时也是系统分配资源和调度的独立单位 动态性：进程的实质是程序的一次执行过程，进程是动态产生，动态消亡的 并发性：任何进程都可以同其他进程一起并发执行
+  线程：是进程中的单个顺序控制流，是一条执行路径
+​	单线程：一个进程如果只有一条执行路径，则称为单线程程序
+​	多线程：一个进程如果有多条执行路径，则称为多线程程序
+  1.4实现多线程方式一：继承Thread类【应用】   方法介绍
+   方法名 说明     void run() 在线程开启后，此方法将被调用执行   void start() 使此线程开始执行，Java虚拟机会调用run方法()      实现步骤
+ 定义一个类MyThread继承Thread类 在MyThread类中重写run()方法 创建MyThread类的对象 启动线程    代码演示
+public class MyThread extends Thread {  @Override  public void run() {  for(int i=0; i&amp;lt;100; i++) {  System.</description>
+    </item>
+    
+    <item>
+      <title>Java IO流02</title>
+      <link>https://iblog.zone/archives/java-io%E6%B5%8102/</link>
+      <pubDate>Mon, 14 Mar 2022 14:15:53 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-io%E6%B5%8102/</guid>
+      <description>1.字符流 1.1为什么会出现字符流【理解】   字符流的介绍
+由于字节流操作中文不是特别的方便，所以Java就提供字符流
+字符流 = 字节流 + 编码表
+  中文的字节存储方式
+用字节流复制文本文件时，文本文件也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别是中文的呢？
+汉字在存储的时候，无论选择哪种编码存储，第一个字节都是负数
+  1.2编码表【理解】   什么是字符集
+是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+l计算机要准确的存储和识别各种字符集符号，就需要进行字符编码，一套字符集必然至少有一套字符编码。常见字符集有ASCII字符集、GBXXX字符集、Unicode字符集等
+  常见的字符集
+  ASCII字符集：
+lASCII：是基于拉丁字母的一套电脑编码系统，用于显示现代英语，主要包括控制字符(回车键、退格、换行键等)和可显示字符(英文大小写字符、阿拉伯数字和西文符号)
+基本的ASCII字符集，使用7位表示一个字符，共128字符。ASCII的扩展字符集使用8位表示一个字符，共256字符，方便支持欧洲常用字符。是一个系统支持的所有字符的集合，包括各国家文字、标点符号、图形符号、数字等
+  GBXXX字符集：
+GBK：最常用的中文码表。是在GB2312标准基础上的扩展规范，使用了双字节编码方案，共收录了21003个汉字，完全兼容GB2312标准，同时支持繁体汉字以及日韩汉字等
+  Unicode字符集：
+UTF-8编码：可以用来表示Unicode标准中任意字符，它是电子邮件、网页及其他存储或传送文字的应用 中，优先采用的编码。互联网工程工作小组（IETF）要求所有互联网协议都必须支持UTF-8编码。它使用一至四个字节为每个字符编码
+编码规则：
+128个US-ASCII字符，只需一个字节编码
+拉丁文等字符，需要二个字节编码
+大部分常用字（含中文），使用三个字节编码
+其他极少使用的Unicode辅助字符，使用四字节编码
+    1.3字符串中的编码解码问题【应用】   相关方法
+   方法名 说明     byte[] getBytes() 使用平台的默认字符集将该 String编码为一系列字节   byte[] getBytes(String charsetName) 使用指定的字符集将该 String编码为一系列字节   String(byte[] bytes) 使用平台的默认字符集解码指定的字节数组来创建字符串   String(byte[] bytes, String charsetName) 通过指定的字符集解码指定的字节数组来创建字符串      代码演示</description>
+    </item>
+    
+    <item>
+      <title>Java IO流01</title>
+      <link>https://iblog.zone/archives/java-io%E6%B5%8101/</link>
+      <pubDate>Thu, 10 Mar 2022 16:22:30 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-io%E6%B5%8101/</guid>
+      <description>1.File类 1.1File类概述和构造方法【应用】   File类介绍
+ 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法
+   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码
+public class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(&amp;#34;E:\\itcast\\java.txt&amp;#34;);  System.</description>
+    </item>
+    
+    <item>
+      <title>Java集合03</title>
+      <link>https://iblog.zone/archives/java%E9%9B%86%E5%90%8803/</link>
+      <pubDate>Tue, 08 Mar 2022 15:41:23 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E9%9B%86%E5%90%8803/</guid>
+      <description>1.Map集合 1.1Map集合概述和特点【理解】   Map集合概述
+interface Map&amp;lt;K,V&amp;gt; K：键的类型；V：值的类型   Map集合的特点
+ 双列集合,一个键对应一个值 键不可以重复,值可以重复    Map集合的基本使用
+public class MapDemo01 {  public static void main(String[] args) {  //创建集合对象  Map&amp;lt;String,String&amp;gt; map = new HashMap&amp;lt;String,String&amp;gt;();   //V put(K key, V value) 将指定的值与该映射中的指定键相关联  map.put(&amp;#34;itheima001&amp;#34;,&amp;#34;林青霞&amp;#34;);  map.put(&amp;#34;itheima002&amp;#34;,&amp;#34;张曼玉&amp;#34;);  map.put(&amp;#34;itheima003&amp;#34;,&amp;#34;王祖贤&amp;#34;);  map.put(&amp;#34;itheima003&amp;#34;,&amp;#34;柳岩&amp;#34;);   //输出集合对象  System.out.println(map);  } }   1.2Map集合的基本功能【应用】   方法介绍
+   方法名 说明     V put(K key,V value) 添加元素   V remove(Object key) 根据键删除键值对元素   void clear() 移除所有的键值对元素   boolean containsKey(Object key) 判断集合是否包含指定的键   boolean containsValue(Object value) 判断集合是否包含指定的值   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中键值对的个数      示例代码</description>
+    </item>
+    
+    <item>
+      <title>Java集合02</title>
+      <link>https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/</link>
+      <pubDate>Tue, 08 Mar 2022 14:13:24 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/</guid>
+      <description>1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历
+public class MySet1 {  public static void main(String[] args) {  //创建集合对象  Set&amp;lt;String&amp;gt; set = new TreeSet&amp;lt;&amp;gt;();  //添加元素  set.add(&amp;#34;ccc&amp;#34;);  set.add(&amp;#34;aaa&amp;#34;);  set.add(&amp;#34;aaa&amp;#34;);  set.add(&amp;#34;bbb&amp;#34;);  // for (int i = 0; i &amp;lt; set.size(); i++) { // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  Iterator&amp;lt;String&amp;gt; it = set.iterator();  while (it.hasNext()){  String s = it.next();  System.</description>
+    </item>
+    
+    <item>
+      <title>Java集合01</title>
+      <link>https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/</link>
+      <pubDate>Tue, 08 Mar 2022 11:00:09 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/</guid>
+      <description>1.Collection集合 1.1数组和集合的区别【理解】   相同点
+都是容器,可以存储多个数据
+  不同点
+  数组的长度是不可变的,集合的长度是可变的
+  数组可以存基本数据类型和引用数据类型
+集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类
+    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述
+ 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象
+ 多态的方式 具体的实现类ArrayList    Collection集合常用方法
+   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1.</description>
+    </item>
+    
+    <item>
+      <title>Java常用API02</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/</link>
+      <pubDate>Mon, 07 Mar 2022 17:58:13 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/</guid>
+      <description>1.时间日期类 1.1 Date类（应用）   计算机中时间原点
+1970年1月1日 00:00:00
+  时间换算单位
+1秒 = 1000毫秒
+  Date类概述
+Date 代表了一个特定的时间，精确到毫秒
+  Date类构造方法
+   方法名 说明     public Date() 分配一个 Date对象，并初始化，以便它代表它被分配的时间，精确到毫秒   public Date(long date) 分配一个 Date对象，并将其初始化为表示从标准基准时间起指定的毫秒数      示例代码
+public class DateDemo01 {  public static void main(String[] args) {  //public Date()：分配一个 Date对象，并初始化，以便它代表它被分配的时间，精确到毫秒  Date d1 = new Date();  System.</description>
+    </item>
+    
+    <item>
+      <title>Java常用API01</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/</link>
+      <pubDate>Mon, 07 Mar 2022 16:42:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/</guid>
+      <description>1.API 1.1 API概述【理解】   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  1.2 如何使用API帮助文档【应用】   打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  2.常用API 2.1 Math（应用）   1、Math类概述
+ Math 包含执行基本数字运算的方法    2、Math中方法的调用方式
+ Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法
+   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0.</description>
+    </item>
+    
+    <item>
+      <title>Java接口和内部类</title>
+      <link>https://iblog.zone/archives/java%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%86%85%E9%83%A8%E7%B1%BB/</link>
+      <pubDate>Mon, 28 Feb 2022 10:42:17 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%86%85%E9%83%A8%E7%B1%BB/</guid>
+      <description>1.接口 1.1黑马信息管理系统集合改进 (应用)   使用数组容器的弊端
+ 容器长度是固定的，不能根据添加功能自动增长 没有提供用于赠删改查的方法    优化步骤
+  创建新的StudentDao类，OtherStudentDao
+  创建ArrayList集合容器对象
+  OtherStudentDao中的方法声明，需要跟StudentDao保持一致
+注意：如果不一致，StudentService中的代码就需要进行修改
+  完善方法（添加、删除、修改、查看）
+  替换StudentService中的Dao对象
+    代码实现
+OtherStudentDao类
+public class OtherStudentDao {  // 集合容器  private static ArrayList&amp;lt;Student&amp;gt; stus = new ArrayList&amp;lt;&amp;gt;();   static {  Student stu1 = new Student(&amp;#34;heima001&amp;#34;,&amp;#34;张三&amp;#34;,&amp;#34;23&amp;#34;,&amp;#34;1999-11-11&amp;#34;);  Student stu2 = new Student(&amp;#34;heima002&amp;#34;,&amp;#34;李四&amp;#34;,&amp;#34;24&amp;#34;,&amp;#34;2000-11-11&amp;#34;);   stus.add(stu1);  stus.</description>
+    </item>
+    
+    <item>
+      <title>Java继承</title>
+      <link>https://iblog.zone/archives/java%E7%BB%A7%E6%89%BF/</link>
+      <pubDate>Wed, 23 Feb 2022 18:25:50 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%BB%A7%E6%89%BF/</guid>
+      <description>1. 继承 1.1 继承的实现（掌握）   继承的概念
+ 继承是面向对象三大特征之一，可以使得子类具有父类的属性和方法，还可以在子类中重新定义，以及追加属性和方法    实现继承的格式
+ 继承通过extends实现 格式：class 子类 extends 父类 { }  举例：class Dog extends Animal { }      继承带来的好处
+ 继承可以让类与类之间产生关系，子父类关系，产生子父类后，子类则可以使用父类中非私有的成员。    示例代码
+public class Fu {  public void show() {  System.out.println(&amp;#34;show方法被调用&amp;#34;);  } } public class Zi extends Fu {  public void method() {  System.out.println(&amp;#34;method方法被调用&amp;#34;);  } } public class Demo {  public static void main(String[] args) {  //创建对象，调用方法  Fu f = new Fu();  f.</description>
+    </item>
+    
+    <item>
+      <title>Java分类和static</title>
+      <link>https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/</link>
+      <pubDate>Wed, 23 Feb 2022 16:44:32 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%88%86%E7%B1%BB%E5%92%8Cstatic/</guid>
+      <description>1.案例驱动模式 1.1案例驱动模式概述 (理解) 通过我们已掌握的知识点,先实现一个案例,然后找出这个案例中,存在的一些问题,在通过新知识点解决问题
+1.2案例驱动模式的好处 (理解)  解决重复代码过多的冗余,提高代码的复用性 解决业务逻辑聚集紧密导致的可读性差,提高代码的可读性 解决代码可维护性差,提高代码的维护性  2.分类思想 2.1分类思想概述 (理解) 分工协作,专人干专事
+2.2黑马信息管理系统 (理解)   Student类 标准学生类,封装键盘录入的学生信息(id , name , age , birthday)
+  StudentDao类 Dao : (Data Access Object 缩写) 用于访问存储数据的数组或集合
+  StudentService类 用来进行业务逻辑的处理(例如: 判断录入的id是否存在)
+  StudentController类 和用户打交道(接收用户需求,采集用户信息,打印数据到控制台)
+  3.分包思想 3.1分包思想概述 (理解) 如果将所有的类文件都放在同一个包下,不利于管理和后期维护,所以,对于不同功能的类文件,可以放在不同的包下进行管理
+3.2包的概述 (记忆)   包
+本质上就是文件夹
+  创建包
+多级包之间使用 &amp;quot; . &amp;quot; 进行分割 多级包的定义规范：公司的网站地址翻转(去掉www) 比如：黑马程序员的网站址为www.itheima.com 后期我们所定义的包的结构就是：com.itheima.其他的包名
+  包的命名规则</description>
+    </item>
+    
+    <item>
+      <title>Java ArrayList集合&amp;学生管理系统</title>
+      <link>https://iblog.zone/archives/java-arraylist%E9%9B%86%E5%90%88%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Mon, 21 Feb 2022 16:57:09 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-arraylist%E9%9B%86%E5%90%88%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</guid>
+      <description>1.ArrayList 集合和数组的区别 :
+​	共同点：都是存储数据的容器
+​	不同点：数组的容量是固定的，集合的容量是可变的
+1.1 -ArrayList的构造方法和添加方法    public ArrayList() 创建一个空的集合对象     public boolean add(E e) 将指定的元素追加到此集合的末尾   public void add(int index,E element) 在此集合中的指定位置插入指定的元素    ArrayList&amp;lt;E&amp;gt; ：
+​	可调整大小的数组实现
+​	&amp;lt;E&amp;gt; : 是一种特殊的数据类型，泛型。
+怎么用呢 ?
+​	在出现E的地方我们使用引用数据类型替换即可
+​	举例：ArrayList&amp;lt;String&amp;gt;, ArrayList&amp;lt;Student&amp;gt;
+1.2ArrayList类常用方法【应用】 **成员方法 : **
+   public boolean remove(Object o) 删除指定的元素，返回删除是否成功     public E remove(int index) 删除指定索引处的元素，返回被删除的元素   public E set(int index,E element) 修改指定索引处的元素，返回被修改的元素   public E get(int index) 返回指定索引处的元素   public int size() 返回集合中的元素的个数    示例代码 :</description>
+    </item>
+    
+    <item>
+      <title>Java常用API</title>
+      <link>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api/</link>
+      <pubDate>Wed, 16 Feb 2022 16:20:54 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api/</guid>
+      <description>1.API 1.1 API概述-帮助文档的使用   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  如何使用API帮助文档 :
+  打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  1.2 键盘录入字符串 Scanner类 :
+​	next() : 遇到了空格, 就不再录入数据了 , 结束标记: 空格, tab键
+​	nextLine() : 可以将数据完整的接收过来 , 结束标记: 回车换行符
+代码实现 :
+package com.</description>
+    </item>
+    
+    <item>
+      <title>Java性能分析工具Async-profiler(火焰图)使用</title>
+      <link>https://iblog.zone/archives/java%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7async-profiler%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Thu, 10 Feb 2022 10:36:59 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7async-profiler%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</guid>
+      <description>如果你经常遇到 Java 线上性能问题束手无策，看着线上服务 CPU 飙升一筹莫展，发现内存不断泄露满脸茫然。别慌，这里有一款低开销、自带火焰图、让你大呼好用的 Java 性能分析工具 - async-profiler。
+最近 Arthas 性能分析工具上线了火焰图分析功能，Arthas 使用 async-profiler 生成 CPU/内存火焰图进行性能分析，弥补了之前内存分析的不足。在 Arthas 上使用还是比较方便的，使用方式可以看官方文档。这篇文章介绍 async-profiler 相关内容。
+Arthas 火焰图官方文档：alibaba.github.io/arthas/prof…
+如果你想了解更多 Arthas 信息，可以参考：Arthas - Java 线上问题定位处理的终极利器
+async-profiler 介绍 async-profiler 是一款开源的 Java 性能分析工具，原理是基于 HotSpot 的 API，以微乎其微的性能开销收集程序运行中的堆栈信息、内存分配等信息进行分析。
+使用 async-profiler 可以做下面几个方面的分析。
+ CPU cycles Hardware and Software performance counters like cache misses, branch misses, page faults, context switches etc. Allocations in Java Heap Contented lock attempts, including both Java object monitors and ReentrantLocks  我们常用的是 CPU 性能分析和 Heap 内存分配分析。在进行 CPU 性能分析时，仅需要非常低的性能开销就可以进行分析，这也是这个工具的优点之一。</description>
+    </item>
+    
+    <item>
+      <title>Java面向对象</title>
+      <link>https://iblog.zone/archives/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Tue, 08 Feb 2022 16:07:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid>
+      <description>1. 类和对象 面向对象和面向过程的思想对比 :
+​	**面向过程 ：**是一种以过程为中心的编程思想，实现功能的每一步，都是自己实现的
+​	**面向对象 ：**是一种以对象为中心的编程思想，通过指挥对象实现具体的功能
+1.1 类和对象的关系 客观存在的事物皆为对象 ，所以我们也常常说万物皆对象。
+ 类  类的理解  类是对现实生活中一类具有共同属性和行为的事物的抽象 类是对象的数据类型，类是具有相同属性和行为的一组对象的集合 简单理解：类就是对现实事物的一种描述   类的组成  属性：指事物的特征，例如：手机事物（品牌，价格，尺寸） 行为：指事物能执行的操作，例如：手机事物（打电话，发短信）     类和对象的关系  类：类是对现实生活中一类具有共同属性和行为的事物的抽象 对象：是能够看得到摸的着的真实存在的实体 简单理解：类是对事物的一种描述，对象则为具体存在的事物    1.2 类的定义【应用】 类的组成是由属性和行为两部分组成
+ **属性：**在类中通过成员变量来体现（类中方法外的变量） **行为：**在类中通过成员方法来体现（和前面的方法相比去掉static关键字即可）  类的定义步骤：
+​	① 定义类
+​	② 编写类的成员变量
+​	③ 编写类的成员方法
+public class Student {  // 属性 : 姓名, 年龄  // 成员变量: 跟之前定义变量的格式一样, 只不过位置发生了改变, 类中方法外  String name;  int age;   // 行为 : 学习  // 成员方法: 跟之前定义方法的格式一样, 只不过去掉了static关键字.</description>
+    </item>
+    
+    <item>
+      <title>Java Debug&amp;进制&amp;二维数组</title>
+      <link>https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Mon, 07 Feb 2022 14:44:39 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/</guid>
+      <description>1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。
+1.2 Debug介绍与操作流程   如何加断点
+ 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序
+ 在代码区域右键Debug执行    看哪里
+  看Debugger窗口
+  看Console窗口
+    点哪里
+ 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点
+  选择要删除的断点，单击鼠标左键即可
+  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除
+    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :
+public class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System.</description>
+    </item>
+    
+    <item>
+      <title>Java方法</title>
+      <link>https://iblog.zone/archives/java%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Mon, 07 Feb 2022 14:35:54 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%96%B9%E6%B3%95/</guid>
+      <description>1. 方法概述 1.1 方法的概念 ​	方法（method）是将具有独立功能的代码块组织成为一个整体，使其具有特殊功能的代码集
+ 注意：  方法必须先创建才可以使用，该过程成为方法定义 方法创建后并不是直接可以运行的，需要手动使用后，才执行，该过程成为方法调用    2. 方法的定义和调用 2.1 无参数方法定义和调用   定义格式：
+public static void 方法名 ( ) { 	// 方法体; }   范例：
+public static void method ( ) { 	// 方法体; }   调用格式：
+方法名();   范例：
+method();   注意：
+​	方法必须先定义，后调用，否则程序将报错
+  2.2 方法的调用过程  总结：每个方法在被调用执行的时候，都会进入栈内存，并且拥有自己独立的内存空间，方法内部代码调用完毕之后，会从栈内存中弹栈消失。  2.3 方法练习-奇偶数判断  需求：判断一个数是奇数还是偶数 代码：  public class Demo1Method {  /* 带参数方法的定义格式: public static void 方法名 ( 参数 ) { … … } public static void 方法名 ( 数据类型 变量名 ) { … … } 带参数方法的调用格式: 方法名 ( 参数 ) ; 方法名 ( 变量名/常量值 ) ; tips: 参数可以是一个, 也可以是多个.</description>
+    </item>
+    
+    <item>
+      <title>Java数组</title>
+      <link>https://iblog.zone/archives/java%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Mon, 07 Feb 2022 14:25:44 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%95%B0%E7%BB%84/</guid>
+      <description>1.数组 1.1 数组介绍 ​	数组就是存储数据长度固定的容器，存储多个数据的数据类型要一致。
+1.2 数组的定义格式 1.2.1 第一种格式 ​	数据类型[] 数组名
+​	示例：
+int[] arr; double[] arr; char[] arr; 1.2.2 第二种格式 ​	数据类型 数组名[]
+​	示例：
+int arr[]; double arr[]; char arr[]; 1.3 数组的动态初始化 1.3.1 什么是动态初始化 ​	数组动态初始化就是只给定数组的长度，由系统给出默认初始化值
+1.3.2 动态初始化格式 数据类型[] 数组名 = new 数据类型[数组长度]; int[] arr = new int[3]; 1.3.3 动态初始化格式详解  等号左边：  int:数组的数据类型 []:代表这是一个数组 arr:代表数组的名称   等号右边：  new:为数组开辟内存空间 int:数组的数据类型 []:代表这是一个数组 5:代表数组的长度    代码 :</description>
+    </item>
+    
+    <item>
+      <title>Java循环</title>
+      <link>https://iblog.zone/archives/java%E5%BE%AA%E7%8E%AF/</link>
+      <pubDate>Fri, 28 Jan 2022 14:21:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%BE%AA%E7%8E%AF/</guid>
+      <description>1. switch语句 1.1 分支语句switch语句   格式
+switch (表达式) { 	case 1: 	语句体1; 	break; 	case 2: 	语句体2; 	break; 	... 	default: 	语句体n+1; 	break; }   执行流程：
+ 首先计算出表达式的值 其次，和case依次比较，一旦有对应的值，就会执行相应的语句，在执行的过程中，遇到break就会结 束。 最后，如果所有的case都和表达式的值不匹配，就会执行default语句体部分，然后程序结束掉。    1.2 switch案例-减肥计划  需求：键盘录入星期数，显示今天的减肥活动  周一：跑步 周二：游泳 周三：慢走 周四：动感单车 周五：拳击 周六：爬山 周日：好好吃一顿  示例代码：  public static void main(String[] args){ 	// 1. 键盘录入星期数据，使用变量接收 	Scanner sc = new Scanner(System.</description>
+    </item>
+    
+    <item>
+      <title>Java运算符</title>
+      <link>https://iblog.zone/archives/java%E8%BF%90%E7%AE%97%E7%AC%A6/</link>
+      <pubDate>Thu, 27 Jan 2022 16:46:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E8%BF%90%E7%AE%97%E7%AC%A6/</guid>
+      <description>1 类型转换 在Java中，一些数据类型之间是可以相互转换的。分为两种情况：自动类型转换和强制类型转换。
+1.1 隐式转换(理解) ​	把一个表示数据范围小的数值或者变量赋值给另一个表示数据范围大的变量。这种转换方式是自动的，直接书写即可。例如：
+double num = 10; // 将int类型的10直接赋值给double类型 System.out.println(num); // 输出10.0 ​	类型从小到大关系图：
+说明：
+ 整数默认是int类型，byte、short和char类型数据参与运算均会自动转换为int类型。  byte b1 = 10; byte b2 = 20; byte b3 = b1 + b2; // 第三行代码会报错，b1和b2会自动转换为int类型，计算结果为int，int赋值给byte需要强制类型转换。 // 修改为: int num = b1 + b2; // 或者： byte b3 = (byte) (b1 + b2); boolean类型不能与其他基本数据类型相互转换。  1.2 强制转换(理解) ​	把一个表示数据范围大的数值或者变量赋值给另一个表示数据范围小的变量。
+​	强制类型转换格式：目标数据类型 变量名 = (目标数据类型)值或者变量;
+​	例如：
+double num1 = 5.</description>
+    </item>
+    
+    <item>
+      <title>Java环境搭建及入门</title>
+      <link>https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Wed, 26 Jan 2022 18:19:37 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/</guid>
+      <description>1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式
+计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言
+Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言
+Java之父：詹姆斯·高斯林（James Gosling）
+2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com
+java语言的三个版本：
+​	JavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础
+​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备
+​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发
+1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。
+1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。
+1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK
+http://www.oracle.com
+注意：针对不同的操作系统，需要下载对应版本的JDK。
+1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。
+注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。
+1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2.</description>
+    </item>
+    
+    <item>
+      <title>The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错</title>
+      <link>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</link>
+      <pubDate>Thu, 20 Jan 2022 16:30:33 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</guid>
+      <description>由于oracle jdk1.8_301扫描出漏洞，故升级jdk到openjdk 1.8.0_312，升级后出现兼容性问题，访问数据库出现以下错误
+The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 查询后为新版的 JDK 不推荐使用旧的 TLSV1.0 的协议，所以默认删除 TLS10 的支持导致，可按照下面方法修复
+cd /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-1.el7_9.x86_64/jre  cd lib/security/  vim java.security  # 698行，将 TLSv1, TLSv1.1, 3DES_EDE_CBC 删除，删除后为以下内容 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \  DH keySize &amp;lt; 1024, EC keySize &amp;lt; 224, anon, NULL, \  include jdk.disabled.namedCurves 再次访问，问题解决</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>查看空间 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E6%9F%A5%E7%9C%8B%E7%A9%BA%E9%97%B4/</link>
+    <description>Recent content in 查看空间 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 18 Mar 2022 16:38:25 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E6%9F%A5%E7%9C%8B%E7%A9%BA%E9%97%B4/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>查看mysql库大小，表大小，索引大小</title>
+      <link>https://iblog.zone/archives/%E6%9F%A5%E7%9C%8Bmysql%E5%BA%93%E5%A4%A7%E5%B0%8F%E8%A1%A8%E5%A4%A7%E5%B0%8F%E7%B4%A2%E5%BC%95%E5%A4%A7%E5%B0%8F/</link>
+      <pubDate>Fri, 18 Mar 2022 16:38:25 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E6%9F%A5%E7%9C%8Bmysql%E5%BA%93%E5%A4%A7%E5%B0%8F%E8%A1%A8%E5%A4%A7%E5%B0%8F%E7%B4%A2%E5%BC%95%E5%A4%A7%E5%B0%8F/</guid>
+      <description>说明：
+通过MySQL的 information_schema 数据库，可查询数据库中每个表占用的空间、表记录的行数；该库中有一个 TABLES 表，这个表主要字段分别是：
+ TABLE_SCHEMA : 数据库名 TABLE_NAME：表名 ENGINE：所使用的存储引擎 TABLES_ROWS：记录数 DATA_LENGTH：数据大小 INDEX_LENGTH：索引大小  其他字段请参考MySQL的手册，查看一个表占用空间的大小，那就相当于是 数据大小 + 索引大小 。
+查看所有库的大小
+mysql&amp;gt; use information_schema; Database changed mysql&amp;gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&amp;#39;MB&amp;#39;) as data from TABLES; +----------+ | data | +----------+ | 104.21MB | +----------+ 1 row in set (0.11 sec) 查看指定库的大小
+mysql&amp;gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&amp;#39;MB&amp;#39;) as data from TABLES where table_schema=&amp;#39;jishi&amp;#39;; +---------+ | data | +---------+ | 26.17MB | +---------+ 1 row in set (0.</description>
+    </item>
+    
+  </channel>
+</rss>

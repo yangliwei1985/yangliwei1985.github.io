@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>故障排查 | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/categories/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/categories/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="故障排查" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/categories/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="故障排查"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/categories/">Categories</a></div>
+  <h1>故障排查</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nignx导致java程序TruncatedChunkException解决办法
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>#项目异常信息 org.apache.http.TruncatedChunkException: Truncated chunk ( expected size: 7752; actual size: 4077)  at org.apache.http.impl.io.ChunkedInputStream.read(ChunkedInputStream.java:186)  at org.apache.http.conn.EofSensorInputStream.read(EofSensorInputStream.java:138)  at &lt;mypackage&gt;.&lt;MyServlet&gt;.service(&lt;MyServlet&gt;.java:XXX)  at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)  at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)  at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)  at org.jboss.resteasy.plugins.server.servlet.FilterDispatcher.doFilter(FilterDispatcher.java:63)  at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)  at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)  at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)  at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)  at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:127)  at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)  at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)  at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)  at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:859)  at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:602)  at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)  at java.lang.Thread.run(Thread.java:724) 当系统报以上错误时，接口表现出来的是数据传输不完整， 比如说接口返回 json ， 那么接收到的数据可能会少一截，json 数据说不定会少个 ｝ ，此时json就无法反序列化了。说白了就是丢包了。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-24 16:49:20 +0800 CST'>2022-03-24</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nignx导致java程序TruncatedChunkException解决办法" href="https://iblog.zone/archives/nignx%E5%AF%BC%E8%87%B4java%E7%A8%8B%E5%BA%8Ftruncatedchunkexception%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>超好用的k8s中pod诊断工具：kubectl-debug
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>背景 容器技术的一个最佳实践是构建尽可能精简的容器镜像。但这一实践却会给排查问题带来麻烦：精简后的容器中普遍缺失常用的排障工具，部分容器里甚至没有 shell (比如 FROM scratch ）。 在这种状况下，我们只能通过日志或者到宿主机上通过 docker-cli 或 nsenter 来排查问题，效率很低，在K8s环境部署应用后，经常遇到需要进入pod进行排错。除了查看pod logs和describe方式之外，传统的解决方式是在业务pod基础镜像中提前安装好procps、net-tools、tcpdump、vim等工具。但这样既不符合最小化镜像原则，又徒增Pod安全漏洞风险。
+今天为大家推荐一款K8s pod诊断工具，kubectl-debug是一个简单、易用、强大的 kubectl 插件, 能够帮助你便捷地进行 Kubernetes 上的 Pod 排障诊断。它通过启动一个排错工具容器，并将其加入到目标业务容器的pid, network, user 以及 ipc namespace 中，这时我们就可以在新容器中直接用 netstat, tcpdump 这些熟悉的工具来解决问题了, 而业务容器可以保持最小化, 不需要预装任何额外的排障工具。 kubectl-debug 主要包含以下两部分:
+ kubectl-debug：命令行工具 debug-agent：部署在K8s的node上，用于启动关联排错工具容器  工作原理 我们知道，容器本质上是带有 cgroup 资源限制和 namespace 隔离的一组进程。因此，我们只要启动一个进程，并且让这个进程加入到目标容器的各种 namespace 中，这个进程就能 “进入容器内部”（注意引号），与容器中的进程”看到”相同的根文件系统、虚拟网卡、进程空间了——这也正是 docker exec 和 kubectl exec 等命令的运行方式。
+现在的状况是，我们不仅要 “进入容器内部”，还希望带一套工具集进去帮忙排查问题。那么，想要高效管理一套工具集，又要可以跨平台，最好的办法就是把工具本身都打包在一个容器镜像当中。 接下来，我们只需要通过这个”工具镜像”启动容器，再指定这个容器加入目标容器的的各种 namespace，自然就实现了 “携带一套工具集进入容器内部”。事实上，使用 docker-cli 就可以实现这个操作：
+export TARGET_ID=666666666 # 加入目标容器的 network, pid 以及 ipc namespace docker run -it --network=container:$TARGET_ID --pid=container:$TARGET_ID --ipc=container:$TARGET_ID busybox 这就是 kubectl-debug 的出发点： 用工具容器来诊断业务容器 。背后的设计思路和 sidecar 等模式是一致的：每个容器只做一件事情。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-18 11:24:51 +0000 UTC'>2022-02-18</span>&nbsp;·&nbsp;5 分钟</footer>
+  <a class="entry-link" aria-label="post link to 超好用的k8s中pod诊断工具：kubectl-debug" href="https://iblog.zone/archives/%E8%B6%85%E5%A5%BD%E7%94%A8%E7%9A%84k8s%E4%B8%ADpod%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7kubectl-debug/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

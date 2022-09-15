@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java IO流01 | ylw&#39;s blog</title>
+<meta name="keywords" content="IO流" />
+<meta name="description" content="1.File类 1.1File类概述和构造方法【应用】   File类介绍
+ 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法
+   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码
+public class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(&#34;E:\\itcast\\java.txt&#34;);  System.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java-io%E6%B5%8101/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java IO流01" />
+<meta property="og:description" content="1.File类 1.1File类概述和构造方法【应用】   File类介绍
+ 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法
+   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码
+public class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(&#34;E:\\itcast\\java.txt&#34;);  System." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java-io%E6%B5%8101/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-10T16:22:30&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-10T16:22:30&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java IO流01"/>
+<meta name="twitter:description" content="1.File类 1.1File类概述和构造方法【应用】   File类介绍
+ 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法
+   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码
+public class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(&#34;E:\\itcast\\java.txt&#34;);  System."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java IO流01",
+      "item": "https://iblog.zone/archives/java-io%E6%B5%8101/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java IO流01",
+  "name": "Java IO流01",
+  "description": "1.File类 1.1File类概述和构造方法【应用】   File类介绍\n 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法\n   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码\npublic class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(\u0026#34;E:\\\\itcast\\\\java.txt\u0026#34;);  System.",
+  "keywords": [
+    "IO流"
+  ],
+  "articleBody": "1.File类 1.1File类概述和构造方法【应用】   File类介绍\n 它是文件和目录路径名的抽象表示 文件和目录是可以通过File封装成对象的 对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的    File类的构造方法\n   方法名 说明     File(String pathname) 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例   File(String parent, String child) 从父路径名字符串和子路径名字符串创建新的 File实例   File(File parent, String child) 从父抽象路径名和子路径名字符串创建新的 File实例      示例代码\npublic class FileDemo01 {  public static void main(String[] args) {  //File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例  File f1 = new File(\"E:\\\\itcast\\\\java.txt\");  System.out.println(f1);   //File(String parent, String child): 从父路径名字符串和子路径名字符串创建新的 File实例  File f2 = new File(\"E:\\\\itcast\",\"java.txt\");  System.out.println(f2);   //File(File parent, String child): 从父抽象路径名和子路径名字符串创建新的 File实例  File f3 = new File(\"E:\\\\itcast\");  File f4 = new File(f3,\"java.txt\");  System.out.println(f4);  } }   1.2绝对路径和相对路径【理解】   绝对路径\n是一个完整的路径,从盘符开始\n  相对路径\n是一个简化的路径,相对当前项目下的路径\n  示例代码\npublic class FileDemo02 {  public static void main(String[] args) {  // 是一个完整的路径,从盘符开始  File file1 = new File(\"D:\\\\itheima\\\\a.txt\");   // 是一个简化的路径,从当前项目根目录开始  File file2 = new File(\"a.txt\");  File file3 = new File(\"模块名\\\\a.txt\");  } }   1.3File类创建功能【应用】   方法分类\n   方法名 说明     public boolean createNewFile() 当具有该名称的文件不存在时，创建一个由该抽象路径名命名的新空文件   public boolean mkdir() 创建由此抽象路径名命名的目录   public boolean mkdirs() 创建由此抽象路径名命名的目录，包括任何必需但不存在的父目录      示例代码\npublic class FileDemo02 {  public static void main(String[] args) throws IOException {  //需求1：我要在E:\\\\itcast目录下创建一个文件java.txt  File f1 = new File(\"E:\\\\itcast\\\\java.txt\");  System.out.println(f1.createNewFile());  System.out.println(\"--------\");   //需求2：我要在E:\\\\itcast目录下创建一个目录JavaSE  File f2 = new File(\"E:\\\\itcast\\\\JavaSE\");  System.out.println(f2.mkdir());  System.out.println(\"--------\");   //需求3：我要在E:\\\\itcast目录下创建一个多级目录JavaWEB\\\\HTML  File f3 = new File(\"E:\\\\itcast\\\\JavaWEB\\\\HTML\"); // System.out.println(f3.mkdir());  System.out.println(f3.mkdirs());  System.out.println(\"--------\");   //需求4：我要在E:\\\\itcast目录下创建一个文件javase.txt  File f4 = new File(\"E:\\\\itcast\\\\javase.txt\"); // System.out.println(f4.mkdir());  System.out.println(f4.createNewFile());  } }   1.4File类删除功能【应用】   方法分类\n   方法名 说明     public boolean delete() 删除由此抽象路径名表示的文件或目录      示例代码\npublic class FileDemo03 {  public static void main(String[] args) throws IOException { // File f1 = new File(\"E:\\\\itcast\\\\java.txt\");  //需求1：在当前模块目录下创建java.txt文件  File f1 = new File(\"myFile\\\\java.txt\"); // System.out.println(f1.createNewFile());   //需求2：删除当前模块目录下的java.txt文件  System.out.println(f1.delete());  System.out.println(\"--------\");   //需求3：在当前模块目录下创建itcast目录  File f2 = new File(\"myFile\\\\itcast\"); // System.out.println(f2.mkdir());   //需求4：删除当前模块目录下的itcast目录  System.out.println(f2.delete());  System.out.println(\"--------\");   //需求5：在当前模块下创建一个目录itcast,然后在该目录下创建一个文件java.txt  File f3 = new File(\"myFile\\\\itcast\"); // System.out.println(f3.mkdir());  File f4 = new File(\"myFile\\\\itcast\\\\java.txt\"); // System.out.println(f4.createNewFile());   //需求6：删除当前模块下的目录itcast  System.out.println(f4.delete());  System.out.println(f3.delete());  } }   1.5File类判断和获取功能【应用】   判断功能\n   方法名 说明     public boolean isDirectory() 测试此抽象路径名表示的File是否为目录   public boolean isFile() 测试此抽象路径名表示的File是否为文件   public boolean exists() 测试此抽象路径名表示的File是否存在      获取功能\n   方法名 说明     public String getAbsolutePath() 返回此抽象路径名的绝对路径名字符串   public String getPath() 将此抽象路径名转换为路径名字符串   public String getName() 返回由此抽象路径名表示的文件或目录的名称   public File[] listFiles() 返回此抽象路径名表示的目录中的文件和目录的File对象数组      示例代码\npublic class FileDemo04 {  public static void main(String[] args) {  //创建一个File对象  File f = new File(\"myFile\\\\java.txt\");  // public boolean isDirectory()：测试此抽象路径名表示的File是否为目录 // public boolean isFile()：测试此抽象路径名表示的File是否为文件 // public boolean exists()：测试此抽象路径名表示的File是否存在  System.out.println(f.isDirectory());  System.out.println(f.isFile());  System.out.println(f.exists());  // public String getAbsolutePath()：返回此抽象路径名的绝对路径名字符串 // public String getPath()：将此抽象路径名转换为路径名字符串 // public String getName()：返回由此抽象路径名表示的文件或目录的名称  System.out.println(f.getAbsolutePath());  System.out.println(f.getPath());  System.out.println(f.getName());  System.out.println(\"--------\");  // public File[] listFiles()：返回此抽象路径名表示的目录中的文件和目录的File对象数组  File f2 = new File(\"E:\\\\itcast\");  File[] fileArray = f2.listFiles();  for(File file : fileArray) { // System.out.println(file); // System.out.println(file.getName());  if(file.isFile()) {  System.out.println(file.getName());  }  }  } }   1.6File类练习一【应用】   案例需求\n在当前模块下的aaa文件夹中创建一个a.txt文件\n  实现步骤\n 创建File对象,指向aaa文件夹 判断aaa文件夹是否存在,如果不存在则创建 创建File对象,指向aaa文件夹下的a.txt文件 创建这个文件    代码实现\npublic class Test1 {  public static void main(String[] args) throws IOException {  //练习一：在当前模块下的aaa文件夹中创建一个a.txt文件  /* File file = new File(\"filemodule\\\\aaa\\\\a.txt\"); file.createNewFile();*/  //注意点:文件所在的文件夹必须要存在.   //1.创建File对象,指向aaa文件夹  File file = new File(\"filemodule\\\\aaa\");  //2.判断aaa文件夹是否存在,如果不存在则创建  if(!file.exists()){  //如果文件夹不存在,就创建出来  file.mkdirs();  }  //3.创建File对象,指向aaa文件夹下的a.txt文件  File newFile = new File(file,\"a.txt\");  //4.创建这个文件  newFile.createNewFile();  } }   1.7File类练习二【应用】   案例需求\n删除一个多级文件夹\n  实现步骤\n 定义一个方法,接收一个File对象 遍历这个File对象,获取它下边的每个文件和文件夹对象 判断当前遍历到的File对象是文件还是文件夹 如果是文件,直接删除 如果是文件夹,递归调用自己,将当前遍历到的File对象当做参数传递 参数传递过来的文件夹File对象已经处理完成,最后直接删除这个空文件夹    代码实现\npublic class Test2 {  public static void main(String[] args) {  //练习二：删除一个多级文件夹  //delete方法  //只能删除文件和空文件夹.  //如果现在要删除一个有内容的文件夹?  //先删掉这个文件夹里面所有的内容.  //最后再删除这个文件夹   File src = new File(\"C:\\\\Users\\\\apple\\\\Desktop\\\\src\");  deleteDir(src);  }  \t//1.定义一个方法,接收一个File对象  private static void deleteDir(File src) {  //先删掉这个文件夹里面所有的内容.  //递归 方法在方法体中自己调用自己.  //注意: 可以解决所有文件夹和递归相结合的题目  //2.遍历这个File对象,获取它下边的每个文件和文件夹对象  File[] files = src.listFiles();  //3.判断当前遍历到的File对象是文件还是文件夹  for (File file : files) {  //4.如果是文件,直接删除  if(file.isFile()){  file.delete();  }else{  //5.如果是文件夹,递归调用自己,将当前遍历到的File对象当做参数传递  deleteDir(file);//参数一定要是src文件夹里面的文件夹File对象  }  }  //6.参数传递过来的文件夹File对象已经处理完成,最后直接删除这个空文件夹  src.delete();  }  }   1.8File类练习三【应用】   案例需求\n统计一个文件夹中每种文件的个数并打印\n打印格式如下：\n txt:3个 doc:4个 jpg:6个 …    实现步骤\n 定义一个方法,参数是HashMap集合用来统计次数和File对象要统计的文件夹 遍历File对象,获取它下边的每一个文件和文件夹对象 判断当前File对象是文件还是文件夹 如果是文件,判断这种类型文件后缀名在HashMap集合中是否出现过  没出现过,将这种类型文件的后缀名存入集合中,次数存1 出现过,获取这种类型文件的后缀名出现的次数,对其+1,在存回集合中   如果是文件夹,递归调用自己,HashMap集合就是参数集合,File对象是当前文件夹对象    代码实现\npublic class Test3 {  public static void main(String[] args) {  //统计一个文件夹中,每种文件出现的次数.  //统计 --- 定义一个变量用来统计. ---- 弊端:同时只能统计一种文件  //利用map集合进行数据统计,键 --- 文件后缀名 值 ---- 次数   File file = new File(\"filemodule\");  HashMapString, Integer hm = new HashMap();  getCount(hm, file);  System.out.println(hm);  }  \t//1.定义一个方法,参数是HashMap集合用来统计次数和File对象要统计的文件夹  private static void getCount(HashMapString, Integer hm, File file) {  //2.遍历File对象,获取它下边的每一个文件和文件夹对象  File[] files = file.listFiles();  for (File f : files) {  //3.判断当前File对象是文件还是文件夹  if(f.isFile()){  //如果是文件,判断这种类型文件后缀名在HashMap集合中是否出现过  String fileName = f.getName();  String[] fileNameArr = fileName.split(\"\\\\.\");  if(fileNameArr.length == 2){  String fileEndName = fileNameArr[1];  if(hm.containsKey(fileEndName)){  //出现过,获取这种类型文件的后缀名出现的次数,对其+1,在存回集合中  Integer count = hm.get(fileEndName);  //这种文件又出现了一次.  count++;  //把已经出现的次数给覆盖掉.  hm.put(fileEndName,count);  }else{  // 没出现过,将这种类型文件的后缀名存入集合中,次数存1  hm.put(fileEndName,1);  }  }  }else{  //如果是文件夹,递归调用自己,HashMap集合就是参数集合,File对象是当前文件夹对象代码实现  getCount(hm,f);  }  }  }  }   2.字节流 2.1 IO流概述和分类【理解】  IO流介绍  IO：输入/输出(Input/Output) 流：是一种抽象概念,是对数据传输的总称.也就是说数据在设备间的传输称为流,流的本质是数据传输 IO流就是用来处理设备间数据传输问题的.常见的应用: 文件复制; 文件上传; 文件下载   IO流的分类  按照数据的流向  输入流：读数据 输出流：写数据   按照数据类型来分  字节流  字节输入流 字节输出流   字符流  字符输入流 字符输出流       IO流的使用场景  如果操作的是纯文本文件,优先使用字符流 如果操作的是图片、视频、音频等二进制文件,优先使用字节流 如果不确定文件类型,优先使用字节流.字节流是万能的流    2.2字节流写数据【应用】   字节流抽象基类\n InputStream：这个抽象类是表示字节输入流的所有类的超类 OutputStream：这个抽象类是表示字节输出流的所有类的超类 子类名特点：子类名称都是以其父类名作为子类名的后缀    字节输出流\n FileOutputStream(String name)：创建文件输出流以指定的名称写入文件    使用字节输出流写数据的步骤\n 创建字节输出流对象(调用系统功能创建了文件,创建字节输出流对象,让字节输出流对象指向文件) 调用字节输出流对象的写数据方法 释放资源(关闭此文件输出流并释放与此流相关联的任何系统资源)    示例代码\npublic class FileOutputStreamDemo01 {  public static void main(String[] args) throws IOException {  //创建字节输出流对象  /* 注意点: 1.如果文件不存在,会帮我们创建 2.如果文件存在,会把文件清空 */  //FileOutputStream(String name)：创建文件输出流以指定的名称写入文件  FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\fos.txt\");   //void write(int b)：将指定的字节写入此文件输出流  fos.write(97); // fos.write(57); // fos.write(55);   //最后都要释放资源  //void close()：关闭此文件输出流并释放与此流相关联的任何系统资源。  fos.close();  } }   2.3字节流写数据的三种方式【应用】   写数据的方法分类\n   方法名 说明     void write(int b) 将指定的字节写入此文件输出流 一次写一个字节数据   void write(byte[] b) 将 b.length字节从指定的字节数组写入此文件输出流 一次写一个字节数组数据   void write(byte[] b, int off, int len) 将 len字节从指定的字节数组开始，从偏移量off开始写入此文件输出流 一次写一个字节数组的部分数据      示例代码\npublic class FileOutputStreamDemo02 {  public static void main(String[] args) throws IOException {  //FileOutputStream(String name)：创建文件输出流以指定的名称写入文件  FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\fos.txt\");  //FileOutputStream(File file)：创建文件输出流以写入由指定的 File对象表示的文件 // FileOutputStream fos = new FileOutputStream(new File(\"myByteStream\\\\fos.txt\"));   //void write(int b)：将指定的字节写入此文件输出流 // fos.write(97); // fos.write(98); // fos.write(99); // fos.write(100); // fos.write(101);  // void write(byte[] b)：将 b.length字节从指定的字节数组写入此文件输出流 // byte[] bys = {97, 98, 99, 100, 101};  //byte[] getBytes()：返回字符串对应的字节数组  byte[] bys = \"abcde\".getBytes(); // fos.write(bys);   //void write(byte[] b, int off, int len)：将 len字节从指定的字节数组开始，从偏移量off开始写入此文件输出流 // fos.write(bys,0,bys.length);  fos.write(bys,1,3);   //释放资源  fos.close();  } }   2.4字节流写数据的两个小问题【应用】   字节流写数据如何实现换行\n windows:\\r\\n linux:\\n mac:\\r    字节流写数据如何实现追加写入\n public FileOutputStream(String name,boolean append) 创建文件输出流以指定的名称写入文件。如果第二个参数为true ，则字节将写入文件的末尾而不是开头    示例代码\npublic class FileOutputStreamDemo03 {  public static void main(String[] args) throws IOException {  //创建字节输出流对象 // FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\fos.txt\");  FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\fos.txt\",true);   //写数据  for (int i = 0; i  10; i++) {  fos.write(\"hello\".getBytes());  fos.write(\"\\r\\n\".getBytes());  }   //释放资源  fos.close();  } }   2.5字节流写数据加异常处理【应用】   异常处理格式\n  try-catch-finally\ntry{ \t可能出现异常的代码; }catch(异常类名 变量名){ \t异常的处理代码; }finally{ \t执行所有清除操作; }   finally特点\n 被finally控制的语句一定会执行，除非JVM退出      示例代码\npublic class FileOutputStreamDemo04 {  public static void main(String[] args) {  //加入finally来实现释放资源  FileOutputStream fos = null;  try {  fos = new FileOutputStream(\"myByteStream\\\\fos.txt\");  fos.write(\"hello\".getBytes());  } catch (IOException e) {  e.printStackTrace();  } finally {  if(fos != null) {  try {  fos.close();  } catch (IOException e) {  e.printStackTrace();  }  }  }  } }   2.6字节流读数据(一次读一个字节数据)【应用】   字节输入流\n FileInputStream(String name)：通过打开与实际文件的连接来创建一个FileInputStream,该文件由文件系统中的路径名name命名    字节输入流读取数据的步骤\n 创建字节输入流对象 调用字节输入流对象的读数据方法 释放资源    示例代码\npublic class FileInputStreamDemo01 {  public static void main(String[] args) throws IOException {  //创建字节输入流对象  //FileInputStream(String name)  FileInputStream fis = new FileInputStream(\"myByteStream\\\\fos.txt\");   int by;  /* fis.read()：读数据 by=fis.read()：把读取到的数据赋值给by by != -1：判断读取到的数据是否是-1 */  while ((by=fis.read())!=-1) {  System.out.print((char)by);  }   //释放资源  fis.close();  } }   2.7字节流复制文件【应用】   案例需求\n​\t把“E:\\itcast\\窗里窗外.txt”复制到模块目录下的“窗里窗外.txt” (文件可以是任意文件)\n  实现步骤\n  复制文本文件，其实就把文本文件的内容从一个文件中读取出来(数据源)，然后写入到另一个文件中(目的地)\n  数据源：\n​\tE:\\itcast\\窗里窗外.txt — 读数据 — InputStream — FileInputStream\n  目的地：\n​\tmyByteStream\\窗里窗外.txt — 写数据 — OutputStream — FileOutputStream\n    代码实现\npublic class CopyTxtDemo {  public static void main(String[] args) throws IOException {  //根据数据源创建字节输入流对象  FileInputStream fis = new FileInputStream(\"E:\\\\itcast\\\\窗里窗外.txt\");  //根据目的地创建字节输出流对象  FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\窗里窗外.txt\");   //读写数据，复制文本文件(一次读取一个字节，一次写入一个字节)  int by;  while ((by=fis.read())!=-1) {  fos.write(by);  }   //释放资源  fos.close();  fis.close();  } }   2.8字节流读数据(一次读一个字节数组数据)【应用】   一次读一个字节数组的方法\n public int read(byte[] b)：从输入流读取最多b.length个字节的数据 返回的是读入缓冲区的总字节数,也就是实际的读取字节个数    示例代码\npublic class FileInputStreamDemo02 {  public static void main(String[] args) throws IOException {  //创建字节输入流对象  FileInputStream fis = new FileInputStream(\"myByteStream\\\\fos.txt\");   byte[] bys = new byte[1024]; //1024及其整数倍  int len;  //循环读取  while ((len=fis.read(bys))!=-1) {  System.out.print(new String(bys,0,len));  }   //释放资源  fis.close();  } }   2.9字节流复制文件【应用】   案例需求\n​\t把“E:\\itcast\\mn.jpg”复制到模块目录下的“mn.jpg” (文件可以是任意文件去)\n  实现步骤\n 根据数据源创建字节输入流对象 根据目的地创建字节输出流对象 读写数据，复制图片(一次读取一个字节数组，一次写入一个字节数组) 释放资源    代码实现\npublic class CopyJpgDemo {  public static void main(String[] args) throws IOException {  //根据数据源创建字节输入流对象  FileInputStream fis = new FileInputStream(\"E:\\\\itcast\\\\mn.jpg\");  //根据目的地创建字节输出流对象  FileOutputStream fos = new FileOutputStream(\"myByteStream\\\\mn.jpg\");   //读写数据，复制图片(一次读取一个字节数组，一次写入一个字节数组)  byte[] bys = new byte[1024];  int len;  while ((len=fis.read(bys))!=-1) {  fos.write(bys,0,len);  }   //释放资源  fos.close();  fis.close();  } }   3.字节缓冲流 3.1字节缓冲流构造方法【应用】   字节缓冲流介绍\n lBufferOutputStream：该类实现缓冲输出流.通过设置这样的输出流,应用程序可以向底层输出流写入字节,而不必为写入的每个字节导致底层系统的调用 lBufferedInputStream：创建BufferedInputStream将创建一个内部缓冲区数组.当从流中读取或跳过字节时,内部缓冲区将根据需要从所包含的输入流中重新填充,一次很多字节    构造方法：\n   方法名 说明     BufferedOutputStream(OutputStream out) 创建字节缓冲输出流对象   BufferedInputStream(InputStream in) 创建字节缓冲输入流对象      示例代码\npublic class BufferStreamDemo {  public static void main(String[] args) throws IOException {  //字节缓冲输出流：BufferedOutputStream(OutputStream out)   BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(\"myByteStream\\\\bos.txt\"));  //写数据  bos.write(\"hello\\r\\n\".getBytes());  bos.write(\"world\\r\\n\".getBytes());  //释放资源  bos.close();    //字节缓冲输入流：BufferedInputStream(InputStream in)  BufferedInputStream bis = new BufferedInputStream(new FileInputStream(\"myByteStream\\\\bos.txt\"));   //一次读取一个字节数据 // int by; // while ((by=bis.read())!=-1) { // System.out.print((char)by); // }   //一次读取一个字节数组数据  byte[] bys = new byte[1024];  int len;  while ((len=bis.read(bys))!=-1) {  System.out.print(new String(bys,0,len));  }   //释放资源  bis.close();  } }   3.2字节缓冲流复制视频【应用】   案例需求\n把“E:\\itcast\\字节流复制图片.avi”复制到模块目录下的“字节流复制图片.avi”\n  实现步骤\n 根据数据源创建字节输入流对象 根据目的地创建字节输出流对象 读写数据，复制视频 释放资源    代码实现\npublic class CopyAviDemo {  public static void main(String[] args) throws IOException {   //复制视频 // method1();  method2();   }   //字节缓冲流一次读写一个字节数组  public static void method2() throws IOException {  BufferedInputStream bis = new BufferedInputStream(new FileInputStream(\"E:\\\\itcast\\\\字节流复制图片.avi\"));  BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(\"myByteStream\\\\字节流复制图片.avi\"));   byte[] bys = new byte[1024];  int len;  while ((len=bis.read(bys))!=-1) {  bos.write(bys,0,len);  }   bos.close();  bis.close();  }   //字节缓冲流一次读写一个字节  public static void method1() throws IOException {  BufferedInputStream bis = new BufferedInputStream(new FileInputStream(\"E:\\\\itcast\\\\字节流复制图片.avi\"));  BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(\"myByteStream\\\\字节流复制图片.avi\"));   int by;  while ((by=bis.read())!=-1) {  bos.write(by);  }   bos.close();  bis.close();  }  }   ",
+  "wordCount" : "1276",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-10T16:22:30Z",
+  "dateModified": "2022-03-10T16:22:30Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java-io%E6%B5%8101/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java IO流01
+    </h1>
+    <div class="post-meta"><span title='2022-03-10 16:22:30 +0000 UTC'>2022-03-10</span>&nbsp;·&nbsp;6 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1file%e7%b1%bb" aria-label="1.File类">1.File类</a><ul>
+                            
+                    <li>
+                        <a href="#11file%e7%b1%bb%e6%a6%82%e8%bf%b0%e5%92%8c%e6%9e%84%e9%80%a0%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="1.1File类概述和构造方法【应用】">1.1File类概述和构造方法【应用】</a></li>
+                    <li>
+                        <a href="#12%e7%bb%9d%e5%af%b9%e8%b7%af%e5%be%84%e5%92%8c%e7%9b%b8%e5%af%b9%e8%b7%af%e5%be%84%e7%90%86%e8%a7%a3" aria-label="1.2绝对路径和相对路径【理解】">1.2绝对路径和相对路径【理解】</a></li>
+                    <li>
+                        <a href="#13file%e7%b1%bb%e5%88%9b%e5%bb%ba%e5%8a%9f%e8%83%bd%e5%ba%94%e7%94%a8" aria-label="1.3File类创建功能【应用】">1.3File类创建功能【应用】</a></li>
+                    <li>
+                        <a href="#14file%e7%b1%bb%e5%88%a0%e9%99%a4%e5%8a%9f%e8%83%bd%e5%ba%94%e7%94%a8" aria-label="1.4File类删除功能【应用】">1.4File类删除功能【应用】</a></li>
+                    <li>
+                        <a href="#15file%e7%b1%bb%e5%88%a4%e6%96%ad%e5%92%8c%e8%8e%b7%e5%8f%96%e5%8a%9f%e8%83%bd%e5%ba%94%e7%94%a8" aria-label="1.5File类判断和获取功能【应用】">1.5File类判断和获取功能【应用】</a></li>
+                    <li>
+                        <a href="#16file%e7%b1%bb%e7%bb%83%e4%b9%a0%e4%b8%80%e5%ba%94%e7%94%a8" aria-label="1.6File类练习一【应用】">1.6File类练习一【应用】</a></li>
+                    <li>
+                        <a href="#17file%e7%b1%bb%e7%bb%83%e4%b9%a0%e4%ba%8c%e5%ba%94%e7%94%a8" aria-label="1.7File类练习二【应用】">1.7File类练习二【应用】</a></li>
+                    <li>
+                        <a href="#18file%e7%b1%bb%e7%bb%83%e4%b9%a0%e4%b8%89%e5%ba%94%e7%94%a8" aria-label="1.8File类练习三【应用】">1.8File类练习三【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2%e5%ad%97%e8%8a%82%e6%b5%81" aria-label="2.字节流">2.字节流</a><ul>
+                            
+                    <li>
+                        <a href="#21-io%e6%b5%81%e6%a6%82%e8%bf%b0%e5%92%8c%e5%88%86%e7%b1%bb%e7%90%86%e8%a7%a3" aria-label="2.1 IO流概述和分类【理解】">2.1 IO流概述和分类【理解】</a></li>
+                    <li>
+                        <a href="#22%e5%ad%97%e8%8a%82%e6%b5%81%e5%86%99%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="2.2字节流写数据【应用】">2.2字节流写数据【应用】</a></li>
+                    <li>
+                        <a href="#23%e5%ad%97%e8%8a%82%e6%b5%81%e5%86%99%e6%95%b0%e6%8d%ae%e7%9a%84%e4%b8%89%e7%a7%8d%e6%96%b9%e5%bc%8f%e5%ba%94%e7%94%a8" aria-label="2.3字节流写数据的三种方式【应用】">2.3字节流写数据的三种方式【应用】</a></li>
+                    <li>
+                        <a href="#24%e5%ad%97%e8%8a%82%e6%b5%81%e5%86%99%e6%95%b0%e6%8d%ae%e7%9a%84%e4%b8%a4%e4%b8%aa%e5%b0%8f%e9%97%ae%e9%a2%98%e5%ba%94%e7%94%a8" aria-label="2.4字节流写数据的两个小问题【应用】">2.4字节流写数据的两个小问题【应用】</a></li>
+                    <li>
+                        <a href="#25%e5%ad%97%e8%8a%82%e6%b5%81%e5%86%99%e6%95%b0%e6%8d%ae%e5%8a%a0%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86%e5%ba%94%e7%94%a8" aria-label="2.5字节流写数据加异常处理【应用】">2.5字节流写数据加异常处理【应用】</a></li>
+                    <li>
+                        <a href="#26%e5%ad%97%e8%8a%82%e6%b5%81%e8%af%bb%e6%95%b0%e6%8d%ae%e4%b8%80%e6%ac%a1%e8%af%bb%e4%b8%80%e4%b8%aa%e5%ad%97%e8%8a%82%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="2.6字节流读数据(一次读一个字节数据)【应用】">2.6字节流读数据(一次读一个字节数据)【应用】</a></li>
+                    <li>
+                        <a href="#27%e5%ad%97%e8%8a%82%e6%b5%81%e5%a4%8d%e5%88%b6%e6%96%87%e4%bb%b6%e5%ba%94%e7%94%a8" aria-label="2.7字节流复制文件【应用】">2.7字节流复制文件【应用】</a></li>
+                    <li>
+                        <a href="#28%e5%ad%97%e8%8a%82%e6%b5%81%e8%af%bb%e6%95%b0%e6%8d%ae%e4%b8%80%e6%ac%a1%e8%af%bb%e4%b8%80%e4%b8%aa%e5%ad%97%e8%8a%82%e6%95%b0%e7%bb%84%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" aria-label="2.8字节流读数据(一次读一个字节数组数据)【应用】">2.8字节流读数据(一次读一个字节数组数据)【应用】</a></li>
+                    <li>
+                        <a href="#29%e5%ad%97%e8%8a%82%e6%b5%81%e5%a4%8d%e5%88%b6%e6%96%87%e4%bb%b6%e5%ba%94%e7%94%a8" aria-label="2.9字节流复制文件【应用】">2.9字节流复制文件【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e5%ad%97%e8%8a%82%e7%bc%93%e5%86%b2%e6%b5%81" aria-label="3.字节缓冲流">3.字节缓冲流</a><ul>
+                            
+                    <li>
+                        <a href="#31%e5%ad%97%e8%8a%82%e7%bc%93%e5%86%b2%e6%b5%81%e6%9e%84%e9%80%a0%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="3.1字节缓冲流构造方法【应用】">3.1字节缓冲流构造方法【应用】</a></li>
+                    <li>
+                        <a href="#32%e5%ad%97%e8%8a%82%e7%bc%93%e5%86%b2%e6%b5%81%e5%a4%8d%e5%88%b6%e8%a7%86%e9%a2%91%e5%ba%94%e7%94%a8" aria-label="3.2字节缓冲流复制视频【应用】">3.2字节缓冲流复制视频【应用】</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1file类">1.File类<a hidden class="anchor" aria-hidden="true" href="#1file类">#</a></h2>
+<h3 id="11file类概述和构造方法应用">1.1File类概述和构造方法【应用】<a hidden class="anchor" aria-hidden="true" href="#11file类概述和构造方法应用">#</a></h3>
+<ul>
+<li>
+<p>File类介绍</p>
+<ul>
+<li>它是文件和目录路径名的抽象表示</li>
+<li>文件和目录是可以通过File封装成对象的</li>
+<li>对于File而言,其封装的并不是一个真正存在的文件,仅仅是一个路径名而已.它可以是存在的,也可以是不存在的.将来是要通过具体的操作把这个路径的内容转换为具体存在的</li>
+</ul>
+</li>
+<li>
+<p>File类的构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File(String   pathname)</td>
+<td>通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例</td>
+</tr>
+<tr>
+<td>File(String   parent, String child)</td>
+<td>从父路径名字符串和子路径名字符串创建新的   File实例</td>
+</tr>
+<tr>
+<td>File(File   parent, String child)</td>
+<td>从父抽象路径名和子路径名字符串创建新的   File实例</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//File(String pathname): 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//File(String parent, String child): 从父路径名字符串和子路径名字符串创建新的 File实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//File(File parent, String child): 从父抽象路径名和子路径名字符串创建新的 File实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        File f4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span>f3<span style="color:#f92672">,</span><span style="color:#e6db74">&#34;java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="12绝对路径和相对路径理解">1.2绝对路径和相对路径【理解】<a hidden class="anchor" aria-hidden="true" href="#12绝对路径和相对路径理解">#</a></h3>
+<ul>
+<li>
+<p>绝对路径</p>
+<p>是一个完整的路径,从盘符开始</p>
+</li>
+<li>
+<p>相对路径</p>
+<p>是一个简化的路径,相对当前项目下的路径</p>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 是一个完整的路径,从盘符开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File file1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;D:\\itheima\\a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 是一个简化的路径,从当前项目根目录开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File file2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        File file3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;模块名\\a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="13file类创建功能应用">1.3File类创建功能【应用】<a hidden class="anchor" aria-hidden="true" href="#13file类创建功能应用">#</a></h3>
+<ul>
+<li>
+<p>方法分类</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public boolean createNewFile()</td>
+<td>当具有该名称的文件不存在时，创建一个由该抽象路径名命名的新空文件</td>
+</tr>
+<tr>
+<td>public boolean mkdir()</td>
+<td>创建由此抽象路径名命名的目录</td>
+</tr>
+<tr>
+<td>public boolean mkdirs()</td>
+<td>创建由此抽象路径名命名的目录，包括任何必需但不存在的父目录</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求1：我要在E:\\itcast目录下创建一个文件java.txt
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f1<span style="color:#f92672">.</span><span style="color:#a6e22e">createNewFile</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求2：我要在E:\\itcast目录下创建一个目录JavaSE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\JavaSE&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f2<span style="color:#f92672">.</span><span style="color:#a6e22e">mkdir</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求3：我要在E:\\itcast目录下创建一个多级目录JavaWEB\\HTML
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\JavaWEB\\HTML&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f3.mkdir());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f3<span style="color:#f92672">.</span><span style="color:#a6e22e">mkdirs</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求4：我要在E:\\itcast目录下创建一个文件javase.txt
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\javase.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f4.mkdir());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f4<span style="color:#f92672">.</span><span style="color:#a6e22e">createNewFile</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="14file类删除功能应用">1.4File类删除功能【应用】<a hidden class="anchor" aria-hidden="true" href="#14file类删除功能应用">#</a></h3>
+<ul>
+<li>
+<p>方法分类</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public boolean   delete()</td>
+<td>删除由此抽象路径名表示的文件或目录</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileDemo03</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        File f1 = new File(&#34;E:\\itcast\\java.txt&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//需求1：在当前模块目录下创建java.txt文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myFile\\java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f1.createNewFile());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求2：删除当前模块目录下的java.txt文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f1<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求3：在当前模块目录下创建itcast目录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myFile\\itcast&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f2.mkdir());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求4：删除当前模块目录下的itcast目录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f2<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求5：在当前模块下创建一个目录itcast,然后在该目录下创建一个文件java.txt
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myFile\\itcast&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f3.mkdir());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myFile\\itcast\\java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        System.out.println(f4.createNewFile());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求6：删除当前模块下的目录itcast
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f4<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f3<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="15file类判断和获取功能应用">1.5File类判断和获取功能【应用】<a hidden class="anchor" aria-hidden="true" href="#15file类判断和获取功能应用">#</a></h3>
+<ul>
+<li>
+<p>判断功能</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public   boolean isDirectory()</td>
+<td>测试此抽象路径名表示的File是否为目录</td>
+</tr>
+<tr>
+<td>public   boolean isFile()</td>
+<td>测试此抽象路径名表示的File是否为文件</td>
+</tr>
+<tr>
+<td>public   boolean   exists()</td>
+<td>测试此抽象路径名表示的File是否存在</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>获取功能</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public   String getAbsolutePath()</td>
+<td>返回此抽象路径名的绝对路径名字符串</td>
+</tr>
+<tr>
+<td>public   String getPath()</td>
+<td>将此抽象路径名转换为路径名字符串</td>
+</tr>
+<tr>
+<td>public   String getName()</td>
+<td>返回由此抽象路径名表示的文件或目录的名称</td>
+</tr>
+<tr>
+<td>public   File[] listFiles()</td>
+<td>返回此抽象路径名表示的目录中的文件和目录的File对象数组</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileDemo04</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建一个File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myFile\\java.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        public boolean isDirectory()：测试此抽象路径名表示的File是否为目录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        public boolean isFile()：测试此抽象路径名表示的File是否为文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        public boolean exists()：测试此抽象路径名表示的File是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">isDirectory</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">isFile</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">exists</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        public String getAbsolutePath()：返回此抽象路径名的绝对路径名字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        public String getPath()：将此抽象路径名转换为路径名字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        public String getName()：返回由此抽象路径名表示的文件或目录的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">getAbsolutePath</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">getPath</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        public File[] listFiles()：返回此抽象路径名表示的目录中的文件和目录的File对象数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File f2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        File<span style="color:#f92672">[]</span> fileArray <span style="color:#f92672">=</span> f2<span style="color:#f92672">.</span><span style="color:#a6e22e">listFiles</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span>File file <span style="color:#f92672">:</span> fileArray<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(file);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(file.getName());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>file<span style="color:#f92672">.</span><span style="color:#a6e22e">isFile</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>file<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="16file类练习一应用">1.6File类练习一【应用】<a hidden class="anchor" aria-hidden="true" href="#16file类练习一应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>在当前模块下的aaa文件夹中创建一个a.txt文件</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>创建File对象,指向aaa文件夹</li>
+<li>判断aaa文件夹是否存在,如果不存在则创建</li>
+<li>创建File对象,指向aaa文件夹下的a.txt文件</li>
+<li>创建这个文件</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//练习一：在当前模块下的aaa文件夹中创建一个a.txt文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       <span style="color:#75715e">/* File file = new File(&#34;filemodule\\aaa\\a.txt&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        file.createNewFile();*/</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//注意点:文件所在的文件夹必须要存在.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//1.创建File对象,指向aaa文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File file <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;filemodule\\aaa&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//2.判断aaa文件夹是否存在,如果不存在则创建
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(!</span>file<span style="color:#f92672">.</span><span style="color:#a6e22e">exists</span><span style="color:#f92672">()){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//如果文件夹不存在,就创建出来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            file<span style="color:#f92672">.</span><span style="color:#a6e22e">mkdirs</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//3.创建File对象,指向aaa文件夹下的a.txt文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File newFile <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span>file<span style="color:#f92672">,</span><span style="color:#e6db74">&#34;a.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//4.创建这个文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        newFile<span style="color:#f92672">.</span><span style="color:#a6e22e">createNewFile</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="17file类练习二应用">1.7File类练习二【应用】<a hidden class="anchor" aria-hidden="true" href="#17file类练习二应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>删除一个多级文件夹</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>定义一个方法,接收一个File对象</li>
+<li>遍历这个File对象,获取它下边的每个文件和文件夹对象</li>
+<li>判断当前遍历到的File对象是文件还是文件夹</li>
+<li>如果是文件,直接删除</li>
+<li>如果是文件夹,递归调用自己,将当前遍历到的File对象当做参数传递</li>
+<li>参数传递过来的文件夹File对象已经处理完成,最后直接删除这个空文件夹</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//练习二：删除一个多级文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//delete方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//只能删除文件和空文件夹.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//如果现在要删除一个有内容的文件夹?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//先删掉这个文件夹里面所有的内容.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//最后再删除这个文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        File src <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;C:\\Users\\apple\\Desktop\\src&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        deleteDir<span style="color:#f92672">(</span>src<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//1.定义一个方法,接收一个File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">deleteDir</span><span style="color:#f92672">(</span>File src<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//先删掉这个文件夹里面所有的内容.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//递归 方法在方法体中自己调用自己.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//注意: 可以解决所有文件夹和递归相结合的题目
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//2.遍历这个File对象,获取它下边的每个文件和文件夹对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File<span style="color:#f92672">[]</span> files <span style="color:#f92672">=</span> src<span style="color:#f92672">.</span><span style="color:#a6e22e">listFiles</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.判断当前遍历到的File对象是文件还是文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>File file <span style="color:#f92672">:</span> files<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//4.如果是文件,直接删除
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>file<span style="color:#f92672">.</span><span style="color:#a6e22e">isFile</span><span style="color:#f92672">()){</span>
+</span></span><span style="display:flex;"><span>                file<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//5.如果是文件夹,递归调用自己,将当前遍历到的File对象当做参数传递
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                deleteDir<span style="color:#f92672">(</span>file<span style="color:#f92672">);</span><span style="color:#75715e">//参数一定要是src文件夹里面的文件夹File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//6.参数传递过来的文件夹File对象已经处理完成,最后直接删除这个空文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        src<span style="color:#f92672">.</span><span style="color:#a6e22e">delete</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="18file类练习三应用">1.8File类练习三【应用】<a hidden class="anchor" aria-hidden="true" href="#18file类练习三应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>统计一个文件夹中每种文件的个数并打印</p>
+<p>打印格式如下：</p>
+<pre><code>  		txt:3个
+
+  		doc:4个
+
+  		jpg:6个
+
+  		 …
+</code></pre>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>定义一个方法,参数是HashMap集合用来统计次数和File对象要统计的文件夹</li>
+<li>遍历File对象,获取它下边的每一个文件和文件夹对象</li>
+<li>判断当前File对象是文件还是文件夹</li>
+<li>如果是文件,判断这种类型文件后缀名在HashMap集合中是否出现过
+<ul>
+<li>没出现过,将这种类型文件的后缀名存入集合中,次数存1</li>
+<li>出现过,获取这种类型文件的后缀名出现的次数,对其+1,在存回集合中</li>
+</ul>
+</li>
+<li>如果是文件夹,递归调用自己,HashMap集合就是参数集合,File对象是当前文件夹对象</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test3</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//统计一个文件夹中,每种文件出现的次数.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//统计 --- 定义一个变量用来统计. ---- 弊端:同时只能统计一种文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//利用map集合进行数据统计,键 --- 文件后缀名  值 ----  次数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        File file <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;filemodule&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        HashMap<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Integer<span style="color:#f92672">&gt;</span> hm <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        getCount<span style="color:#f92672">(</span>hm<span style="color:#f92672">,</span> file<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>hm<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//1.定义一个方法,参数是HashMap集合用来统计次数和File对象要统计的文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">getCount</span><span style="color:#f92672">(</span>HashMap<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Integer<span style="color:#f92672">&gt;</span> hm<span style="color:#f92672">,</span> File file<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//2.遍历File对象,获取它下边的每一个文件和文件夹对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File<span style="color:#f92672">[]</span> files <span style="color:#f92672">=</span> file<span style="color:#f92672">.</span><span style="color:#a6e22e">listFiles</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>File f <span style="color:#f92672">:</span> files<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          	<span style="color:#75715e">//3.判断当前File对象是文件还是文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">isFile</span><span style="color:#f92672">()){</span>
+</span></span><span style="display:flex;"><span>              	<span style="color:#75715e">//如果是文件,判断这种类型文件后缀名在HashMap集合中是否出现过
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String fileName <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                String<span style="color:#f92672">[]</span> fileNameArr <span style="color:#f92672">=</span> fileName<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;\\.&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>fileNameArr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> 2<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                    String fileEndName <span style="color:#f92672">=</span> fileNameArr<span style="color:#f92672">[</span>1<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>hm<span style="color:#f92672">.</span><span style="color:#a6e22e">containsKey</span><span style="color:#f92672">(</span>fileEndName<span style="color:#f92672">)){</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//出现过,获取这种类型文件的后缀名出现的次数,对其+1,在存回集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        Integer count <span style="color:#f92672">=</span> hm<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>fileEndName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//这种文件又出现了一次.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        count<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//把已经出现的次数给覆盖掉.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        hm<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>fileEndName<span style="color:#f92672">,</span>count<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 没出现过,将这种类型文件的后缀名存入集合中,次数存1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        hm<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>fileEndName<span style="color:#f92672">,</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#75715e">//如果是文件夹,递归调用自己,HashMap集合就是参数集合,File对象是当前文件夹对象代码实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                getCount<span style="color:#f92672">(</span>hm<span style="color:#f92672">,</span>f<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="2字节流">2.字节流<a hidden class="anchor" aria-hidden="true" href="#2字节流">#</a></h2>
+<h3 id="21-io流概述和分类理解">2.1 IO流概述和分类【理解】<a hidden class="anchor" aria-hidden="true" href="#21-io流概述和分类理解">#</a></h3>
+<ul>
+<li>IO流介绍
+<ul>
+<li>IO：输入/输出(Input/Output)</li>
+<li>流：是一种抽象概念,是对数据传输的总称.也就是说数据在设备间的传输称为流,流的本质是数据传输</li>
+<li>IO流就是用来处理设备间数据传输问题的.常见的应用: 文件复制; 文件上传; 文件下载</li>
+</ul>
+</li>
+<li>IO流的分类
+<ul>
+<li>按照数据的流向
+<ul>
+<li>输入流：读数据</li>
+<li>输出流：写数据</li>
+</ul>
+</li>
+<li>按照数据类型来分
+<ul>
+<li>字节流
+<ul>
+<li>字节输入流</li>
+<li>字节输出流</li>
+</ul>
+</li>
+<li>字符流
+<ul>
+<li>字符输入流</li>
+<li>字符输出流</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>IO流的使用场景
+<ul>
+<li>如果操作的是纯文本文件,优先使用字符流</li>
+<li>如果操作的是图片、视频、音频等二进制文件,优先使用字节流</li>
+<li>如果不确定文件类型,优先使用字节流.字节流是万能的流</li>
+</ul>
+</li>
+</ul>
+<h3 id="22字节流写数据应用">2.2字节流写数据【应用】<a hidden class="anchor" aria-hidden="true" href="#22字节流写数据应用">#</a></h3>
+<ul>
+<li>
+<p>字节流抽象基类</p>
+<ul>
+<li>InputStream：这个抽象类是表示字节输入流的所有类的超类</li>
+<li>OutputStream：这个抽象类是表示字节输出流的所有类的超类</li>
+<li>子类名特点：子类名称都是以其父类名作为子类名的后缀</li>
+</ul>
+</li>
+<li>
+<p>字节输出流</p>
+<ul>
+<li>FileOutputStream(String name)：创建文件输出流以指定的名称写入文件</li>
+</ul>
+</li>
+<li>
+<p>使用字节输出流写数据的步骤</p>
+<ul>
+<li>创建字节输出流对象(调用系统功能创建了文件,创建字节输出流对象,让字节输出流对象指向文件)</li>
+<li>调用字节输出流对象的写数据方法</li>
+<li>释放资源(关闭此文件输出流并释放与此流相关联的任何系统资源)</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileOutputStreamDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字节输出流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      		注意点:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      				1.如果文件不存在,会帮我们创建
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      				2.如果文件存在,会把文件清空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      	*/</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//FileOutputStream(String name)：创建文件输出流以指定的名称写入文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(int b)：将指定的字节写入此文件输出流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>97<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(57);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(55);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//最后都要释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//void close()：关闭此文件输出流并释放与此流相关联的任何系统资源。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="23字节流写数据的三种方式应用">2.3字节流写数据的三种方式【应用】<a hidden class="anchor" aria-hidden="true" href="#23字节流写数据的三种方式应用">#</a></h3>
+<ul>
+<li>
+<p>写数据的方法分类</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void   write(int b)</td>
+<td>将指定的字节写入此文件输出流   一次写一个字节数据</td>
+</tr>
+<tr>
+<td>void   write(byte[] b)</td>
+<td>将 b.length字节从指定的字节数组写入此文件输出流   一次写一个字节数组数据</td>
+</tr>
+<tr>
+<td>void   write(byte[] b, int off, int len)</td>
+<td>将 len字节从指定的字节数组开始，从偏移量off开始写入此文件输出流   一次写一个字节数组的部分数据</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileOutputStreamDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//FileOutputStream(String name)：创建文件输出流以指定的名称写入文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//FileOutputStream(File file)：创建文件输出流以写入由指定的 File对象表示的文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        FileOutputStream fos = new FileOutputStream(new File(&#34;myByteStream\\fos.txt&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(int b)：将指定的字节写入此文件输出流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(97);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(98);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(99);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(100);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(101);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        void write(byte[] b)：将 b.length字节从指定的字节数组写入此文件输出流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        byte[] bys = {97, 98, 99, 100, 101};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//byte[] getBytes()：返回字符串对应的字节数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abcde&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(bys);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//void write(byte[] b, int off, int len)：将 len字节从指定的字节数组开始，从偏移量off开始写入此文件输出流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        fos.write(bys,0,bys.length);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span>1<span style="color:#f92672">,</span>3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24字节流写数据的两个小问题应用">2.4字节流写数据的两个小问题【应用】<a hidden class="anchor" aria-hidden="true" href="#24字节流写数据的两个小问题应用">#</a></h3>
+<ul>
+<li>
+<p>字节流写数据如何实现换行</p>
+<ul>
+<li>windows:\r\n</li>
+<li>linux:\n</li>
+<li>mac:\r</li>
+</ul>
+</li>
+<li>
+<p>字节流写数据如何实现追加写入</p>
+<ul>
+<li>public FileOutputStream(String name,boolean append)</li>
+<li>创建文件输出流以指定的名称写入文件。如果第二个参数为true ，则字节将写入文件的末尾而不是开头</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileOutputStreamDemo03</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字节输出流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        FileOutputStream fos = new FileOutputStream(&#34;myByteStream\\fos.txt&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">,</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//写数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 10<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>            fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;\r\n&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="25字节流写数据加异常处理应用">2.5字节流写数据加异常处理【应用】<a hidden class="anchor" aria-hidden="true" href="#25字节流写数据加异常处理应用">#</a></h3>
+<ul>
+<li>
+<p>异常处理格式</p>
+<ul>
+<li>
+<p>try-catch-finally</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">try</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	可能出现异常的代码<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span><span style="color:#66d9ef">catch</span><span style="color:#f92672">(</span>异常类名 变量名<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>	异常的处理代码<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span><span style="color:#66d9ef">finally</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	执行所有清除操作<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>finally特点</p>
+<ul>
+<li>被finally控制的语句一定会执行，除非JVM退出</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileOutputStreamDemo04</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//加入finally来实现释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>fos <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="26字节流读数据一次读一个字节数据应用">2.6字节流读数据(一次读一个字节数据)【应用】<a hidden class="anchor" aria-hidden="true" href="#26字节流读数据一次读一个字节数据应用">#</a></h3>
+<ul>
+<li>
+<p>字节输入流</p>
+<ul>
+<li>FileInputStream(String name)：通过打开与实际文件的连接来创建一个FileInputStream,该文件由文件系统中的路径名name命名</li>
+</ul>
+</li>
+<li>
+<p>字节输入流读取数据的步骤</p>
+<ul>
+<li>创建字节输入流对象</li>
+<li>调用字节输入流对象的读数据方法</li>
+<li>释放资源</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileInputStreamDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字节输入流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//FileInputStream(String name)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> by<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            fis.read()：读数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            by=fis.read()：把读取到的数据赋值给by
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            by != -1：判断读取到的数据是否是-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>by<span style="color:#f92672">=</span>fis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">())!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">((</span><span style="color:#66d9ef">char</span><span style="color:#f92672">)</span>by<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="27字节流复制文件应用">2.7字节流复制文件【应用】<a hidden class="anchor" aria-hidden="true" href="#27字节流复制文件应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>​	把“E:\itcast\窗里窗外.txt”复制到模块目录下的“窗里窗外.txt”   (文件可以是任意文件)</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>
+<p>复制文本文件，其实就把文本文件的内容从一个文件中读取出来(数据源)，然后写入到另一个文件中(目的地)</p>
+</li>
+<li>
+<p>数据源：</p>
+<p>​	E:\itcast\窗里窗外.txt &mdash; 读数据 &mdash; InputStream &mdash; FileInputStream</p>
+</li>
+<li>
+<p>目的地：</p>
+<p>​	myByteStream\窗里窗外.txt &mdash; 写数据 &mdash; OutputStream &mdash; FileOutputStream</p>
+</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CopyTxtDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据数据源创建字节输入流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\窗里窗外.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据目的地创建字节输出流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\窗里窗外.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//读写数据，复制文本文件(一次读取一个字节，一次写入一个字节)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> by<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>by<span style="color:#f92672">=</span>fis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">())!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>by<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        fis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="28字节流读数据一次读一个字节数组数据应用">2.8字节流读数据(一次读一个字节数组数据)【应用】<a hidden class="anchor" aria-hidden="true" href="#28字节流读数据一次读一个字节数组数据应用">#</a></h3>
+<ul>
+<li>
+<p>一次读一个字节数组的方法</p>
+<ul>
+<li>public int read(byte[] b)：从输入流读取最多b.length个字节的数据</li>
+<li>返回的是读入缓冲区的总字节数,也就是实际的读取字节个数</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileInputStreamDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建字节输入流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\fos.txt&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span> <span style="color:#75715e">//1024及其整数倍
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//循环读取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len<span style="color:#f92672">=</span>fis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">))!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="29字节流复制文件应用">2.9字节流复制文件【应用】<a hidden class="anchor" aria-hidden="true" href="#29字节流复制文件应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>​	把“E:\itcast\mn.jpg”复制到模块目录下的“mn.jpg”  (文件可以是任意文件去)</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>根据数据源创建字节输入流对象</li>
+<li>根据目的地创建字节输出流对象</li>
+<li>读写数据，复制图片(一次读取一个字节数组，一次写入一个字节数组)</li>
+<li>释放资源</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CopyJpgDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据数据源创建字节输入流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\mn.jpg&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据目的地创建字节输出流对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\mn.jpg&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//读写数据，复制图片(一次读取一个字节数组，一次写入一个字节数组)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len<span style="color:#f92672">=</span>fis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">))!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            fos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        fos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        fis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="3字节缓冲流">3.字节缓冲流<a hidden class="anchor" aria-hidden="true" href="#3字节缓冲流">#</a></h2>
+<h3 id="31字节缓冲流构造方法应用">3.1字节缓冲流构造方法【应用】<a hidden class="anchor" aria-hidden="true" href="#31字节缓冲流构造方法应用">#</a></h3>
+<ul>
+<li>
+<p>字节缓冲流介绍</p>
+<ul>
+<li>lBufferOutputStream：该类实现缓冲输出流.通过设置这样的输出流,应用程序可以向底层输出流写入字节,而不必为写入的每个字节导致底层系统的调用</li>
+<li>lBufferedInputStream：创建BufferedInputStream将创建一个内部缓冲区数组.当从流中读取或跳过字节时,内部缓冲区将根据需要从所包含的输入流中重新填充,一次很多字节</li>
+</ul>
+</li>
+<li>
+<p>构造方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BufferedOutputStream(OutputStream out)</td>
+<td>创建字节缓冲输出流对象</td>
+</tr>
+<tr>
+<td>BufferedInputStream(InputStream in)</td>
+<td>创建字节缓冲输入流对象</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BufferStreamDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//字节缓冲输出流：BufferedOutputStream(OutputStream out)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        BufferedOutputStream bos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> 				                                       FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\bos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//写数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello\r\n&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        bos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;world\r\n&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//字节缓冲输入流：BufferedInputStream(InputStream in)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        BufferedInputStream bis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span>                                                          FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\bos.txt&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//一次读取一个字节数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        int by;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        while ((by=bis.read())!=-1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.print((char)by);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//一次读取一个字节数组数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len<span style="color:#f92672">=</span>bis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">))!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="32字节缓冲流复制视频应用">3.2字节缓冲流复制视频【应用】<a hidden class="anchor" aria-hidden="true" href="#32字节缓冲流复制视频应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>把“E:\itcast\字节流复制图片.avi”复制到模块目录下的“字节流复制图片.avi”</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>根据数据源创建字节输入流对象</li>
+<li>根据目的地创建字节输出流对象</li>
+<li>读写数据，复制视频</li>
+<li>释放资源</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CopyAviDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//复制视频
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        method1();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      	 method2<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//字节缓冲流一次读写一个字节数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method2</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        BufferedInputStream bis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\字节流复制图片.avi&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        BufferedOutputStream bos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\字节流复制图片.avi&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bys <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>1024<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>len<span style="color:#f92672">=</span>bis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">))!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            bos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>bys<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        bos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        bis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//字节缓冲流一次读写一个字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        BufferedInputStream bis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;E:\\itcast\\字节流复制图片.avi&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        BufferedOutputStream bos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedOutputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> FileOutputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myByteStream\\字节流复制图片.avi&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> by<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>by<span style="color:#f92672">=</span>bis<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">())!=-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            bos<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>by<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        bos<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        bis<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/io%E6%B5%81/">IO流</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/content-security-policy-%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Content Security Policy 入门教程</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8803/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java集合03</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

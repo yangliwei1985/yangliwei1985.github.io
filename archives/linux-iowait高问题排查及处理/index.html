@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Linux iowait高问题排查及处理 | ylw&#39;s blog</title>
+<meta name="keywords" content="问题处理, iowait" />
+<meta name="description" content="一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &#39;Sleep&#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Linux iowait高问题排查及处理" />
+<meta property="og:description" content="一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &#39;Sleep&#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-07T14:11:47&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-07T14:11:47&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux iowait高问题排查及处理"/>
+<meta name="twitter:description" content="一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &#39;Sleep&#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Linux iowait高问题排查及处理",
+      "item": "https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Linux iowait高问题排查及处理",
+  "name": "Linux iowait高问题排查及处理",
+  "description": "一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高\n通过iotop命令查看发现是mysql进程占用高，造成系统卡顿\n二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值\n我们要观察的是有问题的，所以可以进行过滤：\n-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != \u0026#39;Sleep\u0026#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析\n展示列解释：\n id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？",
+  "keywords": [
+    "问题处理", "iowait"
+  ],
+  "articleBody": "一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高\n通过iotop命令查看发现是mysql进程占用高，造成系统卡顿\n二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值\n我们要观察的是有问题的，所以可以进行过滤：\n-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != 'Sleep' order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析\n展示列解释：\n id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？\n-- 查询执行时间超过2分钟的线程，然后拼接成 kill 语句 select concat('kill ', id, ';') from information_schema.processlist where command != 'Sleep' and time  2*60 order by time desc; 在下一步我就不用说了吧，把拼接 kill 的执行结果跑一遍就搞定了\n这个有时候非常好用，谁用谁知道，还有个快速的办法，使用以下命令杀死所有进程\nmysql -e \"show full processlist;\" -ss | awk '{print \"KILL \"$1\";\"}'| mysql 常见问题 一些问题会导致连锁反应，而且不太好定位，有时候以为是慢查询，很可能是大多时间是在等在CPU、内存资源的释放，所以有时候同一个查询消耗的时间有时候差异很大\n总结了一些常见问题：\n CPU报警：很可能是 SQL 里面有较多的计算导致的 连接数超高：很可能是有慢查询，然后导致很多的查询在排队，排查问题的时候可以看到”事发现场“类似的 SQL 语句一大片，那么有可能是没有索引或者索引不好使，可以用：explain 分析一下 SQL 语句  ",
+  "wordCount" : "136",
+  "inLanguage": "zh",
+  "datePublished": "2022-01-07T14:11:47Z",
+  "dateModified": "2022-01-07T14:11:47Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Linux iowait高问题排查及处理
+    </h1>
+    <div class="post-meta"><span title='2022-01-07 14:11:47 +0000 UTC'>2022-01-07</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5" aria-label="一、问题排查">一、问题排查</a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e9%97%ae%e9%a2%98%e5%a4%84%e7%90%86" aria-label="二、问题处理">二、问题处理</a><ul>
+                            
+                    <li>
+                        <a href="#kill-%e4%bd%bf%e7%94%a8" aria-label="kill 使用">kill 使用</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" aria-label="常见问题">常见问题</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h1 id="一问题排查">一、问题排查<a hidden class="anchor" aria-hidden="true" href="#一问题排查">#</a></h1>
+<p>由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高</p>
+<p><img loading="lazy" src="/images/Linux-iowait%e9%ab%98%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5%e5%8f%8a%e5%a4%84%e7%90%86/WechatIMG16.jpeg" alt=""  />
+</p>
+<p>通过iotop命令查看发现是mysql进程占用高，造成系统卡顿</p>
+<p><img loading="lazy" src="/images/Linux-iowait%e9%ab%98%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5%e5%8f%8a%e5%a4%84%e7%90%86/WechatIMG18.jpeg" alt=""  />
+</p>
+<h1 id="二问题处理">二、问题处理<a hidden class="anchor" aria-hidden="true" href="#二问题处理">#</a></h1>
+<p>进入mysql，使用<code>show full processlist</code> 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值</p>
+<p>我们要观察的是有问题的，所以可以进行过滤：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> id, db, <span style="color:#66d9ef">user</span>, <span style="color:#66d9ef">host</span>, command, time, <span style="color:#66d9ef">state</span>, info
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> information_schema.processlist
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> command <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> time <span style="color:#66d9ef">desc</span>; 
+</span></span></code></pre></div><p>这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析</p>
+<p><img loading="lazy" src="/images/Linux-iowait%e9%ab%98%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5%e5%8f%8a%e5%a4%84%e7%90%86/20170708035641_mysql-show-full-processlist-nonsleep.png" alt=""  />
+</p>
+<p>展示列解释：</p>
+<ul>
+<li><strong>id</strong> - 线程ID，可以用：<code>kill id;</code> 杀死一个线程，很有用</li>
+<li><strong>db</strong> - 数据库</li>
+<li><strong>user</strong> - 用户</li>
+<li><strong>host</strong> - 连库的主机IP</li>
+<li><strong>command</strong> - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等</li>
+<li><strong>time</strong> - 消耗时间，单位秒，很有用</li>
+<li><strong>state</strong> - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章</li>
+<li><strong>info</strong> - 执行的SQL语句，很有用</li>
+</ul>
+<h2 id="kill-使用">kill 使用<a hidden class="anchor" aria-hidden="true" href="#kill-使用">#</a></h2>
+<p>上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查询执行时间超过2分钟的线程，然后拼接成 kill 语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> concat(<span style="color:#e6db74">&#39;kill &#39;</span>, id, <span style="color:#e6db74">&#39;;&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> information_schema.processlist
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> command <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> time <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> time <span style="color:#66d9ef">desc</span>;
+</span></span></code></pre></div><p>在下一步我就不用说了吧，把拼接 kill 的执行结果跑一遍就搞定了</p>
+<p>这个有时候非常好用，谁用谁知道，还有个快速的办法，使用以下命令杀死所有进程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql <span style="color:#f92672">-</span>e <span style="color:#e6db74">&#34;show full processlist;&#34;</span> <span style="color:#f92672">-</span>ss <span style="color:#f92672">|</span> awk <span style="color:#e6db74">&#39;{print &#34;KILL &#34;$1&#34;;&#34;}&#39;</span><span style="color:#f92672">|</span> mysql
+</span></span></code></pre></div><h1 id="常见问题">常见问题<a hidden class="anchor" aria-hidden="true" href="#常见问题">#</a></h1>
+<p>一些问题会导致连锁反应，而且不太好定位，有时候以为是慢查询，很可能是大多时间是在等在CPU、内存资源的释放，所以有时候同一个查询消耗的时间有时候差异很大</p>
+<p>总结了一些常见问题：</p>
+<ul>
+<li>CPU报警：很可能是 SQL 里面有较多的计算导致的</li>
+<li>连接数超高：很可能是有慢查询，然后导致很多的查询在排队，排查问题的时候可以看到”事发现场“类似的 SQL 语句一大片，那么有可能是没有索引或者索引不好使，可以用：<code>explain</code> 分析一下 SQL 语句</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">问题处理</a></li>
+      <li><a href="https://iblog.zone/tags/iowait/">iowait</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84devops%E5%B9%B3%E5%8F%B0/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>从零开始构建基于Kubernetes的Devops平台</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/kubernetes%E9%9B%86%E7%BE%A4%E7%9A%84%E6%97%A5%E5%BF%97%E5%8F%8A%E7%9B%91%E6%8E%A7/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Kubernetes集群的日志及监控</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java集合01 | ylw&#39;s blog</title>
+<meta name="keywords" content="集合" />
+<meta name="description" content="1.Collection集合 1.1数组和集合的区别【理解】   相同点
+都是容器,可以存储多个数据
+  不同点
+  数组的长度是不可变的,集合的长度是可变的
+  数组可以存基本数据类型和引用数据类型
+集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类
+    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述
+ 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象
+ 多态的方式 具体的实现类ArrayList    Collection集合常用方法
+   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java集合01" />
+<meta property="og:description" content="1.Collection集合 1.1数组和集合的区别【理解】   相同点
+都是容器,可以存储多个数据
+  不同点
+  数组的长度是不可变的,集合的长度是可变的
+  数组可以存基本数据类型和引用数据类型
+集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类
+    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述
+ 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象
+ 多态的方式 具体的实现类ArrayList    Collection集合常用方法
+   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-08T11:00:09&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-08T11:00:09&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java集合01"/>
+<meta name="twitter:description" content="1.Collection集合 1.1数组和集合的区别【理解】   相同点
+都是容器,可以存储多个数据
+  不同点
+  数组的长度是不可变的,集合的长度是可变的
+  数组可以存基本数据类型和引用数据类型
+集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类
+    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述
+ 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象
+ 多态的方式 具体的实现类ArrayList    Collection集合常用方法
+   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java集合01",
+      "item": "https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java集合01",
+  "name": "Java集合01",
+  "description": "1.Collection集合 1.1数组和集合的区别【理解】   相同点\n都是容器,可以存储多个数据\n  不同点\n  数组的长度是不可变的,集合的长度是可变的\n  数组可以存基本数据类型和引用数据类型\n集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类\n    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述\n 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象\n 多态的方式 具体的实现类ArrayList    Collection集合常用方法\n   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1.",
+  "keywords": [
+    "集合"
+  ],
+  "articleBody": "1.Collection集合 1.1数组和集合的区别【理解】   相同点\n都是容器,可以存储多个数据\n  不同点\n  数组的长度是不可变的,集合的长度是可变的\n  数组可以存基本数据类型和引用数据类型\n集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类\n    1.2集合类体系结构【理解】 1.3Collection 集合概述和使用【应用】   Collection集合概述\n 是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素 JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现    创建Collection集合的对象\n 多态的方式 具体的实现类ArrayList    Collection集合常用方法\n   方法名 说明     boolean add(E e) 添加元素   boolean remove(Object o) 从集合中移除指定的元素   boolean removeIf(Object o) 根据条件进行移除   void clear() 清空集合中的元素   boolean contains(Object o) 判断集合中是否存在指定的元素   boolean isEmpty() 判断集合是否为空   int size() 集合的长度，也就是集合中元素的个数      1.4Collection集合的遍历【应用】   迭代器介绍\n 迭代器,集合的专用遍历方式 Iterator iterator(): 返回此集合中元素的迭代器,通过集合对象的iterator()方法得到    Iterator中的常用方法\n​\tboolean hasNext(): 判断当前位置是否有元素可以被取出 ​\tE next(): 获取当前位置的元素,将迭代器对象移向下一个索引位置\n  Collection集合的遍历\npublic class IteratorDemo1 {  public static void main(String[] args) {  //创建集合对象  CollectionString c = new ArrayList();   //添加元素  c.add(\"hello\");  c.add(\"world\");  c.add(\"java\");  c.add(\"javaee\");   //Iterator iterator()：返回此集合中元素的迭代器，通过集合的iterator()方法得到  IteratorString it = c.iterator();   //用while循环改进元素的判断和获取  while (it.hasNext()) {  String s = it.next();  System.out.println(s);  }  } }   迭代器中删除的方法\n​\tvoid remove(): 删除迭代器对象当前指向的元素\npublic class IteratorDemo2 {  public static void main(String[] args) {  ArrayListString list = new ArrayList();  list.add(\"a\");  list.add(\"b\");  list.add(\"b\");  list.add(\"c\");  list.add(\"d\");   IteratorString it = list.iterator();  while(it.hasNext()){  String s = it.next();  if(\"b\".equals(s)){  //指向谁,那么此时就删除谁.  it.remove();  }  }  System.out.println(list);  } }   1.5增强for循环【应用】   介绍\n 它是JDK5之后出现的,其内部原理是一个Iterator迭代器 实现Iterable接口的类才可以使用迭代器和增强for 简化数组和Collection集合的遍历    格式\n​\tfor(集合/数组中元素的数据类型 变量名 : 集合/数组名) {\n​\t// 已经将当前遍历到的元素封装到变量中了,直接使用变量即可\n​\t}\n  代码\npublic class MyCollectonDemo1 {  public static void main(String[] args) {  ArrayListString list = new ArrayList();  list.add(\"a\");  list.add(\"b\");  list.add(\"c\");  list.add(\"d\");  list.add(\"e\");  list.add(\"f\");   //1,数据类型一定是集合或者数组中元素的类型  //2,str仅仅是一个变量名而已,在循环的过程中,依次表示集合或者数组中的每一个元素  //3,list就是要遍历的集合或者数组  for(String str : list){  System.out.println(str);  }  } }   2.List集合 2.1List集合的概述和特点【记忆】  List集合的概述  有序集合,这里的有序指的是存取顺序 用户可以精确控制列表中每个元素的插入位置,用户可以通过整数索引访问元素,并搜索列表中的元素 与Set集合不同,列表通常允许重复的元素   List集合的特点  存取有序 可以重复 有索引    2.2List集合的特有方法【应用】    方法名 描述     void add(int index,E element) 在此集合中的指定位置插入指定的元素   E remove(int index) 删除指定索引处的元素，返回被删除的元素   E set(int index,E element) 修改指定索引处的元素，返回被修改的元素   E get(int index) 返回指定索引处的元素    3.数据结构 3.1数据结构之栈和队列【记忆】   栈结构\n​\t先进后出\n  队列结构\n​\t先进先出\n  3.2数据结构之数组和链表【记忆】   数组结构\n​\t查询快、增删慢\n  队列结构\n​\t查询慢、增删快\n  4.List集合的实现类 4.1List集合子类的特点【记忆】   ArrayList集合\n​\t底层是数组结构实现，查询快、增删慢\n  LinkedList集合\n​\t底层是链表结构实现，查询慢、增删快\n  4.2LinkedList集合的特有功能【应用】  特有方法    方法名 说明     public void addFirst(E e) 在该列表开头插入指定的元素   public void addLast(E e) 将指定的元素追加到此列表的末尾   public E getFirst() 返回此列表中的第一个元素   public E getLast() 返回此列表中的最后一个元素   public E removeFirst() 从此列表中删除并返回第一个元素   public E removeLast() 从此列表中删除并返回最后一个元素      5.泛型 5.1泛型概述【理解】   泛型的介绍\n​\t泛型是JDK5中引入的特性，它提供了编译时类型安全检测机制\n  泛型的好处\n 把运行时期的问题提前到了编译期间 避免了强制类型转换    泛型的定义格式\n : 指定一种类型的格式.尖括号里面可以任意书写,一般只写一个字母.例如:   : 指定多种类型的格式,多种类型之间用逗号隔开.例如:      5.2泛型类【应用】   定义格式\n修饰符 class 类名类型 { }   示例代码\n  泛型类\npublic class GenericT {  private T t;   public T getT() {  return t;  }   public void setT(T t) {  this.t = t;  } }   测试类\npublic class GenericDemo1 {  public static void main(String[] args) {  GenericString g1 = new GenericString();  g1.setT(\"杨幂\");  System.out.println(g1.getT());   GenericInteger g2 = new GenericInteger();  g2.setT(30);  System.out.println(g2.getT());   GenericBoolean g3 = new GenericBoolean();  g3.setT(true);  System.out.println(g3.getT());  } }     5.3泛型方法【应用】   定义格式\n修饰符 类型 返回值类型 方法名(类型 变量名) { }   示例代码\n  带有泛型方法的类\npublic class Generic {  public T void show(T t) {  System.out.println(t);  } }   测试类\npublic class GenericDemo2 {  public static void main(String[] args) { \tGeneric g = new Generic();  g.show(\"柳岩\");  g.show(30);  g.show(true);  g.show(12.34);  } }     5.4泛型接口【应用】   定义格式\n修饰符 interface 接口名类型 { }   示例代码\n  泛型接口\npublic interface GenericT {  void show(T t); }   泛型接口实现类1\n​\t定义实现类时,定义和接口相同泛型,创建实现类对象时明确泛型的具体类型\npublic class GenericImpl1T implements GenericT {  @Override  public void show(T t) {  System.out.println(t);  } }   泛型接口实现类2\n​\t定义实现类时,直接明确泛型的具体类型\npublic class GenericImpl2 implements GenericInteger{  @Override  public void show(Integer t) {  System.out.println(t);  } }   测试类\npublic class GenericDemo3 {  public static void main(String[] args) {  GenericImpl1String g1 = new GenericImplString();  g1.show(\"林青霞\");  GenericImpl1Integer g2 = new GenericImplInteger();  g2.show(30);   GenericImpl2 g3 = new GenericImpl2();  g3.show(10);  } }     5.5类型通配符   类型通配符: \n ArrayList: 表示元素类型未知的ArrayList,它的元素可以匹配任何的类型 但是并不能把元素添加到ArrayList中了,获取出来的也是父类类型    类型通配符上限:  ArrayListList : 它表示的类型是Number或者其子类型    类型通配符下限:  ArrayListList : 它表示的类型是Number或者其父类型    泛型通配符的使用\npublic class GenericDemo4 {  public static void main(String[] args) {  ArrayListInteger list1 = new ArrayList();  ArrayListString list2 = new ArrayList();  ArrayListNumber list3 = new ArrayList();  ArrayListObject list4 = new ArrayList();   method(list1);  method(list2);  method(list3);  method(list4);   getElement1(list1);  getElement1(list2);//报错  getElement1(list3);  getElement1(list4);//报错   getElement2(list1);//报错  getElement2(list2);//报错  getElement2(list3);  getElement2(list4);  }   // 泛型通配符: 此时的泛型?,可以是任意类型  public static void method(ArrayList list){}  // 泛型的上限: 此时的泛型?,必须是Number类型或者Number类型的子类  public static void getElement1(ArrayList extends Number list){}  // 泛型的下限: 此时的泛型?,必须是Number类型或者Number类型的父类  public static void getElement2(ArrayList super Number list){}  }   ",
+  "wordCount" : "584",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-08T11:00:09Z",
+  "dateModified": "2022-03-08T11:00:09Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java集合01
+    </h1>
+    <div class="post-meta"><span title='2022-03-08 11:00:09 +0000 UTC'>2022-03-08</span>&nbsp;·&nbsp;3 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1collection%e9%9b%86%e5%90%88" aria-label="1.Collection集合">1.Collection集合</a><ul>
+                            
+                    <li>
+                        <a href="#11%e6%95%b0%e7%bb%84%e5%92%8c%e9%9b%86%e5%90%88%e7%9a%84%e5%8c%ba%e5%88%ab%e7%90%86%e8%a7%a3" aria-label="1.1数组和集合的区别【理解】">1.1数组和集合的区别【理解】</a></li>
+                    <li>
+                        <a href="#12%e9%9b%86%e5%90%88%e7%b1%bb%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e7%90%86%e8%a7%a3" aria-label="1.2集合类体系结构【理解】">1.2集合类体系结构【理解】</a></li>
+                    <li>
+                        <a href="#13collection-%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0%e5%92%8c%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="1.3Collection 集合概述和使用【应用】">1.3Collection 集合概述和使用【应用】</a></li>
+                    <li>
+                        <a href="#14collection%e9%9b%86%e5%90%88%e7%9a%84%e9%81%8d%e5%8e%86%e5%ba%94%e7%94%a8" aria-label="1.4Collection集合的遍历【应用】">1.4Collection集合的遍历【应用】</a></li>
+                    <li>
+                        <a href="#15%e5%a2%9e%e5%bc%bafor%e5%be%aa%e7%8e%af%e5%ba%94%e7%94%a8" aria-label="1.5增强for循环【应用】">1.5增强for循环【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2list%e9%9b%86%e5%90%88" aria-label="2.List集合">2.List集合</a><ul>
+                            
+                    <li>
+                        <a href="#21list%e9%9b%86%e5%90%88%e7%9a%84%e6%a6%82%e8%bf%b0%e5%92%8c%e7%89%b9%e7%82%b9%e8%ae%b0%e5%bf%86" aria-label="2.1List集合的概述和特点【记忆】">2.1List集合的概述和特点【记忆】</a></li>
+                    <li>
+                        <a href="#22list%e9%9b%86%e5%90%88%e7%9a%84%e7%89%b9%e6%9c%89%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="2.2List集合的特有方法【应用】">2.2List集合的特有方法【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" aria-label="3.数据结构">3.数据结构</a><ul>
+                            
+                    <li>
+                        <a href="#31%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e4%b9%8b%e6%a0%88%e5%92%8c%e9%98%9f%e5%88%97%e8%ae%b0%e5%bf%86" aria-label="3.1数据结构之栈和队列【记忆】">3.1数据结构之栈和队列【记忆】</a></li>
+                    <li>
+                        <a href="#32%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e4%b9%8b%e6%95%b0%e7%bb%84%e5%92%8c%e9%93%be%e8%a1%a8%e8%ae%b0%e5%bf%86" aria-label="3.2数据结构之数组和链表【记忆】">3.2数据结构之数组和链表【记忆】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4list%e9%9b%86%e5%90%88%e7%9a%84%e5%ae%9e%e7%8e%b0%e7%b1%bb" aria-label="4.List集合的实现类">4.List集合的实现类</a><ul>
+                            
+                    <li>
+                        <a href="#41list%e9%9b%86%e5%90%88%e5%ad%90%e7%b1%bb%e7%9a%84%e7%89%b9%e7%82%b9%e8%ae%b0%e5%bf%86" aria-label="4.1List集合子类的特点【记忆】">4.1List集合子类的特点【记忆】</a></li>
+                    <li>
+                        <a href="#42linkedlist%e9%9b%86%e5%90%88%e7%9a%84%e7%89%b9%e6%9c%89%e5%8a%9f%e8%83%bd%e5%ba%94%e7%94%a8" aria-label="4.2LinkedList集合的特有功能【应用】">4.2LinkedList集合的特有功能【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#5%e6%b3%9b%e5%9e%8b" aria-label="5.泛型">5.泛型</a><ul>
+                            
+                    <li>
+                        <a href="#51%e6%b3%9b%e5%9e%8b%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="5.1泛型概述【理解】">5.1泛型概述【理解】</a></li>
+                    <li>
+                        <a href="#52%e6%b3%9b%e5%9e%8b%e7%b1%bb%e5%ba%94%e7%94%a8" aria-label="5.2泛型类【应用】">5.2泛型类【应用】</a></li>
+                    <li>
+                        <a href="#53%e6%b3%9b%e5%9e%8b%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="5.3泛型方法【应用】">5.3泛型方法【应用】</a></li>
+                    <li>
+                        <a href="#54%e6%b3%9b%e5%9e%8b%e6%8e%a5%e5%8f%a3%e5%ba%94%e7%94%a8" aria-label="5.4泛型接口【应用】">5.4泛型接口【应用】</a></li>
+                    <li>
+                        <a href="#55%e7%b1%bb%e5%9e%8b%e9%80%9a%e9%85%8d%e7%ac%a6" aria-label="5.5类型通配符">5.5类型通配符</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1collection集合">1.Collection集合<a hidden class="anchor" aria-hidden="true" href="#1collection集合">#</a></h2>
+<h3 id="11数组和集合的区别理解">1.1数组和集合的区别【理解】<a hidden class="anchor" aria-hidden="true" href="#11数组和集合的区别理解">#</a></h3>
+<ul>
+<li>
+<p>相同点</p>
+<p>都是容器,可以存储多个数据</p>
+</li>
+<li>
+<p>不同点</p>
+<ul>
+<li>
+<p>数组的长度是不可变的,集合的长度是可变的</p>
+</li>
+<li>
+<p>数组可以存基本数据类型和引用数据类型</p>
+<p>集合只能存引用数据类型,如果要存基本数据类型,需要存对应的包装类</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="12集合类体系结构理解">1.2集合类体系结构【理解】<a hidden class="anchor" aria-hidden="true" href="#12集合类体系结构理解">#</a></h3>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8801/01_%e9%9b%86%e5%90%88%e7%b1%bb%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+<h3 id="13collection-集合概述和使用应用">1.3Collection 集合概述和使用【应用】<a hidden class="anchor" aria-hidden="true" href="#13collection-集合概述和使用应用">#</a></h3>
+<ul>
+<li>
+<p>Collection集合概述</p>
+<ul>
+<li>是单例集合的顶层接口,它表示一组对象,这些对象也称为Collection的元素</li>
+<li>JDK 不提供此接口的任何直接实现.它提供更具体的子接口(如Set和List)实现</li>
+</ul>
+</li>
+<li>
+<p>创建Collection集合的对象</p>
+<ul>
+<li>多态的方式</li>
+<li>具体的实现类ArrayList</li>
+</ul>
+</li>
+<li>
+<p>Collection集合常用方法</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">boolean add(E e)</td>
+<td style="text-align:left">添加元素</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean remove(Object o)</td>
+<td style="text-align:left">从集合中移除指定的元素</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean removeIf(Object o)</td>
+<td style="text-align:left">根据条件进行移除</td>
+</tr>
+<tr>
+<td style="text-align:left">void   clear()</td>
+<td style="text-align:left">清空集合中的元素</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean contains(Object o)</td>
+<td style="text-align:left">判断集合中是否存在指定的元素</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean isEmpty()</td>
+<td style="text-align:left">判断集合是否为空</td>
+</tr>
+<tr>
+<td style="text-align:left">int   size()</td>
+<td style="text-align:left">集合的长度，也就是集合中元素的个数</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h3 id="14collection集合的遍历应用">1.4Collection集合的遍历【应用】<a hidden class="anchor" aria-hidden="true" href="#14collection集合的遍历应用">#</a></h3>
+<ul>
+<li>
+<p>迭代器介绍</p>
+<ul>
+<li>迭代器,集合的专用遍历方式</li>
+<li>Iterator&lt;E&gt; iterator(): 返回此集合中元素的迭代器,通过集合对象的iterator()方法得到</li>
+</ul>
+</li>
+<li>
+<p>Iterator中的常用方法</p>
+<p>​	boolean hasNext(): 判断当前位置是否有元素可以被取出
+​	E next(): 获取当前位置的元素,将迭代器对象移向下一个索引位置</p>
+</li>
+<li>
+<p>Collection集合的遍历</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IteratorDemo1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Collection<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> c <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//添加元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        c<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;world&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        c<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;java&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        c<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;javaee&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Iterator&lt;E&gt; iterator()：返回此集合中元素的迭代器，通过集合的iterator()方法得到
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Iterator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> it <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">iterator</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//用while循环改进元素的判断和获取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">hasNext</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            String s <span style="color:#f92672">=</span> it<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>迭代器中删除的方法</p>
+<p>​	void remove(): 删除迭代器对象当前指向的元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IteratorDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;c&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;d&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Iterator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> it <span style="color:#f92672">=</span> list<span style="color:#f92672">.</span><span style="color:#a6e22e">iterator</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">hasNext</span><span style="color:#f92672">()){</span>
+</span></span><span style="display:flex;"><span>            String s <span style="color:#f92672">=</span> it<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>s<span style="color:#f92672">)){</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//指向谁,那么此时就删除谁.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                it<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>list<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="15增强for循环应用">1.5增强for循环【应用】<a hidden class="anchor" aria-hidden="true" href="#15增强for循环应用">#</a></h3>
+<ul>
+<li>
+<p>介绍</p>
+<ul>
+<li>它是JDK5之后出现的,其内部原理是一个Iterator迭代器</li>
+<li>实现Iterable接口的类才可以使用迭代器和增强for</li>
+<li>简化数组和Collection集合的遍历</li>
+</ul>
+</li>
+<li>
+<p>格式</p>
+<p>​	for(集合/数组中元素的数据类型 变量名 :  集合/数组名) {</p>
+<p>​		// 已经将当前遍历到的元素封装到变量中了,直接使用变量即可</p>
+<p>​	}</p>
+</li>
+<li>
+<p>代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyCollectonDemo1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span>  <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;c&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;d&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;e&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;f&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1,数据类型一定是集合或者数组中元素的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//2,str仅仅是一个变量名而已,在循环的过程中,依次表示集合或者数组中的每一个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//3,list就是要遍历的集合或者数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span>String str <span style="color:#f92672">:</span> list<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>str<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="2list集合">2.List集合<a hidden class="anchor" aria-hidden="true" href="#2list集合">#</a></h2>
+<h3 id="21list集合的概述和特点记忆">2.1List集合的概述和特点【记忆】<a hidden class="anchor" aria-hidden="true" href="#21list集合的概述和特点记忆">#</a></h3>
+<ul>
+<li>List集合的概述
+<ul>
+<li>有序集合,这里的有序指的是存取顺序</li>
+<li>用户可以精确控制列表中每个元素的插入位置,用户可以通过整数索引访问元素,并搜索列表中的元素</li>
+<li>与Set集合不同,列表通常允许重复的元素</li>
+</ul>
+</li>
+<li>List集合的特点
+<ul>
+<li>存取有序</li>
+<li>可以重复</li>
+<li>有索引</li>
+</ul>
+</li>
+</ul>
+<h3 id="22list集合的特有方法应用">2.2List集合的特有方法【应用】<a hidden class="anchor" aria-hidden="true" href="#22list集合的特有方法应用">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void add(int index,E   element)</td>
+<td>在此集合中的指定位置插入指定的元素</td>
+</tr>
+<tr>
+<td>E remove(int   index)</td>
+<td>删除指定索引处的元素，返回被删除的元素</td>
+</tr>
+<tr>
+<td>E set(int index,E   element)</td>
+<td>修改指定索引处的元素，返回被修改的元素</td>
+</tr>
+<tr>
+<td>E get(int   index)</td>
+<td>返回指定索引处的元素</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3数据结构">3.数据结构<a hidden class="anchor" aria-hidden="true" href="#3数据结构">#</a></h2>
+<h3 id="31数据结构之栈和队列记忆">3.1数据结构之栈和队列【记忆】<a hidden class="anchor" aria-hidden="true" href="#31数据结构之栈和队列记忆">#</a></h3>
+<ul>
+<li>
+<p>栈结构</p>
+<p>​	先进后出</p>
+</li>
+<li>
+<p>队列结构</p>
+<p>​	先进先出</p>
+</li>
+</ul>
+<h3 id="32数据结构之数组和链表记忆">3.2数据结构之数组和链表【记忆】<a hidden class="anchor" aria-hidden="true" href="#32数据结构之数组和链表记忆">#</a></h3>
+<ul>
+<li>
+<p>数组结构</p>
+<p>​	查询快、增删慢</p>
+</li>
+<li>
+<p>队列结构</p>
+<p>​	查询慢、增删快</p>
+</li>
+</ul>
+<h2 id="4list集合的实现类">4.List集合的实现类<a hidden class="anchor" aria-hidden="true" href="#4list集合的实现类">#</a></h2>
+<h3 id="41list集合子类的特点记忆">4.1List集合子类的特点【记忆】<a hidden class="anchor" aria-hidden="true" href="#41list集合子类的特点记忆">#</a></h3>
+<ul>
+<li>
+<p>ArrayList集合</p>
+<p>​	底层是数组结构实现，查询快、增删慢</p>
+</li>
+<li>
+<p>LinkedList集合</p>
+<p>​	底层是链表结构实现，查询慢、增删快</p>
+</li>
+</ul>
+<h3 id="42linkedlist集合的特有功能应用">4.2LinkedList集合的特有功能【应用】<a hidden class="anchor" aria-hidden="true" href="#42linkedlist集合的特有功能应用">#</a></h3>
+<ul>
+<li>特有方法
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public void addFirst(E e)</td>
+<td>在该列表开头插入指定的元素</td>
+</tr>
+<tr>
+<td>public void addLast(E e)</td>
+<td>将指定的元素追加到此列表的末尾</td>
+</tr>
+<tr>
+<td>public E getFirst()</td>
+<td>返回此列表中的第一个元素</td>
+</tr>
+<tr>
+<td>public   E getLast()</td>
+<td>返回此列表中的最后一个元素</td>
+</tr>
+<tr>
+<td>public E removeFirst()</td>
+<td>从此列表中删除并返回第一个元素</td>
+</tr>
+<tr>
+<td>public   E removeLast()</td>
+<td>从此列表中删除并返回最后一个元素</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 id="5泛型">5.泛型<a hidden class="anchor" aria-hidden="true" href="#5泛型">#</a></h2>
+<h3 id="51泛型概述理解">5.1泛型概述【理解】<a hidden class="anchor" aria-hidden="true" href="#51泛型概述理解">#</a></h3>
+<ul>
+<li>
+<p>泛型的介绍</p>
+<p>​	泛型是JDK5中引入的特性，它提供了编译时类型安全检测机制</p>
+</li>
+<li>
+<p>泛型的好处</p>
+<ol>
+<li>把运行时期的问题提前到了编译期间</li>
+<li>避免了强制类型转换</li>
+</ol>
+</li>
+<li>
+<p>泛型的定义格式</p>
+<ul>
+<li>&lt;类型&gt;: 指定一种类型的格式.尖括号里面可以任意书写,一般只写一个字母.例如: <E> <T></li>
+<li>&lt;类型1,类型2…&gt;: 指定多种类型的格式,多种类型之间用逗号隔开.例如: &lt;E,T&gt; &lt;K,V&gt;</li>
+</ul>
+</li>
+</ul>
+<h3 id="52泛型类应用">5.2泛型类【应用】<a hidden class="anchor" aria-hidden="true" href="#52泛型类应用">#</a></h3>
+<ul>
+<li>
+<p>定义格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>修饰符 <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">类名</span><span style="color:#f92672">&lt;</span>类型<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>示例代码</p>
+<ul>
+<li>
+<p>泛型类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Generic</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> T t<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">getT</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> t<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setT</span><span style="color:#f92672">(</span>T t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">t</span> <span style="color:#f92672">=</span> t<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericDemo1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Generic<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> g1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        g1<span style="color:#f92672">.</span><span style="color:#a6e22e">setT</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;杨幂&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>g1<span style="color:#f92672">.</span><span style="color:#a6e22e">getT</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Generic<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> g2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        g2<span style="color:#f92672">.</span><span style="color:#a6e22e">setT</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>g2<span style="color:#f92672">.</span><span style="color:#a6e22e">getT</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Generic<span style="color:#f92672">&lt;</span>Boolean<span style="color:#f92672">&gt;</span> g3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">&lt;</span>Boolean<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        g3<span style="color:#f92672">.</span><span style="color:#a6e22e">setT</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>g3<span style="color:#f92672">.</span><span style="color:#a6e22e">getT</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="53泛型方法应用">5.3泛型方法【应用】<a hidden class="anchor" aria-hidden="true" href="#53泛型方法应用">#</a></h3>
+<ul>
+<li>
+<p>定义格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>修饰符 <span style="color:#f92672">&lt;</span>类型<span style="color:#f92672">&gt;</span> 返回值类型 <span style="color:#a6e22e">方法名</span><span style="color:#f92672">(</span>类型 变量名<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>示例代码</p>
+<ul>
+<li>
+<p>带有泛型方法的类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Generic</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>T t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>t<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	    Generic g <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        g<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;柳岩&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        g<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        g<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        g<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>12<span style="color:#f92672">.</span><span style="color:#a6e22e">34</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="54泛型接口应用">5.4泛型接口【应用】<a hidden class="anchor" aria-hidden="true" href="#54泛型接口应用">#</a></h3>
+<ul>
+<li>
+<p>定义格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>修饰符 <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">接口名</span><span style="color:#f92672">&lt;</span>类型<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>示例代码</p>
+<ul>
+<li>
+<p>泛型接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Generic</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>T t<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>泛型接口实现类1</p>
+<p>​	定义实现类时,定义和接口相同泛型,创建实现类对象时明确泛型的具体类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericImpl1</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Generic<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>T t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>t<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>泛型接口实现类2</p>
+<p>​	定义实现类时,直接明确泛型的具体类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericImpl2</span> <span style="color:#66d9ef">implements</span> Generic<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;{</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>Integer t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>t<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericDemo3</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        GenericImpl1<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> g1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GenericImpl<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        g1<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;林青霞&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        GenericImpl1<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> g2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GenericImpl<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        g2<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        GenericImpl2 g3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GenericImpl2<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>      	g3<span style="color:#f92672">.</span><span style="color:#a6e22e">show</span><span style="color:#f92672">(</span>10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="55类型通配符">5.5类型通配符<a hidden class="anchor" aria-hidden="true" href="#55类型通配符">#</a></h3>
+<ul>
+<li>
+<p>类型通配符: <?></p>
+<ul>
+<li>ArrayList<?>: 表示元素类型未知的ArrayList,它的元素可以匹配任何的类型</li>
+<li>但是并不能把元素添加到ArrayList中了,获取出来的也是父类类型</li>
+</ul>
+</li>
+<li>
+<p>类型通配符上限: &lt;? extends 类型&gt;</p>
+<ul>
+<li>ArrayListList &lt;? extends Number&gt;: 它表示的类型是Number或者其子类型</li>
+</ul>
+</li>
+<li>
+<p>类型通配符下限: &lt;? super 类型&gt;</p>
+<ul>
+<li>ArrayListList &lt;? super Number&gt;: 它表示的类型是Number或者其父类型</li>
+</ul>
+</li>
+<li>
+<p>泛型通配符的使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericDemo4</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> list1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>Number<span style="color:#f92672">&gt;</span> list3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> list4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        method<span style="color:#f92672">(</span>list1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        method<span style="color:#f92672">(</span>list2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        method<span style="color:#f92672">(</span>list3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        method<span style="color:#f92672">(</span>list4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        getElement1<span style="color:#f92672">(</span>list1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        getElement1<span style="color:#f92672">(</span>list2<span style="color:#f92672">);</span><span style="color:#75715e">//报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        getElement1<span style="color:#f92672">(</span>list3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        getElement1<span style="color:#f92672">(</span>list4<span style="color:#f92672">);</span><span style="color:#75715e">//报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        getElement2<span style="color:#f92672">(</span>list1<span style="color:#f92672">);</span><span style="color:#75715e">//报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        getElement2<span style="color:#f92672">(</span>list2<span style="color:#f92672">);</span><span style="color:#75715e">//报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        getElement2<span style="color:#f92672">(</span>list3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        getElement2<span style="color:#f92672">(</span>list4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 泛型通配符: 此时的泛型?,可以是任意类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">(</span>ArrayList<span style="color:#f92672">&lt;?&gt;</span> list<span style="color:#f92672">){}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 泛型的上限: 此时的泛型?,必须是Number类型或者Number类型的子类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">getElement1</span><span style="color:#f92672">(</span>ArrayList<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> Number<span style="color:#f92672">&gt;</span> list<span style="color:#f92672">){}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 泛型的下限: 此时的泛型?,必须是Number类型或者Number类型的父类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">getElement2</span><span style="color:#f92672">(</span>ArrayList<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> Number<span style="color:#f92672">&gt;</span> list<span style="color:#f92672">){}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E9%9B%86%E5%90%88/">集合</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java集合02</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java常用API02</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

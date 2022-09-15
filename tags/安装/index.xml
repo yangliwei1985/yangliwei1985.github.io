@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>安装 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%AE%89%E8%A3%85/</link>
+    <description>Recent content in 安装 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 29 Mar 2022 18:07:53 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%AE%89%E8%A3%85/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS7安装Redis4.0</title>
+      <link>https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/</link>
+      <pubDate>Tue, 29 Mar 2022 18:07:53 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/</guid>
+      <description>一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c++ make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译&amp;amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译&amp;amp;安装 sudo make -j 16 &amp;amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1</description>
+    </item>
+    
+    <item>
+      <title>CentOS7编译安装MySQL5.6</title>
+      <link>https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/</link>
+      <pubDate>Tue, 29 Mar 2022 17:04:41 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/</guid>
+      <description>1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c++ make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &amp;#39;s#SELINUX=enforcing#SELINUX=disabled#g&amp;#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5.</description>
+    </item>
+    
+  </channel>
+</rss>

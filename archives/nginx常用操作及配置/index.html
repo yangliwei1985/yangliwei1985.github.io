@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Nginx常用操作及配置 | ylw&#39;s blog</title>
+<meta name="keywords" content="nginx" />
+<meta name="description" content="一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置
+proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。
+ Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置
+upstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Nginx常用操作及配置" />
+<meta property="og:description" content="一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置
+proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。
+ Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置
+upstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-11T17:20:11&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-11T17:20:11&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Nginx常用操作及配置"/>
+<meta name="twitter:description" content="一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置
+proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。
+ Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置
+upstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Nginx常用操作及配置",
+      "item": "https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Nginx常用操作及配置",
+  "name": "Nginx常用操作及配置",
+  "description": "一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置\nproxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。\n Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置\nupstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192.",
+  "keywords": [
+    "nginx"
+  ],
+  "articleBody": "一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置\nproxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。\n Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置\nupstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192.168.103.100:2002 weight=2 max_fails=2 fail_timeout=60s; } 意思是在fail_timeout时间内失败了max_fails次请求后，则认为该上游服务器不可用，然后将该服务地址踢除掉。fail_timeout时间后会再次将该服务器加入存活列表，进行重试\n三、nginx限流配置 1.配置参数 limit_req_zone指令设置参数\nlimit_req_zone $binary_remote_addr zone=mylimit:10m rate=10r/s;  limit_req_zone定义在http块中，$binary_remote_addr表示保存客户端IP地址的二进制形式。 Zone定义IP状态及URL访问频率的共享内存区域。zone=keyword标识区域的名字，以及冒号后面跟区域大小。16000个IP地址的状态信息约1MB，所以示例中区域可以存储160000个IP地址。 Rate定义最大请求速率。示例中速率不能超过每秒10个请求。  2.设置限流 location / {  limit_req zone=mylimit burst=20 nodelay;  proxy_pass http://real_server; } burst排队大小，nodelay不限制单个请求间的时间。\n3.不限流白名单 geo $limit { default 1; 192.168.2.0/24 0; }  map $limit $limit_key { 1 $binary_remote_addr; 0 \"\"; }  limit_req_zone $limit_key zone=mylimit:10m rate=1r/s;  location / {  limit_req zone=mylimit burst=1 nodelay;  proxy_pass http://real_server; } 上述配置中，192.168.2.0/24网段的IP访问是不限流的，其他限流。\nIP后面的数字含义：\n 24表示子网掩码:255.255.255.0 16表示子网掩码:255.255.0.0 8表示子网掩码:255.0.0.0  四、nginx缓存配置 1.浏览器缓存 静态资源缓存用expire\nlocation ~* .(jpg|jpeg|png|gif|ico|css|js)$ {  expires 2d; } Response Header中添加了Expires和Cache-Control,\n静态资源包括（一般缓存）\n 普通不变的图像，如logo，图标等 js、css静态文件 可下载的内容，媒体文件  协商缓存（add_header ETag/Last-Modified value）\n HTML文件 经常替换的图片 经常修改的js、css文件 基本不变的API接口  不需要缓存\n 用户隐私等敏感数据 经常改变的api数据接口  2.代理层缓存 //缓存路径，inactive表示缓存的时间，到期之后将会把缓存清理 proxy_cache_path /data/cache/nginx/ levels=1:2 keys_zone=cache:512m inactive = 1d max_size=8g;  location / {  location ~ \\.(htm|html)?$ {  proxy_cache cache;  proxy_cache_key $uri$is_args$args; //以此变量值做HASH，作为KEY  //HTTP响应首部可以看到X-Cache字段，内容可以有HIT,MISS,EXPIRES等等  add_header X-Cache $upstream_cache_status;  proxy_cache_valid 200 10m;  proxy_cache_valid any 1m;  proxy_pass http://real_server;  proxy_redirect off;  }  location ~ .*\\.(gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ {  root /data/webapps/edc;  expires 3d;  add_header Static Nginx-Proxy;  } } 在本地磁盘创建一个文件目录，根据设置，将请求的资源以K-V形式缓存在此目录当中，KEY需要自己定义（这里用的是url的hash值），同时可以根据需要指定某内容的缓存时长，比如状态码为200缓存10分钟，状态码为301，302的缓存5分钟，其他所有内容缓存1分钟等等。 可以通过purger的功能清理缓存。\nAB测试/个性化需求时应禁用掉浏览器缓存\n五、nginx黑名单配置 1.一般配置 location / {  deny 192.168.1.1;  deny 192.168.1.0/24;  allow 10.1.1.0/16;  allow 2001:0db8::/32;  deny all; } 2. Lua+Redis动态黑名单(OpenResty) 安装运行\nyum install yum-utils yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo yum install openresty yum install openresty-resty 查看 yum --disablerepo=\"*\" --enablerepo=\"openresty\" list available 运行 service openresty start 配置(/usr/local/openresty/nginx/conf/nginx.conf)\nlua_shared_dict ip_blacklist 1m;  server {  listen 80;   location / {  access_by_lua_file lua/ip_blacklist.lua;  proxy_pass http://real_server;  } } lua脚本（ip_blacklist.lua）\nlocal redis_host = \"192.168.1.132\" local redis_port = 6379 local redis_pwd = 123456 local redis_db = 2  -- connection timeout for redis in ms. local redis_connection_timeout = 100  -- a set key for blacklist entries local redis_key = \"ip_blacklist\"  -- cache lookups for this many seconds local cache_ttl = 60  -- end configuration  local ip = ngx.var.remote_addr local ip_blacklist = ngx.shared.ip_blacklist local last_update_time = ip_blacklist:get(\"last_update_time\");  -- update ip_blacklist from Redis every cache_ttl seconds: if last_update_time == nil or last_update_time  ( ngx.now() - cache_ttl ) then   local redis = require \"resty.redis\";  local red = redis:new();   red:set_timeout(redis_connect_timeout);   local ok, err = red:connect(redis_host, redis_port);  if not ok then  ngx.log(ngx.ERR, \"Redis connection error while connect: \" .. err);  else  local ok, err = red:auth(redis_pwd)  if not ok then  ngx.log(ngx.ERR, \"Redis password error while auth: \" .. err);  else  local new_ip_blacklist, err = red:smembers(redis_key);  if err then  ngx.log(ngx.ERR, \"Redis read error while retrieving ip_blacklist: \" .. err);  else  ngx.log(ngx.ERR, \"Get data success:\" .. new_ip_blacklist)  -- replace the locally stored ip_blacklist with the updated values:  ip_blacklist:flush_all();  for index, banned_ip in ipairs(new_ip_blacklist) do  ip_blacklist:set(banned_ip, true);  end  -- update time  ip_blacklist:set(\"last_update_time\", ngx.now());  end  end  end end  if ip_blacklist:get(ip) then  ngx.log(ngx.ERR, \"Banned IP detected and refused access: \" .. ip);  return ngx.exit(ngx.HTTP_FORBIDDEN); end 六、nginx灰度发布配置 1.根据Cookie实现灰度发布 根据Cookie查询version值，如果该version值为v1转发到host1，为v2转发到host2，都不匹配的情况下转发到默认配置。\nupstream host1 {  server 192.168.2.46:2001 weight=1; #轮询服务器和访问权重  server 192.168.2.46:2002 weight=2; }  upstream host2 {  server 192.168.1.155:1111 max_fails=1 fail_timeout=60; }  upstream default {  server 192.168.1.153:1111 max_fails=1 fail_timeout=60; }  map $COOKIE_version $group {  ~*v1$ host1;  ~*v2$ host2;  default default; }  lua_shared_dict ip_blacklist 1m;  server {  listen 80;   #set $group \"default\";  #if ($http_cookie ~* \"version=v1\"){  # set $group host1;  #}  #if ($http_cookie ~* \"version=v2\"){  # set $group host2;  #}   location / {  access_by_lua_file lua/ip_blacklist.lua;  proxy_pass http://$group;  } } 2.根据来路IP实现灰度发布 server {  ……………  set $group default;  if ($remote_addr ~ \"192.168.119.1\") {  set $group host1;  }  if ($remote_addr ~ \"192.168.119.2\") {  set $group host2;  } 3.更细粒度灰度发布 参考：\nhttps://github.com/sunshinelyz/ABTestingGateway\n七、nginx生成缩略图 配置Nginx 使用 Nginx 自带模块生成缩略图，模块：–with-http_image_filter_module，例如，我们可以使用如下参数安装Nginx：\n./configure --prefix=/usr/local/nginx-1.19.1 --with-http_stub_status_module --with-http_realip_module --with-http_image_filter_module --with-debug 接下来，修改 nginx.conf 配置文件，或者将下面的配置放到nginx.conf文件相应的 server 块中。\nlocation ~* /(\\d+)\\.(jpg)$ {  set $h $arg_h; # 获取参数ｈ的值  set $w $arg_w; # 获取参数 w 的值  #image_filter crop $h $w;  image_filter resize $h $w;# 根据给定的长宽生成缩略图 } location ~* /(\\d+)_(\\d+)x(\\d+)\\.(jpg)$ {  if ( -e $document_root/$1.$4 ) { # 判断原图是否存在  rewrite /(\\d+)_(\\d+)x(\\d+)\\.(jpg)$ /$1.$4?h=$2\u0026w=$3 last;  }  return 404; } 访问图片 配置完成后，我们就可以使用类似如下的方式来访问图片。\nhttp://www.binghe.com/123_100x10.jpg\n当我们在浏览器地址栏中输入上面的链接时，Nginx会作出如下的逻辑处理。\n 首先判断是否存在原图 123.jpg,不存在直接返回 404（如果原图都不存在，那就没必要生成缩略图了） 跳转到 http://www.binghe.com/123.jpg?h=100\u0026w=10，将参数高 h=100 和宽 w=10 带到 url 中。 Image_filter resize 指令根据 h 和 w 参数生成相应缩略图。  注意：使用Nginx生成等比例缩略图时有一个长宽取小的原则，例如原图是 100\\*10,你传入的是 10\\*2，那么Nginx会给你生成 10\\*1 的图片。生成缩略图只是 image_filter 功能中的一个，它一共支持 4 种参数：\n test：返回是否真的是图片 size：返回图片长短尺寸，返回 json 格式数据 corp：截取图片的一部分，从左上角开始截取，尺寸写小了，图片会被剪切 resize：缩放图片，等比例缩放  Nginx 生成缩略图优缺点 优点：\n 根据传入参数即可生成各种比例图片 不占用任何硬盘空间  缺点：\n 消耗 CPU 访问量大将会给服务器带来比较大的负担  建议：\n生成缩略是个消耗 CPU 的操作，如果访问量比较大的站点，最好考虑使用程序生成缩略图到硬盘上，或者在前端加上 Cache缓存或者使用 CDN\n八、nginx禁用ip和ip段 Nginx的ngx_http_access_module 模块可以封配置内的ip或者ip段，语法如下：\ndeny IP; deny subnet; allow IP; allow subnet; # block all ips deny all; # allow all ips allow all; 如果规则之间有冲突，会以最前面匹配的规则为准。\n配置禁用ip和ip段 下面说明假定nginx的目录在/usr/local/nginx/。\n首先要建一个封ip的配置文件blockips.conf，然后vi blockips.conf编辑此文件，在文件中输入要封的ip。\ndeny 1.2.3.4; deny 91.212.45.0/24; deny 91.212.65.0/24; 然后保存此文件，并且打开nginx.conf文件，在http配置节内添加下面一行配置：\ninclude blockips.conf; 保存nginx.conf文件，然后测试现在的nginx配置文件是否是合法的：\n/usr/local/nginx/sbin/nginx -t 如果配置没有问题，就会输出：\nthe configuration file /usr/local/nginx/conf/nginx.conf syntax is ok configuration file /usr/local/nginx/conf/nginx.conf test is successful 如果配置有问题就需要检查下哪儿有语法问题，如果没有问题，需要执行下面命令，让nginx重新载入配置文件。\n/usr/local/nginx/sbin/nginx -s reload 仅允许内网ip 如何禁止所有外网ip，仅允许内网ip呢？\n如下配置文件\nlocation / {  # block one workstation  deny 192.168.1.1;  # allow anyone in 192.168.1.0/24  allow 192.168.1.0/24;  # drop rest of the world  deny all; } 上面配置中禁止了192.168.1.1，允许其他内网网段，然后deny all禁止其他所有ip。\n格式化nginx的403页面 如何格式化nginx的403页面呢？\n首先执行下面的命令：\ncd /usr/local/nginx/html vi error403.html 然后输入403的文件内容，例如：\n Error 403 - IP Address Blocked  Your IP Address is blocked. If you this an error, please contact binghe with your IP at test@binghe.com   如果启用了SSI，可以在403中显示被封的客户端ip，如下：\nYour IP Address is =\"REMOTE_ADDR\" -- blocked. 保存error403文件，然后打开nginx的配置文件vi nginx.conf,在server配置节内添加下面内容。\n# redirect server error pages to the static page  error_page 403 /error403.html;  location = /error403.html {  root html;  } 然后保存配置文件，通过nginx -t命令测试配置文件是否正确，若正确通过nginx -s reload载入配置\n九、nginx日志分割 首先，我们要创建一个脚本文件，用来分割Nginx日志，具体脚本如下：\nvim /usr/local/nginx-1.19.1/cutnginxlog.sh 脚本内容如下：\n#!/bin/sh # Program: # Auto cut nginx log script.  # nginx日志路径  LOGS_PATH=/usr/local/nginx-1.19.1/logs TODAY=$(date -d 'today' +%Y-%m-%d)  # 移动日志并改名 mv ${LOGS_PATH}/error.log ${LOGS_PATH}/error_${TODAY}.log mv ${LOGS_PATH}/access.log ${LOGS_PATH}/access_${TODAY}.log  # 向nginx主进程发送重新打开日志文件的信号 kill -USR1 $(cat /usr/local/nginx-1.19.1/logs/nginx.pid) 接下来就是给cutnginxlog.sh文件授权。\nchmod a+x cutnginxlog.sh 接下来添加计划任务，定时执行cutnginxlog.sh脚本，以root用户执行如下命令：\necho '59 23 * * * root /usr/local/nginx-1.19.1/cutnginxlog.sh  /usr/local/nginx-1.19.1/cutnginxlog.log 2\u00261'  /etc/crontab 意思就是在每天的23点59分执行脚本。将自动任务的执行日志（错误和正确的日志）自动写入cutnginxlog.log，“命令 » 2\u00261” 表示以追加方式将正确输出和错误输出都保存到同一个文件中\n十、为已安装的nginx动态添加模块 这里以安装第三方ngx_http_google_filter_module模块为例。\nNginx的模块是需要重新编译Nginx，而不是像Apache一样配置文件引用.so\n下载第三方扩展模块ngx_http_google_filter_module # cd /data/software/ # git clone https://github.com/cuber/ngx_http_google_filter_module 查看nginx编译安装时安装了哪些模块 将命令行切换到Nginx执行程序所在的目录并输入./nginx -V，具体如下：\n[root@binghe sbin]# ./nginx -V nginx version: nginx/1.19.1 built by gcc 4.4.7 20120313 (Red Hat 4.4.7-17) (GCC) built with OpenSSL 1.0.2 22 Jan 2015 TLS SNI support enabled configure arguments: --prefix=/usr/local/nginx-1.19.1 --with-openssl=/usr/local/src/openssl-1.0.2 --with-pcre=/usr/local/src/pcre-8.37 --with-zlib=/usr/local/src/zlib-1.2.8 --with-http_ssl_module [root@binghe sbin]#  可以看出编译安装Nginx使用的参数如下：\n--prefix=/usr/local/nginx-1.19.1 --with-openssl=/usr/local/src/openssl-1.0.2 --with-pcre=/usr/local/src/pcre-8.37 --with-zlib=/usr/local/src/zlib-1.2.8 --with-http_ssl_module 加入需要安装的模块，重新编译 这里添加 –add-module=/data/software/ngx_http_google_filter_module\n具体如下：\n./configure --prefix=/usr/local/nginx-1.19.1 --with-openssl=/usr/local/src/openssl-1.0.2 --with-pcre=/usr/local/src/pcre-8.37 --with-zlib=/usr/local/src/zlib-1.2.8 --with-http_ssl_module -–add-module=/data/software/ngx_http_google_filter_module 如上，将之前安装Nginx的参数全部加上，最后添加 –add-module=/data/software/ngx_http_google_filter_module\n之后，我们要进行编译操作，如下：\n# make //千万不要make install，不然就真的覆盖 这里，需要注意的是：不要执行make install命令。\n替换nginx二进制文件 # 备份原来的nginx执行程序 # mv /usr/local/nginx-1.19.1/sbin/nginx /usr/local/nginx-1.19.1/sbin/nginx.bak  # 将新编译的nginx执行程序复制到/usr/local/nginx-1.19.1/sbin/目录下 # cp /opt/nginx/sbin/nginx /usr/local/nginx-1.19.1/sbin/ 十一、nginx格式化日志并推送到远程服务器统一收集维护 格式化Nginx日志并推送到远程服务器，其实很简单，我们只需要在Nginx服务器的配置文件nginx.conf中进行简单的配置即可。例如，我们可以在nginx.conf文件中添加如下配置。\nlog_format common \"$remote_addr,$http_ip,$http_mac,$time_local,$status,$request_length,$bytes_sent,$body_bytes_sent,$http_user_agent,$http_referer,$request_method,$request_time,$request_uri,$server_protocol,$request_body,$http_token\";  log_format main \"$remote_addr,$http_ip,$http_mac,$time_local,$status,$request_length,$bytes_sent,$body_bytes_sent,$http_user_agent,$http_referer,$request_method,$request_time,$request_uri,$server_protocol,$request_body,$http_token\";  access_log logs/access.log common;  access_log syslog:server=192.168.1.100:9999,facility=local7,tag=nginx,severity=info main;  map $http_upgrade $connection_upgrade {  default upgrade;  '' close;  } 上述配置是将Nginx的日志各项参数以逗号分隔的形式进行输出，同时将Nginx日志实时推送到192.168.1.100:9999上。\n此时，我们只需要在192.168.1.100服务器上部署一个TCP或UDP服务，监听端口为9999，并在192.168.1.100服务器的防火墙开放9999端口。我们写的TCP或UDP服务就会实时接收到Nginx服务器发送过来的日志。\n通过这种方式，我们就可以将Nginx日志实时收集到某个存储集群中，对Nginx日志进行统一存储、维护和分析\n十二、nginx配置WebSocket Nginx配置WebSocket也比较简单，只需要在nginx.conf文件中进行相应的配置。这种方式很简单，但是很有效，能够横向扩展WebSocket服务端的服务能力。\n先直接展示配置文件，如下所示(使用的话直接复制，然后改改ip和port即可)\nmap $http_upgrade $connection_upgrade {  default upgrade;  '' close; } upstream wsbackend{  server ip1:port1;  server ip2:port2;  keepalive 1000; }  server {  listen 20038;  location /{  proxy_http_version 1.1;  proxy_pass http://wsbackend;  proxy_redirect off;  proxy_set_header Host $host;  proxy_set_header X-Real-IP $remote_addr;  proxy_read_timeout 3600s;  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  proxy_set_header Upgrade $http_upgrade;  proxy_set_header Connection $connection_upgrade;  } } 接下来，我们就分别分析上述配置的具体含义。\n首先：\nmap $http_upgrade $connection_upgrade {  default upgrade;  '' close; } 表示的是：\n 如果 $http_upgrade 不为 '' (空)，则 $connection_upgrade 为 upgrade 。 如果 $http_upgrade 为 '' (空)，则 $connection_upgrade 为 close。  其次：\nupstream wsbackend{  server ip1:port1;  server ip2:port2;  keepalive 1000; } 表示的是 nginx负载均衡：\n 两台服务器 (ip1:port1)和(ip2:port2) 。 keepalive 1000 表示的是每个nginx进程中上游服务器保持的空闲连接，当空闲连接过多时，会关闭最少使用的空闲连接.当然，这不是限制连接总数的，可以想象成空闲连接池的大小，设置的值应该是上游服务器能够承受的。  最后：\nserver {  listen 20038;  location /{  proxy_http_version 1.1;  proxy_pass http://wsbackend;  proxy_redirect off;  proxy_set_header Host $host;  proxy_set_header X-Real-IP $remote_addr;  proxy_read_timeout 3600s;  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  proxy_set_header Upgrade $http_upgrade;  proxy_set_header Connection $connection_upgrade;  } } 表示的是监听的服务器的配置\n listen 20038 表示 nginx 监听的端口 locations / 表示监听的路径(/表示所有路径，通用匹配，相当于default) proxt_http_version 1.1 表示反向代理发送的HTTP协议的版本是1.1，HTTP1.1支持长连接 proxy_pass http://wsbackend; 表示反向代理的uri，这里可以使用负载均衡变量 proxy_redirect off; 表示不要替换路径，其实这里如果是/则有没有都没关系，因为default也是将路径替换到proxy_pass的后边 proxy_set_header Host $host; 表示传递时请求头不变， $host是nginx内置变量，表示的是当前的请求头，proxy_set_header表示设置请求头 proxy_set_header X-Real-IP $remote_addr; 表示传递时来源的ip还是现在的客户端的ip proxy_read_timeout 3600s；表的两次请求之间的间隔超过 3600s 后才关闭这个连接，默认的60s，自动关闭的元凶 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 表示X-Forwarded-For头不发生改变 proxy_set_header Upgrade $http_upgrade; 表示设置Upgrade不变 proxy_set_header Connection $connection_upgrade; 表示如果 $http_upgrade为upgrade，则请求为upgrade(websocket)，如果不是，就关闭连接  十三、nginx实现MySQL负载均衡 user nginx; #user root; worker_processes 1; error_log /var/log/nginx/error.log warn; pid /var/run/nginx.pid; events {  worker_connections 1024; } http {  include /etc/nginx/mime.types;  default_type application/octet-stream;  log_format main '$remote_addr - $remote_user [$time_local] \"$request\" '  '$status $body_bytes_sent \"$http_referer\" '  '\"$http_user_agent\" \"$http_x_forwarded_for\"';  access_log /var/log/nginx/access.log main;  sendfile on;  #tcp_nopush on;  keepalive_timeout 65;  #gzip on;  include /etc/nginx/conf.d/*.conf; }  stream{  upstream mysql{  server 192.168.1.101:3306 weight=1;  server 192.168.1.102:3306 weight=1;  }   server{  listen 3306;  server_name 192.168.1.100;  proxy_pass mysql;  } } 配置完成后，我们就可以通过如下方式来访问MySQL数据库。\njdbc:mysql://192.168.1.100:3306/数据库名称 此时，Nginx会将访问MySQL的请求路由到IP地址为192.168.1.101和192.168.1.102的MySQL上\n十四、nginx解决跨域问题 server {  location / {  root html;  index index.html index.htm;  //允许cros跨域访问  add_header 'Access-Control-Allow-Origin' '*';   }  //自定义本地路径  location /apis {  rewrite ^.+apis/?(.*)$ /$1 break;  include uwsgi_params;  proxy_pass http://www.binghe.com;  } } 十五、nginx图片显示过慢，文件下载不完全问题处理 问题定位 经过一系列的排查（中间过程我就省略了，直接写重点了！），最终定位到是Nginx的问题。当我打开这位读者的网站后台管理系统，发现图片显示非常慢，在Nginx前端代理上查出如下错误信息。\n[error] 28423#0: *5 connect() failed (111: Connection refused) while connecting to upstream 直接在后台服务器上用后台服务器的IP地址去访问，发现速度相当快，于是怀疑是Nginx的配置问题。\n注意：当下载大的附件，或是页面中有大图片时，就会下载中断或是图片无法显示，也许你会说我用的Nginx缺省的配置也从来没有碰到过这种问题呀！我想说的是：那是因为你的网站没有大文件，至少没有大到使用Nginx的默认配置加载不出来。\n这里，我给出一段Nginx的配置，如下所示。\nlocation /file {  root /home/file;  index index.html index.htm;  proxy_set_header X-Real-IP $remote_addr;  proxy_set_header Host $host;  proxy_pass http://127.0.0.1:8080 ;  client_max_body_size 100m;  client_body_buffer_size 128k;  proxy_connect_timeout 600;  proxy_read_timeout 600;  proxy_send_timeout 600;  proxy_buffer_size 32k;  proxy_buffers 4 64k;  proxy_busy_buffers_size 64k;  proxy_temp_file_write_size 64k; } 其中几个重要的参数如下所示。\n proxy_connect_timeout 600; #nginx跟后端服务器连接超时时间(代理连接超时) proxy_read_timeout 600; #连接成功后，后端服务器响应时间(代理接收超时) proxy_send_timeout 600; #后端服务器数据回传时间(代理发送超时) proxy_buffer_size 32k; #设置代理服务器（nginx）保存用户头信息的缓冲区大小 proxy_buffers 4 32k; #proxy_buffers缓冲区，网页平均在32k以下的话，这样设置 proxy_busy_buffers_size 64k; #高负荷下缓冲大小（proxy_buffers*2） proxy_temp_file_write_size 16k; #设定缓存文件夹大小，大于这个值，将从upstream服务器传  看到这里，发现问题了，这位读者的Nginx有下面一行配置。\nproxy_temp_file_write_size 16k; 而他服务器上的图片基本都在100K~5M之间。\n问题就出在proxy_temp_file_write_size上，当服务器上的文件超过该参数设置的大小时，Nginx会先将文件写入临时目录(缺省为Nginx安装目下/proxy_temp目录)，缺省Nginx是以nobody身份启动的，用ls -al 命令查看proxy_temp目录 nobody是proxy_temp目录的所有者，怪了那为什么没权限呢？接下来查看proxy_temp的父目录既Nginx安装目录。发现nobody竞然没权限，怪不得会出现上面的问题。\n解决问题 定位到问题，接下来解决问题就比较简单了。可以使用两种方式解决这个问题，如下所示。\n 设置任何人都可以写 proxy_temp目录，重启 Nginx 即可解决。 直接更改proxy_temp_file_write_size的值，将其修改为大于图片和文件的大小，重启Nginx。  如果是以第一种方式解决问题的话，比如我的proxy_temp目录是/usr/local/nginx/proxy_temp，用如下命令将/usr/local/nginx/proxy_temp目录设置为任何人都可以写，问题解决。\nchmod -R 777 /usr/local/nginx/proxy_temp/ 如果是使用第二种方式解决问题的话，就可以直接修改nginx.conf文件，如下所示。\nlocation /file {  root /home/file;  index index.html index.htm;  proxy_set_header X-Real-IP $remote_addr;  proxy_set_header Host $host;  proxy_pass http://127.0.0.1:8080 ;  client_max_body_size 100m;  client_body_buffer_size 256k;  proxy_connect_timeout 1200;  proxy_read_timeout 1200;  proxy_send_timeout 6000;  proxy_buffer_size 32k;  proxy_buffers 4 64k;  proxy_busy_buffers_size 128k;  proxy_temp_file_write_size 10m; } 十六、使用Nginx搭建流媒体服务器实现直播 安装Nginx 注意：这里以CentOS 6.8服务器为例，以root用户身份来安装Nginx。\n1.安装依赖环境 yum -y install wget gcc-c++ ncurses ncurses-devel cmake make perl bison openssl openssl-devel gcc* libxml2 libxml2-devel curl-devel libjpeg* libpng* freetype* autoconf automake zlib* fiex* libxml* libmcrypt* libtool-ltdl-devel* libaio libaio-devel bzr libtool 2.安装openssl wget https://www.openssl.org/source/openssl-1.0.2s.tar.gz tar -zxvf openssl-1.0.2s.tar.gz cd /usr/local/src/openssl-1.0.2s ./config --prefix=/usr/local/openssl-1.0.2s make make install 3.安装pcre wget https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz tar -zxvf pcre-8.43.tar.gz cd /usr/local/src/pcre-8.43 ./configure --prefix=/usr/local/pcre-8.43 make make install 4.安装zlib wget https://sourceforge.net/projects/libpng/files/zlib/1.2.11/zlib-1.2.11.tar.gz tar -zxvf zlib-1.2.11.tar.gz cd /usr/local/src/zlib-1.2.11 ./configure --prefix=/usr/local/zlib-1.2.11 make make 5.下载nginx-rtmp-module nginx-rtmp-module的官方github地址：https://github.com/arut/nginx-rtmp-module\n使用命令：\ngit clone https://github.com/arut/nginx-rtmp-module.git 6.安装Nginx wget http://nginx.org/download/nginx-1.19.1.tar.gz tar -zxvf nginx-1.19.1.tar.gz cd /usr/local/src/nginx-1.19.1 ./configure --prefix=/usr/local/nginx-1.19.1 --with-openssl=/usr/local/src/openssl-1.0.2s --with-pcre=/usr/local/src/pcre-8.43 --with-zlib=/usr/local/src/zlib-1.2.11 --add-module=/usr/local/src/nginx-rtmp-module --with-http_ssl_module make make install 这里需要注意的是：安装Nginx时，指定的是openssl、pcre和zlib的源码解压目录，安装完成后Nginx配置文件的完整路径为：/usr/local/nginx-1.19.1/conf/nginx.conf。\n配置Nginx 配置Nginx主要是对Nginx的nginx.conf文件进行配置，我们可以在命令行输入如下命令编辑nginx.conf文件。\nvim /usr/local/nginx-1.19.1/conf/nginx.conf 在文件中添加如下内容。\nrtmp {  server {  listen 1935; #监听的端口  chunk_size 4096;  application hls { #rtmp推流请求路径   live on;  hls on;  hls_path /usr/share/nginx/html/hls;  hls_fragment 5s;  }  } } 其中，hls_path需要可读可写的权限。接下来，我们创建/usr/share/nginx/html/hls 目录。\nmkdir -p /usr/share/nginx/html/hls chmod -R 777 /usr/share/nginx/html/hls 接下来，修改http中的server模块：\nserver {  listen 81;  server_name localhost;   #charset koi8-r;    #access_log logs/host.access.log main;    location / {  root /usr/share/nginx/html;  index index.html index.htm;  }   #error_page 404 /404.html;    # redirect server error pages to the static page /50x.html   #   error_page 500 502 503 504 /50x.html;  location = /50x.html {  root html;  } } 然后启动Nginx：\n/usr/local/nginx-1.19.1/sbin/nginx -c /usr/local/nginx-1.19.1/conf/nginx.conf 使用OBS推流 OBS（Open Broadcaster Software） 是以互联网流媒体直播内容为目的免费和开放源码软件。需要下载这个软件，借助这个软件进行推流（电脑没有摄像头的貌似安装不了。。。）\nOBS的下载链接为：https://obsproject.com/zh-cn/download。\n安装后，桌面上会有一个如下所示的图标。\n打开后我们需要有一个场景，并且在这个场景下有一个流的来源(可以是窗口，如果选的是视频则会自动识别摄像头)，接下来就是设置了。\n在配置中最需要关注的就是流的配置，由于是自建的流媒体服务器所以我们按照如下所示的方式进行配置。\nrtmp://你的服务器ip:端口(1935)/live #URL填写流的地址 设置完成我们就可以 开始推流了。\n拉流测试地址 推荐一个拉流的测试地址，里面针对各种协议都能测试拉流测试，需要注意图中几个地方，由于我们使用的rtmp协议，我们选择这一栏，底下填写我们推流的地址和我们在上面obs的设置里面配置的流的名称，start， ok搞定！！！\n十七、nginx的转发规则 Nginx的location语法 location [=|~|~*|^~] /uri/ { … }  = 严格匹配。如果请求匹配这个location，那么将停止搜索并立即处理此请求 ~ 区分大小写匹配(可用正则表达式) ~* 不区分大小写匹配(可用正则表达式) !~ 区分大小写不匹配 !~* 不区分大小写不匹配 ^~ 如果把这个前缀用于一个常规字符串,那么告诉nginx 如果路径匹配那么不测试正则表达式  示例1：\nlocation / { } 匹配任意请求\n示例2：\nlocation ~* .(gif|jpg|jpeg)$ ｛  rewrite .(gif|jpg|jpeg)$ /logo.png; ｝ 不区分大小写匹配任何以gif、jpg、jpeg结尾的请求，并将该请求重定向到 /logo.png请求\n示例3：\nlocation ~ ^.+\\.txt$ {  root /usr/local/nginx/html/; } 区分大小写匹配以.txt结尾的请求，并设置此location的路径是/usr/local/nginx/html/。也就是以.txt结尾的请求将访问/usr/local/nginx/html/ 路径下的txt文件\nalias与root的区别  root 实际访问文件路径会拼接URL中的路径 alias 实际访问文件路径不会拼接URL中的路径  示例如下：\nlocation ^~ /binghe/ {  alias /usr/local/nginx/html/binghetic/; }  请求：http://test.com/binghe/binghe1.html 实际访问：/usr/local/nginx/html/binghetic/binghe1.html 文件  location ^~ /binghe/ {  root /usr/local/nginx/html/; }  请求：http://test.com/binghe/binghe1.html 实际访问：/usr/local/nginx/html/binghe/binghe1.html 文件  last 和 break关键字的区别 （1）last 和 break 当出现在location 之外时，两者的作用是一致的没有任何差异\n（2）last 和 break 当出现在location 内部时：\n last 使用了last 指令，rewrite 后会跳出location 作用域，重新开始再走一次刚才的行为 break 使用了break 指令，rewrite后不会跳出location 作用域，其整个生命周期都在当前location中。  permanent 和 redirect关键字的区别  rewrite … permanent 永久性重定向，请求日志中的状态码为301 rewrite … redirect 临时重定向，请求日志中的状态码为302  综合实例 将符合某个正则表达式的URL重定向到一个固定页面\n比如：我们需要将符合“/test/(\\d+)/[\\w-.]+” 这个正则表达式的URL重定向到一个固定的页面。符合这个正则表达式的页面可能是：http://test.com/test/12345/abc122.html、http://test.com/test/456/11111cccc.js等\n从上面的介绍可以看出，这里可以使用rewrite重定向或者alias关键字来达到我们的目的。因此，这里可以这样做：\n（1）使用rewrite关键字\nlocation ~ ^.+\\.txt$ {  root /usr/local/nginx/html/; } location ~* ^/test/(\\d+)/[\\w-\\.]+$ {  rewrite ^/test/(\\d+)/[\\w-\\.]+$ /testpage.txt last; } 这里将所有符合条件的URL（PS：不区分大小写）都重定向到/testpage.txt请求，也就是 /usr/local/nginx/html/testpage.txt 文件\n（2）使用alias关键字\nlocation ~* ^/test/(\\d+)/[\\w-\\.]+$ {  alias /usr/local/nginx/html/binghetic/binghe1.html; } 这里将所有符合条件的URL（不区分大小写）都重定向到/usr/local/nginx/html/binghetic/binghe1.html 文件\n十八、nginx.conf常用配置 user nginx; worker_processes auto; worker_rlimit_nofile 65535;    pid /var/run/nginx.pid; events {  worker_connections 65535;  multi_accept on;  use epoll; } http {  include /etc/nginx/mime.types;  default_type application/octet-stream;  log_format main '[$time_local] RemoteAddr:\"$remote_addr\" RemoteUser:\"$remote_user\" Host:\"$host\" '  'RequestUil:\"$request\" HttpStatus:\"$status\" BodyBytesSent:\"$body_bytes_sent\" '  'HttpReferer:\"$http_referer\" HttpUserAgent:\"$http_user_agent\" '  'Http_X_ForwardedFor:\"$http_x_forwarded_for\" UpstreamResponseTime:\"$upstream_response_time\" '  'UpstreamAddr:\"$upstream_addr\" RequestTime:\"$request_time\" --- $server_port';  log_format json '{'  '\"RemoteAddr\":\"$remote_addr\",'  '\"RemoteUser\":\"$remote_user\",'  '\"TimeLocal\":\"$time_local\",'  '\"RequestUil\":\"$request\",'  '\"HttpHost\":\"$http_host\"'  '\"HttpStatus\":\"$status\",'  '\"BodyBytesSent\":\"$body_bytes_sent\",'  '\"HttpReferer\":\"$http_referer\",'  '\"HttpUserAgent\":\"$http_user_agent\",'  '\"Http_X_ForwardedFor\":\"$http_x_forwarded_for\",'  '\"SslProtocol\":\"$ssl_protocol\"'  '\"SslCipher\":\"$ssl_cipher\"'  '\"UpstreamResponseTime\":\"$upstream_response_time\",'  '\"UpstreamAddr\":\"$upstream_addr\",'  '\"RequestTime\":\"$request_time\",'  '}';   access_log /data/logs/nginx_logs/access.log main;  error_log /data/logs/nginx_logs/error.log error;    access_log off;  server_tokens off;  sendfile on;  tcp_nopush on;  tcp_nodelay on;  send_timeout 300;  keepalive_timeout 300;  resolver_timeout 60;  server_names_hash_max_size 512;  server_names_hash_bucket_size 128;   client_body_timeout 300;  client_header_timeout 300;  client_header_buffer_size 512k;  client_max_body_size 300m;  large_client_header_buffers 8 32k;  client_body_buffer_size 256k;   fastcgi_connect_timeout 300;  fastcgi_send_timeout 300;  fastcgi_read_timeout 300;  fastcgi_buffer_size 128k;  fastcgi_buffers 8 256k;  fastcgi_busy_buffers_size 256k;  fastcgi_temp_file_write_size 256k;  fastcgi_temp_path /tmp/ngx_fcgi_tmp;  fastcgi_cache_path /tmp/fcgi_cache_path levels=1:2 keys_zone=ngx_fcgi_cache:512m inactive=1d max_size=10g;   gzip on;  gzip_http_version 1.1;  gzip_min_length 1k;  gzip_buffers 4 16k;  gzip_comp_level 9;  gzip_types text/plain application/json application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;  gzip_vary on;  gzip_disable \"MSIE [1-6]\\.\";   proxy_http_version 1.1;  proxy_set_header Connection \"\";  proxy_set_header Host $host;  proxy_connect_timeout 300;  proxy_read_timeout 300;  proxy_send_timeout 300;  proxy_buffering on;  proxy_buffer_size 128k;  proxy_buffers 8 128k;  proxy_busy_buffers_size 256k;  proxy_temp_file_write_size 256k;  proxy_temp_path /tmp/proxy_temp_path;  proxy_cache_path /tmp/proxy_cache_path levels=1:2 keys_zone=ngx_proxy_cache:512m inactive=1d max_size=10g;  include /etc/nginx/conf.d/*.conf; } include /etc/nginx/stream.d/*.conf; 十九、stream常用配置 stream {  upstream redis {  server 192.168.1.1:6379;  }  server {  listen 6372;  proxy_pass redis;  proxy_connect_timeout 1h;  proxy_timeout 1h;  } } 二十、server常用配置 server {  listen 80;  listen 81;  server_name 127.0.0.1 test.example.com;  index index.php index.html index.htm;  root /data/web/test/www;  charset utf-8;  access_log /data/logs/nginx_logs/test.example.com.log main;  location / {  if (!-e $request_filename) {  rewrite ^/(.*) /index.php?$1 last;  }  }   location /business/ {  if ($arg_icpid = \"4pd1mtsDhfe\" ) {  proxy_pass http://127.0.0.1:38888/test$request_uri\u0026tbid=aldIthSBg04;  }  proxy_pass http://127.0.0.1:9302;  }    location /gateway/ {  proxy_pass http://127.0.0.1:38888/;  }  location ~ \\.php$ {  fastcgi_param REMOTE_ADDR $http_x_real_ip;  fastcgi_param LY_ADDRESS $remote_addr;  fastcgi_pass unix:/dev/shm/php-cgi.sock;  fastcgi_index index.php;  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  fastcgi_param SERVERNAME $hostname;  include fastcgi_params;  }  location = /favicon.ico {  log_not_found off;  access_log off;  }  location = /robots.txt {  allow all;  log_not_found off;  access_log off;  } }  server {  listen 80;  listen 443 ssl;  server_name test.example.com;  charset utf-8;  access_log /data/logs/nginx_logs/test.example.com.log main;   ssl_certificate /etc/nginx/cert/example.com.pem;  ssl_certificate_key /etc/nginx/cert/example.com.key;  ssl_session_timeout 5m;  ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;  ssl_prefer_server_ciphers on;   location / {  proxy_pass http://127.0.0.1:38888;  }  location = /favicon.ico {  log_not_found off;  access_log off;  }  location = /robots.txt {  allow all;  log_not_found off;  access_log off;  } } ",
+  "wordCount" : "2141",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-11T17:20:11+08:00",
+  "dateModified": "2022-04-11T17:20:11+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Nginx常用操作及配置
+    </h1>
+    <div class="post-meta"><span title='2022-04-11 17:20:11 +0800 CST'>2022-04-11</span>&nbsp;·&nbsp;11 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80nginx%e8%8e%b7%e5%8f%96%e5%ae%a2%e6%88%b7%e7%ab%af%e7%9c%9f%e5%ae%9eip%e5%9f%9f%e5%90%8d%e5%8d%8f%e8%ae%ae%e7%ab%af%e5%8f%a3" aria-label="一、nginx获取客户端真实IP、域名、协议、端口">一、nginx获取客户端真实IP、域名、协议、端口</a></li>
+                    <li>
+                        <a href="#%e4%ba%8cnginx%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e9%85%8d%e7%bd%ae" aria-label="二、nginx负载均衡配置">二、nginx负载均衡配置</a></li>
+                    <li>
+                        <a href="#%e4%b8%89nginx%e9%99%90%e6%b5%81%e9%85%8d%e7%bd%ae" aria-label="三、nginx限流配置">三、nginx限流配置</a><ul>
+                            
+                    <li>
+                        <a href="#1%e9%85%8d%e7%bd%ae%e5%8f%82%e6%95%b0" aria-label="1.配置参数">1.配置参数</a></li>
+                    <li>
+                        <a href="#2%e8%ae%be%e7%bd%ae%e9%99%90%e6%b5%81" aria-label="2.设置限流">2.设置限流</a></li>
+                    <li>
+                        <a href="#3%e4%b8%8d%e9%99%90%e6%b5%81%e7%99%bd%e5%90%8d%e5%8d%95" aria-label="3.不限流白名单">3.不限流白名单</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9b%9bnginx%e7%bc%93%e5%ad%98%e9%85%8d%e7%bd%ae" aria-label="四、nginx缓存配置">四、nginx缓存配置</a><ul>
+                            <ul>
+                            
+                    <li>
+                        <a href="#1%e6%b5%8f%e8%a7%88%e5%99%a8%e7%bc%93%e5%ad%98" aria-label="1.浏览器缓存">1.浏览器缓存</a></li>
+                    <li>
+                        <a href="#2%e4%bb%a3%e7%90%86%e5%b1%82%e7%bc%93%e5%ad%98" aria-label="2.代理层缓存">2.代理层缓存</a></li></ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#%e4%ba%94nginx%e9%bb%91%e5%90%8d%e5%8d%95%e9%85%8d%e7%bd%ae" aria-label="五、nginx黑名单配置">五、nginx黑名单配置</a><ul>
+                            <ul>
+                            
+                    <li>
+                        <a href="#1%e4%b8%80%e8%88%ac%e9%85%8d%e7%bd%ae" aria-label="1.一般配置">1.一般配置</a></li>
+                    <li>
+                        <a href="#2-luaredis%e5%8a%a8%e6%80%81%e9%bb%91%e5%90%8d%e5%8d%95openresty" aria-label="2. Lua&#43;Redis动态黑名单(OpenResty)">2. Lua+Redis动态黑名单(OpenResty)</a></li></ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%85%adnginx%e7%81%b0%e5%ba%a6%e5%8f%91%e5%b8%83%e9%85%8d%e7%bd%ae" aria-label="六、nginx灰度发布配置">六、nginx灰度发布配置</a><ul>
+                            <ul>
+                            
+                    <li>
+                        <a href="#1%e6%a0%b9%e6%8d%aecookie%e5%ae%9e%e7%8e%b0%e7%81%b0%e5%ba%a6%e5%8f%91%e5%b8%83" aria-label="1.根据Cookie实现灰度发布">1.根据Cookie实现灰度发布</a></li>
+                    <li>
+                        <a href="#2%e6%a0%b9%e6%8d%ae%e6%9d%a5%e8%b7%afip%e5%ae%9e%e7%8e%b0%e7%81%b0%e5%ba%a6%e5%8f%91%e5%b8%83" aria-label="2.根据来路IP实现灰度发布">2.根据来路IP实现灰度发布</a></li>
+                    <li>
+                        <a href="#3%e6%9b%b4%e7%bb%86%e7%b2%92%e5%ba%a6%e7%81%b0%e5%ba%a6%e5%8f%91%e5%b8%83" aria-label="3.更细粒度灰度发布">3.更细粒度灰度发布</a></li></ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#%e4%b8%83nginx%e7%94%9f%e6%88%90%e7%bc%a9%e7%95%a5%e5%9b%be" aria-label="七、nginx生成缩略图">七、nginx生成缩略图</a><ul>
+                            <ul>
+                            
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%aenginx" aria-label="配置Nginx">配置Nginx</a></li>
+                    <li>
+                        <a href="#%e8%ae%bf%e9%97%ae%e5%9b%be%e7%89%87" aria-label="访问图片">访问图片</a></li>
+                    <li>
+                        <a href="#nginx-%e7%94%9f%e6%88%90%e7%bc%a9%e7%95%a5%e5%9b%be%e4%bc%98%e7%bc%ba%e7%82%b9" aria-label="Nginx 生成缩略图优缺点">Nginx 生成缩略图优缺点</a></li></ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%85%abnginx%e7%a6%81%e7%94%a8ip%e5%92%8cip%e6%ae%b5" aria-label="八、nginx禁用ip和ip段">八、nginx禁用ip和ip段</a><ul>
+                            
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%ae%e7%a6%81%e7%94%a8ip%e5%92%8cip%e6%ae%b5" aria-label="配置禁用ip和ip段">配置禁用ip和ip段</a></li>
+                    <li>
+                        <a href="#%e4%bb%85%e5%85%81%e8%ae%b8%e5%86%85%e7%bd%91ip" aria-label="仅允许内网ip">仅允许内网ip</a></li>
+                    <li>
+                        <a href="#%e6%a0%bc%e5%bc%8f%e5%8c%96nginx%e7%9a%84403%e9%a1%b5%e9%9d%a2" aria-label="格式化nginx的403页面">格式化nginx的403页面</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e4%b9%9dnginx%e6%97%a5%e5%bf%97%e5%88%86%e5%89%b2" aria-label="九、nginx日志分割">九、nginx日志分割</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%b8%ba%e5%b7%b2%e5%ae%89%e8%a3%85%e7%9a%84nginx%e5%8a%a8%e6%80%81%e6%b7%bb%e5%8a%a0%e6%a8%a1%e5%9d%97" aria-label="十、为已安装的nginx动态添加模块">十、为已安装的nginx动态添加模块</a><ul>
+                            <ul>
+                            
+                    <li>
+                        <a href="#%e4%b8%8b%e8%bd%bd%e7%ac%ac%e4%b8%89%e6%96%b9%e6%89%a9%e5%b1%95%e6%a8%a1%e5%9d%97ngx_http_google_filter_module" aria-label="下载第三方扩展模块ngx_http_google_filter_module">下载第三方扩展模块ngx_http_google_filter_module</a></li>
+                    <li>
+                        <a href="#%e6%9f%a5%e7%9c%8bnginx%e7%bc%96%e8%af%91%e5%ae%89%e8%a3%85%e6%97%b6%e5%ae%89%e8%a3%85%e4%ba%86%e5%93%aa%e4%ba%9b%e6%a8%a1%e5%9d%97" aria-label="查看nginx编译安装时安装了哪些模块">查看nginx编译安装时安装了哪些模块</a></li>
+                    <li>
+                        <a href="#%e5%8a%a0%e5%85%a5%e9%9c%80%e8%a6%81%e5%ae%89%e8%a3%85%e7%9a%84%e6%a8%a1%e5%9d%97%e9%87%8d%e6%96%b0%e7%bc%96%e8%af%91" aria-label="加入需要安装的模块，重新编译">加入需要安装的模块，重新编译</a></li>
+                    <li>
+                        <a href="#%e6%9b%bf%e6%8d%a2nginx%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6" aria-label="替换nginx二进制文件">替换nginx二进制文件</a></li></ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%b8%80nginx%e6%a0%bc%e5%bc%8f%e5%8c%96%e6%97%a5%e5%bf%97%e5%b9%b6%e6%8e%a8%e9%80%81%e5%88%b0%e8%bf%9c%e7%a8%8b%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%bb%9f%e4%b8%80%e6%94%b6%e9%9b%86%e7%bb%b4%e6%8a%a4" aria-label="十一、nginx格式化日志并推送到远程服务器统一收集维护">十一、nginx格式化日志并推送到远程服务器统一收集维护</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%ba%8cnginx%e9%85%8d%e7%bd%aewebsocket" aria-label="十二、nginx配置WebSocket">十二、nginx配置WebSocket</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%b8%89nginx%e5%ae%9e%e7%8e%b0mysql%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1" aria-label="十三、nginx实现MySQL负载均衡">十三、nginx实现MySQL负载均衡</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e5%9b%9bnginx%e8%a7%a3%e5%86%b3%e8%b7%a8%e5%9f%9f%e9%97%ae%e9%a2%98" aria-label="十四、nginx解决跨域问题">十四、nginx解决跨域问题</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%ba%94nginx%e5%9b%be%e7%89%87%e6%98%be%e7%a4%ba%e8%bf%87%e6%85%a2%e6%96%87%e4%bb%b6%e4%b8%8b%e8%bd%bd%e4%b8%8d%e5%ae%8c%e5%85%a8%e9%97%ae%e9%a2%98%e5%a4%84%e7%90%86" aria-label="十五、nginx图片显示过慢，文件下载不完全问题处理">十五、nginx图片显示过慢，文件下载不完全问题处理</a><ul>
+                            
+                    <li>
+                        <a href="#%e9%97%ae%e9%a2%98%e5%ae%9a%e4%bd%8d" aria-label="问题定位">问题定位</a></li>
+                    <li>
+                        <a href="#%e8%a7%a3%e5%86%b3%e9%97%ae%e9%a2%98" aria-label="解决问题">解决问题</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%81%e5%85%ad%e4%bd%bf%e7%94%a8nginx%e6%90%ad%e5%bb%ba%e6%b5%81%e5%aa%92%e4%bd%93%e6%9c%8d%e5%8a%a1%e5%99%a8%e5%ae%9e%e7%8e%b0%e7%9b%b4%e6%92%ad" aria-label="十六、使用Nginx搭建流媒体服务器实现直播">十六、使用Nginx搭建流媒体服务器实现直播</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85nginx" aria-label="安装Nginx">安装Nginx</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%ae%89%e8%a3%85%e4%be%9d%e8%b5%96%e7%8e%af%e5%a2%83" aria-label="1.安装依赖环境">1.安装依赖环境</a></li>
+                    <li>
+                        <a href="#2%e5%ae%89%e8%a3%85openssl" aria-label="2.安装openssl">2.安装openssl</a></li>
+                    <li>
+                        <a href="#3%e5%ae%89%e8%a3%85pcre" aria-label="3.安装pcre">3.安装pcre</a></li>
+                    <li>
+                        <a href="#4%e5%ae%89%e8%a3%85zlib" aria-label="4.安装zlib">4.安装zlib</a></li>
+                    <li>
+                        <a href="#5%e4%b8%8b%e8%bd%bdnginx-rtmp-module" aria-label="5.下载nginx-rtmp-module">5.下载nginx-rtmp-module</a></li>
+                    <li>
+                        <a href="#6%e5%ae%89%e8%a3%85nginx" aria-label="6.安装Nginx">6.安装Nginx</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%aenginx-1" aria-label="配置Nginx">配置Nginx</a></li>
+                    <li>
+                        <a href="#%e4%bd%bf%e7%94%a8obs%e6%8e%a8%e6%b5%81" aria-label="使用OBS推流">使用OBS推流</a></li>
+                    <li>
+                        <a href="#%e6%8b%89%e6%b5%81%e6%b5%8b%e8%af%95%e5%9c%b0%e5%9d%80" aria-label="拉流测试地址">拉流测试地址</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%b8%83nginx%e7%9a%84%e8%bd%ac%e5%8f%91%e8%a7%84%e5%88%99" aria-label="十七、nginx的转发规则">十七、nginx的转发规则</a><ul>
+                            
+                    <li>
+                        <a href="#nginx%e7%9a%84location%e8%af%ad%e6%b3%95" aria-label="Nginx的location语法">Nginx的location语法</a></li>
+                    <li>
+                        <a href="#alias%e4%b8%8eroot%e7%9a%84%e5%8c%ba%e5%88%ab" aria-label="alias与root的区别">alias与root的区别</a></li>
+                    <li>
+                        <a href="#last-%e5%92%8c-break%e5%85%b3%e9%94%ae%e5%ad%97%e7%9a%84%e5%8c%ba%e5%88%ab" aria-label="last 和 break关键字的区别">last 和 break关键字的区别</a></li>
+                    <li>
+                        <a href="#permanent-%e5%92%8c-redirect%e5%85%b3%e9%94%ae%e5%ad%97%e7%9a%84%e5%8c%ba%e5%88%ab" aria-label="permanent 和 redirect关键字的区别">permanent 和 redirect关键字的区别</a></li>
+                    <li>
+                        <a href="#%e7%bb%bc%e5%90%88%e5%ae%9e%e4%be%8b" aria-label="综合实例">综合实例</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%81%e5%85%abnginxconf%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae" aria-label="十八、nginx.conf常用配置">十八、nginx.conf常用配置</a></li>
+                    <li>
+                        <a href="#%e5%8d%81%e4%b9%9dstream%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae" aria-label="十九、stream常用配置">十九、stream常用配置</a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e5%8d%81server%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae" aria-label="二十、server常用配置">二十、server常用配置</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一nginx获取客户端真实ip域名协议端口">一、nginx获取客户端真实IP、域名、协议、端口<a hidden class="anchor" aria-hidden="true" href="#一nginx获取客户端真实ip域名协议端口">#</a></h2>
+<p>需要在Nginx的配置文件nginx.conf中添加如下配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>proxy_set_header Host $http_host;
+</span></span><span style="display:flex;"><span>proxy_set_header X-Real-IP $remote_addr;
+</span></span><span style="display:flex;"><span>proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>proxy_set_header X-Forwarded-Proto $scheme;
+</span></span></code></pre></div><p>各参数的含义如下所示。</p>
+<ul>
+<li><code>Host</code>包含客户端真实的域名和端口号；</li>
+<li><code>X-Forwarded-Proto</code>表示客户端真实的协议（http还是https）；</li>
+<li><code>X-Real-IP</code>表示客户端真实的IP；</li>
+<li><code>X-Forwarded-For</code>这个Header和<code>X-Real-IP</code>类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP</li>
+</ul>
+<h2 id="二nginx负载均衡配置">二、nginx负载均衡配置<a hidden class="anchor" aria-hidden="true" href="#二nginx负载均衡配置">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>http <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       ……
+</span></span><span style="display:flex;"><span>    upstream real_server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       server 192.168.103.100:2001 weight<span style="color:#f92672">=</span>1;  <span style="color:#75715e">#轮询服务器和访问权重</span>
+</span></span><span style="display:flex;"><span>       server 192.168.103.100:2002 weight<span style="color:#f92672">=</span>2;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        listen  80;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            proxy_pass http://real_server;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>nginx负载均衡失败重试配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>upstream real_server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   server 192.168.103.100:2001 weight<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> max_fails<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> fail_timeout<span style="color:#f92672">=</span>60s;
+</span></span><span style="display:flex;"><span>   server 192.168.103.100:2002 weight<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> max_fails<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> fail_timeout<span style="color:#f92672">=</span>60s;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>意思是在fail_timeout时间内失败了max_fails次请求后，则认为该上游服务器不可用，然后将该服务地址踢除掉。fail_timeout时间后会再次将该服务器加入存活列表，进行重试</p>
+<h2 id="三nginx限流配置">三、nginx限流配置<a hidden class="anchor" aria-hidden="true" href="#三nginx限流配置">#</a></h2>
+<h3 id="1配置参数">1.配置参数<a hidden class="anchor" aria-hidden="true" href="#1配置参数">#</a></h3>
+<p>limit_req_zone指令设置参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>limit_req_zone $binary_remote_addr zone<span style="color:#f92672">=</span>mylimit:10m rate<span style="color:#f92672">=</span>10r/s;
+</span></span></code></pre></div><ul>
+<li>limit_req_zone定义在http块中，$binary_remote_addr表示保存客户端IP地址的二进制形式。</li>
+<li>Zone定义IP状态及URL访问频率的共享内存区域。zone=keyword标识区域的名字，以及冒号后面跟区域大小。16000个IP地址的状态信息约1MB，所以示例中区域可以存储160000个IP地址。</li>
+<li>Rate定义最大请求速率。示例中速率不能超过每秒10个请求。</li>
+</ul>
+<h3 id="2设置限流">2.设置限流<a hidden class="anchor" aria-hidden="true" href="#2设置限流">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        limit_req zone<span style="color:#f92672">=</span>mylimit burst<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span> nodelay;
+</span></span><span style="display:flex;"><span>        proxy_pass http://real_server;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>burst排队大小，nodelay不限制单个请求间的时间。</p>
+<h3 id="3不限流白名单">3.不限流白名单<a hidden class="anchor" aria-hidden="true" href="#3不限流白名单">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>geo $limit <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>default              1;
+</span></span><span style="display:flex;"><span>192.168.2.0/24  0;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>map $limit $limit_key <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> $binary_remote_addr;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>limit_req_zone $limit_key zone<span style="color:#f92672">=</span>mylimit:10m rate<span style="color:#f92672">=</span>1r/s;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        limit_req zone<span style="color:#f92672">=</span>mylimit burst<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> nodelay;
+</span></span><span style="display:flex;"><span>        proxy_pass http://real_server;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>上述配置中，192.168.2.0/24网段的IP访问是不限流的，其他限流。</p>
+<p>IP后面的数字含义：</p>
+<ul>
+<li>24表示子网掩码:255.255.255.0</li>
+<li>16表示子网掩码:255.255.0.0</li>
+<li>8表示子网掩码:255.0.0.0</li>
+</ul>
+<h2 id="四nginx缓存配置">四、nginx缓存配置<a hidden class="anchor" aria-hidden="true" href="#四nginx缓存配置">#</a></h2>
+<h4 id="1浏览器缓存">1.浏览器缓存<a hidden class="anchor" aria-hidden="true" href="#1浏览器缓存">#</a></h4>
+<p>静态资源缓存用expire</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~*  .<span style="color:#f92672">(</span>jpg|jpeg|png|gif|ico|css|js<span style="color:#f92672">)</span>$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   expires 2d;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Response Header中添加了Expires和Cache-Control,</p>
+<p><strong>静态资源包括（一般缓存）</strong></p>
+<ul>
+<li>普通不变的图像，如logo，图标等</li>
+<li>js、css静态文件</li>
+<li>可下载的内容，媒体文件</li>
+</ul>
+<p><strong>协商缓存（add_header ETag/Last-Modified value）</strong></p>
+<ul>
+<li>HTML文件</li>
+<li>经常替换的图片</li>
+<li>经常修改的js、css文件</li>
+<li>基本不变的API接口</li>
+</ul>
+<p><strong>不需要缓存</strong></p>
+<ul>
+<li>用户隐私等敏感数据</li>
+<li>经常改变的api数据接口</li>
+</ul>
+<h4 id="2代理层缓存">2.代理层缓存<a hidden class="anchor" aria-hidden="true" href="#2代理层缓存">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>//缓存路径，inactive表示缓存的时间，到期之后将会把缓存清理
+</span></span><span style="display:flex;"><span>proxy_cache_path /data/cache/nginx/ levels<span style="color:#f92672">=</span>1:2 keys_zone<span style="color:#f92672">=</span>cache:512m inactive <span style="color:#f92672">=</span> 1d max_size<span style="color:#f92672">=</span>8g;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    location ~ <span style="color:#ae81ff">\.</span><span style="color:#f92672">(</span>htm|html<span style="color:#f92672">)</span>?$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        proxy_cache cache;
+</span></span><span style="display:flex;"><span>        proxy_cache_key    $uri$is_args$args;     //以此变量值做HASH，作为KEY
+</span></span><span style="display:flex;"><span>        //HTTP响应首部可以看到X-Cache字段，内容可以有HIT,MISS,EXPIRES等等
+</span></span><span style="display:flex;"><span>        add_header X-Cache $upstream_cache_status;
+</span></span><span style="display:flex;"><span>        proxy_cache_valid <span style="color:#ae81ff">200</span> 10m;
+</span></span><span style="display:flex;"><span>        proxy_cache_valid any 1m;
+</span></span><span style="display:flex;"><span>        proxy_pass  http://real_server;
+</span></span><span style="display:flex;"><span>        proxy_redirect     off;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    location ~ .*<span style="color:#ae81ff">\.</span><span style="color:#f92672">(</span>gif|jpg|jpeg|bmp|png|ico|txt|js|css<span style="color:#f92672">)</span>$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        root /data/webapps/edc;
+</span></span><span style="display:flex;"><span>        expires      3d;
+</span></span><span style="display:flex;"><span>        add_header Static Nginx-Proxy;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>在本地磁盘创建一个文件目录，根据设置，将请求的资源以K-V形式缓存在此目录当中，KEY需要自己定义（这里用的是url的hash值），同时可以根据需要指定某内容的缓存时长，比如状态码为200缓存10分钟，状态码为301，302的缓存5分钟，其他所有内容缓存1分钟等等。
+可以通过purger的功能清理缓存。</p>
+<p>AB测试/个性化需求时应禁用掉浏览器缓存</p>
+<h2 id="五nginx黑名单配置">五、nginx黑名单配置<a hidden class="anchor" aria-hidden="true" href="#五nginx黑名单配置">#</a></h2>
+<h4 id="1一般配置">1.一般配置<a hidden class="anchor" aria-hidden="true" href="#1一般配置">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    deny  192.168.1.1;
+</span></span><span style="display:flex;"><span>    deny  192.168.1.0/24;
+</span></span><span style="display:flex;"><span>    allow 10.1.1.0/16;
+</span></span><span style="display:flex;"><span>    allow 2001:0db8::/32;
+</span></span><span style="display:flex;"><span>    deny  all;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="2-luaredis动态黑名单openresty">2. Lua+Redis动态黑名单(OpenResty)<a hidden class="anchor" aria-hidden="true" href="#2-luaredis动态黑名单openresty">#</a></h4>
+<p><strong>安装运行</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install yum-utils
+</span></span><span style="display:flex;"><span>yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo
+</span></span><span style="display:flex;"><span>yum install openresty
+</span></span><span style="display:flex;"><span>yum install openresty-resty
+</span></span><span style="display:flex;"><span>查看
+</span></span><span style="display:flex;"><span>yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;openresty&#34;</span> list available
+</span></span><span style="display:flex;"><span>运行
+</span></span><span style="display:flex;"><span>service openresty start
+</span></span></code></pre></div><p><strong>配置(/usr/local/openresty/nginx/conf/nginx.conf)</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>lua_shared_dict ip_blacklist 1m;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    listen  80;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        access_by_lua_file lua/ip_blacklist.lua;
+</span></span><span style="display:flex;"><span>        proxy_pass http://real_server;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p><strong>lua脚本（ip_blacklist.lua）</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_host    <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.1.132&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_port    <span style="color:#f92672">=</span> <span style="color:#ae81ff">6379</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_pwd     <span style="color:#f92672">=</span> <span style="color:#ae81ff">123456</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_db <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- connection timeout for redis in ms.</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_connection_timeout <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- a set key for blacklist entries</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> redis_key     <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ip_blacklist&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- cache lookups for this many seconds</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> cache_ttl     <span style="color:#f92672">=</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- end configuration</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> ip                <span style="color:#f92672">=</span> ngx.var.remote_addr
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> ip_blacklist      <span style="color:#f92672">=</span> ngx.shared.ip_blacklist
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> last_update_time  <span style="color:#f92672">=</span> ip_blacklist:get(<span style="color:#e6db74">&#34;last_update_time&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- update ip_blacklist from Redis every cache_ttl seconds:</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> last_update_time <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">or</span> last_update_time <span style="color:#f92672">&lt;</span> ( ngx.now() <span style="color:#f92672">-</span> cache_ttl ) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">local</span> redis <span style="color:#f92672">=</span> require <span style="color:#e6db74">&#34;resty.redis&#34;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">local</span> red <span style="color:#f92672">=</span> redis:new();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  red:set_timeout(redis_connect_timeout);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">local</span> ok, err <span style="color:#f92672">=</span> red:connect(redis_host, redis_port);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> ok <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    ngx.log(ngx.ERR, <span style="color:#e6db74">&#34;Redis connection error while connect: &#34;</span> <span style="color:#f92672">..</span> err);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">local</span> ok, err <span style="color:#f92672">=</span> red:auth(redis_pwd)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> ok <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      ngx.log(ngx.ERR, <span style="color:#e6db74">&#34;Redis password error while auth: &#34;</span> <span style="color:#f92672">..</span> err);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">local</span> new_ip_blacklist, err <span style="color:#f92672">=</span> red:smembers(redis_key);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> err <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>            ngx.log(ngx.ERR, <span style="color:#e6db74">&#34;Redis read error while retrieving ip_blacklist: &#34;</span> <span style="color:#f92672">..</span> err);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        ngx.log(ngx.ERR, <span style="color:#e6db74">&#34;Get data success:&#34;</span> <span style="color:#f92672">..</span> new_ip_blacklist)
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">-- replace the locally stored ip_blacklist with the updated values:</span>
+</span></span><span style="display:flex;"><span>            ip_blacklist:flush_all();
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">for</span> index, banned_ip <span style="color:#66d9ef">in</span> ipairs(new_ip_blacklist) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>            ip_blacklist:set(banned_ip, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">-- update time</span>
+</span></span><span style="display:flex;"><span>          ip_blacklist:set(<span style="color:#e6db74">&#34;last_update_time&#34;</span>, ngx.now());
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ip_blacklist:get(ip) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  ngx.log(ngx.ERR, <span style="color:#e6db74">&#34;Banned IP detected and refused access: &#34;</span> <span style="color:#f92672">..</span> ip);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> ngx.exit(ngx.HTTP_FORBIDDEN);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><h2 id="六nginx灰度发布配置">六、nginx灰度发布配置<a hidden class="anchor" aria-hidden="true" href="#六nginx灰度发布配置">#</a></h2>
+<h4 id="1根据cookie实现灰度发布">1.根据Cookie实现灰度发布<a hidden class="anchor" aria-hidden="true" href="#1根据cookie实现灰度发布">#</a></h4>
+<p>根据Cookie查询version值，如果该version值为v1转发到host1，为v2转发到host2，都不匹配的情况下转发到默认配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>upstream host1 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   server 192.168.2.46:2001 weight<span style="color:#f92672">=</span>1;  <span style="color:#75715e">#轮询服务器和访问权重</span>
+</span></span><span style="display:flex;"><span>   server 192.168.2.46:2002 weight<span style="color:#f92672">=</span>2;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upstream host2 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   server 192.168.1.155:1111  max_fails<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> fail_timeout<span style="color:#f92672">=</span>60;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upstream default <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   server 192.168.1.153:1111  max_fails<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> fail_timeout<span style="color:#f92672">=</span>60;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>map $COOKIE_version $group <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   ~*v1$ host1;
+</span></span><span style="display:flex;"><span>   ~*v2$ host2;
+</span></span><span style="display:flex;"><span>   default default;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lua_shared_dict ip_blacklist 1m;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    listen  80;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#set $group &#34;default&#34;;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#if ($http_cookie ~* &#34;version=v1&#34;){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#    set $group host1;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#if ($http_cookie ~* &#34;version=v2&#34;){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#    set $group host2;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        access_by_lua_file lua/ip_blacklist.lua;
+</span></span><span style="display:flex;"><span>        proxy_pass http://$group;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="2根据来路ip实现灰度发布">2.根据来路IP实现灰度发布<a hidden class="anchor" aria-hidden="true" href="#2根据来路ip实现灰度发布">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  ……………
+</span></span><span style="display:flex;"><span>  set $group default;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$remote_addr ~ <span style="color:#e6db74">&#34;192.168.119.1&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      set $group host1;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$remote_addr ~ <span style="color:#e6db74">&#34;192.168.119.2&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      set $group host2;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="3更细粒度灰度发布">3.更细粒度灰度发布<a hidden class="anchor" aria-hidden="true" href="#3更细粒度灰度发布">#</a></h4>
+<p>参考：</p>
+<p><a href="https://github.com/sunshinelyz/ABTestingGateway">https://github.com/sunshinelyz/ABTestingGateway</a></p>
+<h2 id="七nginx生成缩略图">七、nginx生成缩略图<a hidden class="anchor" aria-hidden="true" href="#七nginx生成缩略图">#</a></h2>
+<h4 id="配置nginx">配置Nginx<a hidden class="anchor" aria-hidden="true" href="#配置nginx">#</a></h4>
+<p>使用 Nginx 自带模块生成缩略图，模块：&ndash;with-http_image_filter_module，例如，我们可以使用如下参数安装Nginx：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./configure --prefix<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1 --with-http_stub_status_module --with-http_realip_module --with-http_image_filter_module --with-debug
+</span></span></code></pre></div><p>接下来，修改 nginx.conf 配置文件，或者将下面的配置放到nginx.conf文件相应的 server 块中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~* /<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span><span style="color:#ae81ff">\.</span><span style="color:#f92672">(</span>jpg<span style="color:#f92672">)</span>$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    set $h $arg_h; <span style="color:#75715e"># 获取参数ｈ的值</span>
+</span></span><span style="display:flex;"><span>    set $w $arg_w; <span style="color:#75715e"># 获取参数 w 的值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#image_filter crop $h $w;</span>
+</span></span><span style="display:flex;"><span>    image_filter resize $h $w;<span style="color:#75715e"># 根据给定的长宽生成缩略图</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>location ~* /<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>_<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>x<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span><span style="color:#ae81ff">\.</span><span style="color:#f92672">(</span>jpg<span style="color:#f92672">)</span>$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> -e $document_root/$1.$4 <span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#75715e"># 判断原图是否存在</span>
+</span></span><span style="display:flex;"><span>        rewrite /<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>_<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>x<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span><span style="color:#ae81ff">\.</span><span style="color:#f92672">(</span>jpg<span style="color:#f92672">)</span>$ /$1.$4?h<span style="color:#f92672">=</span>$2&amp;w<span style="color:#f92672">=</span>$3 last;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> 404;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="访问图片">访问图片<a hidden class="anchor" aria-hidden="true" href="#访问图片">#</a></h4>
+<p>配置完成后，我们就可以使用类似如下的方式来访问图片。</p>
+<p><a href="http://www.binghe.com/123_100x10.jpg">http://www.binghe.com/123_100x10.jpg</a></p>
+<p>当我们在浏览器地址栏中输入上面的链接时，Nginx会作出如下的逻辑处理。</p>
+<ul>
+<li>首先判断是否存在原图 123.jpg,不存在直接返回 404（如果原图都不存在，那就没必要生成缩略图了）</li>
+<li>跳转到 <a href="http://www.binghe.com/123.jpg?h=100&amp;w=10">http://www.binghe.com/123.jpg?h=100&amp;w=10</a>，将参数高 h=100 和宽 w=10 带到 url 中。</li>
+<li>Image_filter resize 指令根据 h 和 w 参数生成相应缩略图。</li>
+</ul>
+<p><strong>注意：使用Nginx生成等比例缩略图时有一个长宽取小的原则，<code>例如原图是 100\*10,你传入的是 10\*2，那么Nginx会给你生成 10\*1 的图片</code>。生成缩略图只是 image_filter 功能中的一个，它一共支持 4 种参数：</strong></p>
+<ul>
+<li>test：返回是否真的是图片</li>
+<li>size：返回图片长短尺寸，返回 json 格式数据</li>
+<li>corp：截取图片的一部分，从左上角开始截取，尺寸写小了，图片会被剪切</li>
+<li>resize：缩放图片，等比例缩放</li>
+</ul>
+<h4 id="nginx-生成缩略图优缺点">Nginx 生成缩略图优缺点<a hidden class="anchor" aria-hidden="true" href="#nginx-生成缩略图优缺点">#</a></h4>
+<p><strong>优点：</strong></p>
+<ul>
+<li>根据传入参数即可生成各种比例图片</li>
+<li>不占用任何硬盘空间</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>消耗 CPU</li>
+<li>访问量大将会给服务器带来比较大的负担</li>
+</ul>
+<p><strong>建议：</strong></p>
+<p>生成缩略是个消耗 CPU 的操作，如果访问量比较大的站点，最好考虑使用程序生成缩略图到硬盘上，或者在前端加上 Cache缓存或者使用 CDN</p>
+<h2 id="八nginx禁用ip和ip段">八、nginx禁用ip和ip段<a hidden class="anchor" aria-hidden="true" href="#八nginx禁用ip和ip段">#</a></h2>
+<p>Nginx的ngx_http_access_module 模块可以封配置内的ip或者ip段，语法如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>deny IP;
+</span></span><span style="display:flex;"><span>deny subnet;
+</span></span><span style="display:flex;"><span>allow IP;
+</span></span><span style="display:flex;"><span>allow subnet;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># block all ips</span>
+</span></span><span style="display:flex;"><span>deny    all;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># allow all ips</span>
+</span></span><span style="display:flex;"><span>allow    all;
+</span></span></code></pre></div><p>如果规则之间有冲突，会以最前面匹配的规则为准。</p>
+<h3 id="配置禁用ip和ip段">配置禁用ip和ip段<a hidden class="anchor" aria-hidden="true" href="#配置禁用ip和ip段">#</a></h3>
+<p>下面说明假定nginx的目录在/usr/local/nginx/。</p>
+<p>首先要建一个封ip的配置文件blockips.conf，然后vi blockips.conf编辑此文件，在文件中输入要封的ip。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>deny 1.2.3.4;
+</span></span><span style="display:flex;"><span>deny 91.212.45.0/24;
+</span></span><span style="display:flex;"><span>deny 91.212.65.0/24;
+</span></span></code></pre></div><p>然后保存此文件，并且打开nginx.conf文件，在http配置节内添加下面一行配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>include blockips.conf;
+</span></span></code></pre></div><p>保存nginx.conf文件，然后测试现在的nginx配置文件是否是合法的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>/usr/local/nginx/sbin/nginx -t
+</span></span></code></pre></div><p>如果配置没有问题，就会输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+</span></span><span style="display:flex;"><span>configuration file /usr/local/nginx/conf/nginx.conf test is successful
+</span></span></code></pre></div><p>如果配置有问题就需要检查下哪儿有语法问题，如果没有问题，需要执行下面命令，让nginx重新载入配置文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>/usr/local/nginx/sbin/nginx -s reload
+</span></span></code></pre></div><h3 id="仅允许内网ip">仅允许内网ip<a hidden class="anchor" aria-hidden="true" href="#仅允许内网ip">#</a></h3>
+<p>如何禁止所有外网ip，仅允许内网ip呢？</p>
+<p>如下配置文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># block one workstation</span>
+</span></span><span style="display:flex;"><span>  deny    192.168.1.1;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># allow anyone in 192.168.1.0/24</span>
+</span></span><span style="display:flex;"><span>  allow   192.168.1.0/24;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># drop rest of the world</span>
+</span></span><span style="display:flex;"><span>  deny    all;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>上面配置中禁止了192.168.1.1，允许其他内网网段，然后deny all禁止其他所有ip。</p>
+<h3 id="格式化nginx的403页面">格式化nginx的403页面<a hidden class="anchor" aria-hidden="true" href="#格式化nginx的403页面">#</a></h3>
+<p>如何格式化nginx的403页面呢？</p>
+<p>首先执行下面的命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /usr/local/nginx/html
+</span></span><span style="display:flex;"><span>vi error403.html
+</span></span></code></pre></div><p>然后输入403的文件内容，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>&lt;html&gt;
+</span></span><span style="display:flex;"><span>&lt;head&gt;&lt;title&gt;Error <span style="color:#ae81ff">403</span> - IP Address Blocked&lt;/title&gt;&lt;/head&gt;
+</span></span><span style="display:flex;"><span>&lt;body&gt;
+</span></span><span style="display:flex;"><span>Your IP Address is blocked. If you this an error, please contact binghe with your IP at test@binghe.com
+</span></span><span style="display:flex;"><span>&lt;/body&gt;
+</span></span><span style="display:flex;"><span>&lt;/html&gt;
+</span></span></code></pre></div><p>如果启用了SSI，可以在403中显示被封的客户端ip，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Your IP Address is &lt;!--#echo var<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;REMOTE_ADDR&#34;</span> --&gt; blocked.
+</span></span></code></pre></div><p>保存error403文件，然后打开nginx的配置文件vi nginx.conf,在server配置节内添加下面内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># redirect server error pages to the static page</span>
+</span></span><span style="display:flex;"><span> error_page   <span style="color:#ae81ff">403</span>  /error403.html;
+</span></span><span style="display:flex;"><span> location <span style="color:#f92672">=</span> /error403.html <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>         root   html;
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>然后保存配置文件，通过nginx -t命令测试配置文件是否正确，若正确通过nginx -s reload载入配置</p>
+<h2 id="九nginx日志分割">九、nginx日志分割<a hidden class="anchor" aria-hidden="true" href="#九nginx日志分割">#</a></h2>
+<p>首先，我们要创建一个脚本文件，用来分割Nginx日志，具体脚本如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim /usr/local/nginx-1.19.1/cutnginxlog.sh
+</span></span></code></pre></div><p>脚本内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e"># Program:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     Auto cut nginx log script.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># nginx日志路径 </span>
+</span></span><span style="display:flex;"><span>LOGS_PATH<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1/logs
+</span></span><span style="display:flex;"><span>TODAY<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date -d <span style="color:#e6db74">&#39;today&#39;</span> +%Y-%m-%d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 移动日志并改名</span>
+</span></span><span style="display:flex;"><span>mv <span style="color:#e6db74">${</span>LOGS_PATH<span style="color:#e6db74">}</span>/error.log <span style="color:#e6db74">${</span>LOGS_PATH<span style="color:#e6db74">}</span>/error_<span style="color:#e6db74">${</span>TODAY<span style="color:#e6db74">}</span>.log
+</span></span><span style="display:flex;"><span>mv <span style="color:#e6db74">${</span>LOGS_PATH<span style="color:#e6db74">}</span>/access.log <span style="color:#e6db74">${</span>LOGS_PATH<span style="color:#e6db74">}</span>/access_<span style="color:#e6db74">${</span>TODAY<span style="color:#e6db74">}</span>.log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 向nginx主进程发送重新打开日志文件的信号</span>
+</span></span><span style="display:flex;"><span>kill -USR1 <span style="color:#66d9ef">$(</span>cat /usr/local/nginx-1.19.1/logs/nginx.pid<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><p>接下来就是给cutnginxlog.sh文件授权。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>chmod a+x cutnginxlog.sh
+</span></span></code></pre></div><p>接下来添加计划任务，定时执行cutnginxlog.sh脚本，以root用户执行如下命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;59 23 * * * root /usr/local/nginx-1.19.1/cutnginxlog.sh &gt;&gt; /usr/local/nginx-1.19.1/cutnginxlog.log 2&gt;&amp;1&#39;</span> &gt;&gt; /etc/crontab
+</span></span></code></pre></div><p>意思就是在每天的23点59分执行脚本。将自动任务的执行日志（错误和正确的日志）自动写入cutnginxlog.log，“命令 &raquo; 2&gt;&amp;1” 表示以追加方式将正确输出和错误输出都保存到同一个文件中</p>
+<h2 id="十为已安装的nginx动态添加模块">十、为已安装的nginx动态添加模块<a hidden class="anchor" aria-hidden="true" href="#十为已安装的nginx动态添加模块">#</a></h2>
+<p>这里以安装第三方ngx_http_google_filter_module模块为例。</p>
+<p>Nginx的模块是需要重新编译Nginx，而不是像Apache一样配置文件引用.so</p>
+<h4 id="下载第三方扩展模块ngx_http_google_filter_module">下载第三方扩展模块ngx_http_google_filter_module<a hidden class="anchor" aria-hidden="true" href="#下载第三方扩展模块ngx_http_google_filter_module">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># cd /data/software/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># git clone https://github.com/cuber/ngx_http_google_filter_module</span>
+</span></span></code></pre></div><h4 id="查看nginx编译安装时安装了哪些模块">查看nginx编译安装时安装了哪些模块<a hidden class="anchor" aria-hidden="true" href="#查看nginx编译安装时安装了哪些模块">#</a></h4>
+<p>将命令行切换到Nginx执行程序所在的目录并输入./nginx -V，具体如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@binghe sbin<span style="color:#f92672">]</span><span style="color:#75715e"># ./nginx -V</span>
+</span></span><span style="display:flex;"><span>nginx version: nginx/1.19.1
+</span></span><span style="display:flex;"><span>built by gcc 4.4.7 <span style="color:#ae81ff">20120313</span> <span style="color:#f92672">(</span>Red Hat 4.4.7-17<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>GCC<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>built with OpenSSL 1.0.2 <span style="color:#ae81ff">22</span> Jan <span style="color:#ae81ff">2015</span>
+</span></span><span style="display:flex;"><span>TLS SNI support enabled
+</span></span><span style="display:flex;"><span>configure arguments: --prefix<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1 --with-openssl<span style="color:#f92672">=</span>/usr/local/src/openssl-1.0.2 --with-pcre<span style="color:#f92672">=</span>/usr/local/src/pcre-8.37 --with-zlib<span style="color:#f92672">=</span>/usr/local/src/zlib-1.2.8 --with-http_ssl_module
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@binghe sbin<span style="color:#f92672">]</span><span style="color:#75715e"># </span>
+</span></span></code></pre></div><p>可以看出编译安装Nginx使用的参数如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>--prefix<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1 --with-openssl<span style="color:#f92672">=</span>/usr/local/src/openssl-1.0.2 --with-pcre<span style="color:#f92672">=</span>/usr/local/src/pcre-8.37 --with-zlib<span style="color:#f92672">=</span>/usr/local/src/zlib-1.2.8 --with-http_ssl_module
+</span></span></code></pre></div><h4 id="加入需要安装的模块重新编译">加入需要安装的模块，重新编译<a hidden class="anchor" aria-hidden="true" href="#加入需要安装的模块重新编译">#</a></h4>
+<p>这里添加 &ndash;add-module=/data/software/ngx_http_google_filter_module</p>
+<p>具体如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./configure  --prefix<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1 --with-openssl<span style="color:#f92672">=</span>/usr/local/src/openssl-1.0.2 --with-pcre<span style="color:#f92672">=</span>/usr/local/src/pcre-8.37 --with-zlib<span style="color:#f92672">=</span>/usr/local/src/zlib-1.2.8 --with-http_ssl_module -–add-module<span style="color:#f92672">=</span>/data/software/ngx_http_google_filter_module
+</span></span></code></pre></div><p>如上，将之前安装Nginx的参数全部加上，最后添加 &ndash;add-module=/data/software/ngx_http_google_filter_module</p>
+<p>之后，我们要进行编译操作，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># make    //千万不要make install，不然就真的覆盖</span>
+</span></span></code></pre></div><p><strong>这里，需要注意的是：不要执行make install命令。</strong></p>
+<h4 id="替换nginx二进制文件">替换nginx二进制文件<a hidden class="anchor" aria-hidden="true" href="#替换nginx二进制文件">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 备份原来的nginx执行程序</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mv /usr/local/nginx-1.19.1/sbin/nginx /usr/local/nginx-1.19.1/sbin/nginx.bak</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将新编译的nginx执行程序复制到/usr/local/nginx-1.19.1/sbin/目录下</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cp /opt/nginx/sbin/nginx /usr/local/nginx-1.19.1/sbin/</span>
+</span></span></code></pre></div><h2 id="十一nginx格式化日志并推送到远程服务器统一收集维护">十一、nginx格式化日志并推送到远程服务器统一收集维护<a hidden class="anchor" aria-hidden="true" href="#十一nginx格式化日志并推送到远程服务器统一收集维护">#</a></h2>
+<p>格式化Nginx日志并推送到远程服务器，其实很简单，我们只需要在Nginx服务器的配置文件nginx.conf中进行简单的配置即可。例如，我们可以在nginx.conf文件中添加如下配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>log_format common <span style="color:#e6db74">&#34;</span>$remote_addr<span style="color:#e6db74">,</span>$http_ip<span style="color:#e6db74">,</span>$http_mac<span style="color:#e6db74">,</span>$time_local<span style="color:#e6db74">,</span>$status<span style="color:#e6db74">,</span>$request_length<span style="color:#e6db74">,</span>$bytes_sent<span style="color:#e6db74">,</span>$body_bytes_sent<span style="color:#e6db74">,</span>$http_user_agent<span style="color:#e6db74">,</span>$http_referer<span style="color:#e6db74">,</span>$request_method<span style="color:#e6db74">,</span>$request_time<span style="color:#e6db74">,</span>$request_uri<span style="color:#e6db74">,</span>$server_protocol<span style="color:#e6db74">,</span>$request_body<span style="color:#e6db74">,</span>$http_token<span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>log_format main <span style="color:#e6db74">&#34;</span>$remote_addr<span style="color:#e6db74">,</span>$http_ip<span style="color:#e6db74">,</span>$http_mac<span style="color:#e6db74">,</span>$time_local<span style="color:#e6db74">,</span>$status<span style="color:#e6db74">,</span>$request_length<span style="color:#e6db74">,</span>$bytes_sent<span style="color:#e6db74">,</span>$body_bytes_sent<span style="color:#e6db74">,</span>$http_user_agent<span style="color:#e6db74">,</span>$http_referer<span style="color:#e6db74">,</span>$request_method<span style="color:#e6db74">,</span>$request_time<span style="color:#e6db74">,</span>$request_uri<span style="color:#e6db74">,</span>$server_protocol<span style="color:#e6db74">,</span>$request_body<span style="color:#e6db74">,</span>$http_token<span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>access_log  logs/access.log  common;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>access_log syslog:server<span style="color:#f92672">=</span>192.168.1.100:9999,facility<span style="color:#f92672">=</span>local7,tag<span style="color:#f92672">=</span>nginx,severity<span style="color:#f92672">=</span>info main;
+</span></span><span style="display:flex;"><span>  map $http_upgrade $connection_upgrade <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    default upgrade;
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;</span>      close;
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>上述配置是将Nginx的日志各项参数以逗号分隔的形式进行输出，同时将Nginx日志实时推送到192.168.1.100:9999上。</p>
+<p>此时，我们只需要在192.168.1.100服务器上部署一个TCP或UDP服务，监听端口为9999，并在192.168.1.100服务器的防火墙开放9999端口。我们写的TCP或UDP服务就会实时接收到Nginx服务器发送过来的日志。</p>
+<p>通过这种方式，我们就可以将Nginx日志实时收集到某个存储集群中，对Nginx日志进行统一存储、维护和分析</p>
+<h2 id="十二nginx配置websocket">十二、nginx配置WebSocket<a hidden class="anchor" aria-hidden="true" href="#十二nginx配置websocket">#</a></h2>
+<p>Nginx配置WebSocket也比较简单，只需要在nginx.conf文件中进行相应的配置。这种方式很简单，但是很有效，能够横向扩展WebSocket服务端的服务能力。</p>
+<p>先直接展示配置文件，如下所示(使用的话直接复制，然后改改ip和port即可)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>map $http_upgrade $connection_upgrade <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    default upgrade; 
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;</span> close; 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span><span style="display:flex;"><span>upstream wsbackend<span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    server ip1:port1; 
+</span></span><span style="display:flex;"><span>    server ip2:port2; 
+</span></span><span style="display:flex;"><span>    keepalive 1000; 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    listen 20038; 
+</span></span><span style="display:flex;"><span>    location /<span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>        proxy_http_version 1.1; 
+</span></span><span style="display:flex;"><span>        proxy_pass http://wsbackend; 
+</span></span><span style="display:flex;"><span>        proxy_redirect off; 
+</span></span><span style="display:flex;"><span>        proxy_set_header Host $host; 
+</span></span><span style="display:flex;"><span>        proxy_set_header X-Real-IP $remote_addr; 
+</span></span><span style="display:flex;"><span>        proxy_read_timeout 3600s; 
+</span></span><span style="display:flex;"><span>        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+</span></span><span style="display:flex;"><span>        proxy_set_header Upgrade $http_upgrade; 
+</span></span><span style="display:flex;"><span>        proxy_set_header Connection $connection_upgrade; 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>接下来，我们就分别分析上述配置的具体含义。</p>
+<p><strong>首先：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>map $http_upgrade $connection_upgrade <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    default upgrade; 
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;</span> close; 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>表示的是：</p>
+<ul>
+<li><code>如果 $http_upgrade 不为 '' (空)，则 $connection_upgrade 为 upgrade 。</code></li>
+<li><code>如果 $http_upgrade 为 '' (空)，则 $connection_upgrade 为 close。</code></li>
+</ul>
+<p><strong>其次：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>upstream wsbackend<span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    server ip1:port1; 
+</span></span><span style="display:flex;"><span>    server ip2:port2; 
+</span></span><span style="display:flex;"><span>    keepalive 1000; 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>表示的是 nginx负载均衡：</p>
+<ul>
+<li>两台服务器 (ip1:port1)和(ip2:port2) 。</li>
+<li>keepalive 1000 表示的是每个nginx进程中上游服务器保持的空闲连接，当空闲连接过多时，会关闭最少使用的空闲连接.当然，这不是限制连接总数的，可以想象成空闲连接池的大小，设置的值应该是上游服务器能够承受的。</li>
+</ul>
+<p><strong>最后：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>server <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    listen 20038; 
+</span></span><span style="display:flex;"><span>    location /<span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>        proxy_http_version 1.1; 
+</span></span><span style="display:flex;"><span>        proxy_pass http://wsbackend; 
+</span></span><span style="display:flex;"><span>        proxy_redirect off;
+</span></span><span style="display:flex;"><span>        proxy_set_header Host $host; 
+</span></span><span style="display:flex;"><span>        proxy_set_header X-Real-IP $remote_addr; 
+</span></span><span style="display:flex;"><span>        proxy_read_timeout 3600s; 
+</span></span><span style="display:flex;"><span>        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+</span></span><span style="display:flex;"><span>        proxy_set_header Upgrade $http_upgrade; 
+</span></span><span style="display:flex;"><span>        proxy_set_header Connection $connection_upgrade; 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>表示的是监听的服务器的配置</p>
+<ul>
+<li><code>listen 20038 表示 nginx 监听的端口</code></li>
+<li><code>locations / 表示监听的路径(/表示所有路径，通用匹配，相当于default)</code></li>
+<li><code>proxt_http_version 1.1 表示反向代理发送的HTTP协议的版本是1.1，HTTP1.1支持长连接</code></li>
+<li><code>proxy_pass http://wsbackend; 表示反向代理的uri，这里可以使用负载均衡变量</code></li>
+<li><code>proxy_redirect off; 表示不要替换路径，其实这里如果是/则有没有都没关系，因为default也是将路径替换到proxy_pass的后边</code></li>
+<li><code>proxy_set_header Host $host; 表示传递时请求头不变， $host是nginx内置变量，表示的是当前的请求头，proxy_set_header表示设置请求头</code></li>
+<li><code>proxy_set_header X-Real-IP $remote_addr; 表示传递时来源的ip还是现在的客户端的ip</code></li>
+<li><code>proxy_read_timeout 3600s；表的两次请求之间的间隔超过 3600s 后才关闭这个连接，默认的60s，自动关闭的元凶</code></li>
+<li><code>proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 表示X-Forwarded-For头不发生改变</code></li>
+<li><code>proxy_set_header Upgrade $http_upgrade; 表示设置Upgrade不变</code></li>
+<li><code>proxy_set_header Connection $connection_upgrade; 表示如果 $http_upgrade为upgrade，则请求为upgrade(websocket)，如果不是，就关闭连接</code></li>
+</ul>
+<h2 id="十三nginx实现mysql负载均衡">十三、nginx实现MySQL负载均衡<a hidden class="anchor" aria-hidden="true" href="#十三nginx实现mysql负载均衡">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>user  nginx;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#user root;</span>
+</span></span><span style="display:flex;"><span>worker_processes  1;
+</span></span><span style="display:flex;"><span>error_log  /var/log/nginx/error.log warn;
+</span></span><span style="display:flex;"><span>pid        /var/run/nginx.pid;
+</span></span><span style="display:flex;"><span>events <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    worker_connections  1024;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>http <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    include       /etc/nginx/mime.types;
+</span></span><span style="display:flex;"><span>    default_type  application/octet-stream;
+</span></span><span style="display:flex;"><span>    log_format  main  <span style="color:#e6db74">&#39;$remote_addr - $remote_user [$time_local] &#34;$request&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34;&#39;</span>;
+</span></span><span style="display:flex;"><span>    access_log  /var/log/nginx/access.log  main;
+</span></span><span style="display:flex;"><span>    sendfile        on;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#tcp_nopush     on;</span>
+</span></span><span style="display:flex;"><span>    keepalive_timeout  65;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#gzip  on;</span>
+</span></span><span style="display:flex;"><span>    include /etc/nginx/conf.d/*.conf;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>stream<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    upstream mysql<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        server 192.168.1.101:3306 weight<span style="color:#f92672">=</span>1;
+</span></span><span style="display:flex;"><span>        server 192.168.1.102:3306 weight<span style="color:#f92672">=</span>1;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    server<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        listen 3306;
+</span></span><span style="display:flex;"><span>        server_name 192.168.1.100;
+</span></span><span style="display:flex;"><span>        proxy_pass mysql;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>配置完成后，我们就可以通过如下方式来访问MySQL数据库。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>jdbc:mysql<span style="color:#f92672">:</span><span style="color:#75715e">//192.168.1.100:3306/数据库名称
+</span></span></span></code></pre></div><p>此时，Nginx会将访问MySQL的请求路由到IP地址为192.168.1.101和192.168.1.102的MySQL上</p>
+<h2 id="十四nginx解决跨域问题">十四、nginx解决跨域问题<a hidden class="anchor" aria-hidden="true" href="#十四nginx解决跨域问题">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            root   html;
+</span></span><span style="display:flex;"><span>            index  index.html index.htm;
+</span></span><span style="display:flex;"><span>            //允许cros跨域访问
+</span></span><span style="display:flex;"><span>            add_header <span style="color:#e6db74">&#39;Access-Control-Allow-Origin&#39;</span> <span style="color:#e6db74">&#39;*&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        //自定义本地路径
+</span></span><span style="display:flex;"><span>        location /apis <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            rewrite  ^.+apis/?<span style="color:#f92672">(</span>.*<span style="color:#f92672">)</span>$ /$1 break;
+</span></span><span style="display:flex;"><span>            include  uwsgi_params;
+</span></span><span style="display:flex;"><span>            proxy_pass   http://www.binghe.com;
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="十五nginx图片显示过慢文件下载不完全问题处理">十五、nginx图片显示过慢，文件下载不完全问题处理<a hidden class="anchor" aria-hidden="true" href="#十五nginx图片显示过慢文件下载不完全问题处理">#</a></h2>
+<h3 id="问题定位">问题定位<a hidden class="anchor" aria-hidden="true" href="#问题定位">#</a></h3>
+<p>经过一系列的排查（中间过程我就省略了，直接写重点了！），最终定位到是Nginx的问题。当我打开这位读者的网站后台管理系统，发现图片显示非常慢，在Nginx前端代理上查出如下错误信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>error<span style="color:#f92672">]</span> 28423#0: *5 connect<span style="color:#f92672">()</span> failed <span style="color:#f92672">(</span>111: Connection refused<span style="color:#f92672">)</span> <span style="color:#66d9ef">while</span> connecting to upstream
+</span></span></code></pre></div><p>直接在后台服务器上用后台服务器的IP地址去访问，发现速度相当快，于是怀疑是Nginx的配置问题。</p>
+<p><strong>注意：当下载大的附件，或是页面中有大图片时，就会下载中断或是图片无法显示，也许你会说我用的Nginx缺省的配置也从来没有碰到过这种问题呀！我想说的是：那是因为你的网站没有大文件，至少没有大到使用Nginx的默认配置加载不出来。</strong></p>
+<p>这里，我给出一段Nginx的配置，如下所示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location /file <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     root /home/file;
+</span></span><span style="display:flex;"><span>     index  index.html index.htm;
+</span></span><span style="display:flex;"><span>     proxy_set_header X-Real-IP $remote_addr;
+</span></span><span style="display:flex;"><span>     proxy_set_header   Host $host;
+</span></span><span style="display:flex;"><span>     proxy_pass http://127.0.0.1:8080 ;
+</span></span><span style="display:flex;"><span>     client_max_body_size     100m;
+</span></span><span style="display:flex;"><span>     client_body_buffer_size  128k;
+</span></span><span style="display:flex;"><span>     proxy_connect_timeout    600;
+</span></span><span style="display:flex;"><span>     proxy_read_timeout       600;
+</span></span><span style="display:flex;"><span>     proxy_send_timeout       600;
+</span></span><span style="display:flex;"><span>     proxy_buffer_size        32k;
+</span></span><span style="display:flex;"><span>     proxy_buffers          <span style="color:#ae81ff">4</span> 64k;
+</span></span><span style="display:flex;"><span>     proxy_busy_buffers_size 64k;
+</span></span><span style="display:flex;"><span>     proxy_temp_file_write_size 64k;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>其中几个重要的参数如下所示。</p>
+<ul>
+<li>proxy_connect_timeout 600;  #nginx跟后端服务器连接超时时间(代理连接超时)</li>
+<li>proxy_read_timeout   600;  #连接成功后，后端服务器响应时间(代理接收超时)</li>
+<li>proxy_send_timeout   600;  #后端服务器数据回传时间(代理发送超时)</li>
+<li>proxy_buffer_size   32k;  #设置代理服务器（nginx）保存用户头信息的缓冲区大小</li>
+<li>proxy_buffers     4  32k;  #proxy_buffers缓冲区，网页平均在32k以下的话，这样设置</li>
+<li>proxy_busy_buffers_size  64k;  #高负荷下缓冲大小（proxy_buffers*2）</li>
+<li>proxy_temp_file_write_size  16k;  #设定缓存文件夹大小，大于这个值，将从upstream服务器传</li>
+</ul>
+<p>看到这里，发现问题了，这位读者的Nginx有下面一行配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>proxy_temp_file_write_size 16k;
+</span></span></code></pre></div><p>而他服务器上的图片基本都在100K~5M之间。</p>
+<p>问题就出在proxy_temp_file_write_size上，当服务器上的文件超过该参数设置的大小时，Nginx会先将文件写入临时目录(缺省为Nginx安装目下/proxy_temp目录)，缺省Nginx是以nobody身份启动的，用ls -al 命令查看proxy_temp目录  nobody是proxy_temp目录的所有者，怪了那为什么没权限呢？接下来查看proxy_temp的父目录既Nginx安装目录。发现nobody竞然没权限，怪不得会出现上面的问题。</p>
+<h3 id="解决问题">解决问题<a hidden class="anchor" aria-hidden="true" href="#解决问题">#</a></h3>
+<p>定位到问题，接下来解决问题就比较简单了。可以使用两种方式解决这个问题，如下所示。</p>
+<ul>
+<li>设置任何人都可以写 proxy_temp目录，重启 Nginx 即可解决。</li>
+<li>直接更改proxy_temp_file_write_size的值，将其修改为大于图片和文件的大小，重启Nginx。</li>
+</ul>
+<p>如果是以第一种方式解决问题的话，比如我的proxy_temp目录是/usr/local/nginx/proxy_temp，用如下命令将/usr/local/nginx/proxy_temp目录设置为任何人都可以写，问题解决。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>chmod -R <span style="color:#ae81ff">777</span> /usr/local/nginx/proxy_temp/ 
+</span></span></code></pre></div><p>如果是使用第二种方式解决问题的话，就可以直接修改nginx.conf文件，如下所示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location /file <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     root /home/file;
+</span></span><span style="display:flex;"><span>     index  index.html index.htm;
+</span></span><span style="display:flex;"><span>     proxy_set_header X-Real-IP $remote_addr;
+</span></span><span style="display:flex;"><span>     proxy_set_header   Host $host;
+</span></span><span style="display:flex;"><span>     proxy_pass http://127.0.0.1:8080 ;
+</span></span><span style="display:flex;"><span>     client_max_body_size     100m;
+</span></span><span style="display:flex;"><span>     client_body_buffer_size  256k;
+</span></span><span style="display:flex;"><span>     proxy_connect_timeout    1200;
+</span></span><span style="display:flex;"><span>     proxy_read_timeout       1200;
+</span></span><span style="display:flex;"><span>     proxy_send_timeout       6000;
+</span></span><span style="display:flex;"><span>     proxy_buffer_size        32k;
+</span></span><span style="display:flex;"><span>     proxy_buffers            <span style="color:#ae81ff">4</span> 64k;
+</span></span><span style="display:flex;"><span>     proxy_busy_buffers_size  128k;
+</span></span><span style="display:flex;"><span>     proxy_temp_file_write_size 10m;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="十六使用nginx搭建流媒体服务器实现直播">十六、使用Nginx搭建流媒体服务器实现直播<a hidden class="anchor" aria-hidden="true" href="#十六使用nginx搭建流媒体服务器实现直播">#</a></h2>
+<h3 id="安装nginx">安装Nginx<a hidden class="anchor" aria-hidden="true" href="#安装nginx">#</a></h3>
+<p><strong>注意：这里以CentOS 6.8服务器为例，以root用户身份来安装Nginx。</strong></p>
+<h4 id="1安装依赖环境">1.安装依赖环境<a hidden class="anchor" aria-hidden="true" href="#1安装依赖环境">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum -y install wget gcc-c++ ncurses ncurses-devel cmake make perl bison openssl openssl-devel gcc* libxml2 libxml2-devel curl-devel libjpeg* libpng* freetype* autoconf automake zlib* fiex* libxml* libmcrypt* libtool-ltdl-devel* libaio libaio-devel  bzr libtool
+</span></span></code></pre></div><h4 id="2安装openssl">2.安装openssl<a hidden class="anchor" aria-hidden="true" href="#2安装openssl">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget https://www.openssl.org/source/openssl-1.0.2s.tar.gz
+</span></span><span style="display:flex;"><span>tar -zxvf openssl-1.0.2s.tar.gz
+</span></span><span style="display:flex;"><span>cd /usr/local/src/openssl-1.0.2s
+</span></span><span style="display:flex;"><span>./config --prefix<span style="color:#f92672">=</span>/usr/local/openssl-1.0.2s
+</span></span><span style="display:flex;"><span>make
+</span></span><span style="display:flex;"><span>make install
+</span></span></code></pre></div><h4 id="3安装pcre">3.安装pcre<a hidden class="anchor" aria-hidden="true" href="#3安装pcre">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz
+</span></span><span style="display:flex;"><span>tar -zxvf pcre-8.43.tar.gz
+</span></span><span style="display:flex;"><span>cd /usr/local/src/pcre-8.43
+</span></span><span style="display:flex;"><span>./configure --prefix<span style="color:#f92672">=</span>/usr/local/pcre-8.43
+</span></span><span style="display:flex;"><span>make
+</span></span><span style="display:flex;"><span>make install
+</span></span></code></pre></div><h4 id="4安装zlib">4.安装zlib<a hidden class="anchor" aria-hidden="true" href="#4安装zlib">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget https://sourceforge.net/projects/libpng/files/zlib/1.2.11/zlib-1.2.11.tar.gz
+</span></span><span style="display:flex;"><span>tar -zxvf zlib-1.2.11.tar.gz
+</span></span><span style="display:flex;"><span>cd /usr/local/src/zlib-1.2.11
+</span></span><span style="display:flex;"><span>./configure --prefix<span style="color:#f92672">=</span>/usr/local/zlib-1.2.11
+</span></span><span style="display:flex;"><span>make
+</span></span><span style="display:flex;"><span>make
+</span></span></code></pre></div><h4 id="5下载nginx-rtmp-module">5.下载nginx-rtmp-module<a hidden class="anchor" aria-hidden="true" href="#5下载nginx-rtmp-module">#</a></h4>
+<p>nginx-rtmp-module的官方github地址：https://github.com/arut/nginx-rtmp-module</p>
+<p>使用命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://github.com/arut/nginx-rtmp-module.git  
+</span></span></code></pre></div><h4 id="6安装nginx">6.安装Nginx<a hidden class="anchor" aria-hidden="true" href="#6安装nginx">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget http://nginx.org/download/nginx-1.19.1.tar.gz
+</span></span><span style="display:flex;"><span>tar -zxvf nginx-1.19.1.tar.gz
+</span></span><span style="display:flex;"><span>cd /usr/local/src/nginx-1.19.1
+</span></span><span style="display:flex;"><span>./configure --prefix<span style="color:#f92672">=</span>/usr/local/nginx-1.19.1 --with-openssl<span style="color:#f92672">=</span>/usr/local/src/openssl-1.0.2s --with-pcre<span style="color:#f92672">=</span>/usr/local/src/pcre-8.43 --with-zlib<span style="color:#f92672">=</span>/usr/local/src/zlib-1.2.11 --add-module<span style="color:#f92672">=</span>/usr/local/src/nginx-rtmp-module --with-http_ssl_module
+</span></span><span style="display:flex;"><span>make
+</span></span><span style="display:flex;"><span>make install
+</span></span></code></pre></div><p><strong>这里需要注意的是：安装Nginx时，指定的是openssl、pcre和zlib的源码解压目录，安装完成后Nginx配置文件的完整路径为：/usr/local/nginx-1.19.1/conf/nginx.conf。</strong></p>
+<h3 id="配置nginx-1">配置Nginx<a hidden class="anchor" aria-hidden="true" href="#配置nginx-1">#</a></h3>
+<p>配置Nginx主要是对Nginx的nginx.conf文件进行配置，我们可以在命令行输入如下命令编辑nginx.conf文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim /usr/local/nginx-1.19.1/conf/nginx.conf
+</span></span></code></pre></div><p>在文件中添加如下内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rtmp <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        listen 1935;  <span style="color:#75715e">#监听的端口</span>
+</span></span><span style="display:flex;"><span>        chunk_size 4096;   
+</span></span><span style="display:flex;"><span>        application hls <span style="color:#f92672">{</span>  <span style="color:#75715e">#rtmp推流请求路径  </span>
+</span></span><span style="display:flex;"><span>            live on;    
+</span></span><span style="display:flex;"><span>            hls on;    
+</span></span><span style="display:flex;"><span>            hls_path /usr/share/nginx/html/hls;    
+</span></span><span style="display:flex;"><span>            hls_fragment 5s;    
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>    
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>其中，hls_path需要可读可写的权限。接下来，我们创建/usr/share/nginx/html/hls 目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir -p /usr/share/nginx/html/hls
+</span></span><span style="display:flex;"><span>chmod -R <span style="color:#ae81ff">777</span> /usr/share/nginx/html/hls
+</span></span></code></pre></div><p>接下来，修改http中的server模块：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>server <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>    listen       81;  
+</span></span><span style="display:flex;"><span>    server_name  localhost;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#charset koi8-r;  </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#access_log  logs/host.access.log  main;  </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location / <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>        root   /usr/share/nginx/html;  
+</span></span><span style="display:flex;"><span>        index  index.html index.htm;  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#error_page  404              /404.html;  </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># redirect server error pages to the static page /50x.html  </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#  </span>
+</span></span><span style="display:flex;"><span>    error_page   <span style="color:#ae81ff">500</span> <span style="color:#ae81ff">502</span> <span style="color:#ae81ff">503</span> <span style="color:#ae81ff">504</span>  /50x.html;  
+</span></span><span style="display:flex;"><span>    location <span style="color:#f92672">=</span> /50x.html <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>        root   html;  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>然后启动Nginx：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>/usr/local/nginx-1.19.1/sbin/nginx -c /usr/local/nginx-1.19.1/conf/nginx.conf  
+</span></span></code></pre></div><h3 id="使用obs推流">使用OBS推流<a hidden class="anchor" aria-hidden="true" href="#使用obs推流">#</a></h3>
+<p>OBS（Open Broadcaster Software） 是以互联网流媒体直播内容为目的免费和开放源码软件。需要下载这个软件，借助这个软件进行推流（电脑没有摄像头的貌似安装不了。。。）</p>
+<p>OBS的下载链接为：https://obsproject.com/zh-cn/download。</p>
+<p>安装后，桌面上会有一个如下所示的图标。</p>
+<p><img loading="lazy" src="/images/nginx%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%e5%8f%8a%e9%85%8d%e7%bd%ae/640.png" alt=""  />
+</p>
+<p>打开后我们需要有一个场景，并且在这个场景下有一个流的来源(可以是窗口，如果选的是视频则会自动识别摄像头)，接下来就是设置了。</p>
+<p><img loading="lazy" src="/images/nginx%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%e5%8f%8a%e9%85%8d%e7%bd%ae/641.png" alt=""  />
+</p>
+<p>在配置中最需要关注的就是流的配置，由于是自建的流媒体服务器所以我们按照如下所示的方式进行配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rtmp://你的服务器ip:端口<span style="color:#f92672">(</span>1935<span style="color:#f92672">)</span>/live <span style="color:#75715e">#URL填写流的地址</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/images/nginx%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%e5%8f%8a%e9%85%8d%e7%bd%ae/642.png" alt=""  />
+</p>
+<p>设置完成我们就可以  开始推流了。</p>
+<h3 id="拉流测试地址">拉流测试地址<a hidden class="anchor" aria-hidden="true" href="#拉流测试地址">#</a></h3>
+<p>推荐一个拉流的测试地址，里面针对各种协议都能测试拉流测试，需要注意图中几个地方，由于我们使用的rtmp协议，我们选择这一栏，底下填写我们推流的地址和我们在上面obs的设置里面配置的流的名称，start， ok搞定！！！</p>
+<p><img loading="lazy" src="/images/nginx%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%e5%8f%8a%e9%85%8d%e7%bd%ae/643.png" alt=""  />
+</p>
+<h2 id="十七nginx的转发规则">十七、nginx的转发规则<a hidden class="anchor" aria-hidden="true" href="#十七nginx的转发规则">#</a></h2>
+<h3 id="nginx的location语法">Nginx的location语法<a hidden class="anchor" aria-hidden="true" href="#nginx的location语法">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location <span style="color:#f92672">[=</span>|~|~*|^~<span style="color:#f92672">]</span> /uri/ <span style="color:#f92672">{</span> … <span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>=   严格匹配。如果请求匹配这个location，那么将停止搜索并立即处理此请求</li>
+<li>~   区分大小写匹配(可用正则表达式)</li>
+<li>~*   不区分大小写匹配(可用正则表达式)</li>
+<li>!~   区分大小写不匹配</li>
+<li>!~*  不区分大小写不匹配</li>
+<li>^~   如果把这个前缀用于一个常规字符串,那么告诉nginx 如果路径匹配那么不测试正则表达式</li>
+</ul>
+<p>示例1：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location  / <span style="color:#f92672">{</span> <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>匹配任意请求</p>
+<p>示例2：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~* .<span style="color:#f92672">(</span>gif|jpg|jpeg<span style="color:#f92672">)</span>$ ｛
+</span></span><span style="display:flex;"><span>    rewrite .<span style="color:#f92672">(</span>gif|jpg|jpeg<span style="color:#f92672">)</span>$ /logo.png;
+</span></span><span style="display:flex;"><span>｝
+</span></span></code></pre></div><p>不区分大小写匹配任何以gif、jpg、jpeg结尾的请求，并将该请求重定向到 /logo.png请求</p>
+<p>示例3：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~ ^.+<span style="color:#ae81ff">\.</span>txt$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    root /usr/local/nginx/html/;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>区分大小写匹配以.txt结尾的请求，并设置此location的路径是/usr/local/nginx/html/。也就是以.txt结尾的请求将访问/usr/local/nginx/html/ 路径下的txt文件</p>
+<h3 id="alias与root的区别">alias与root的区别<a hidden class="anchor" aria-hidden="true" href="#alias与root的区别">#</a></h3>
+<ul>
+<li>root  实际访问文件路径会拼接URL中的路径</li>
+<li>alias  实际访问文件路径不会拼接URL中的路径</li>
+</ul>
+<p>示例如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ^~ /binghe/ <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>   alias /usr/local/nginx/html/binghetic/;  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>请求：http://test.com/binghe/binghe1.html</li>
+<li>实际访问：/usr/local/nginx/html/binghetic/binghe1.html 文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ^~ /binghe/ <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>   root /usr/local/nginx/html/;  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>请求：http://test.com/binghe/binghe1.html</li>
+<li>实际访问：/usr/local/nginx/html/binghe/binghe1.html 文件</li>
+</ul>
+<h3 id="last-和-break关键字的区别">last 和 break关键字的区别<a hidden class="anchor" aria-hidden="true" href="#last-和-break关键字的区别">#</a></h3>
+<p>（1）last 和 break 当出现在location 之外时，两者的作用是一致的没有任何差异</p>
+<p>（2）last 和 break 当出现在location 内部时：</p>
+<ul>
+<li>last   使用了last 指令，rewrite 后会跳出location 作用域，重新开始再走一次刚才的行为</li>
+<li>break  使用了break 指令，rewrite后不会跳出location 作用域，其整个生命周期都在当前location中。</li>
+</ul>
+<h3 id="permanent-和-redirect关键字的区别">permanent 和 redirect关键字的区别<a hidden class="anchor" aria-hidden="true" href="#permanent-和-redirect关键字的区别">#</a></h3>
+<ul>
+<li>rewrite … permanent  永久性重定向，请求日志中的状态码为301</li>
+<li>rewrite … redirect   临时重定向，请求日志中的状态码为302</li>
+</ul>
+<h3 id="综合实例">综合实例<a hidden class="anchor" aria-hidden="true" href="#综合实例">#</a></h3>
+<p>将符合某个正则表达式的URL重定向到一个固定页面</p>
+<p>比如：我们需要将符合“/test/(\d+)/[\w-.]+”  这个正则表达式的URL重定向到一个固定的页面。符合这个正则表达式的页面可能是：http://test.com/test/12345/abc122.html、http://test.com/test/456/11111cccc.js等</p>
+<p>从上面的介绍可以看出，这里可以使用rewrite重定向或者alias关键字来达到我们的目的。因此，这里可以这样做：</p>
+<p>（1）使用rewrite关键字</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~ ^.+<span style="color:#ae81ff">\.</span>txt$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    root /usr/local/nginx/html/;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>location ~* ^/test/<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>/<span style="color:#f92672">[</span><span style="color:#ae81ff">\w</span>-<span style="color:#ae81ff">\.</span><span style="color:#f92672">]</span>+$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    rewrite ^/test/<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>/<span style="color:#f92672">[</span><span style="color:#ae81ff">\w</span>-<span style="color:#ae81ff">\.</span><span style="color:#f92672">]</span>+$ /testpage.txt last;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这里将所有符合条件的URL（PS：不区分大小写）都重定向到/testpage.txt请求，也就是 /usr/local/nginx/html/testpage.txt 文件</p>
+<p>（2）使用alias关键字</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>location ~* ^/test/<span style="color:#f92672">(</span><span style="color:#ae81ff">\d</span>+<span style="color:#f92672">)</span>/<span style="color:#f92672">[</span><span style="color:#ae81ff">\w</span>-<span style="color:#ae81ff">\.</span><span style="color:#f92672">]</span>+$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    alias /usr/local/nginx/html/binghetic/binghe1.html;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这里将所有符合条件的URL（不区分大小写）都重定向到/usr/local/nginx/html/binghetic/binghe1.html 文件</p>
+<h2 id="十八nginxconf常用配置">十八、nginx.conf常用配置<a hidden class="anchor" aria-hidden="true" href="#十八nginxconf常用配置">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>user  nginx;
+</span></span><span style="display:flex;"><span>worker_processes  auto;
+</span></span><span style="display:flex;"><span>worker_rlimit_nofile  65535;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pid        /var/run/nginx.pid;
+</span></span><span style="display:flex;"><span>events <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    worker_connections  65535;
+</span></span><span style="display:flex;"><span>    multi_accept on;
+</span></span><span style="display:flex;"><span>    use epoll;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>http <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    include       /etc/nginx/mime.types;
+</span></span><span style="display:flex;"><span>    default_type  application/octet-stream;
+</span></span><span style="display:flex;"><span>    log_format  main  <span style="color:#e6db74">&#39;[$time_local] RemoteAddr:&#34;$remote_addr&#34; RemoteUser:&#34;$remote_user&#34; Host:&#34;$host&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;RequestUil:&#34;$request&#34; HttpStatus:&#34;$status&#34; BodyBytesSent:&#34;$body_bytes_sent&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;HttpReferer:&#34;$http_referer&#34; HttpUserAgent:&#34;$http_user_agent&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;Http_X_ForwardedFor:&#34;$http_x_forwarded_for&#34; UpstreamResponseTime:&#34;$upstream_response_time&#34; &#39;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#39;UpstreamAddr:&#34;$upstream_addr&#34; RequestTime:&#34;$request_time&#34; --- $server_port&#39;</span>;
+</span></span><span style="display:flex;"><span>    log_format  json  <span style="color:#e6db74">&#39;{&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;RemoteAddr&#34;:&#34;$remote_addr&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;RemoteUser&#34;:&#34;$remote_user&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;TimeLocal&#34;:&#34;$time_local&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;RequestUil&#34;:&#34;$request&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;HttpHost&#34;:&#34;$http_host&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;HttpStatus&#34;:&#34;$status&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;BodyBytesSent&#34;:&#34;$body_bytes_sent&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;HttpReferer&#34;:&#34;$http_referer&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;HttpUserAgent&#34;:&#34;$http_user_agent&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;Http_X_ForwardedFor&#34;:&#34;$http_x_forwarded_for&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;SslProtocol&#34;:&#34;$ssl_protocol&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;SslCipher&#34;:&#34;$ssl_cipher&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;UpstreamResponseTime&#34;:&#34;$upstream_response_time&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;UpstreamAddr&#34;:&#34;$upstream_addr&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#34;RequestTime&#34;:&#34;$request_time&#34;,&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;}&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    access_log /data/logs/nginx_logs/access.log  main;
+</span></span><span style="display:flex;"><span>    error_log  /data/logs/nginx_logs/error.log error;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    access_log                      off;
+</span></span><span style="display:flex;"><span>    server_tokens                   off;
+</span></span><span style="display:flex;"><span>    sendfile                         on;
+</span></span><span style="display:flex;"><span>    tcp_nopush                       on;
+</span></span><span style="display:flex;"><span>    tcp_nodelay                      on;
+</span></span><span style="display:flex;"><span>    send_timeout                    300;
+</span></span><span style="display:flex;"><span>    keepalive_timeout               300;
+</span></span><span style="display:flex;"><span>    resolver_timeout                 60;
+</span></span><span style="display:flex;"><span>    server_names_hash_max_size      512;
+</span></span><span style="display:flex;"><span>    server_names_hash_bucket_size   128;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    client_body_timeout             300;
+</span></span><span style="display:flex;"><span>    client_header_timeout           300;
+</span></span><span style="display:flex;"><span>    client_header_buffer_size      512k;
+</span></span><span style="display:flex;"><span>    client_max_body_size           300m;
+</span></span><span style="display:flex;"><span>    large_client_header_buffers  <span style="color:#ae81ff">8</span>  32k;
+</span></span><span style="display:flex;"><span>    client_body_buffer_size        256k;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fastcgi_connect_timeout         300;
+</span></span><span style="display:flex;"><span>    fastcgi_send_timeout            300;
+</span></span><span style="display:flex;"><span>    fastcgi_read_timeout            300;
+</span></span><span style="display:flex;"><span>    fastcgi_buffer_size            128k;
+</span></span><span style="display:flex;"><span>    fastcgi_buffers          <span style="color:#ae81ff">8</span>     256k;
+</span></span><span style="display:flex;"><span>    fastcgi_busy_buffers_size      256k;
+</span></span><span style="display:flex;"><span>    fastcgi_temp_file_write_size   256k;
+</span></span><span style="display:flex;"><span>    fastcgi_temp_path /tmp/ngx_fcgi_tmp;
+</span></span><span style="display:flex;"><span>    fastcgi_cache_path /tmp/fcgi_cache_path levels<span style="color:#f92672">=</span>1:2 keys_zone<span style="color:#f92672">=</span>ngx_fcgi_cache:512m inactive<span style="color:#f92672">=</span>1d max_size<span style="color:#f92672">=</span>10g;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    gzip  on;
+</span></span><span style="display:flex;"><span>    gzip_http_version   1.1;
+</span></span><span style="display:flex;"><span>    gzip_min_length      1k;
+</span></span><span style="display:flex;"><span>    gzip_buffers <span style="color:#ae81ff">4</span>      16k;
+</span></span><span style="display:flex;"><span>    gzip_comp_level       9;
+</span></span><span style="display:flex;"><span>    gzip_types text/plain application/json application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+</span></span><span style="display:flex;"><span>    gzip_vary            on;
+</span></span><span style="display:flex;"><span>    gzip_disable <span style="color:#e6db74">&#34;MSIE [1-6]\.&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    proxy_http_version           1.1;
+</span></span><span style="display:flex;"><span>    proxy_set_header Connection   <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>    proxy_set_header     Host  $host;
+</span></span><span style="display:flex;"><span>    proxy_connect_timeout        300;
+</span></span><span style="display:flex;"><span>    proxy_read_timeout           300;
+</span></span><span style="display:flex;"><span>    proxy_send_timeout           300;
+</span></span><span style="display:flex;"><span>    proxy_buffering               on;
+</span></span><span style="display:flex;"><span>    proxy_buffer_size           128k;
+</span></span><span style="display:flex;"><span>    proxy_buffers            <span style="color:#ae81ff">8</span>  128k;
+</span></span><span style="display:flex;"><span>    proxy_busy_buffers_size     256k;
+</span></span><span style="display:flex;"><span>    proxy_temp_file_write_size  256k;
+</span></span><span style="display:flex;"><span>    proxy_temp_path  /tmp/proxy_temp_path;
+</span></span><span style="display:flex;"><span>    proxy_cache_path /tmp/proxy_cache_path levels<span style="color:#f92672">=</span>1:2 keys_zone<span style="color:#f92672">=</span>ngx_proxy_cache:512m inactive<span style="color:#f92672">=</span>1d max_size<span style="color:#f92672">=</span>10g;
+</span></span><span style="display:flex;"><span>    include /etc/nginx/conf.d/*.conf;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>include /etc/nginx/stream.d/*.conf;
+</span></span></code></pre></div><h2 id="十九stream常用配置">十九、stream常用配置<a hidden class="anchor" aria-hidden="true" href="#十九stream常用配置">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>stream <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        upstream redis <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                server  192.168.1.1:6379;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                listen 6372;
+</span></span><span style="display:flex;"><span>                proxy_pass redis;
+</span></span><span style="display:flex;"><span>                proxy_connect_timeout 1h;
+</span></span><span style="display:flex;"><span>                proxy_timeout 1h;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="二十server常用配置">二十、server常用配置<a hidden class="anchor" aria-hidden="true" href="#二十server常用配置">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    listen   80;
+</span></span><span style="display:flex;"><span>    listen   81;
+</span></span><span style="display:flex;"><span>    server_name 127.0.0.1  test.example.com;
+</span></span><span style="display:flex;"><span>    index  index.php index.html index.htm;
+</span></span><span style="display:flex;"><span>    root /data/web/test/www;
+</span></span><span style="display:flex;"><span>    charset utf-8;
+</span></span><span style="display:flex;"><span>    access_log  /data/logs/nginx_logs/test.example.com.log  main;
+</span></span><span style="display:flex;"><span>    location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>!-e $request_filename<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>             rewrite ^/<span style="color:#f92672">(</span>.*<span style="color:#f92672">)</span> /index.php?$1 last;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location /business/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$arg_icpid <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;4pd1mtsDhfe&#34;</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    proxy_pass http://127.0.0.1:38888/test$request_uri&amp;tbid<span style="color:#f92672">=</span>aldIthSBg04;
+</span></span><span style="display:flex;"><span>             <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>             proxy_pass http://127.0.0.1:9302;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location /gateway/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        proxy_pass http://127.0.0.1:38888/;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    location ~ <span style="color:#ae81ff">\.</span>php$ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        fastcgi_param  REMOTE_ADDR $http_x_real_ip;
+</span></span><span style="display:flex;"><span>        fastcgi_param LY_ADDRESS $remote_addr;
+</span></span><span style="display:flex;"><span>        fastcgi_pass   unix:/dev/shm/php-cgi.sock;
+</span></span><span style="display:flex;"><span>        fastcgi_index  index.php;
+</span></span><span style="display:flex;"><span>        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+</span></span><span style="display:flex;"><span>        fastcgi_param  SERVERNAME     $hostname;
+</span></span><span style="display:flex;"><span>        include        fastcgi_params;
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>   location <span style="color:#f92672">=</span> /favicon.ico <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        log_not_found off;
+</span></span><span style="display:flex;"><span>        access_log off;
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>   location <span style="color:#f92672">=</span> /robots.txt <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        allow all;
+</span></span><span style="display:flex;"><span>        log_not_found off;
+</span></span><span style="display:flex;"><span>        access_log off;
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    listen   80;
+</span></span><span style="display:flex;"><span>    listen   <span style="color:#ae81ff">443</span> ssl;
+</span></span><span style="display:flex;"><span>    server_name  test.example.com;
+</span></span><span style="display:flex;"><span>    charset utf-8;
+</span></span><span style="display:flex;"><span>    access_log  /data/logs/nginx_logs/test.example.com.log main;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ssl_certificate   /etc/nginx/cert/example.com.pem;
+</span></span><span style="display:flex;"><span>    ssl_certificate_key  /etc/nginx/cert/example.com.key;
+</span></span><span style="display:flex;"><span>    ssl_session_timeout 5m;
+</span></span><span style="display:flex;"><span>    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+</span></span><span style="display:flex;"><span>    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+</span></span><span style="display:flex;"><span>    ssl_prefer_server_ciphers on;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        proxy_pass http://127.0.0.1:38888;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    location <span style="color:#f92672">=</span> /favicon.ico <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            log_not_found off;
+</span></span><span style="display:flex;"><span>            access_log off;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    location <span style="color:#f92672">=</span> /robots.txt <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            allow all;
+</span></span><span style="display:flex;"><span>            log_not_found off;
+</span></span><span style="display:flex;"><span>            access_log off;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/nginx/">nginx</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>MySQL权限级别介绍</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>前端npm私服搭建</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

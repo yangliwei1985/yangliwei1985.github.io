@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>MySQL权限级别介绍 | ylw&#39;s blog</title>
+<meta name="keywords" content="权限, mysql" />
+<meta name="description" content="MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="MySQL权限级别介绍" />
+<meta property="og:description" content="MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-12T10:26:52&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-12T10:26:52&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL权限级别介绍"/>
+<meta name="twitter:description" content="MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "MySQL权限级别介绍",
+      "item": "https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL权限级别介绍",
+  "name": "MySQL权限级别介绍",
+  "description": "MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据\nmysql\u0026gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql\u0026gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql\u0026gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql\u0026gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql\u0026gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限",
+  "keywords": [
+    "权限", "mysql"
+  ],
+  "articleBody": " MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据\nmysql select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限\n  Alter权限代表允许修改表结构的权限，但必须要求有create和insert权限配合。如果是rename表名，则要求有alter和drop原表，create和 insert新表的权限\n  Alter routine权限代表允许修改或者删除存储过程、函数的权限\n  Create权限代表允许创建新的数据库和表的权限\n  Create routine权限代表允许创建存储过程、函数的权限\n  Create tablespace权限代表允许创建、修改、删除表空间和日志组的权限\n  Create temporary tables权限代表允许创建临时表的权限\n  Create user权限代表允许创建、修改、删除、重命名user的权限\n  Create view权限代表允许创建视图的权限\n  Delete权限代表允许删除行数据的权限\n  Drop权限代表允许删除数据库、表、视图的权限，包括truncate table命令\n  Event权限代表允许查询，创建，修改，删除MySQL事件\n  Execute权限代表允许执行存储过程和函数的权限\n  File权限代表允许在MySQL可以访问的目录进行读写磁盘文件操作，可使用的命令包括load data infile,select … into outfile,load file()函数\n  Grant option权限代表是否允许此用户授权或者收回给其他用户你给予的权限\n  Index权限代表是否允许创建和删除索引\n  Insert权限代表是否允许在表里插入数据，同时在执行analyze table,optimize table,repair table语句的时候也需要insert权限\n  Lock权限代表允许对拥有select权限的表进行锁定，以防止其他链接对此表的读或写\n  Process权限代表允许查看MySQL中的进程信息，比如执行show processlist,mysqladmin processlist, show engine等命令\n  Reference权限是在5.7.6版本之后引入，代表是否允许创建外键\n  Reload权限代表允许执行flush命令，指明重新加载权限表到系统内存中， refresh命令代表关闭和重新开启日志文件并刷新所有的表\n  Replication client权限代表允许执行show master status,show slave status,show binary logs命令\n  Replication slave权限代表允许slave主机通过此用户连接master以便建立主从复制关系\n  Select权限代表允许从表中查看数据，某些不查询表数据的select执行则不需要此权限，如Select 1+1，Select PI()+2;而且select权限在执行update/delete 语句中含有where条件的情况下也是需要的\n  Show databases权限代表通过执行show databases命令查看所有的数据库名\n  Show view权限代表通过执行show create view命令查看视图创建的语句\n  Shutdown权限代表允许关闭数据库实例，执行语句包括mysqladmin shutdown\n  Super权限代表允许执行一系列数据库管理命令，包括kill强制关闭某个连接命令，change master to创建复制关系命令，以及create/alter/drop server等命令\n  Trigger权限代表允许创建，删除，执行，显示触发器的权限\n  Update权限代表允许修改表中的数据的权限\n  Usage权限是创建一个用户之后的默认权限，其本身代表连接登录权限\n  系统权限表 权限存储在mysql库的user,db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中\n User表:存放用户账户信息以及全局级别(所有数据库)权限，决定了来自哪些主机的哪些用户可以访问数据库实例，如果有全局权限则意味着对所有数据库都有此权限 Db表:存放数据库级别的权限，决定了来自哪些主机的哪些用户可以访 问此数据库 Tables_priv表:存放表级别的权限，决定了来自哪些主机的哪些用户可以 访问数据库的这个表 Columns_priv表:存放列级别的权限，决定了来自哪些主机的哪些用户可 以访问数据库表的这个字段 Procs_priv表:存放存储过程和函数级别的权限  User和db权限表结构\n User权限表结构中的特殊字段  Plugin,password,authentication_string三个字段存放用户认证信息 Password_expired设置成’Y’则表明允许DBA将此用户的密码设置成过期而且过期后要求用户的使用者重置密码(alter user/set password重置密码) Password_last_changed作为一个时间戳字段代表密码上次修改时间，执行create user/alter user/set password/grant等命令创建用户或修改用户密码时此数值自动更新 Password_lifetime代表从password_last_changed时间开始此密码过期的天数 Account_locked代表此用户被锁住，无法使用   Tables_priv和columns_priv权限表结构  Timestamp和grantor两个字段暂时没用 Tables_priv和columns_priv权限值   procs_priv权限表结构  Routine_type是枚举类型，代表是存储过程还是函数 Timestamp和grantor两个字段暂时没用 系统权限表字段长度限制表 权限认证中的大小写敏感问题 字段user,password,authencation_string,db,table_name大小写敏感 字段host,column_name,routine_name大小写不敏感 User用户大小写敏感    mysql create user abc@localhost; ERROR 1396 (HY000): Operation CREATE USER failed for 'abc'@'localhost' mysql create user Abc@localhost; Query OK, 0 rows affected (0.01 sec)  ​\tHost主机名大小写不敏感  mysql create user abc@Localhost; ERROR 1396 (HY000): Operation CREATE USER failed for 'abc'@'localhost' MySQL授权用户  MySQL的授权用户由两部分组成:用户名和登录主机名 表达用户的语法为‘user_name’@‘host_name’ 单引号不是必须，但如果其中包含特殊字符则是必须的 ‘’@‘localhost’代表匿名登录的用户 Host_name可以使主机名或者ipv4/ipv6的地址。Localhost代表本机，127.0.0.1代表ipv4的本机地址，::1代表ipv6的本机地址 Host_name字段允许使用%和_两个匹配字符，比如’%’代表所有主机，’%.mysql.com’代表来自mysql.com这个域名下的所有主机，‘192.168.1.%’代表所有来自192.168.1网段的主机  MySQL修改权限的生效  执行Grant,revoke,setpassword,renameuser命令修改权限之后，MySQL会自动将修改后的权限信息同步加载到系统内存中 如果执行insert/update/delete操作上述的系统权限表之后，则必须再执行刷新权限命令才能同步到系统内存中，刷新权限命令包括:flush privileges/mysqladmin flush-privileges/mysqladmin reload 如果是修改tables和columns级别的权限，则客户端的下次操作新权限就会生效 如果是修改database级别的权限，则新权限在客户端执行use database命令后生效 如果是修改global级别的权限，则需要重新创建连接新权限才能生效 –skip-grant-tables可以跳过所有系统权限表而允许所有用户登录，只在特殊情况下暂时使用  MySQL用户连接 mysql --user=finley --password db_name mysql -u finley -p db_name mysql --user=finley --password=password db_name shell mysql -u finley -ppassword db_name 创建MySQL用户  有两种方式创建MySQL授权用户  执行createuser/grant命令(推荐方式) 通过insert语句直接操作MySQL系统权限表    mysql CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass'; mysqlGRANTALLPRIVILEGESON*.*TO'finley'@'localhost' WITH GRANT OPTION; mysql CREATE USER 'finley'@'%' IDENTIFIED BY 'some_pass'; mysql GRANT ALL PRIVILEGES ON *.* TO 'finley'@'%‘ WITH GRANT OPTION; mysql CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin_pass'; mysql GRANT RELOAD,PROCESS ON *.* TO 'admin'@'localhost'; mysql grant select(id) on test.temp to cdq@localhost; 创建MySQL用户\nmysql CREATE USER 'custom'@'localhost' IDENTIFIED BY 'obscure'; mysql GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP - ON bankaccount.* - TO 'custom'@'localhost';  mysql CREATE USER 'custom'@'host47.example.com' IDENTIFIED BY 'obscure'; mysql GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP - ON expenses.* - TO 'custom'@'host47.example.com';  mysql CREATE USER 'custom'@'%.example.com' IDENTIFIED BY 'obscure'; mysql GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP 回收MySQL用户权限  通过revoke命令收回用户权限  mysql revoke select on `sys`.`sys_config` from 'mysql.sys'@localhost; 删除MySQL用户  通过执行drop user命令删除MySQL用户  mysql DROP USER 'jeffrey'@'localhost'; 设置MySQL用户资源限制  通过设置全局变量max_user_connections可以限制所有用户在同一时间连接MySQL实例的数量，但此参数无法对每个用户区别对待，所以 MySQL提供了对每个用户的资源限制管理 MAX_QUERIES_PER_HOUR:一个用户在一个小时内可以执行查询的次数(基本包含所有语句) MAX_UPDATES_PER_HOUR:一个用户在一个小时内可以执行修改的次数(仅包含修改数据库或表的语句) MAX_CONNECTIONS_PER_HOUR:一个用户在一个小时内可以连接MySQL的时间 MAX_USER_CONNECTIONS:一个用户可以在同一时间连接MySQL实例的数量 从5.0.3版本开始，对用户‘user’@‘%.example.com’的资源限制是指所有通过example.com域名主机连接user用户的连接，而不是分别指从 host1.example.com和host2.example.com主机过来的连接  设置MySQL用户资源限制  通过执行createuser/alteruser设置/修改用户的资源限制  mysql CREATE USER 'francis'@'localhost' IDENTIFIED BY 'frank' - - - - WITH MAX_QUERIES_PER_HOUR 20 MAX_UPDATES_PER_HOUR 10 MAX_CONNECTIONS_PER_HOUR 5 MAX_USER_CONNECTIONS 2; mysql ALTER USER 'francis'@'localhost' WITH MAX_QUERIES_PER_HOUR 100;  取消某项资源限制既是把原先的值修改成0  mysql ALTER USER 'francis'@'localhost' WITH MAX_CONNECTIONS_PER_HOUR 0;  当针对某个用户的max_user_connections非0时，则忽略全局系统参数max_user_connections，反之则全局系统参数生效 设置MySQL用户的密码 执行create user创建用户和密码  mysql CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';  修改用户密码的方式包括:  mysql ALTER USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass'; mysql SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass'); mysql GRANT USAGE ON *.* TO 'jeffrey'@'localhost' IDENTIFIED BY 'mypass'; shell mysqladmin -u user_name -h host_name password \"new_password\";  修改本身用户密码的方式包括:  mysql ALTER USER USER() IDENTIFIED BY 'mypass'; mysql SET PASSWORD = PASSWORD('mypass'); 设置MySQL用户密码过期策略  设置系统参数default_password_lifetime作用于所有的用户账户 default_password_lifetime=180 设置180天过期 default_password_lifetime=0 设置密码不过期 如果为每个用户设置了密码过期策略，则会覆盖上述系统参数  ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE INTERVAL90DAY; ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE INEVER;密码不过期 ALTER USER‘jeffrey’@‘localhost’ PASSWORD EXPIRE DEFAULT;默认过期策略  手动强制某个用户密码过期  ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE; mysql SELECT 1; ERROR 1820 (HY000): You must SET PASSWORD before executing this statement mysql ALTER USER USER() IDENTIFIED BY 'new_password'; Query OK, 0 rows affected (0.01 sec) mysql SELECT 1; |1| MySQL用户lock 通过执行create user/alter user命令中带account lock/unlock子句设置用户的lock状态 Createuser语句默认的用户是unlock状态\nmysqlcreate user abc2@localhost identified by 'mysql' account lock; QueryOK,0rowsaffected(0.01sec) Alter user语句默认不会修改用户的lock/unlock状态 mysqlalter user 'mysql.sys'@localhost account lock; Query OK,0 row saffected(0.00sec) mysqlalter user 'mysql.sys'@localhost account unlock; Query OK,0 row saffected(0.00sec) -- 当客户端使用lock状态的用户登录MySQL时，会收到如此报错 Access denied for user 'user_name'@'host_name'. Account is locked. 企业应用中的常规MySQL用户  企业生产系统中MySQL用户的创建通常由DBA统一协调创建，而且按需创建 DBA通常直接使用root用户来管理数据库 通常会创建指定业务数据库上的增删改查、临时表、执行存储过程的权限给应用程序来连接数据库  Create user app_full identified by ‘mysql’; Grant select,update,insert,delete,create temporary tables,execute on esn.* to app_full@’10.0.0.%’; mysqlshow grants for app_full@'10.0.0.%'; +------------------------------------------------------------------------------------------------------------+ |Grantsforapp_full@10.0.0.% | +------------------------------------------------------------------------------------------------------------+ |GRANTUSAGEON*.*TO'app_full'@'10.0.0.%' | | GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, EXECUTE ON `esn`.* TO 'app_full'@'10.0.0.%' |  通常也会创建指定业务数据库上的只读权限给特定应用程序或某些高级别人员来查询数据，防止数据被修改  Create user app_readonly identified by ‘mysql’; Grant select on esn.* to app_readonly identified by ‘mysq’; ",
+  "wordCount" : "636",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-12T10:26:52+08:00",
+  "dateModified": "2022-04-12T10:26:52+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      MySQL权限级别介绍
+    </h1>
+    <div class="post-meta"><span title='2022-04-12 10:26:52 +0800 CST'>2022-04-12</span>&nbsp;·&nbsp;3 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#mysql%e6%9d%83%e9%99%90%e7%ba%a7%e5%88%ab%e4%bb%8b%e7%bb%8d" aria-label="MySQL权限级别介绍">MySQL权限级别介绍</a></li>
+                    <li>
+                        <a href="#mysql%e6%9d%83%e9%99%90%e8%af%a6%e8%a7%a3" aria-label="MySQL权限详解">MySQL权限详解</a></li>
+                    <li>
+                        <a href="#%e7%b3%bb%e7%bb%9f%e6%9d%83%e9%99%90%e8%a1%a8" aria-label="系统权限表">系统权限表</a></li>
+                    <li>
+                        <a href="#mysql%e6%8e%88%e6%9d%83%e7%94%a8%e6%88%b7" aria-label="MySQL授权用户">MySQL授权用户</a></li>
+                    <li>
+                        <a href="#mysql%e4%bf%ae%e6%94%b9%e6%9d%83%e9%99%90%e7%9a%84%e7%94%9f%e6%95%88" aria-label="MySQL修改权限的生效">MySQL修改权限的生效</a></li>
+                    <li>
+                        <a href="#mysql%e7%94%a8%e6%88%b7%e8%bf%9e%e6%8e%a5" aria-label="MySQL用户连接">MySQL用户连接</a></li>
+                    <li>
+                        <a href="#%e5%88%9b%e5%bb%bamysql%e7%94%a8%e6%88%b7" aria-label="创建MySQL用户">创建MySQL用户</a></li>
+                    <li>
+                        <a href="#%e5%9b%9e%e6%94%b6mysql%e7%94%a8%e6%88%b7%e6%9d%83%e9%99%90" aria-label="回收MySQL用户权限">回收MySQL用户权限</a></li>
+                    <li>
+                        <a href="#%e5%88%a0%e9%99%a4mysql%e7%94%a8%e6%88%b7" aria-label="删除MySQL用户">删除MySQL用户</a></li>
+                    <li>
+                        <a href="#%e8%ae%be%e7%bd%aemysql%e7%94%a8%e6%88%b7%e8%b5%84%e6%ba%90%e9%99%90%e5%88%b6" aria-label="设置MySQL用户资源限制">设置MySQL用户资源限制</a></li>
+                    <li>
+                        <a href="#%e8%ae%be%e7%bd%aemysql%e7%94%a8%e6%88%b7%e8%b5%84%e6%ba%90%e9%99%90%e5%88%b6-1" aria-label="设置MySQL用户资源限制">设置MySQL用户资源限制</a></li>
+                    <li>
+                        <a href="#%e8%ae%be%e7%bd%aemysql%e7%94%a8%e6%88%b7%e5%af%86%e7%a0%81%e8%bf%87%e6%9c%9f%e7%ad%96%e7%95%a5" aria-label="设置MySQL用户密码过期策略">设置MySQL用户密码过期策略</a></li>
+                    <li>
+                        <a href="#mysql%e7%94%a8%e6%88%b7lock" aria-label="MySQL用户lock">MySQL用户lock</a></li>
+                    <li>
+                        <a href="#%e4%bc%81%e4%b8%9a%e5%ba%94%e7%94%a8%e4%b8%ad%e7%9a%84%e5%b8%b8%e8%a7%84mysql%e7%94%a8%e6%88%b7" aria-label="企业应用中的常规MySQL用户">企业应用中的常规MySQL用户</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><ul>
+<li>MySQL权限级别</li>
+<li>全局性的管理权限，作用于整个MySQL实例级别</li>
+<li>数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上</li>
+<li>数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上</li>
+<li>权限存储在mysql库的<code>user, db, tables_priv, columns_priv, and procs_priv</code>这几个系统表中，待MySQL实例启动后就加载到内存中</li>
+</ul>
+<h2 id="mysql权限级别介绍">MySQL权限级别介绍<a hidden class="anchor" aria-hidden="true" href="#mysql权限级别介绍">#</a></h2>
+<p>对比root用户在几个权限系统表中的数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">user</span> <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>root<span style="color:#960050;background-color:#1e0010">’</span> <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">host</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span>; <span style="color:#f92672">##</span><span style="color:#960050;background-color:#1e0010">都是’</span>Y<span style="color:#960050;background-color:#1e0010">’</span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> db <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>root<span style="color:#960050;background-color:#1e0010">’</span> <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">host</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span>; <span style="color:#f92672">##</span><span style="color:#960050;background-color:#1e0010">无记录</span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> tables_priv <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">host</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span> <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>root<span style="color:#960050;background-color:#1e0010">’</span>; <span style="color:#f92672">##</span><span style="color:#960050;background-color:#1e0010">无记录</span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> columns_priv <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>root<span style="color:#960050;background-color:#1e0010">’</span> <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">host</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span>; <span style="color:#f92672">##</span><span style="color:#960050;background-color:#1e0010">无记录</span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> procs_priv <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>root<span style="color:#960050;background-color:#1e0010">’</span> <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">host</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span>; <span style="color:#f92672">##</span><span style="color:#960050;background-color:#1e0010">无记录</span>
+</span></span></code></pre></div><h2 id="mysql权限详解">MySQL权限详解<a hidden class="anchor" aria-hidden="true" href="#mysql权限详解">#</a></h2>
+<ul>
+<li>
+<p>All/All Privileges权限代表全局或者全数据库对象级别的所有权限</p>
+</li>
+<li>
+<p>Alter权限代表允许修改表结构的权限，但必须要求有create和insert权限配合。如果是rename表名，则要求有alter和drop原表，create和 insert新表的权限</p>
+</li>
+<li>
+<p>Alter routine权限代表允许修改或者删除存储过程、函数的权限</p>
+</li>
+<li>
+<p>Create权限代表允许创建新的数据库和表的权限</p>
+</li>
+<li>
+<p>Create routine权限代表允许创建存储过程、函数的权限</p>
+</li>
+<li>
+<p>Create tablespace权限代表允许创建、修改、删除表空间和日志组的权限</p>
+</li>
+<li>
+<p>Create temporary tables权限代表允许创建临时表的权限</p>
+</li>
+<li>
+<p>Create user权限代表允许创建、修改、删除、重命名user的权限</p>
+</li>
+<li>
+<p>Create view权限代表允许创建视图的权限</p>
+</li>
+<li>
+<p>Delete权限代表允许删除行数据的权限</p>
+</li>
+<li>
+<p>Drop权限代表允许删除数据库、表、视图的权限，包括truncate table命令</p>
+</li>
+<li>
+<p>Event权限代表允许查询，创建，修改，删除MySQL事件</p>
+</li>
+<li>
+<p>Execute权限代表允许执行存储过程和函数的权限</p>
+</li>
+<li>
+<p>File权限代表允许在MySQL可以访问的目录进行读写磁盘文件操作，可使用的命令包括load data infile,select &hellip; into outfile,load file()函数</p>
+</li>
+<li>
+<p>Grant option权限代表是否允许此用户授权或者收回给其他用户你给予的权限</p>
+</li>
+<li>
+<p>Index权限代表是否允许创建和删除索引</p>
+</li>
+<li>
+<p>Insert权限代表是否允许在表里插入数据，同时在执行analyze table,optimize table,repair table语句的时候也需要insert权限</p>
+</li>
+<li>
+<p>Lock权限代表允许对拥有select权限的表进行锁定，以防止其他链接对此表的读或写</p>
+</li>
+<li>
+<p>Process权限代表允许查看MySQL中的进程信息，比如执行show processlist,mysqladmin processlist, show engine等命令</p>
+</li>
+<li>
+<p>Reference权限是在5.7.6版本之后引入，代表是否允许创建外键</p>
+</li>
+<li>
+<p>Reload权限代表允许执行flush命令，指明重新加载权限表到系统内存中， refresh命令代表关闭和重新开启日志文件并刷新所有的表</p>
+</li>
+<li>
+<p>Replication client权限代表允许执行show master status,show slave status,show binary logs命令</p>
+</li>
+<li>
+<p>Replication slave权限代表允许slave主机通过此用户连接master以便建立主从复制关系</p>
+</li>
+<li>
+<p>Select权限代表允许从表中查看数据，某些不查询表数据的select执行则不需要此权限，如Select 1+1，Select PI()+2;而且select权限在执行update/delete 语句中含有where条件的情况下也是需要的</p>
+</li>
+<li>
+<p>Show databases权限代表通过执行show databases命令查看所有的数据库名</p>
+</li>
+<li>
+<p>Show view权限代表通过执行show create view命令查看视图创建的语句</p>
+</li>
+<li>
+<p>Shutdown权限代表允许关闭数据库实例，执行语句包括mysqladmin shutdown</p>
+</li>
+<li>
+<p>Super权限代表允许执行一系列数据库管理命令，包括kill强制关闭某个连接命令，change master to创建复制关系命令，以及create/alter/drop server等命令</p>
+</li>
+<li>
+<p>Trigger权限代表允许创建，删除，执行，显示触发器的权限</p>
+</li>
+<li>
+<p>Update权限代表允许修改表中的数据的权限</p>
+</li>
+<li>
+<p>Usage权限是创建一个用户之后的默认权限，其本身代表连接登录权限</p>
+</li>
+</ul>
+<h2 id="系统权限表">系统权限表<a hidden class="anchor" aria-hidden="true" href="#系统权限表">#</a></h2>
+<p>权限存储在mysql库的user,db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中</p>
+<ul>
+<li>User表:存放用户账户信息以及全局级别(所有数据库)权限，决定了来自哪些主机的哪些用户可以访问数据库实例，如果有全局权限则意味着对所有数据库都有此权限</li>
+<li>Db表:存放数据库级别的权限，决定了来自哪些主机的哪些用户可以访 问此数据库</li>
+<li>Tables_priv表:存放表级别的权限，决定了来自哪些主机的哪些用户可以 访问数据库的这个表</li>
+<li>Columns_priv表:存放列级别的权限，决定了来自哪些主机的哪些用户可 以访问数据库表的这个字段</li>
+<li>Procs_priv表:存放存储过程和函数级别的权限</li>
+</ul>
+<p>User和db权限表结构</p>
+<ul>
+<li>User权限表结构中的特殊字段
+<ul>
+<li>Plugin,password,authentication_string三个字段存放用户认证信息</li>
+<li>Password_expired设置成’Y’则表明允许DBA将此用户的密码设置成过期而且过期后要求用户的使用者重置密码(alter user/set password重置密码)</li>
+<li>Password_last_changed作为一个时间戳字段代表密码上次修改时间，执行create user/alter user/set password/grant等命令创建用户或修改用户密码时此数值自动更新</li>
+<li>Password_lifetime代表从password_last_changed时间开始此密码过期的天数</li>
+<li>Account_locked代表此用户被锁住，无法使用</li>
+</ul>
+</li>
+<li>Tables_priv和columns_priv权限表结构
+<ul>
+<li>Timestamp和grantor两个字段暂时没用</li>
+<li>Tables_priv和columns_priv权限值</li>
+</ul>
+</li>
+<li>procs_priv权限表结构
+<ul>
+<li>Routine_type是枚举类型，代表是存储过程还是函数</li>
+<li>Timestamp和grantor两个字段暂时没用</li>
+<li>系统权限表字段长度限制表</li>
+<li>权限认证中的大小写敏感问题</li>
+<li>字段user,password,authencation_string,db,table_name大小写敏感</li>
+<li>字段host,column_name,routine_name大小写不敏感</li>
+<li>User用户大小写敏感</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> abc<span style="color:#f92672">@</span>localhost;
+</span></span><span style="display:flex;"><span>ERROR <span style="color:#ae81ff">1396</span> (HY000): <span style="color:#66d9ef">Operation</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> failed <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;abc&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> Abc<span style="color:#f92672">@</span>localhost;
+</span></span><span style="display:flex;"><span>Query OK, <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">rows</span> affected (<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">01</span> sec)
+</span></span></code></pre></div><ul>
+<li>​	Host主机名大小写不敏感</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> abc<span style="color:#f92672">@</span>Localhost;
+</span></span><span style="display:flex;"><span>ERROR <span style="color:#ae81ff">1396</span> (HY000): <span style="color:#66d9ef">Operation</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> failed <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;abc&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>
+</span></span></code></pre></div><h2 id="mysql授权用户">MySQL授权用户<a hidden class="anchor" aria-hidden="true" href="#mysql授权用户">#</a></h2>
+<ul>
+<li>MySQL的授权用户由两部分组成:用户名和登录主机名</li>
+<li>表达用户的语法为‘user_name’@‘host_name’</li>
+<li>单引号不是必须，但如果其中包含特殊字符则是必须的</li>
+<li>‘’@‘localhost’代表匿名登录的用户</li>
+<li>Host_name可以使主机名或者ipv4/ipv6的地址。Localhost代表本机，127.0.0.1代表ipv4的本机地址，::1代表ipv6的本机地址</li>
+<li>Host_name字段允许使用%和_两个匹配字符，比如’%’代表所有主机，’%.mysql.com’代表来自mysql.com这个域名下的所有主机，‘192.168.1.%’代表所有来自192.168.1网段的主机</li>
+</ul>
+<h2 id="mysql修改权限的生效">MySQL修改权限的生效<a hidden class="anchor" aria-hidden="true" href="#mysql修改权限的生效">#</a></h2>
+<ul>
+<li>执行Grant,revoke,setpassword,renameuser命令修改权限之后，MySQL会自动将修改后的权限信息同步加载到系统内存中</li>
+<li>如果执行insert/update/delete操作上述的系统权限表之后，则必须再执行刷新权限命令才能同步到系统内存中，刷新权限命令包括:flush privileges/mysqladmin flush-privileges/mysqladmin reload</li>
+<li>如果是修改tables和columns级别的权限，则客户端的下次操作新权限就会生效</li>
+<li>如果是修改database级别的权限，则新权限在客户端执行use database命令后生效</li>
+<li>如果是修改global级别的权限，则需要重新创建连接新权限才能生效</li>
+<li>&ndash;skip-grant-tables可以跳过所有系统权限表而允许所有用户登录，只在特殊情况下暂时使用</li>
+</ul>
+<h2 id="mysql用户连接">MySQL用户连接<a hidden class="anchor" aria-hidden="true" href="#mysql用户连接">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysql --user<span style="color:#f92672">=</span>finley --password db_name
+</span></span><span style="display:flex;"><span>mysql -u finley -p db_name
+</span></span><span style="display:flex;"><span>mysql --user<span style="color:#f92672">=</span>finley --password<span style="color:#f92672">=</span>password db_name 
+</span></span><span style="display:flex;"><span>shell&gt; mysql -u finley -ppassword db_name
+</span></span></code></pre></div><h2 id="创建mysql用户">创建MySQL用户<a hidden class="anchor" aria-hidden="true" href="#创建mysql用户">#</a></h2>
+<ul>
+<li>有两种方式创建MySQL授权用户
+<ul>
+<li>执行createuser/grant命令(推荐方式)</li>
+<li>通过insert语句直接操作MySQL系统权限表</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;finley&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;some_pass&#39;</span>; 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span>GRANTALLPRIVILEGESON<span style="color:#f92672">*</span>.<span style="color:#f92672">*</span><span style="color:#66d9ef">TO</span><span style="color:#e6db74">&#39;finley&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">WITH</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">OPTION</span>;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;finley&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;some_pass&#39;</span>;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;finley&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%‘ WITH GRANT OPTION;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mysql&gt; CREATE USER &#39;</span><span style="color:#66d9ef">admin</span><span style="color:#e6db74">&#39;@&#39;</span>localhost<span style="color:#e6db74">&#39; IDENTIFIED BY &#39;</span>admin_pass<span style="color:#e6db74">&#39;;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mysql&gt; GRANT RELOAD,PROCESS ON *.* TO &#39;</span><span style="color:#66d9ef">admin</span><span style="color:#e6db74">&#39;@&#39;</span>localhost<span style="color:#e6db74">&#39;;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mysql&gt; grant select(id) on test.temp to cdq@localhost;
+</span></span></span></code></pre></div><p>创建MySQL用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;custom&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;obscure&#39;</span>; mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span>,<span style="color:#66d9ef">INSERT</span>,<span style="color:#66d9ef">UPDATE</span>,<span style="color:#66d9ef">DELETE</span>,<span style="color:#66d9ef">CREATE</span>,<span style="color:#66d9ef">DROP</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">ON</span> bankaccount.<span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;custom&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;custom&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;host47.example.com&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;obscure&#39;</span>; mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span>,<span style="color:#66d9ef">INSERT</span>,<span style="color:#66d9ef">UPDATE</span>,<span style="color:#66d9ef">DELETE</span>,<span style="color:#66d9ef">CREATE</span>,<span style="color:#66d9ef">DROP</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">ON</span> expenses.<span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;custom&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;host47.example.com&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;custom&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%.example.com&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;obscure&#39;</span>; 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span>,<span style="color:#66d9ef">INSERT</span>,<span style="color:#66d9ef">UPDATE</span>,<span style="color:#66d9ef">DELETE</span>,<span style="color:#66d9ef">CREATE</span>,<span style="color:#66d9ef">DROP</span>
+</span></span></code></pre></div><h2 id="回收mysql用户权限">回收MySQL用户权限<a hidden class="anchor" aria-hidden="true" href="#回收mysql用户权限">#</a></h2>
+<ul>
+<li>通过revoke命令收回用户权限</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">select</span> <span style="color:#66d9ef">on</span> <span style="color:#f92672">`</span>sys<span style="color:#f92672">`</span>.<span style="color:#f92672">`</span>sys_config<span style="color:#f92672">`</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;mysql.sys&#39;</span><span style="color:#f92672">@</span>localhost; 
+</span></span></code></pre></div><h2 id="删除mysql用户">删除MySQL用户<a hidden class="anchor" aria-hidden="true" href="#删除mysql用户">#</a></h2>
+<ul>
+<li>通过执行drop user命令删除MySQL用户</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span></code></pre></div><h2 id="设置mysql用户资源限制">设置MySQL用户资源限制<a hidden class="anchor" aria-hidden="true" href="#设置mysql用户资源限制">#</a></h2>
+<ul>
+<li>通过设置全局变量max_user_connections可以限制所有用户在同一时间连接MySQL实例的数量，但此参数无法对每个用户区别对待，所以 MySQL提供了对每个用户的资源限制管理</li>
+<li>MAX_QUERIES_PER_HOUR:一个用户在一个小时内可以执行查询的次数(基本包含所有语句)</li>
+<li>MAX_UPDATES_PER_HOUR:一个用户在一个小时内可以执行修改的次数(仅包含修改数据库或表的语句)</li>
+<li>MAX_CONNECTIONS_PER_HOUR:一个用户在一个小时内可以连接MySQL的时间</li>
+<li>MAX_USER_CONNECTIONS:一个用户可以在同一时间连接MySQL实例的数量</li>
+<li>从5.0.3版本开始，对用户‘user’@‘%.example.com’的资源限制是指所有通过example.com域名主机连接user用户的连接，而不是分别指从 host1.example.com和host2.example.com主机过来的连接</li>
+</ul>
+<h2 id="设置mysql用户资源限制-1">设置MySQL用户资源限制<a hidden class="anchor" aria-hidden="true" href="#设置mysql用户资源限制-1">#</a></h2>
+<ul>
+<li>通过执行createuser/alteruser设置/修改用户的资源限制</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;francis&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;frank&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-&gt;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> MAX_QUERIES_PER_HOUR <span style="color:#ae81ff">20</span> MAX_UPDATES_PER_HOUR <span style="color:#ae81ff">10</span> MAX_CONNECTIONS_PER_HOUR <span style="color:#ae81ff">5</span> MAX_USER_CONNECTIONS <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;francis&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">WITH</span> MAX_QUERIES_PER_HOUR <span style="color:#ae81ff">100</span>;
+</span></span></code></pre></div><ul>
+<li>取消某项资源限制既是把原先的值修改成0</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;francis&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">WITH</span> MAX_CONNECTIONS_PER_HOUR <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div><ul>
+<li>当针对某个用户的max_user_connections非0时，则忽略全局系统参数max_user_connections，反之则全局系统参数生效</li>
+<li>设置MySQL用户的密码</li>
+<li>执行create user创建用户和密码</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;mypass&#39;</span>;
+</span></span></code></pre></div><ul>
+<li>修改用户密码的方式包括:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;mypass&#39;</span>;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">SET</span> PASSWORD <span style="color:#66d9ef">FOR</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#f92672">=</span> PASSWORD(<span style="color:#e6db74">&#39;mypass&#39;</span>);
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">USAGE</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;mypass&#39;</span>; 
+</span></span><span style="display:flex;"><span>shell<span style="color:#f92672">&gt;</span> mysqladmin <span style="color:#f92672">-</span>u user_name <span style="color:#f92672">-</span>h host_name password <span style="color:#e6db74">&#34;new_password&#34;</span>;
+</span></span></code></pre></div><ul>
+<li>修改本身用户密码的方式包括:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#66d9ef">USER</span>() IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;mypass&#39;</span>; 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">SET</span> PASSWORD <span style="color:#f92672">=</span> PASSWORD(<span style="color:#e6db74">&#39;mypass&#39;</span>);
+</span></span></code></pre></div><h2 id="设置mysql用户密码过期策略">设置MySQL用户密码过期策略<a hidden class="anchor" aria-hidden="true" href="#设置mysql用户密码过期策略">#</a></h2>
+<ul>
+<li>设置系统参数default_password_lifetime作用于所有的用户账户</li>
+<li>default_password_lifetime=180 设置180天过期</li>
+<li>default_password_lifetime=0 设置密码不过期</li>
+<li>如果为每个用户设置了密码过期策略，则会覆盖上述系统参数</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> PASSWORD EXPIRE INTERVAL90DAY;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> PASSWORD EXPIRE INEVER;<span style="color:#960050;background-color:#1e0010">密码不过期</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span><span style="color:#960050;background-color:#1e0010">‘</span>jeffrey<span style="color:#960050;background-color:#1e0010">’</span><span style="color:#f92672">@</span><span style="color:#960050;background-color:#1e0010">‘</span>localhost<span style="color:#960050;background-color:#1e0010">’</span> PASSWORD EXPIRE <span style="color:#66d9ef">DEFAULT</span>;<span style="color:#960050;background-color:#1e0010">默认过期策略</span>
+</span></span></code></pre></div><ul>
+<li>手动强制某个用户密码过期</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;jeffrey&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> PASSWORD EXPIRE;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>ERROR <span style="color:#ae81ff">1820</span> (HY000): You must <span style="color:#66d9ef">SET</span> PASSWORD <span style="color:#66d9ef">before</span> executing this <span style="color:#66d9ef">statement</span> 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#66d9ef">USER</span>() IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;new_password&#39;</span>;
+</span></span><span style="display:flex;"><span>Query OK, <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">rows</span> affected (<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">01</span> sec)
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span>
+</span></span></code></pre></div><h2 id="mysql用户lock">MySQL用户lock<a hidden class="anchor" aria-hidden="true" href="#mysql用户lock">#</a></h2>
+<p>通过执行create user/alter user命令中带account lock/unlock子句设置用户的lock状态
+Createuser语句默认的用户是unlock状态</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> abc2<span style="color:#f92672">@</span>localhost identified <span style="color:#66d9ef">by</span> <span style="color:#e6db74">&#39;mysql&#39;</span> account <span style="color:#66d9ef">lock</span>; 
+</span></span><span style="display:flex;"><span>QueryOK,<span style="color:#ae81ff">0</span>rowsaffected(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">01</span>sec)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Alter</span> user语句默认不会修改用户的lock<span style="color:#f92672">/</span>unlock状态 
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;mysql.sys&#39;</span><span style="color:#f92672">@</span>localhost account <span style="color:#66d9ef">lock</span>;
+</span></span><span style="display:flex;"><span>Query OK,<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">row</span> saffected(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">00</span>sec)
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;mysql.sys&#39;</span><span style="color:#f92672">@</span>localhost account unlock;
+</span></span><span style="display:flex;"><span>Query OK,<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">row</span> saffected(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">00</span>sec)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 当客户端使用lock状态的用户登录MySQL时，会收到如此报错 Access denied for user &#39;user_name&#39;@&#39;host_name&#39;.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Account <span style="color:#66d9ef">is</span> locked.
+</span></span></code></pre></div><h2 id="企业应用中的常规mysql用户">企业应用中的常规MySQL用户<a hidden class="anchor" aria-hidden="true" href="#企业应用中的常规mysql用户">#</a></h2>
+<ul>
+<li>企业生产系统中MySQL用户的创建通常由DBA统一协调创建，而且按需创建</li>
+<li>DBA通常直接使用root用户来管理数据库</li>
+<li>通常会创建指定业务数据库上的增删改查、临时表、执行存储过程的权限给应用程序来连接数据库</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">Create</span> <span style="color:#66d9ef">user</span> app_full identified <span style="color:#66d9ef">by</span> <span style="color:#960050;background-color:#1e0010">‘</span>mysql<span style="color:#960050;background-color:#1e0010">’</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Grant</span> <span style="color:#66d9ef">select</span>,<span style="color:#66d9ef">update</span>,<span style="color:#66d9ef">insert</span>,<span style="color:#66d9ef">delete</span>,<span style="color:#66d9ef">create</span> <span style="color:#66d9ef">temporary</span> tables,<span style="color:#66d9ef">execute</span> <span style="color:#66d9ef">on</span> esn.<span style="color:#f92672">*</span> <span style="color:#66d9ef">to</span>
+</span></span><span style="display:flex;"><span>app_full<span style="color:#f92672">@</span><span style="color:#960050;background-color:#1e0010">’</span><span style="color:#ae81ff">10</span>.<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">0</span>.<span style="color:#f92672">%</span><span style="color:#960050;background-color:#1e0010">’</span>;
+</span></span><span style="display:flex;"><span>mysql<span style="color:#f92672">&gt;</span><span style="color:#66d9ef">show</span> grants <span style="color:#66d9ef">for</span> app_full<span style="color:#f92672">@</span><span style="color:#e6db74">&#39;10.0.0.%&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#75715e">------------------------------------------------------------------------------------------------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>Grantsforapp_full<span style="color:#f92672">@</span><span style="color:#ae81ff">10</span>.<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">0</span>.<span style="color:#f92672">%</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#75715e">------------------------------------------------------------------------------------------------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>GRANTUSAGEON<span style="color:#f92672">*</span>.<span style="color:#f92672">*</span><span style="color:#66d9ef">TO</span><span style="color:#e6db74">&#39;app_full&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;10.0.0.%&#39;</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span>, <span style="color:#66d9ef">INSERT</span>, <span style="color:#66d9ef">UPDATE</span>, <span style="color:#66d9ef">DELETE</span>, <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TEMPORARY</span> TABLES, <span style="color:#66d9ef">EXECUTE</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">`</span>esn<span style="color:#f92672">`</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;app_full&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;10.0.0.%&#39;</span> <span style="color:#f92672">|</span>
+</span></span></code></pre></div><ul>
+<li>通常也会创建指定业务数据库上的只读权限给特定应用程序或某些高级别人员来查询数据，防止数据被修改</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">Create</span> <span style="color:#66d9ef">user</span> app_readonly identified <span style="color:#66d9ef">by</span> <span style="color:#960050;background-color:#1e0010">‘</span>mysql<span style="color:#960050;background-color:#1e0010">’</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Grant</span> <span style="color:#66d9ef">select</span> <span style="color:#66d9ef">on</span> esn.<span style="color:#f92672">*</span> <span style="color:#66d9ef">to</span> app_readonly identified <span style="color:#66d9ef">by</span> <span style="color:#960050;background-color:#1e0010">‘</span>mysq<span style="color:#960050;background-color:#1e0010">’</span>;
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E6%9D%83%E9%99%90/">权限</a></li>
+      <li><a href="https://iblog.zone/tags/mysql/">mysql</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/microsoft-sql-server-2008-r2%E5%AE%89%E8%A3%85/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Microsoft SQL Server 2008 R2安装</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Nginx常用操作及配置</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

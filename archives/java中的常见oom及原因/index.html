@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java中的常见OOM及原因 | ylw&#39;s blog</title>
+<meta name="keywords" content="java, 错误排查" />
+<meta name="description" content="Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。
+java.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。
+堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。
+引起空间不足的原因主要有：
+ 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。
+引起元数据区空间不足的原因主要有：
+ 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。
+java.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。
+永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。
+java.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：
+ 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈&#43;JVM的虚拟机栈 = 8MB &#43; 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。
+解决办法从原因中找：
+ 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。
+java.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java中的常见OOM及原因" />
+<meta property="og:description" content="Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。
+java.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。
+堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。
+引起空间不足的原因主要有：
+ 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。
+引起元数据区空间不足的原因主要有：
+ 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。
+java.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。
+永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。
+java.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：
+ 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈&#43;JVM的虚拟机栈 = 8MB &#43; 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。
+解决办法从原因中找：
+ 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。
+java.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-10T16:20:43&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-10T16:20:43&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java中的常见OOM及原因"/>
+<meta name="twitter:description" content="Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。
+java.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。
+堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。
+引起空间不足的原因主要有：
+ 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。
+引起元数据区空间不足的原因主要有：
+ 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。
+java.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。
+永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。
+java.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：
+ 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈&#43;JVM的虚拟机栈 = 8MB &#43; 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。
+解决办法从原因中找：
+ 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。
+java.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java中的常见OOM及原因",
+      "item": "https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java中的常见OOM及原因",
+  "name": "Java中的常见OOM及原因",
+  "description": "Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。\njava.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。\n堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。\n引起空间不足的原因主要有：\n 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。\n引起元数据区空间不足的原因主要有：\n 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。\njava.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。\n永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。\njava.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：\n 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈+JVM的虚拟机栈 = 8MB + 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。\n解决办法从原因中找：\n 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。\njava.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。",
+  "keywords": [
+    "java", "错误排查"
+  ],
+  "articleBody": "Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。\njava.lang.OutOfMemoryError:Java heap space 这是最常见的OOM原因。\n堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。\n引起空间不足的原因主要有：\n 业务高峰，创建对象过多 内存泄露 内存碎片严重，无法分配给大对象  java.lang.OutOfMemoryError:Metaspace 方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。\n引起元数据区空间不足的原因主要有：\n 加载的类太多，常见于Tomcat等容器中  但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。\njava.lang.OutOfMemoryError:Permgen space jdk7中，方法区被实现在永久代中，错误原因同上。\n永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。\njava.lang.OutOfMemoryError:Unable to create new native thread 以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：\n 进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈+JVM的虚拟机栈 = 8MB + 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。 进程和操作系统的线程数限制。 Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。  当无法在操作系统中继续创建线程时，抛出上述异常。\n解决办法从原因中找：\n 内存资源：调小OS的线程栈、JVM的虚拟机栈。 线程数：增大线程数限制。 pid：增大pid范围。  其他异常 java.lang.OutOfMemoryError:GC overhead limit exceeded 默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。\njava.lang.OutOfMemoryError:Out of swap space 如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。\n",
+  "wordCount" : "54",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-10T16:20:43Z",
+  "dateModified": "2021-12-10T16:20:43Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java中的常见OOM及原因
+    </h1>
+    <div class="post-meta"><span title='2021-12-10 16:20:43 +0000 UTC'>2021-12-10</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul><ul>
+                    <li>
+                        <a href="#javalangoutofmemoryerrorjava-heap-space" aria-label="java.lang.OutOfMemoryError:Java heap space">java.lang.OutOfMemoryError:Java heap space</a></li>
+                    <li>
+                        <a href="#javalangoutofmemoryerrormetaspace" aria-label="java.lang.OutOfMemoryError:Metaspace">java.lang.OutOfMemoryError:Metaspace</a></li>
+                    <li>
+                        <a href="#javalangoutofmemoryerrorpermgen-space" aria-label="java.lang.OutOfMemoryError:Permgen space">java.lang.OutOfMemoryError:Permgen space</a></li>
+                    <li>
+                        <a href="#javalangoutofmemoryerrorunable-to-create-new-native-thread" aria-label="java.lang.OutOfMemoryError:Unable to create new native thread">java.lang.OutOfMemoryError:Unable to create new native thread</a></li></ul>
+                        
+                    <li>
+                        <a href="#%e5%85%b6%e4%bb%96%e5%bc%82%e5%b8%b8" aria-label="其他异常">其他异常</a><ul>
+                            
+                    <li>
+                        <a href="#javalangoutofmemoryerrorgc-overhead-limit-exceeded" aria-label="java.lang.OutOfMemoryError:GC overhead limit exceeded">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li>
+                    <li>
+                        <a href="#javalangoutofmemoryerrorout-of-swap-space" aria-label="java.lang.OutOfMemoryError:Out of swap space">java.lang.OutOfMemoryError:Out of swap space</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><p>Java中的OOM（Out of Memory）指java.lang.OutOfMemoryError错误。了解JVM的基本原理后，很容易理解以下几种常见的OOM。</p>
+<h3 id="javalangoutofmemoryerrorjava-heap-space">java.lang.OutOfMemoryError:Java heap space<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrorjava-heap-space">#</a></h3>
+<p>这是最常见的OOM原因。</p>
+<p>堆中主要存放各种对象实例，还有常量池等结构。当JVM发现堆中没有足够的空间分配给新对象时，抛出该异常。具体来讲，在刚发现空间不足时，会先进行一次Full GC，如果GC后还是空间不足，再抛出异常。</p>
+<p>引起空间不足的原因主要有：</p>
+<ul>
+<li>业务高峰，创建对象过多</li>
+<li>内存泄露</li>
+<li>内存碎片严重，无法分配给大对象</li>
+</ul>
+<h3 id="javalangoutofmemoryerrormetaspace">java.lang.OutOfMemoryError:Metaspace<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrormetaspace">#</a></h3>
+<p>方法区主要存储类的元信息，实现在元数据区。当JVM发现元数据区没有足够的空间分配给加载的类时，抛出该异常。</p>
+<p>引起元数据区空间不足的原因主要有：</p>
+<ul>
+<li>加载的类太多，常见于Tomcat等容器中</li>
+</ul>
+<p>但是元数据区被实现在堆外，主要受到进程本身的内存限制，这种实现下很难溢出。</p>
+<h3 id="javalangoutofmemoryerrorpermgen-space">java.lang.OutOfMemoryError:Permgen space<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrorpermgen-space">#</a></h3>
+<p>jdk7中，方法区被实现在永久代中，错误原因同上。</p>
+<p>永久代非常小，而且不会被回收，很容易溢出，因此，jdk8彻底废除了永久代，将方法区实现在元数据区。</p>
+<h3 id="javalangoutofmemoryerrorunable-to-create-new-native-thread">java.lang.OutOfMemoryError:Unable to create new native thread<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrorunable-to-create-new-native-thread">#</a></h3>
+<p>以Linux系统为例，JVM创建的线程与操作系统中的线程一一对应，受到以下限制：</p>
+<ul>
+<li>进程和操作系统的内存资源限制。其中，一个JVM线程至少要占用OS的线程栈+JVM的虚拟机栈 = 8MB + 1MB = 9MB（当然JVM实现可以选择不使用这1MB的JVM虚拟机栈）。</li>
+<li>进程和操作系统的线程数限制。</li>
+<li>Linux中的线程被实现为轻量级进程，因此，还受到pid数量的限制。</li>
+</ul>
+<p>当无法在操作系统中继续创建线程时，抛出上述异常。</p>
+<p>解决办法从原因中找：</p>
+<ul>
+<li>内存资源：调小OS的线程栈、JVM的虚拟机栈。</li>
+<li>线程数：增大线程数限制。</li>
+<li>pid：增大pid范围。</li>
+</ul>
+<h2 id="其他异常">其他异常<a hidden class="anchor" aria-hidden="true" href="#其他异常">#</a></h2>
+<h3 id="javalangoutofmemoryerrorgc-overhead-limit-exceeded">java.lang.OutOfMemoryError:GC overhead limit exceeded<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrorgc-overhead-limit-exceeded">#</a></h3>
+<p>默认配置下，如果GC花费了98%的时间，回收的内存都不足2%的话，抛出该异常。</p>
+<h3 id="javalangoutofmemoryerrorout-of-swap-space">java.lang.OutOfMemoryError:Out of swap space<a hidden class="anchor" aria-hidden="true" href="#javalangoutofmemoryerrorout-of-swap-space">#</a></h3>
+<p>如果JVM申请的内存大于可用物理内存，操作系统会将内存中的数据交换到磁盘上去（交换区）。如果交换区空间不足，抛出该异常。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/java/">java</a></li>
+      <li><a href="https://iblog.zone/tags/%E9%94%99%E8%AF%AF%E6%8E%92%E6%9F%A5/">错误排查</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Docker 常用命令大全</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E4%BD%BF%E7%94%A8%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E5%B0%86hexo%E9%83%A8%E7%BD%B2%E5%88%B0%E8%85%BE%E8%AE%AF%E8%BD%BB%E9%87%8F%E7%BA%A7%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>使用宝塔面板将Hexo部署到腾讯轻量级应用服务器</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

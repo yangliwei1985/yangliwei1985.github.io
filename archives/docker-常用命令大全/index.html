@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Docker 常用命令大全 | ylw&#39;s blog</title>
+<meta name="keywords" content="docker" />
+<meta name="description" content="本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。
+容器生命周期管理命令 run 创建一个新的容器。
+# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Docker 常用命令大全" />
+<meta property="og:description" content="本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。
+容器生命周期管理命令 run 创建一个新的容器。
+# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-11T18:14:07&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-11T18:14:07&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker 常用命令大全"/>
+<meta name="twitter:description" content="本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。
+容器生命周期管理命令 run 创建一个新的容器。
+# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数："/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Docker 常用命令大全",
+      "item": "https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker 常用命令大全",
+  "name": "Docker 常用命令大全",
+  "description": "本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。\n容器生命周期管理命令 run 创建一个新的容器。\n# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：",
+  "keywords": [
+    "docker"
+  ],
+  "articleBody": "本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。\n容器生命周期管理命令 run 创建一个新的容器。\n# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：\n -s : 发送什么信号到容器，默认 KILL  # 根据容器名字杀掉容器  docker kill tomcat7  # 根据容器ID杀掉容器  docker kill 65d4a94f7a39 rm 删除一个或多个容器。\n# 强制删除容器 db01、db02：  docker rm -f db01 db02  # 删除容器 nginx01, 并删除容器挂载的数据卷：  docker rm -v nginx01  # 删除所有已经停止的容器：  docker rm $(docker ps -a -q) create 创建一个新的容器但不启动它。\n# 使用docker镜像nginx:latest创建一个容器,并将容器命名为mynginx  docker create --name mynginx nginx:latest exec 在运行的容器中执行命令。可选参数：\n -d : 分离模式: 在后台运行 -i : 即使没有附加也保持STDIN 打开 -t : 分配一个伪终端  # 在容器 mynginx 中以交互模式执行容器内 /root/nginx.sh 脚本  docker exec -it mynginx /bin/sh /root/nginx.sh  # 在容器 mynginx 中开启一个交互模式的终端  docker exec -i -t mynginx /bin/bash  # 也可以通过 docker ps -a 命令查看已经在运行的容器，然后使用容器 ID 进入容器。  docker ps -a docker exec -it 9df70f9a0714 /bin/bash pause/unpause  docker pause :暂停容器中所有的进程。 docker unpause :恢复容器中所有的进程。  # 暂停数据库容器db01提供服务。  docker pause db01  # 恢复数据库容器 db01 提供服务  docker unpause db0 容器操作命令 ps 列出容器。可选参数：\n -a : 显示所有的容器，包括未运行的。 -f : 根据条件过滤显示的内容。 –format : 指定返回值的模板文件。 -l : 显示最近创建的容器。 -n : 列出最近创建的n个容器。 –no-trunc : 不截断输出。 -q : 静默模式，只显示容器编号。 -s : 显示总的文件大小。  # 列出所有在运行的容器信息。  docker ps  # 列出最近创建的5个容器信息。  docker ps -n 5  # 列出所有创建的容器ID。  docker ps -a -q  补充说明：\n容器的7种状态：created（已创建）、restarting（重启中）、running（运行中）、removing（迁移中）、paused（暂停）、exited（停止）、dead（死亡）。\n inspect 获取容器/镜像的元数据。可选参数：\n -f : 指定返回值的模板文件。 -s : 显示总的文件大小。 –type : 为指定类型返回JSON。  # 获取镜像mysql:5.7的元信息。  docker inspect mysql:5.7  # 获取正在运行的容器mymysql的 IP。  docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mymysql top 查看容器中运行的进程信息，支持 ps 命令参数。\n# 查看容器mymysql的进程信息。  docker top mymysql  # 查看所有运行容器的进程信息。  for i in `docker ps |grep Up|awk '{print $1}'`;do echo \\ \u0026\u0026docker top $i; done events 获取实时事件。参数说明：\n -f ： 根据条件过滤事件； –since ： 从指定的时间戳后显示所有事件； –until ： 流水时间显示到指定的时间为止；  # 显示docker 2016年7月1日后的所有事件。  docker events --since=\"1467302400\"  # 显示docker 镜像为mysql:5.6 2016年7月1日后的相关事件。  docker events -f \"image\"=\"mysql:5.6\" --since=\"1467302400\"  说明：如果指定的时间是到秒级的，需要将时间转成时间戳。如果时间为日期的话，可以直接使用，如–since=“2016-07-01”。\n logs 获取容器的日志。参数说明：\n -f : 跟踪日志输出 –since : 显示某个开始时间的所有日志 -t : 显示时间戳 –tail : 仅列出最新N条容器日志  # 跟踪查看容器mynginx的日志输出。  docker logs -f mynginx  # 查看容器mynginx从2016年7月1日后的最新10条日志。  docker logs --since=\"2016-07-01\" --tail=10 mynginx export 将文件系统作为一个tar归档文件导出到STDOUT。参数说明：\n -o : 将输入内容写到文件。  # 将id为a404c6c174a2的容器按日期保存为tar文件。  docker export -o mysql-`date +%Y%m%d`.tar a404c6c174a2  ls mysql-`date +%Y%m%d`.tar port 列出指定的容器的端口映射。\n# 查看容器mynginx的端口映射情况。  docker port mymysql 容器rootfs命令 commit 从容器创建一个新的镜像。参数说明：\n -a : 提交的镜像作者； -c : 使用Dockerfile指令来创建镜像； -m : 提交时的说明文字； -p : 在commit时，将容器暂停。  # 将容器a404c6c174a2 保存为新的镜像, # 并添加提交人信息和说明信息。  docker commit -a \"guodong\" -m \"my db\" a404c6c174a2 mymysql:v1 cp 用于容器与主机之间的数据拷贝。参数说明：\n -L : 保持源目标中的链接  # 将主机/www/runoob目录拷贝到容器96f7f14e99ab的/www目录下。  docker cp /www/runoob 96f7f14e99ab:/www/  # 将主机/www/runoob目录拷贝到容器96f7f14e99ab中，目录重命名为www。  docker cp /www/runoob 96f7f14e99ab:/www  # 将容器96f7f14e99ab的/www目录拷贝到主机的/tmp目录中。  docker cp 96f7f14e99ab:/www /tmp/ diff 检查容器里文件结构的更改。\n# 查看容器mymysql的文件结构更改。  docker diff mymysql 镜像仓库命令 login/logout docker login : 登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub**docker logout :**登出一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub参数说明：\n -u : 登陆的用户名 -p : 登陆的密码  # 登陆到Docker Hub  docker login -u 用户名 -p 密码  # 登出Docker Hub  docker logout pull 从镜像仓库中拉取或者更新指定镜像。参数说明：\n -a : 拉取所有 tagged 镜像 –disable-content-trust : 忽略镜像的校验,默认开启  # 从Docker Hub下载java最新版镜像。  docker pull java  # 从Docker Hub下载REPOSITORY为java的所有镜像。  docker pull -a java push 将本地的镜像上传到镜像仓库,要先登陆到镜像仓库。参数说明：\n –disable-content-trust : 忽略镜像的校验,默认开启  # 上传本地镜像myapache:v1到镜像仓库中。  docker push myapache:v1 search 从Docker Hub查找镜像。参数说明：\n –automated : 只列出 automated build类型的镜像； –no-trunc : 显示完整的镜像描述； -f : 列出指定条件的镜像。  # 从 Docker Hub 查找所有镜像名包含 java，并且收藏数大于 10 的镜像  docker search -f stars=10 java  NAME DESCRIPTION STARS OFFICIAL AUTOMATED java Java is a concurrent, class-based... 1037 [OK] anapsix/alpine-java Oracle Java 8 (and 7) with GLIBC ... 115 [OK] develar/java 46 [OK] 每列参数说明：\n NAME: 镜像仓库源的名称 DESCRIPTION: 镜像的描述 OFFICIAL: 是否 docker 官方发布 stars: 类似 Github 里面的 star，表示点赞、喜欢的意思 AUTOMATED: 自动构建  本地镜像管理命令 images 列出本地镜像。参数说明：\n -a : 列出本地所有的镜像（含中间映像层，默认情况下，过滤掉中间映像层）； –digests : 显示镜像的摘要信息； -f : 显示满足条件的镜像； –format : 指定返回值的模板文件； –no-trunc : 显示完整的镜像信息； -q : 只显示镜像ID。  # 查看本地镜像列表。  docker images  # 列出本地镜像中REPOSITORY为ubuntu的镜像列表。  docker images ubuntu rmi 删除本地一个或多个镜像。参数说明：\n -f : 强制删除； –no-prune : 不移除该镜像的过程镜像，默认移除；  # 强制删除本地镜像 guodong/ubuntu:v4。  docker rmi -f guodong/ubuntu:v4 tag 标记本地镜像，将其归入某一仓库。\n# 将镜像ubuntu:15.10标记为 runoob/ubuntu:v3 镜像。  docker tag ubuntu:15.10 runoob/ubuntu:v3 build 用于使用 Dockerfile 创建镜像。参数说明：\n –build-arg=[] : 设置镜像创建时的变量； –cpu-shares : 设置 cpu 使用权重； –cpu-period : 限制 CPU CFS周期； –cpu-quota : 限制 CPU CFS配额； –cpuset-cpus : 指定使用的CPU id； –cpuset-mems : 指定使用的内存 id； –disable-content-trust : 忽略校验，默认开启； -f : 指定要使用的Dockerfile路径； –force-rm : 设置镜像过程中删除中间容器； –isolation : 使用容器隔离技术； –label=[] : 设置镜像使用的元数据； -m : 设置内存最大值； –memory-swap : 设置Swap的最大值为内存+swap，\"-1\"表示不限swap； –no-cache : 创建镜像的过程不使用缓存； –pull : 尝试去更新镜像的新版本； –quiet, -q : 安静模式，成功后只输出镜像 ID； –rm : 设置镜像成功后删除中间容器； –shm-size : 设置/dev/shm的大小，默认值是64M； –ulimit : Ulimit配置。 –squash : 将 Dockerfile 中所有的操作压缩为一层。 –tag, -t: 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。 –network: 默认 default。在构建期间设置RUN指令的网络模式  # 使用当前目录的 Dockerfile 创建镜像，标签为 runoob/ubuntu:v1  docker build -t runoob/ubuntu:v1 .  # 使用URL github.com/creack/docker-firefox 的 Dockerfile 创建镜像  docker build github.com/creack/docker-firefox  # 通过 -f Dockerfile文件的位置 创建镜像  docker build -f /path/to/a/Dockerfile . history 查看指定镜像的创建历史。参数说明：\n -H : 以可读的格式打印镜像大小和日期，默认为true； –no-trunc : 显示完整的提交记录； -q : 仅列出提交记录ID。  # 查看本地镜像 guodong/ubuntu:v3 的创建历史。  docker history guodong/ubuntu:v3 save 将指定镜像保存成 tar 归档文件。参数说明：\n -o : 输出到的文件。  # 将镜像 runoob/ubuntu:v3 生成 my_ubuntu_v3.tar 文档  docker save -o my_ubuntu_v3.tar runoob/ubuntu:v3 load 导入使用 docker save 命令导出的镜像。参数说明：\n –input , -i : 指定导入的文件，代替 STDIN。 –quiet , -q : 精简输出信息。  # 导入镜像  docker load --input fedora.tar import 从归档文件中创建镜像。参数说明：\n -c : 应用docker 指令创建镜像； -m : 提交时的说明文字；  # 从镜像归档文件my_ubuntu_v3.tar创建镜像，命名为runoob/ubuntu:v4  docker import my_ubuntu_v3.tar runoob/ubuntu:v4 基础版本信息命令 info 显示 Docker 系统信息，包括镜像和容器数。\n# 查看docker系统信息。  docker info version 显示 Docker 版本信息。\ndocker version ",
+  "wordCount" : "818",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-11T18:14:07Z",
+  "dateModified": "2021-12-11T18:14:07Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Docker 常用命令大全
+    </h1>
+    <div class="post-meta"><span title='2021-12-11 18:14:07 +0000 UTC'>2021-12-11</span>&nbsp;·&nbsp;4 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%ae%b9%e5%99%a8%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e7%ae%a1%e7%90%86%e5%91%bd%e4%bb%a4" aria-label="容器生命周期管理命令">容器生命周期管理命令</a><ul>
+                            
+                    <li>
+                        <a href="#run" aria-label="run"><strong>run</strong></a></li>
+                    <li>
+                        <a href="#startstoprestart" aria-label="start/stop/restart"><strong>start/stop/restart</strong></a></li>
+                    <li>
+                        <a href="#kill" aria-label="kill"><strong>kill</strong></a></li>
+                    <li>
+                        <a href="#rm" aria-label="rm"><strong>rm</strong></a></li>
+                    <li>
+                        <a href="#create" aria-label="create"><strong>create</strong></a></li>
+                    <li>
+                        <a href="#exec" aria-label="exec"><strong>exec</strong></a></li>
+                    <li>
+                        <a href="#pauseunpause" aria-label="pause/unpause"><strong>pause/unpause</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%ae%b9%e5%99%a8%e6%93%8d%e4%bd%9c%e5%91%bd%e4%bb%a4" aria-label="容器操作命令">容器操作命令</a><ul>
+                            
+                    <li>
+                        <a href="#ps" aria-label="ps"><strong>ps</strong></a></li>
+                    <li>
+                        <a href="#inspect" aria-label="inspect"><strong>inspect</strong></a></li>
+                    <li>
+                        <a href="#top" aria-label="top"><strong>top</strong></a></li>
+                    <li>
+                        <a href="#events" aria-label="events"><strong>events</strong></a></li>
+                    <li>
+                        <a href="#logs" aria-label="logs"><strong>logs</strong></a></li>
+                    <li>
+                        <a href="#export" aria-label="export"><strong>export</strong></a></li>
+                    <li>
+                        <a href="#port" aria-label="port"><strong>port</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%ae%b9%e5%99%a8rootfs%e5%91%bd%e4%bb%a4" aria-label="容器rootfs命令">容器rootfs命令</a><ul>
+                            
+                    <li>
+                        <a href="#commit" aria-label="commit"><strong>commit</strong></a></li>
+                    <li>
+                        <a href="#cp" aria-label="cp"><strong>cp</strong></a></li>
+                    <li>
+                        <a href="#diff" aria-label="diff"><strong>diff</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e9%95%9c%e5%83%8f%e4%bb%93%e5%ba%93%e5%91%bd%e4%bb%a4" aria-label="镜像仓库命令">镜像仓库命令</a><ul>
+                            
+                    <li>
+                        <a href="#loginlogout" aria-label="login/logout"><strong>login/logout</strong></a></li>
+                    <li>
+                        <a href="#pull" aria-label="pull"><strong>pull</strong></a></li>
+                    <li>
+                        <a href="#push" aria-label="push"><strong>push</strong></a></li>
+                    <li>
+                        <a href="#search" aria-label="search"><strong>search</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e6%9c%ac%e5%9c%b0%e9%95%9c%e5%83%8f%e7%ae%a1%e7%90%86%e5%91%bd%e4%bb%a4" aria-label="本地镜像管理命令">本地镜像管理命令</a><ul>
+                            
+                    <li>
+                        <a href="#images" aria-label="images"><strong>images</strong></a></li>
+                    <li>
+                        <a href="#rmi" aria-label="rmi"><strong>rmi</strong></a></li>
+                    <li>
+                        <a href="#tag" aria-label="tag"><strong>tag</strong></a></li>
+                    <li>
+                        <a href="#build" aria-label="build"><strong>build</strong></a></li>
+                    <li>
+                        <a href="#history" aria-label="history"><strong>history</strong></a></li>
+                    <li>
+                        <a href="#save" aria-label="save"><strong>save</strong></a></li>
+                    <li>
+                        <a href="#load" aria-label="load"><strong>load</strong></a></li>
+                    <li>
+                        <a href="#import" aria-label="import"><strong>import</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9f%ba%e7%a1%80%e7%89%88%e6%9c%ac%e4%bf%a1%e6%81%af%e5%91%bd%e4%bb%a4" aria-label="基础版本信息命令">基础版本信息命令</a><ul>
+                            
+                    <li>
+                        <a href="#info" aria-label="info"><strong>info</strong></a></li>
+                    <li>
+                        <a href="#version" aria-label="version"><strong>version</strong></a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><p>本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。</p>
+<h2 id="容器生命周期管理命令">容器生命周期管理命令<a hidden class="anchor" aria-hidden="true" href="#容器生命周期管理命令">#</a></h2>
+<h3 id="run"><strong>run</strong><a hidden class="anchor" aria-hidden="true" href="#run">#</a></h3>
+<p>创建一个新的容器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 使用docker镜像nginx:latest以后台模式启动一个容器,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 并将容器命名为mynginx。  </span>
+</span></span><span style="display:flex;"><span>docker run --name mynginx -d nginx:latest  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用镜像 nginx:latest，以后台模式启动一个容器,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将容器的 80 端口映射到主机的 80 端口,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 主机的目录 /data 映射到容器的 /data。  </span>
+</span></span><span style="display:flex;"><span>docker run -p 80:80 -v /data:/data -d nginx:latest  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用镜像nginx:latest以交互模式启动一个容器,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在容器内执行/bin/bash命令。  </span>
+</span></span><span style="display:flex;"><span>docker run -it nginx:latest /bin/bash  
+</span></span></code></pre></div><h3 id="startstoprestart"><strong>start/stop/restart</strong><a hidden class="anchor" aria-hidden="true" href="#startstoprestart">#</a></h3>
+<ul>
+<li><strong>docker start</strong> : 启动一个或多个已经被停止的容器。</li>
+<li><strong>docker stop</strong> : 停止一个运行中的容器。</li>
+<li><strong>docker restart</strong> : 重启容器。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 启动已被停止的容器mynginx  </span>
+</span></span><span style="display:flex;"><span>docker start mynginx  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 停止运行中的容器mynginx  </span>
+</span></span><span style="display:flex;"><span>docker stop mynginx  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重启容器mynginx  </span>
+</span></span><span style="display:flex;"><span>docker restart mynginx  
+</span></span></code></pre></div><h3 id="kill"><strong>kill</strong><a hidden class="anchor" aria-hidden="true" href="#kill">#</a></h3>
+<p>杀掉一个运行中的容器。可选参数：</p>
+<ul>
+<li><strong>-s :</strong> 发送什么信号到容器，默认 KILL</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 根据容器名字杀掉容器  </span>
+</span></span><span style="display:flex;"><span>docker kill tomcat7  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 根据容器ID杀掉容器  </span>
+</span></span><span style="display:flex;"><span>docker kill 65d4a94f7a39  
+</span></span></code></pre></div><h3 id="rm"><strong>rm</strong><a hidden class="anchor" aria-hidden="true" href="#rm">#</a></h3>
+<p>删除一个或多个容器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 强制删除容器 db01、db02：  </span>
+</span></span><span style="display:flex;"><span>docker rm -f db01 db02  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除容器 nginx01, 并删除容器挂载的数据卷：  </span>
+</span></span><span style="display:flex;"><span>docker rm -v nginx01  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除所有已经停止的容器：  </span>
+</span></span><span style="display:flex;"><span>docker rm <span style="color:#66d9ef">$(</span>docker ps -a -q<span style="color:#66d9ef">)</span>  
+</span></span></code></pre></div><h3 id="create"><strong>create</strong><a hidden class="anchor" aria-hidden="true" href="#create">#</a></h3>
+<p>创建一个新的容器但不启动它。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 使用docker镜像nginx:latest创建一个容器,并将容器命名为mynginx  </span>
+</span></span><span style="display:flex;"><span>docker create --name mynginx nginx:latest     
+</span></span></code></pre></div><h3 id="exec"><strong>exec</strong><a hidden class="anchor" aria-hidden="true" href="#exec">#</a></h3>
+<p>在运行的容器中执行命令。可选参数：</p>
+<ul>
+<li><strong>-d :</strong> 分离模式: 在后台运行</li>
+<li><strong>-i :</strong> 即使没有附加也保持STDIN 打开</li>
+<li><strong>-t :</strong> 分配一个伪终端</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 在容器 mynginx 中以交互模式执行容器内 /root/nginx.sh 脚本  </span>
+</span></span><span style="display:flex;"><span>docker exec -it mynginx /bin/sh /root/nginx.sh  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在容器 mynginx 中开启一个交互模式的终端  </span>
+</span></span><span style="display:flex;"><span>docker exec -i -t  mynginx /bin/bash  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 也可以通过 docker ps -a 命令查看已经在运行的容器，然后使用容器 ID 进入容器。  </span>
+</span></span><span style="display:flex;"><span>docker ps -a   
+</span></span><span style="display:flex;"><span>docker exec -it 9df70f9a0714 /bin/bash  
+</span></span></code></pre></div><h3 id="pauseunpause"><strong>pause/unpause</strong><a hidden class="anchor" aria-hidden="true" href="#pauseunpause">#</a></h3>
+<ul>
+<li><strong>docker pause</strong> :暂停容器中所有的进程。</li>
+<li><strong>docker unpause</strong> :恢复容器中所有的进程。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 暂停数据库容器db01提供服务。  </span>
+</span></span><span style="display:flex;"><span>docker pause db01  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 恢复数据库容器 db01 提供服务  </span>
+</span></span><span style="display:flex;"><span>docker unpause db0  
+</span></span></code></pre></div><h2 id="容器操作命令">容器操作命令<a hidden class="anchor" aria-hidden="true" href="#容器操作命令">#</a></h2>
+<h3 id="ps"><strong>ps</strong><a hidden class="anchor" aria-hidden="true" href="#ps">#</a></h3>
+<p>列出容器。可选参数：</p>
+<ul>
+<li><strong>-a :</strong> 显示所有的容器，包括未运行的。</li>
+<li><strong>-f :</strong> 根据条件过滤显示的内容。</li>
+<li><strong>–format :</strong> 指定返回值的模板文件。</li>
+<li><strong>-l :</strong> 显示最近创建的容器。</li>
+<li><strong>-n :</strong> 列出最近创建的n个容器。</li>
+<li><strong>–no-trunc :</strong> 不截断输出。</li>
+<li><strong>-q :</strong> 静默模式，只显示容器编号。</li>
+<li><strong>-s :</strong> 显示总的文件大小。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 列出所有在运行的容器信息。  </span>
+</span></span><span style="display:flex;"><span>docker ps  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 列出最近创建的5个容器信息。  </span>
+</span></span><span style="display:flex;"><span>docker ps -n <span style="color:#ae81ff">5</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 列出所有创建的容器ID。  </span>
+</span></span><span style="display:flex;"><span>docker ps -a -q  
+</span></span></code></pre></div><blockquote>
+<p>补充说明：</p>
+<p>容器的7种状态：created（已创建）、restarting（重启中）、running（运行中）、removing（迁移中）、paused（暂停）、exited（停止）、dead（死亡）。</p>
+</blockquote>
+<h3 id="inspect"><strong>inspect</strong><a hidden class="anchor" aria-hidden="true" href="#inspect">#</a></h3>
+<p>获取容器/镜像的元数据。可选参数：</p>
+<ul>
+<li><strong>-f :</strong> 指定返回值的模板文件。</li>
+<li><strong>-s :</strong> 显示总的文件大小。</li>
+<li><strong>–type :</strong> 为指定类型返回JSON。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 获取镜像mysql:5.7的元信息。  </span>
+</span></span><span style="display:flex;"><span>docker inspect mysql:5.7  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取正在运行的容器mymysql的 IP。  </span>
+</span></span><span style="display:flex;"><span>docker inspect --format<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39;</span> mymysql  
+</span></span></code></pre></div><h3 id="top"><strong>top</strong><a hidden class="anchor" aria-hidden="true" href="#top">#</a></h3>
+<p>查看容器中运行的进程信息，支持 ps 命令参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看容器mymysql的进程信息。  </span>
+</span></span><span style="display:flex;"><span>docker top mymysql  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看所有运行容器的进程信息。  </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i in  <span style="color:#e6db74">`</span>docker ps |grep Up|awk <span style="color:#e6db74">&#39;{print $1}&#39;</span><span style="color:#e6db74">`</span>;<span style="color:#66d9ef">do</span> echo <span style="color:#ae81ff">\ </span><span style="color:#f92672">&amp;&amp;</span>docker top $i; <span style="color:#66d9ef">done</span>  
+</span></span></code></pre></div><h3 id="events"><strong>events</strong><a hidden class="anchor" aria-hidden="true" href="#events">#</a></h3>
+<p>获取实时事件。参数说明：</p>
+<ul>
+<li><strong>-f ：</strong> 根据条件过滤事件；</li>
+<li><strong>–since ：</strong> 从指定的时间戳后显示所有事件；</li>
+<li><strong>–until ：</strong> 流水时间显示到指定的时间为止；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 显示docker 2016年7月1日后的所有事件。  </span>
+</span></span><span style="display:flex;"><span>docker events  --since<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1467302400&#34;</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 显示docker 镜像为mysql:5.6 2016年7月1日后的相关事件。  </span>
+</span></span><span style="display:flex;"><span>docker events -f <span style="color:#e6db74">&#34;image&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mysql:5.6&#34;</span> --since<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1467302400&#34;</span>   
+</span></span></code></pre></div><blockquote>
+<p>说明：如果指定的时间是到秒级的，需要将时间转成时间戳。如果时间为日期的话，可以直接使用，如–since=“2016-07-01”。</p>
+</blockquote>
+<h3 id="logs"><strong>logs</strong><a hidden class="anchor" aria-hidden="true" href="#logs">#</a></h3>
+<p>获取容器的日志。参数说明：</p>
+<ul>
+<li><strong>-f :</strong> 跟踪日志输出</li>
+<li><strong>–since :</strong> 显示某个开始时间的所有日志</li>
+<li><strong>-t :</strong> 显示时间戳</li>
+<li><strong>–tail :</strong> 仅列出最新N条容器日志</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 跟踪查看容器mynginx的日志输出。  </span>
+</span></span><span style="display:flex;"><span>docker logs -f mynginx  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看容器mynginx从2016年7月1日后的最新10条日志。  </span>
+</span></span><span style="display:flex;"><span>docker logs --since<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2016-07-01&#34;</span> --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> mynginx  
+</span></span></code></pre></div><h3 id="export"><strong>export</strong><a hidden class="anchor" aria-hidden="true" href="#export">#</a></h3>
+<p>将文件系统作为一个tar归档文件导出到STDOUT。参数说明：</p>
+<ul>
+<li><strong>-o :</strong> 将输入内容写到文件。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将id为a404c6c174a2的容器按日期保存为tar文件。  </span>
+</span></span><span style="display:flex;"><span>docker export -o mysql-<span style="color:#e6db74">`</span>date +%Y%m%d<span style="color:#e6db74">`</span>.tar a404c6c174a2  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ls mysql-<span style="color:#e6db74">`</span>date +%Y%m%d<span style="color:#e6db74">`</span>.tar  
+</span></span></code></pre></div><h3 id="port"><strong>port</strong><a hidden class="anchor" aria-hidden="true" href="#port">#</a></h3>
+<p>列出指定的容器的端口映射。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看容器mynginx的端口映射情况。  </span>
+</span></span><span style="display:flex;"><span>docker port mymysql  
+</span></span></code></pre></div><h2 id="容器rootfs命令">容器rootfs命令<a hidden class="anchor" aria-hidden="true" href="#容器rootfs命令">#</a></h2>
+<h3 id="commit"><strong>commit</strong><a hidden class="anchor" aria-hidden="true" href="#commit">#</a></h3>
+<p>从容器创建一个新的镜像。参数说明：</p>
+<ul>
+<li><strong>-a :</strong> 提交的镜像作者；</li>
+<li><strong>-c :</strong> 使用Dockerfile指令来创建镜像；</li>
+<li><strong>-m :</strong> 提交时的说明文字；</li>
+<li><strong>-p :</strong> 在commit时，将容器暂停。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将容器a404c6c174a2 保存为新的镜像,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 并添加提交人信息和说明信息。  </span>
+</span></span><span style="display:flex;"><span>docker commit -a <span style="color:#e6db74">&#34;guodong&#34;</span> -m <span style="color:#e6db74">&#34;my db&#34;</span> a404c6c174a2  mymysql:v1   
+</span></span></code></pre></div><h3 id="cp"><strong>cp</strong><a hidden class="anchor" aria-hidden="true" href="#cp">#</a></h3>
+<p>用于容器与主机之间的数据拷贝。参数说明：</p>
+<ul>
+<li><strong>-L :</strong> 保持源目标中的链接</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将主机/www/runoob目录拷贝到容器96f7f14e99ab的/www目录下。  </span>
+</span></span><span style="display:flex;"><span>docker cp /www/runoob 96f7f14e99ab:/www/  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将主机/www/runoob目录拷贝到容器96f7f14e99ab中，目录重命名为www。  </span>
+</span></span><span style="display:flex;"><span>docker cp /www/runoob 96f7f14e99ab:/www  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将容器96f7f14e99ab的/www目录拷贝到主机的/tmp目录中。  </span>
+</span></span><span style="display:flex;"><span>docker cp  96f7f14e99ab:/www /tmp/  
+</span></span></code></pre></div><h3 id="diff"><strong>diff</strong><a hidden class="anchor" aria-hidden="true" href="#diff">#</a></h3>
+<p>检查容器里文件结构的更改。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看容器mymysql的文件结构更改。  </span>
+</span></span><span style="display:flex;"><span>docker diff mymysql  
+</span></span></code></pre></div><h2 id="镜像仓库命令">镜像仓库命令<a hidden class="anchor" aria-hidden="true" href="#镜像仓库命令">#</a></h2>
+<h3 id="loginlogout"><strong>login/logout</strong><a hidden class="anchor" aria-hidden="true" href="#loginlogout">#</a></h3>
+<p><strong>docker login :</strong> 登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub**docker logout :**登出一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub参数说明：</p>
+<ul>
+<li><strong>-u :</strong> 登陆的用户名</li>
+<li><strong>-p :</strong> 登陆的密码</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 登陆到Docker Hub  </span>
+</span></span><span style="display:flex;"><span>docker login -u 用户名 -p 密码  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 登出Docker Hub  </span>
+</span></span><span style="display:flex;"><span>docker logout  
+</span></span></code></pre></div><h3 id="pull"><strong>pull</strong><a hidden class="anchor" aria-hidden="true" href="#pull">#</a></h3>
+<p>从镜像仓库中拉取或者更新指定镜像。参数说明：</p>
+<ul>
+<li><strong>-a :</strong> 拉取所有 tagged 镜像</li>
+<li><strong>–disable-content-trust :</strong> 忽略镜像的校验,默认开启</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 从Docker Hub下载java最新版镜像。  </span>
+</span></span><span style="display:flex;"><span>docker pull java  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 从Docker Hub下载REPOSITORY为java的所有镜像。  </span>
+</span></span><span style="display:flex;"><span>docker pull -a java  
+</span></span></code></pre></div><h3 id="push"><strong>push</strong><a hidden class="anchor" aria-hidden="true" href="#push">#</a></h3>
+<p>将本地的镜像上传到镜像仓库,要先登陆到镜像仓库。参数说明：</p>
+<ul>
+<li><strong>–disable-content-trust :</strong> 忽略镜像的校验,默认开启</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 上传本地镜像myapache:v1到镜像仓库中。  </span>
+</span></span><span style="display:flex;"><span>docker push myapache:v1  
+</span></span></code></pre></div><h3 id="search"><strong>search</strong><a hidden class="anchor" aria-hidden="true" href="#search">#</a></h3>
+<p>从Docker Hub查找镜像。参数说明：</p>
+<ul>
+<li><strong>–automated :</strong> 只列出 automated build类型的镜像；</li>
+<li><strong>–no-trunc :</strong> 显示完整的镜像描述；</li>
+<li><strong>-f &lt;过滤条件&gt;:</strong> 列出指定条件的镜像。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 从 Docker Hub 查找所有镜像名包含 java，并且收藏数大于 10 的镜像  </span>
+</span></span><span style="display:flex;"><span>docker search -f stars<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> java  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NAME                  DESCRIPTION                           STARS   OFFICIAL   AUTOMATED  
+</span></span><span style="display:flex;"><span>java                  Java is a concurrent, class-based...   <span style="color:#ae81ff">1037</span>    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>         
+</span></span><span style="display:flex;"><span>anapsix/alpine-java   Oracle Java <span style="color:#ae81ff">8</span> <span style="color:#f92672">(</span>and 7<span style="color:#f92672">)</span> with GLIBC ...   <span style="color:#ae81ff">115</span>                <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>  
+</span></span><span style="display:flex;"><span>develar/java                                                 <span style="color:#ae81ff">46</span>                 <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>  
+</span></span></code></pre></div><p>每列参数说明：</p>
+<ul>
+<li><strong>NAME:</strong> 镜像仓库源的名称</li>
+<li><strong>DESCRIPTION:</strong> 镜像的描述</li>
+<li><strong>OFFICIAL:</strong> 是否 docker 官方发布</li>
+<li><strong>stars:</strong> 类似 Github 里面的 star，表示点赞、喜欢的意思</li>
+<li><strong>AUTOMATED:</strong> 自动构建</li>
+</ul>
+<h2 id="本地镜像管理命令">本地镜像管理命令<a hidden class="anchor" aria-hidden="true" href="#本地镜像管理命令">#</a></h2>
+<h3 id="images"><strong>images</strong><a hidden class="anchor" aria-hidden="true" href="#images">#</a></h3>
+<p>列出本地镜像。参数说明：</p>
+<ul>
+<li><strong>-a :</strong> 列出本地所有的镜像（含中间映像层，默认情况下，过滤掉中间映像层）；</li>
+<li><strong>–digests :</strong> 显示镜像的摘要信息；</li>
+<li><strong>-f :</strong> 显示满足条件的镜像；</li>
+<li><strong>–format :</strong> 指定返回值的模板文件；</li>
+<li><strong>–no-trunc :</strong> 显示完整的镜像信息；</li>
+<li><strong>-q :</strong> 只显示镜像ID。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看本地镜像列表。  </span>
+</span></span><span style="display:flex;"><span>docker images  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 列出本地镜像中REPOSITORY为ubuntu的镜像列表。  </span>
+</span></span><span style="display:flex;"><span>docker images  ubuntu  
+</span></span></code></pre></div><h3 id="rmi"><strong>rmi</strong><a hidden class="anchor" aria-hidden="true" href="#rmi">#</a></h3>
+<p>删除本地一个或多个镜像。参数说明：</p>
+<ul>
+<li><strong>-f :</strong> 强制删除；</li>
+<li><strong>–no-prune :</strong> 不移除该镜像的过程镜像，默认移除；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 强制删除本地镜像 guodong/ubuntu:v4。  </span>
+</span></span><span style="display:flex;"><span>docker rmi -f guodong/ubuntu:v4  
+</span></span></code></pre></div><h3 id="tag"><strong>tag</strong><a hidden class="anchor" aria-hidden="true" href="#tag">#</a></h3>
+<p>标记本地镜像，将其归入某一仓库。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将镜像ubuntu:15.10标记为 runoob/ubuntu:v3 镜像。  </span>
+</span></span><span style="display:flex;"><span>docker tag ubuntu:15.10 runoob/ubuntu:v3  
+</span></span></code></pre></div><h3 id="build"><strong>build</strong><a hidden class="anchor" aria-hidden="true" href="#build">#</a></h3>
+<p>用于使用 Dockerfile 创建镜像。参数说明：</p>
+<ul>
+<li><strong>–build-arg=[] :</strong> 设置镜像创建时的变量；</li>
+<li><strong>–cpu-shares :</strong> 设置 cpu 使用权重；</li>
+<li><strong>–cpu-period :</strong> 限制 CPU CFS周期；</li>
+<li><strong>–cpu-quota :</strong> 限制 CPU CFS配额；</li>
+<li><strong>–cpuset-cpus :</strong> 指定使用的CPU id；</li>
+<li><strong>–cpuset-mems :</strong> 指定使用的内存 id；</li>
+<li><strong>–disable-content-trust :</strong> 忽略校验，默认开启；</li>
+<li><strong>-f :</strong> 指定要使用的Dockerfile路径；</li>
+<li><strong>–force-rm :</strong> 设置镜像过程中删除中间容器；</li>
+<li><strong>–isolation :</strong> 使用容器隔离技术；</li>
+<li><strong>–label=[] :</strong> 设置镜像使用的元数据；</li>
+<li><strong>-m :</strong> 设置内存最大值；</li>
+<li><strong>–memory-swap :</strong> 设置Swap的最大值为内存+swap，&quot;-1&quot;表示不限swap；</li>
+<li><strong>–no-cache :</strong> 创建镜像的过程不使用缓存；</li>
+<li><strong>–pull :</strong> 尝试去更新镜像的新版本；</li>
+<li><strong>–quiet, -q :</strong> 安静模式，成功后只输出镜像 ID；</li>
+<li><strong>–rm :</strong> 设置镜像成功后删除中间容器；</li>
+<li><strong>–shm-size :</strong> 设置/dev/shm的大小，默认值是64M；</li>
+<li><strong>–ulimit :</strong> Ulimit配置。</li>
+<li><strong>–squash :</strong> 将 Dockerfile 中所有的操作压缩为一层。</li>
+<li><strong>–tag, -t:</strong> 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。</li>
+<li><strong>–network:</strong> 默认 default。在构建期间设置RUN指令的网络模式</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 使用当前目录的 Dockerfile 创建镜像，标签为 runoob/ubuntu:v1  </span>
+</span></span><span style="display:flex;"><span>docker build -t runoob/ubuntu:v1 .   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用URL github.com/creack/docker-firefox 的 Dockerfile 创建镜像  </span>
+</span></span><span style="display:flex;"><span>docker build github.com/creack/docker-firefox  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 通过 -f Dockerfile文件的位置 创建镜像  </span>
+</span></span><span style="display:flex;"><span>docker build -f /path/to/a/Dockerfile .  
+</span></span></code></pre></div><h3 id="history"><strong>history</strong><a hidden class="anchor" aria-hidden="true" href="#history">#</a></h3>
+<p>查看指定镜像的创建历史。参数说明：</p>
+<ul>
+<li><strong>-H :</strong> 以可读的格式打印镜像大小和日期，默认为true；</li>
+<li><strong>–no-trunc :</strong> 显示完整的提交记录；</li>
+<li><strong>-q :</strong> 仅列出提交记录ID。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看本地镜像 guodong/ubuntu:v3 的创建历史。  </span>
+</span></span><span style="display:flex;"><span>docker history guodong/ubuntu:v3  
+</span></span></code></pre></div><h3 id="save"><strong>save</strong><a hidden class="anchor" aria-hidden="true" href="#save">#</a></h3>
+<p>将指定镜像保存成 tar 归档文件。参数说明：</p>
+<ul>
+<li><strong>-o :</strong> 输出到的文件。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将镜像 runoob/ubuntu:v3 生成 my_ubuntu_v3.tar 文档  </span>
+</span></span><span style="display:flex;"><span>docker save -o my_ubuntu_v3.tar runoob/ubuntu:v3  
+</span></span></code></pre></div><h3 id="load"><strong>load</strong><a hidden class="anchor" aria-hidden="true" href="#load">#</a></h3>
+<p>导入使用 <code>docker save</code> 命令导出的镜像。参数说明：</p>
+<ul>
+<li><strong>–input , -i :</strong> 指定导入的文件，代替 STDIN。</li>
+<li><strong>–quiet , -q :</strong> 精简输出信息。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 导入镜像  </span>
+</span></span><span style="display:flex;"><span>docker load --input fedora.tar  
+</span></span></code></pre></div><h3 id="import"><strong>import</strong><a hidden class="anchor" aria-hidden="true" href="#import">#</a></h3>
+<p>从归档文件中创建镜像。参数说明：</p>
+<ul>
+<li><strong>-c :</strong> 应用docker 指令创建镜像；</li>
+<li><strong>-m :</strong> 提交时的说明文字；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 从镜像归档文件my_ubuntu_v3.tar创建镜像，命名为runoob/ubuntu:v4  </span>
+</span></span><span style="display:flex;"><span>docker import  my_ubuntu_v3.tar runoob/ubuntu:v4    
+</span></span></code></pre></div><h2 id="基础版本信息命令">基础版本信息命令<a hidden class="anchor" aria-hidden="true" href="#基础版本信息命令">#</a></h2>
+<h3 id="info"><strong>info</strong><a hidden class="anchor" aria-hidden="true" href="#info">#</a></h3>
+<p>显示 Docker 系统信息，包括镜像和容器数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看docker系统信息。  </span>
+</span></span><span style="display:flex;"><span>docker info  
+</span></span></code></pre></div><h3 id="version"><strong>version</strong><a hidden class="anchor" aria-hidden="true" href="#version">#</a></h3>
+<p>显示 Docker 版本信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker version  
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/docker/">docker</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>k8s搭建consul集群</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81oom%E5%8F%8A%E5%8E%9F%E5%9B%A0/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java中的常见OOM及原因</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

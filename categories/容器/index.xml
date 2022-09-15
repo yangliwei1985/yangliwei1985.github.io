@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>容器 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E5%AE%B9%E5%99%A8/</link>
+    <description>Recent content in 容器 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 11 Dec 2021 18:14:07 +0000</lastBuildDate><atom:link href="https://iblog.zone/categories/%E5%AE%B9%E5%99%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker 常用命令大全</title>
+      <link>https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/</link>
+      <pubDate>Sat, 11 Dec 2021 18:14:07 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/</guid>
+      <description>本文包括容器生命周期管理命令、容器操作命令、容器rootfs命令、镜像仓库命令、本地镜像管理命令和基础版本信息命令。
+容器生命周期管理命令 run 创建一个新的容器。
+# 使用docker镜像nginx:latest以后台模式启动一个容器, # 并将容器命名为mynginx。  docker run --name mynginx -d nginx:latest  # 使用镜像 nginx:latest，以后台模式启动一个容器, # 将容器的 80 端口映射到主机的 80 端口, # 主机的目录 /data 映射到容器的 /data。  docker run -p 80:80 -v /data:/data -d nginx:latest  # 使用镜像nginx:latest以交互模式启动一个容器, # 在容器内执行/bin/bash命令。  docker run -it nginx:latest /bin/bash start/stop/restart  docker start : 启动一个或多个已经被停止的容器。 docker stop : 停止一个运行中的容器。 docker restart : 重启容器。  # 启动已被停止的容器mynginx  docker start mynginx  # 停止运行中的容器mynginx  docker stop mynginx  # 重启容器mynginx  docker restart mynginx kill 杀掉一个运行中的容器。可选参数：</description>
+    </item>
+    
+  </channel>
+</rss>

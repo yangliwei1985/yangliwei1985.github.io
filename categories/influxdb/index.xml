@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>influxdb on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/influxdb/</link>
+    <description>Recent content in influxdb on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 20 Apr 2022 14:40:08 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/influxdb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Influxdb学习</title>
+      <link>https://iblog.zone/archives/influxdb%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Wed, 20 Apr 2022 14:40:08 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/influxdb%E5%AD%A6%E4%B9%A0/</guid>
+      <description>InfluxDB is the Time Series Database in the TICK stack
+https://www.influxdata.com/time-series-platform/
+摘要: Docker监控方案之数据存储工具Influxdb工具的介绍和安装。Influxdb也是和telegraf属于一家公司，用go开发的用来存储时间序列数据的数据库。可以将存储的数据进行时间序列化，是每个监控系统中最重要的一个环节。Docker监控方案(TIG)采用Influxdb来进行数据存储，当然可选的还有很多，比如Opentsdb，Graphite等。
+前言： Influxdb也是有influxdata公司(www.influxdata.com )开发的用于数据存储的时间序列数据库.可用于数据的时间排列。在整个TIG(Telegraf+influxdb+grafana)方案中，influxdb可算作一个中间件，主要负责原始数据的存储，并按照时间序列进行索引构建以提供时间序列查询接口。在整个TIG方案中，应该先构建的就是Influxdb。
+Influxdb研究与实践： influxdb介绍：
+使用TSM(Time Structured Merge)存储引擎，允许高摄取速度和数据压缩； 使用go编写，无需其他依赖； 简单，高性能写查询httpAPI接口； 支持其他数据获取协议的插件，比如graphite,collected,OpenTSDB； 使用relay构建高可用https://docs.influxdata.com/influxdb/v1.0/high_availability/relay/； 扩展的类sql语言，很容易查询汇总数据； tag的支持，可用让查询变的更加高效和快速； 保留策略有效地自动淘汰过期的数据； 持续所产生的自动计算的数据会使得频繁的查询更加高效； web管理页面的支持
+下载安装：
+github：https://github.com/influxdata/influxdb 源码编译 官网下载： Centos系列：wgethttps://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm &amp;amp;&amp;amp; sudo yum localinstall influxdb-1.0.0.x86_64.rpm 源码包系列：wgethttps://dl.influxdata.com/influxdb/releases/influxdb-1.0.0_linux_amd64.tar.gz &amp;amp;&amp;amp; tar xvfz influxdb-1.0.0_linux_amd64.tar.gz docker系列：docker pull influxdb 安装手册：https://docs.influxdata.com/influxdb/v0.9/introduction/installation/
+配置：
+#cat /etc/influxdb/influxdb.conf reporting-disabled = false [registration] [meta] dir = &amp;#34;/var/lib/influxdb/meta&amp;#34; hostname = &amp;#34;10.0.0.2&amp;#34; #此hostname必须写本机，否则无法连接到数据操作的API bind-address = &amp;#34;:8088&amp;#34; retention-autocreate = true election-timeout = &amp;#34;1s&amp;#34; heartbeat-timeout = &amp;#34;1s&amp;#34; leader-lease-timeout = &amp;#34;500ms&amp;#34; commit-timeout = &amp;#34;50ms&amp;#34; cluster-tracing = false [data] dir = &amp;#34;/var/lib/influxdb/data&amp;#34; max-wal-size = 104857600 # Maximum size the WAL can reach before a flush.</description>
+    </item>
+    
+    <item>
+      <title>GRAFANA&#43;INFLUXDB&#43;TELEGRAF 快速监控主机与MYSQL</title>
+      <link>https://iblog.zone/archives/grafana-influxdb-telegraf-%E5%BF%AB%E9%80%9F%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql/</link>
+      <pubDate>Tue, 19 Apr 2022 14:35:30 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/grafana-influxdb-telegraf-%E5%BF%AB%E9%80%9F%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql/</guid>
+      <description>一、安装 1.1、配置INFLUXDB YUM源 [root@node ~]# cat /etc/yum.repos.d/influxdb.repo  [influxdb] name = InfluxDB Repository - RHEL \$releasever baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable enabled = 1 gpgcheck = 1 gpgkey = https://repos.influxdata.com/influxdb.key 1.2、安装GRAFANA+INFLUXDB+TELEGRAF 安装influxdb yum install influxdb 安装telegraf yum install telegraf 安装grafana wget https://dl.grafana.com/oss/release/grafana-6.1.3-1.x86_64.rpm yum localinstall grafana-6.1.3-1.x86_64.rpm 1.3、软件版本 InfluxDB version: 1.7.4 Telegraf version: 1.10.2 Grafana version: 6.1.3 1.4、启动服务，添加开机启动 systemctl start influxdb.service systemctl start telegraf.service systemctl start grafana-server.service  systemctl enable influxdb.service systemctl enable telegraf.service systemctl enable grafana-server.</description>
+    </item>
+    
+    <item>
+      <title>InfluxDB常用命令</title>
+      <link>https://iblog.zone/archives/influxdb%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Fri, 15 Apr 2022 15:28:38 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/influxdb%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
+      <description>连接数据库 $ influx -precision rfc3339 Connected to http://localhost:8086 version 1.2.x InfluxDB shell 1.2.x &amp;gt; exit # 退出命令行 说明:
+ InfluxDB的HTTP接口默认起在8086上，所以influx默认也是连的本地的8086端口，你可以通过influx --help来看怎么修改默认值。 -precision参数表明了任何返回的时间戳的格式和精度，rfc3339`是让InfluxDB返回RFC339格式(YYYY-MM-DDTHH:MM:SS.nnnnnnnnnZ)的时间戳。  创建数据库 &amp;gt; CREATE DATABASE mydb 查看数据库 &amp;gt; SHOW DATABASES name: databases --------------- name _internal mydb 说明：_internal数据库是用来存储InfluxDB内部的实时监控数据的
+使用数据库 &amp;gt; USE mydb Using database mydb 数据存储格式介绍 首先对数据存储的格式来个入门介绍。InfluxDB里存储的数据被称为时间序列数据，其包含一个数值，就像CPU的load值或是温度值类似的。时序数据有零个或多个数据点，每一个都是一个指标值。数据点包括time(一个时间戳)，measurement(例如cpu_load)，至少一个k-v格式的field(也即指标的数值例如 “value=0.64”或者“temperature=21.2”)，零个或多个tag，其一般是对于这个指标值的元数据(例如“host=server01”, “region=EMEA”, “dc=Frankfurt)。
+在概念上，你可以将measurement类比于SQL里面的table，其主键索引总是时间戳。tag和field是在table里的其他列，tag是被索引起来的，field没有。不同之处在于，在InfluxDB里，你可以有几百万的measurements，你不用事先定义数据的scheme，并且null值不会被存储。
+将数据点写入InfluxDB，只需要遵守如下的行协议：
+&amp;lt;measurement&amp;gt;[,&amp;lt;tag-key&amp;gt;=&amp;lt;tag-value&amp;gt;...] &amp;lt;field-key&amp;gt;=&amp;lt;field-value&amp;gt;[,&amp;lt;field2-key&amp;gt;=&amp;lt;field2-value&amp;gt;...] [unix-nano-timestamp] 下面是数据写入InfluxDB的格式示例：
+cpu,host=serverA,region=us_west value=0.64 payment,device=mobile,product=Notepad,method=credit billed=33,licenses=3i 1434067467100293230 stock,symbol=AAPL bid=127.46,ask=127.48 temperature,machine=unit42,type=assembly external=25,internal=37 1434067467000000000 写入数据 &amp;gt; INSERT cpu,host=serverA,region=us_west value=0.</description>
+    </item>
+    
+  </channel>
+</rss>

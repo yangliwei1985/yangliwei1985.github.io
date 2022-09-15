@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>openvpn | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/tags/openvpn/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/tags/openvpn/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="openvpn" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/tags/openvpn/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="openvpn"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/tags/">Tags</a></div>
+  <h1>openvpn</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>OpenVPN 设置账号密码登录
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>前面我们是使用openvpn 秘钥的方式登录，这种登录安全性比较高。但是运维操作起来比较麻烦，如果有ldap的也推荐使用ldap集成openvpn。但是这里我们偷个懒，通过设置账号密码的方式连接vpn
+配置OpenVPN 首先我们需要编写一个用户认证的脚本 (脚本是由openvpn官网提供的)
+vim /etc/openvpn/checkpsw.sh #!/bin/sh ########################################################### # checkpsw.sh (C) 2004 Mathias Sundman  # # This script will authenticate OpenVPN users against # a plain text file. The passfile should simply contain # one row per user with the username first followed by # one or more space(s) or tab(s) and then the password.  PASSFILE=&#34;/etc/openvpn/psw-file&#34; LOG_FILE=&#34;/etc/openvpn/openvpn-password.log&#34; TIME_STAMP=`date &#34;&#43;%Y-%m-%d %T&#34;`  ###########################################################  if [ ! -r &#34;${PASSFILE}&#34; ]; then  echo &#34;${TIME_STAMP}: Could not open password file \&#34;${PASSFILE}\&#34; for reading....</p>
+  </section>
+  <footer class="entry-footer"><span title='2021-12-08 17:09:00 +0000 UTC'>2021-12-08</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to OpenVPN 设置账号密码登录" href="https://iblog.zone/archives/openvpn-%E8%AE%BE%E7%BD%AE%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>CentOS 7 搭建OpenVPN服务器
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>OpenVPN的工作原理 在Linux2.4版本以上，操作系统支持一个名为tun的设备，tun设备的驱动程序中包含两个部分，一部分是字符设备驱动，一部分是网卡驱动。网卡的驱动把从TCP/IP协议栈收到的数据包结构skb放于tun设备的读取队列，用户进程通过调用字符设备接口read获得完整的IP数据包，字符驱动read函数的功能是从设备的读取队列读取数据，将核心态的skb传递给用户；反过来字符驱动write函数给用户提供了把用户态的数据写入核心态的接口，write函数把用户数据写入核心空间并穿入TCP/IP协议栈。该设备既能以字符设备的方式被读写，作为系统的虚拟网卡，也具有和物理网卡相同的特点：能够配置IP地址和路由。对虚拟网卡的使用是OpenVPN实现其SSL VPN功能的关键。
+OpenVPN服务器一般需要配置一个虚拟IP地址池和一个自用的静态虚拟IP地址（静态地址和地址池必须在同一个子网中），然后为每一个成功建立SSL连接的客户端动态分配一个虚拟IP地址池中未分配的地址。这样，物理网络中的客户端和OpenVPN服务器就连接成一个虚拟网络上的星型结构局域网，OpenVPN服务器成为每个客户端在虚拟网络上的网关。OpenVPN服务器同时提供对客户端虚拟网卡的路由管理。当客户端对OpenVPN服务器后端的应用服务器的任何访问时，数据包都会经过路由流经虚拟网卡，OpenVPN程序在虚拟网卡上截获数据IP报文，然后使用SSL协议将这些IP报文封装起来，再经过物理网卡发送出去。OpenVPN的服务器和客户端在虚拟网卡之上建立起一个虚拟的局域网络，这个虚拟的局域网对系统的用户来说是透明的。
+OpenVPN的服务器和客户端支持tcp和udp两种连接方式，只需在服务端和客户端预先定义好使用的连接方式（tcp或udp）和端口号，客户端和服务端在这个连接的基础上进行SSL握手。连接过程包括SSL的握手以及虚拟网络上的管理信息，OpenVPN将虚拟网上的网段、地址、路由发送给客户端。连接成功后，客户端和服务端建立起SSL安全连接，客户端和服务端的数据都流入虚拟网卡做SSL的处理，再在tcp或udp的连接上从物理网卡发送出去
+环境说明 192.168.0.10外网 10.4.82.10 内网  系统环境 [root@vpn ~]# cat /etc/redhat-release CentOS Linux release 7.7.1908 (Core) [root@vpn ~]# uname -r 3.10.0-1062.9.1.el7.x86_64  网卡为双网卡 [root@vpn ~]# ifconfig eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt; mtu 1500  inet 192.168.0.11 netmask 255.255.255.0 broadcast 192.168.0.255  inet6 fe80::6b5a:9ab8:1bb:5f8d prefixlen 64 scopeid 0x20  ether 00:0c:29:32:b2:36 txqueuelen 1000 (Ethernet)  RX packets 15104 bytes 16993218 (16.2 MiB)  RX errors 0 dropped 0 overruns 0 frame 0  TX packets 8661 bytes 889872 (869....</p>
+  </section>
+  <footer class="entry-footer"><span title='2021-12-05 22:02:39 +0000 UTC'>2021-12-05</span>&nbsp;·&nbsp;5 分钟</footer>
+  <a class="entry-link" aria-label="post link to CentOS 7 搭建OpenVPN服务器" href="https://iblog.zone/archives/centos-7-%E6%90%AD%E5%BB%BAopenvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS7升级python2.7.5到python3.7以上版本 | ylw&#39;s blog</title>
+<meta name="keywords" content="python" />
+<meta name="description" content="CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。
+安装Python3.7.3 官网下载地址：https://www.python.org/downlo&hellip;
+这里选择下载python 3.7.3。
+# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make &amp;&amp; make install 关于Python3.7以上的版本，需要多安装一个依赖包:
+ yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named &#39;_ctypes&#39;的报错。
+在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。
+然后将系统默认的python2备份
+mv /usr/bin/python /usr/bin/python.bak 创建新的软连接
+ln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本
+[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS7升级python2.7.5到python3.7以上版本" />
+<meta property="og:description" content="CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。
+安装Python3.7.3 官网下载地址：https://www.python.org/downlo&hellip;
+这里选择下载python 3.7.3。
+# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make &amp;&amp; make install 关于Python3.7以上的版本，需要多安装一个依赖包:
+ yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named &#39;_ctypes&#39;的报错。
+在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。
+然后将系统默认的python2备份
+mv /usr/bin/python /usr/bin/python.bak 创建新的软连接
+ln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本
+[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-29T15:19:27&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-29T15:19:27&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS7升级python2.7.5到python3.7以上版本"/>
+<meta name="twitter:description" content="CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。
+安装Python3.7.3 官网下载地址：https://www.python.org/downlo&hellip;
+这里选择下载python 3.7.3。
+# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make &amp;&amp; make install 关于Python3.7以上的版本，需要多安装一个依赖包:
+ yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named &#39;_ctypes&#39;的报错。
+在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。
+然后将系统默认的python2备份
+mv /usr/bin/python /usr/bin/python.bak 创建新的软连接
+ln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本
+[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS7升级python2.7.5到python3.7以上版本",
+      "item": "https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS7升级python2.7.5到python3.7以上版本",
+  "name": "CentOS7升级python2.7.5到python3.7以上版本",
+  "description": "CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。\n安装Python3.7.3 官网下载地址：https://www.python.org/downlo\u0026hellip;\n这里选择下载python 3.7.3。\n# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make \u0026amp;\u0026amp; make install 关于Python3.7以上的版本，需要多安装一个依赖包:\n yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named '_ctypes'的报错。\n在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。\n然后将系统默认的python2备份\nmv /usr/bin/python /usr/bin/python.bak 创建新的软连接\nln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本\n[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。",
+  "keywords": [
+    "python"
+  ],
+  "articleBody": "CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。\n安装Python3.7.3 官网下载地址：https://www.python.org/downlo…\n这里选择下载python 3.7.3。\n# 下载 wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz # 解压 tar -zxf Python-3.7.3.tgz # 安装依赖包 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc libffi-devel # 进入python目录 cd Python-3.7.3 # 编译 ./configure --prefix=/usr/local/python3.7 #安装 make \u0026\u0026 make install 关于Python3.7以上的版本，需要多安装一个依赖包:\n yum install -y libffi-devel 否则会出现ModuleNotFoundError: No module named '_ctypes'的报错。\n在make install后执行echo $?，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。\n然后将系统默认的python2备份\nmv /usr/bin/python /usr/bin/python.bak 创建新的软连接\nln -s /usr/local/python/bin/python3.7 /usr/bin/python 查看版本\n[root@moli-linux03 src]# python -V Python 3.7.3 升级完成了。\n更改yum配置 因为yum需要使用python2，将/usr/bin/python改为python3后，yum就不能正常运行了，因此需要更改一下yum的配置。\nvim /usr/bin/yum vim /usr/libexec/urlgrabber-ext-down 编辑这两个文件，将文件头的#!/usr/bin/python改为#!/usr/bin/python2即可。\n",
+  "wordCount" : "77",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-29T15:19:27Z",
+  "dateModified": "2021-12-29T15:19:27Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7python2.7.5%E5%88%B0python3.7%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS7升级python2.7.5到python3.7以上版本
+    </h1>
+    <div class="post-meta"><span title='2021-12-29 15:19:27 +0000 UTC'>2021-12-29</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85python373" aria-label="安装Python3.7.3">安装Python3.7.3</a></li>
+                    <li>
+                        <a href="#%e6%9b%b4%e6%94%b9yum%e9%85%8d%e7%bd%ae" aria-label="更改yum配置">更改yum配置</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><p>CentOS7中自带的python版本是python-2.7.5，由于新开的虚拟机需要使用python3，于是便升级一下版本。</p>
+<h2 id="安装python373">安装Python3.7.3<a hidden class="anchor" aria-hidden="true" href="#安装python373">#</a></h2>
+<p>官网下载地址：<a href="https://link.segmentfault.com/?enc=3RMpurpxmUBJYOZeANzmjw%3D%3D.1GtUgRykSa3yE5SMhyk0dWRDI6EDZcYN5m8pwGF1%2FbVNCI1mXtyyETCciXYdp5dR">https://www.python.org/downlo&hellip;</a></p>
+<p>这里选择下载python 3.7.3。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-awk" data-lang="awk"><span style="display:flex;"><span><span style="color:#75715e"># 下载</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">wget</span> <span style="color:#a6e22e">https</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#f92672">/</span><span style="color:#960050;background-color:#1e0010">/www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 解压</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">tar</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">zxf</span> <span style="color:#a6e22e">Python</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3.7</span>.<span style="color:#ae81ff">3</span>.<span style="color:#a6e22e">tgz</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装依赖包</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">yum</span> <span style="color:#a6e22e">install</span> <span style="color:#a6e22e">zlib</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">bzip2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">openssl</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">ncurses</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">sqlite</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">readline</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">tk</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span> <span style="color:#a6e22e">gcc</span>  <span style="color:#a6e22e">libffi</span><span style="color:#f92672">-</span><span style="color:#a6e22e">devel</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 进入python目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cd</span> <span style="color:#a6e22e">Python</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3.7</span>.<span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编译</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#f92672">/</span><span style="color:#a6e22e">configure</span> <span style="color:#f92672">--</span><span style="color:#a6e22e">prefix</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">/usr/local/python3.7</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#安装</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">make</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">make</span> <span style="color:#a6e22e">install</span>
+</span></span></code></pre></div><p>关于Python3.7以上的版本，需要多安装一个依赖包:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmake" data-lang="cmake"><span style="display:flex;"><span> <span style="color:#960050;background-color:#1e0010">yum</span> <span style="color:#960050;background-color:#1e0010">install</span> <span style="color:#960050;background-color:#1e0010">-y</span> <span style="color:#960050;background-color:#1e0010">libffi-devel
+</span></span></span></code></pre></div><p>否则会出现<code>ModuleNotFoundError: No module named '_ctypes'</code>的报错。</p>
+<p>在make install后执行<code>echo $?</code>，为0表示没有出错。如果没有报错，在/usr/local会生成python3.7目录。</p>
+<p><strong>然后将系统默认的python2备份</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-awk" data-lang="awk"><span style="display:flex;"><span><span style="color:#a6e22e">mv</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">python</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">python</span>.<span style="color:#a6e22e">bak</span>
+</span></span></code></pre></div><p><strong>创建新的软连接</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-awk" data-lang="awk"><span style="display:flex;"><span><span style="color:#a6e22e">ln</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">s</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">local</span><span style="color:#f92672">/</span><span style="color:#a6e22e">python</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">python3</span>.<span style="color:#ae81ff">7</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">python</span>
+</span></span></code></pre></div><p><strong>查看版本</strong></p>
+<pre tabindex="0"><code class="language-autoit" data-lang="autoit">[root@moli-linux03 src]# python -V
+Python 3.7.3     
+</code></pre><p>升级完成了。</p>
+<h2 id="更改yum配置">更改yum配置<a hidden class="anchor" aria-hidden="true" href="#更改yum配置">#</a></h2>
+<p>因为yum需要使用python2，将/usr/bin/python改为python3后，yum就不能正常运行了，因此需要更改一下yum的配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-awk" data-lang="awk"><span style="display:flex;"><span><span style="color:#a6e22e">vim</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">yum</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">vim</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">usr</span><span style="color:#f92672">/</span><span style="color:#a6e22e">libexec</span><span style="color:#f92672">/</span><span style="color:#a6e22e">urlgrabber</span><span style="color:#f92672">-</span><span style="color:#a6e22e">ext</span><span style="color:#f92672">-</span><span style="color:#a6e22e">down</span>
+</span></span></code></pre></div><p>编辑这两个文件，将文件头的<code>#!/usr/bin/python</code>改为<code>#!/usr/bin/python2</code>即可。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/python/">python</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos7.9.2009-%E5%8D%B8%E8%BD%BD%E8%87%AA%E5%B8%A6%E7%9A%84python%E5%8F%8Ayum%E5%B9%B6%E9%87%8D%E8%A3%85/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>CentOS7.9.2009 卸载自带的python及yum并重装</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/yum%E4%B8%8B%E8%BD%BD%E5%85%A8%E9%87%8Frpm%E4%BE%9D%E8%B5%96%E5%8C%85%E5%8F%8A%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>yum下载全量rpm依赖包及离线安装</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

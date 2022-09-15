@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>使用Helm部署Consul集群 | ylw&#39;s blog</title>
+<meta name="keywords" content="consul" />
+<meta name="description" content="Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。
+在 helm 中有三大概念：
+ Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。
+准备阶段 拥有一个 Kubernetes 集群，如下：
+具体配置：">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="使用Helm部署Consul集群" />
+<meta property="og:description" content="Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。
+在 helm 中有三大概念：
+ Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。
+准备阶段 拥有一个 Kubernetes 集群，如下：
+具体配置：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-04T17:27:05&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-04T17:27:05&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用Helm部署Consul集群"/>
+<meta name="twitter:description" content="Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。
+在 helm 中有三大概念：
+ Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。
+准备阶段 拥有一个 Kubernetes 集群，如下：
+具体配置："/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "使用Helm部署Consul集群",
+      "item": "https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "使用Helm部署Consul集群",
+  "name": "使用Helm部署Consul集群",
+  "description": "Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。\n在 helm 中有三大概念：\n Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。\n准备阶段 拥有一个 Kubernetes 集群，如下：\n具体配置：",
+  "keywords": [
+    "consul"
+  ],
+  "articleBody": "Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。\n在 helm 中有三大概念：\n Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。\n准备阶段 拥有一个 Kubernetes 集群，如下：\n具体配置：\n   类型 IP地址 系统版本 配置     Master主节点 192.168.19.136 CentOS Linux release 7.9.2009 (Core) 4核4G   Work工作节点1 192.168.19.137 CentOS Linux release 7.9.2009 (Core) 4核4G   Work工作节点2 192.168.19.138 CentOS Linux release 7.9.2009 (Core) 4核4G    选择 Helm 版本    Helm 版本 支持的 Kubernetes 版本     3.5.x 1.20.x - 1.17.x   3.4.x 1.19.x - 1.16.x   3.3.x 1.18.x - 1.15.x   3.2.x 1.18.x - 1.15.x   3.1.x 1.17.x - 1.14.x   3.0.x 1.16.x - 1.13.x   2.16.x 1.16.x - 1.15.x   2.15.x 1.15.x - 1.14.x   2.14.x 1.14.x - 1.13.x   2.13.x 1.13.x - 1.12.x   2.12.x 1.12.x - 1.11.x   2.11.x 1.11.x - 1.10.x   2.10.x 1.10.x - 1.9.x   2.9.x 1.10.x - 1.9.x   2.8.x 1.9.x - 1.8.x   2.7.x 1.8.x - 1.7.x   2.6.x 1.7.x - 1.6.x   2.5.x 1.6.x - 1.5.x   2.4.x 1.6.x - 1.5.x   2.3.x 1.5.x - 1.4.x   2.2.x 1.5.x - 1.4.x   2.1.x 1.5.x - 1.4.x   2.0.x 1.4.x - 1.3.x    注： Helm 2 采用 client/server 架构，分为 Helm 客户端和 Tiller 服务端，而 Helm3 移除了 Tiller。 也就是说 Helm3 只要安装 Helm 就可以了。 关于 Helm 2 和 Helm 3 的区别可以阅读：Helm文档\n本文会选择 Helm 3.4.2 进行安装。\n下载安装 Helm 3.4.2 访问 github.com/helm/helm/r… 选择对应的版本，下载\n拷贝到集群中的 Master 节点\n解压\ntar -zxvf helm-v3.4.2-linux-amd64.tar.gz 移动到 /usr/local/bin\nmv linux-amd64/helm /usr/local/bin/helm 查看是否安装成功\nhelm version 使用 Helm 部署 Consul 集群 Helm 基本用法 在部署consul之前，先来看看 helm 的基本用法。\n查找 Charts ：\nhelm search hub # 从 Artifact Hub 中查找并列出 helm charts。 Artifact Hub中存放了大量不同的仓库。 helm search repo # 从你添加（使用 helm repo add）到本地 helm 客户端中的仓库中进行查找。 添加 HashiCorp Helm 仓库：\nhelm repo add hashicorp https://helm.releases.hashicorp.com # 查看已添加的仓库列表 helm repo list 搜索 consul ：\nhelm search repo consul Consul 所需环境准备 命名空间 创建一个命名空间，后续都会在此命名空间上进行操作：\nkubectl create namespace consul 存储 由于 consul 部署的时候会创建使用 PVC：PersistentVolumeClaim 的 Pod ，Pod 中的应用通过 PVC 进行数据的持久化，而 PVC 使用 PV: PersistentVolume 进行数据的最终持久化处理。所以我们要准备好存储资源供应，否则 consul-server 会因为获取不到存储资源而一直处于 pending 状态，有以下两种方案：\n方案1，手动创建静态 PV 进行存储供应 cat --- kind: PersistentVolume apiVersion: v1 metadata: name: pv-volume-consul-0 namespace: consul labels: type: local spec: storageClassName: \"\" capacity: storage: 10Gi accessModes: - ReadWriteOnce hostPath: path: \"/consul/data\" --- kind: PersistentVolume apiVersion: v1 metadata: name: pv-volume-consul-1 namespace: consul labels: type: local spec: storageClassName: \"\" capacity: storage: 10Gi accessModes: - ReadWriteOnce hostPath: path: \"/consul/data\" EOF 查看：\nkubectl get pv -n consul -o wide 方案2，通过 StorageClass 实现动态卷供应 在所有节点上安装 nfs-utils：\nyum install -y nfs-utils 选择一台节点，这里选择 work2（192.168.19.138） 节点作为 nfs server：\n# 创建nfs目录 mkdir -p /mnt/nfs # 配置nfs权限 cat/etc/exports/mnt/nfs/ 192.168.19.0/24(insecure,rw,anonuid=0,anongid=0,all_squash,sync) EOF # 启动nfs服务 systemctl start rpcbind.service systemctl start nfs-server.service # 设置开机自启 systemctl enable rpcbind.service systemctl enable nfs-server.service # 配置生效 exportfs -r 在 master 节点使用 helm 安装 nfs-provisioner：\n# 添加仓库源 helm repo add azure http://mirror.azure.cn/kubernetes/charts/ # 搜索nfs-client-provisioner helm search repo nfs-client-provisioner # 安装nfs-client-provisioner helm install nfs-storage azure/nfs-client-provisioner -n consul \\ --set nfs.server=192.168.19.138 \\ --set nfs.path=/mnt/nfs \\ --set storageClass.name=nfs-storage \\ --set storageClass.defaultClass=true # 查看StorageClass kubectl get sc -n consul 至此，当有 PVC 需要申请 PV 时，StorageClass 就会自动为我们创建 PV 了。\n配置文件 创建 config.yaml ：\nglobal:  name: consul # 设置用于 Helm chart 中所有资源的前缀 ui:  service: # 为 Consul UI 配置服务  type: 'NodePort' # 服务类型为 NodePort server:  replicas: 2 # 要运行的服务器的数量，即集群数  affinity: \"\" # 允许每个节点上运行更多的Pod  storage: '10Gi' # 定义用于配置服务器的 StatefulSet 存储的磁盘大小  storageClass: \"\" # 使用Kubernetes集群的默认 StorageClass  securityContext: # 服务器 Pod 的安全上下文，以 root 用户运行  fsGroup: 2000  runAsGroup: 2000  runAsNonRoot: false  runAsUser: 0  更多配置可以参考：www.consul.io/docs/k8s/he…\n 开始安装 helm install hi-consul hashicorp/consul -n consul -f config.yaml  hi-consul：你命名的 release 名字\nhashicorp/consul：你想安装的 chart 的名称\n-n ：指定命名空间\n-f ：传递配置文件\n 执行安装命令后我们可以监控 pod 的状态：\nkubectl get pods -n consul -o wide -w 等待所有 Pod READY 完毕后，查看 svc 状态：\nkubectl get svc -n consul -o wide 浏览器访问 http://master:30497/ui/ （已设置hosts）或 http://192.168.19.136:30497/ui/\n题外话 # 查看helm已安装列表 helm list -n consul # 卸载 helm uninstall hi-consul -n consul # 更多 helm help ",
+  "wordCount" : "623",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-04T17:27:05Z",
+  "dateModified": "2022-03-04T17:27:05Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      使用Helm部署Consul集群
+    </h1>
+    <div class="post-meta"><span title='2022-03-04 17:27:05 +0000 UTC'>2022-03-04</span>&nbsp;·&nbsp;3 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#helm-%e4%bb%8b%e7%bb%8d" aria-label="Helm 介绍">Helm 介绍</a></li>
+                    <li>
+                        <a href="#%e5%87%86%e5%a4%87%e9%98%b6%e6%ae%b5" aria-label="准备阶段">准备阶段</a></li>
+                    <li>
+                        <a href="#%e9%80%89%e6%8b%a9-helm-%e7%89%88%e6%9c%ac" aria-label="选择 Helm 版本">选择 Helm 版本</a></li>
+                    <li>
+                        <a href="#%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85-helm-342" aria-label="下载安装 Helm 3.4.2">下载安装 Helm 3.4.2</a></li>
+                    <li>
+                        <a href="#%e4%bd%bf%e7%94%a8-helm-%e9%83%a8%e7%bd%b2-consul-%e9%9b%86%e7%be%a4" aria-label="使用 Helm 部署 Consul 集群">使用 Helm 部署 Consul 集群</a><ul>
+                            
+                    <li>
+                        <a href="#helm-%e5%9f%ba%e6%9c%ac%e7%94%a8%e6%b3%95" aria-label="Helm 基本用法">Helm 基本用法</a></li>
+                    <li>
+                        <a href="#consul-%e6%89%80%e9%9c%80%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" aria-label="Consul 所需环境准备">Consul 所需环境准备</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4" aria-label="命名空间">命名空间</a></li>
+                    <li>
+                        <a href="#%e5%ad%98%e5%82%a8" aria-label="存储">存储</a><ul>
+                            
+                    <li>
+                        <a href="#%e6%96%b9%e6%a1%881%e6%89%8b%e5%8a%a8%e5%88%9b%e5%bb%ba%e9%9d%99%e6%80%81-pv-%e8%bf%9b%e8%a1%8c%e5%ad%98%e5%82%a8%e4%be%9b%e5%ba%94" aria-label="方案1，手动创建静态 PV 进行存储供应">方案1，手动创建静态 PV 进行存储供应</a></li>
+                    <li>
+                        <a href="#%e6%96%b9%e6%a1%882%e9%80%9a%e8%bf%87-storageclass-%e5%ae%9e%e7%8e%b0%e5%8a%a8%e6%80%81%e5%8d%b7%e4%be%9b%e5%ba%94" aria-label="方案2，通过 StorageClass 实现动态卷供应">方案2，通过 StorageClass 实现动态卷供应</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="配置文件">配置文件</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%bc%80%e5%a7%8b%e5%ae%89%e8%a3%85" aria-label="开始安装">开始安装</a></li>
+                    <li>
+                        <a href="#%e9%a2%98%e5%a4%96%e8%af%9d" aria-label="题外话">题外话</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="helm-介绍">Helm 介绍<a hidden class="anchor" aria-hidden="true" href="#helm-介绍">#</a></h2>
+<p><code>helm</code> 是 <code>kubernetes</code> 的包管理器。它相当于 <code>CentOS</code> 的 <code>yum</code> ，<code>Ubuntu</code> 的 <code>apt</code> 。</p>
+<p>在 <code>helm</code> 中有三大概念：</p>
+<ul>
+<li><code>Chart</code>：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等</li>
+<li><code>Repo</code>：chart 的存放仓库，社区的 Helm chart 仓库位于 <a href="https://link.juejin.cn?target=https%3A%2F%2Fartifacthub.io%2Fpackages%2Fsearch%3Fkind%3D0">Artifact Hub</a>，也可以创建运行自己的私有 chart 仓库</li>
+<li><code>Release</code>：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release</li>
+</ul>
+<p>总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。</p>
+<h2 id="准备阶段">准备阶段<a hidden class="anchor" aria-hidden="true" href="#准备阶段">#</a></h2>
+<p>拥有一个 <code>Kubernetes</code> 集群，如下：</p>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/al37o-5h4ye.png" alt=""  />
+</p>
+<p>具体配置：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>IP地址</th>
+<th>系统版本</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master主节点</td>
+<td>192.168.19.136</td>
+<td>CentOS Linux release 7.9.2009 (Core)</td>
+<td>4核4G</td>
+</tr>
+<tr>
+<td>Work工作节点1</td>
+<td>192.168.19.137</td>
+<td>CentOS Linux release 7.9.2009 (Core)</td>
+<td>4核4G</td>
+</tr>
+<tr>
+<td>Work工作节点2</td>
+<td>192.168.19.138</td>
+<td>CentOS Linux release 7.9.2009 (Core)</td>
+<td>4核4G</td>
+</tr>
+</tbody>
+</table>
+<h2 id="选择-helm-版本">选择 Helm 版本<a hidden class="anchor" aria-hidden="true" href="#选择-helm-版本">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Helm 版本</th>
+<th>支持的 Kubernetes 版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.5.x</td>
+<td>1.20.x - 1.17.x</td>
+</tr>
+<tr>
+<td>3.4.x</td>
+<td>1.19.x - 1.16.x</td>
+</tr>
+<tr>
+<td>3.3.x</td>
+<td>1.18.x - 1.15.x</td>
+</tr>
+<tr>
+<td>3.2.x</td>
+<td>1.18.x - 1.15.x</td>
+</tr>
+<tr>
+<td>3.1.x</td>
+<td>1.17.x - 1.14.x</td>
+</tr>
+<tr>
+<td>3.0.x</td>
+<td>1.16.x - 1.13.x</td>
+</tr>
+<tr>
+<td>2.16.x</td>
+<td>1.16.x - 1.15.x</td>
+</tr>
+<tr>
+<td>2.15.x</td>
+<td>1.15.x - 1.14.x</td>
+</tr>
+<tr>
+<td>2.14.x</td>
+<td>1.14.x - 1.13.x</td>
+</tr>
+<tr>
+<td>2.13.x</td>
+<td>1.13.x - 1.12.x</td>
+</tr>
+<tr>
+<td>2.12.x</td>
+<td>1.12.x - 1.11.x</td>
+</tr>
+<tr>
+<td>2.11.x</td>
+<td>1.11.x - 1.10.x</td>
+</tr>
+<tr>
+<td>2.10.x</td>
+<td>1.10.x - 1.9.x</td>
+</tr>
+<tr>
+<td>2.9.x</td>
+<td>1.10.x - 1.9.x</td>
+</tr>
+<tr>
+<td>2.8.x</td>
+<td>1.9.x - 1.8.x</td>
+</tr>
+<tr>
+<td>2.7.x</td>
+<td>1.8.x - 1.7.x</td>
+</tr>
+<tr>
+<td>2.6.x</td>
+<td>1.7.x - 1.6.x</td>
+</tr>
+<tr>
+<td>2.5.x</td>
+<td>1.6.x - 1.5.x</td>
+</tr>
+<tr>
+<td>2.4.x</td>
+<td>1.6.x - 1.5.x</td>
+</tr>
+<tr>
+<td>2.3.x</td>
+<td>1.5.x - 1.4.x</td>
+</tr>
+<tr>
+<td>2.2.x</td>
+<td>1.5.x - 1.4.x</td>
+</tr>
+<tr>
+<td>2.1.x</td>
+<td>1.5.x - 1.4.x</td>
+</tr>
+<tr>
+<td>2.0.x</td>
+<td>1.4.x - 1.3.x</td>
+</tr>
+</tbody>
+</table>
+<p>注： <code>Helm 2</code> 采用 <code>client/server</code> 架构，分为 <code>Helm</code> 客户端和 <code>Tiller</code> 服务端，而 <code>Helm3</code> 移除了 <code>Tiller</code>。 也就是说 <code>Helm3</code> 只要安装 <code>Helm</code> 就可以了。 关于 <code>Helm 2</code> 和 <code>Helm 3</code> 的区别可以阅读：<a href="https://link.juejin.cn?target=https%3A%2F%2Fhelm.sh%2Fzh%2Fdocs%2Ffaq%2F">Helm文档</a></p>
+<p>本文会选择 <code>Helm 3.4.2</code> 进行安装。</p>
+<h2 id="下载安装-helm-342">下载安装 Helm 3.4.2<a hidden class="anchor" aria-hidden="true" href="#下载安装-helm-342">#</a></h2>
+<p>访问 <a href="https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fhelm%2Fhelm%2Freleases">github.com/helm/helm/r…</a> 选择对应的版本，下载</p>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/akihr-gwn62.png" alt=""  />
+</p>
+<p>拷贝到集群中的 <code>Master</code> 节点</p>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/avhed-uh7m1.png" alt=""  />
+</p>
+<p>解压</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -zxvf helm-v3.4.2-linux-amd64.tar.gz
+</span></span></code></pre></div><p>移动到 <code>/usr/local/bin</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mv linux-amd64/helm /usr/local/bin/helm
+</span></span></code></pre></div><p>查看是否安装成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm version
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/ae4ga-zvl7o.png" alt=""  />
+</p>
+<h2 id="使用-helm-部署-consul-集群">使用 Helm 部署 Consul 集群<a hidden class="anchor" aria-hidden="true" href="#使用-helm-部署-consul-集群">#</a></h2>
+<h3 id="helm-基本用法">Helm 基本用法<a hidden class="anchor" aria-hidden="true" href="#helm-基本用法">#</a></h3>
+<p>在部署consul之前，先来看看 helm 的基本用法。</p>
+<p>查找 <code>Charts</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm search hub <span style="color:#75715e"># 从 Artifact Hub 中查找并列出 helm charts。 Artifact Hub中存放了大量不同的仓库。</span>
+</span></span><span style="display:flex;"><span>helm search repo <span style="color:#75715e"># 从你添加（使用 helm repo add）到本地 helm 客户端中的仓库中进行查找。</span>
+</span></span></code></pre></div><p>添加 <code>HashiCorp Helm</code> 仓库：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm repo add hashicorp https://helm.releases.hashicorp.com
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看已添加的仓库列表</span>
+</span></span><span style="display:flex;"><span>helm repo list
+</span></span></code></pre></div><p>搜索 <code>consul</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm search repo consul
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/ab1xr-3wflz.png" alt=""  />
+</p>
+<h3 id="consul-所需环境准备">Consul 所需环境准备<a hidden class="anchor" aria-hidden="true" href="#consul-所需环境准备">#</a></h3>
+<h4 id="命名空间">命名空间<a hidden class="anchor" aria-hidden="true" href="#命名空间">#</a></h4>
+<p>创建一个命名空间，后续都会在此命名空间上进行操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl create namespace consul
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/amjwx-2iq6i.png" alt=""  />
+</p>
+<h4 id="存储">存储<a hidden class="anchor" aria-hidden="true" href="#存储">#</a></h4>
+<p>由于 <code>consul</code> 部署的时候会创建使用 <code>PVC：PersistentVolumeClaim</code> 的 <code>Pod</code> ，<code>Pod</code> 中的应用通过 <code>PVC</code> 进行数据的持久化，而 <code>PVC</code> 使用 <code>PV: PersistentVolume</code> 进行数据的最终持久化处理。所以我们要准备好存储资源供应，否则 <code>consul-server</code> 会因为获取不到存储资源而一直处于 <code>pending</code> 状态，有以下两种方案：</p>
+<h5 id="方案1手动创建静态-pv-进行存储供应">方案1，手动创建静态 PV 进行存储供应<a hidden class="anchor" aria-hidden="true" href="#方案1手动创建静态-pv-进行存储供应">#</a></h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">kind: PersistentVolume
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">apiVersion: v1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">metadata:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  name: pv-volume-consul-0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  namespace: consul
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  labels:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    type: local
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">spec:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  storageClassName: &#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  capacity:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    storage: 10Gi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  accessModes:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    - ReadWriteOnce
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  hostPath:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    path: &#34;/consul/data&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">kind: PersistentVolume
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">apiVersion: v1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">metadata:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  name: pv-volume-consul-1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  namespace: consul
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  labels:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    type: local
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">spec:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  storageClassName: &#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  capacity:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    storage: 10Gi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  accessModes:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    - ReadWriteOnce
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  hostPath:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    path: &#34;/consul/data&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div><p>查看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get pv -n consul -o wide
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/ac2kq-wr4es.png" alt=""  />
+</p>
+<h5 id="方案2通过-storageclass-实现动态卷供应">方案2，通过 StorageClass 实现动态卷供应<a hidden class="anchor" aria-hidden="true" href="#方案2通过-storageclass-实现动态卷供应">#</a></h5>
+<p>在所有节点上安装 nfs-utils：</p>
+<pre tabindex="0"><code>yum install -y nfs-utils
+</code></pre><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/azvgk-zld39.png" alt=""  />
+</p>
+<p>选择一台节点，这里选择 work2（192.168.19.138） 节点作为 nfs server：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建nfs目录</span>
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/nfs
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 配置nfs权限</span>
+</span></span><span style="display:flex;"><span>cat&gt;/etc/exports<span style="color:#e6db74">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/mnt/nfs/ 192.168.19.0/24(insecure,rw,anonuid=0,anongid=0,all_squash,sync)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 启动nfs服务</span>
+</span></span><span style="display:flex;"><span>systemctl start rpcbind.service
+</span></span><span style="display:flex;"><span>systemctl start nfs-server.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置开机自启</span>
+</span></span><span style="display:flex;"><span>systemctl enable rpcbind.service
+</span></span><span style="display:flex;"><span>systemctl enable nfs-server.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 配置生效</span>
+</span></span><span style="display:flex;"><span>exportfs -r
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/a0knu-bo7e3.png" alt=""  />
+</p>
+<p>在 master 节点使用 helm 安装 nfs-provisioner：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 添加仓库源</span>
+</span></span><span style="display:flex;"><span>helm repo add azure http://mirror.azure.cn/kubernetes/charts/
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 搜索nfs-client-provisioner</span>
+</span></span><span style="display:flex;"><span>helm search repo nfs-client-provisioner
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装nfs-client-provisioner</span>
+</span></span><span style="display:flex;"><span>helm install nfs-storage azure/nfs-client-provisioner -n consul <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--set nfs.server<span style="color:#f92672">=</span>192.168.19.138 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--set nfs.path<span style="color:#f92672">=</span>/mnt/nfs <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--set storageClass.name<span style="color:#f92672">=</span>nfs-storage <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--set storageClass.defaultClass<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看StorageClass</span>
+</span></span><span style="display:flex;"><span>kubectl get sc -n consul
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/a7ydn-3ap9h.png" alt=""  />
+</p>
+<p>至此，当有 <code>PVC</code> 需要申请 <code>PV</code> 时，<code>StorageClass</code> 就会自动为我们创建 <code>PV</code> 了。</p>
+<h4 id="配置文件">配置文件<a hidden class="anchor" aria-hidden="true" href="#配置文件">#</a></h4>
+<p>创建 <code>config.yaml</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>global:
+</span></span><span style="display:flex;"><span>  name: consul <span style="color:#75715e"># 设置用于 Helm chart 中所有资源的前缀</span>
+</span></span><span style="display:flex;"><span>ui:
+</span></span><span style="display:flex;"><span>  service: <span style="color:#75715e"># 为 Consul UI 配置服务</span>
+</span></span><span style="display:flex;"><span>    type: <span style="color:#e6db74">&#39;NodePort&#39;</span> <span style="color:#75715e"># 服务类型为 NodePort</span>
+</span></span><span style="display:flex;"><span>server:
+</span></span><span style="display:flex;"><span>  replicas: <span style="color:#ae81ff">2</span> <span style="color:#75715e"># 要运行的服务器的数量，即集群数</span>
+</span></span><span style="display:flex;"><span>  affinity: <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#75715e"># 允许每个节点上运行更多的Pod</span>
+</span></span><span style="display:flex;"><span>  storage: <span style="color:#e6db74">&#39;10Gi&#39;</span> <span style="color:#75715e"># 定义用于配置服务器的 StatefulSet 存储的磁盘大小</span>
+</span></span><span style="display:flex;"><span>  storageClass: <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#75715e"># 使用Kubernetes集群的默认 StorageClass</span>
+</span></span><span style="display:flex;"><span>  securityContext: <span style="color:#75715e"># 服务器 Pod 的安全上下文，以 root 用户运行</span>
+</span></span><span style="display:flex;"><span>    fsGroup: <span style="color:#ae81ff">2000</span>
+</span></span><span style="display:flex;"><span>    runAsGroup: <span style="color:#ae81ff">2000</span>
+</span></span><span style="display:flex;"><span>    runAsNonRoot: false
+</span></span><span style="display:flex;"><span>    runAsUser: <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><blockquote>
+<p>更多配置可以参考：<a href="https://link.juejin.cn?target=https%3A%2F%2Fwww.consul.io%2Fdocs%2Fk8s%2Fhelm">www.consul.io/docs/k8s/he…</a></p>
+</blockquote>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/a3iqt-6azc5.png" alt=""  />
+</p>
+<h3 id="开始安装">开始安装<a hidden class="anchor" aria-hidden="true" href="#开始安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm install hi-consul hashicorp/consul -n consul -f config.yaml
+</span></span></code></pre></div><blockquote>
+<p><code>hi-consul</code>：你命名的 release 名字</p>
+<p><code>hashicorp/consul</code>：你想安装的 chart 的名称</p>
+<p><code>-n</code> ：指定命名空间</p>
+<p><code>-f</code> ：传递配置文件</p>
+</blockquote>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/afz3n-ireou.png" alt=""  />
+</p>
+<p>执行安装命令后我们可以监控 pod 的状态：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get pods -n consul -o wide -w
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/aq1mr-a0ahx.png" alt=""  />
+</p>
+<p>等待所有 Pod READY 完毕后，查看 svc 状态：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get svc -n consul -o wide
+</span></span></code></pre></div><p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/aw2tf-kayi1.png" alt=""  />
+</p>
+<p>浏览器访问 <a href="https://link.juejin.cn?target=http%3A%2F%2Fmaster%3A30497%2Fui%2F">http://master:30497/ui/</a> （已设置hosts）或 <a href="https://link.juejin.cn?target=http%3A%2F%2F192.168.19.136%3A30497%2Fui%2F">http://192.168.19.136:30497/ui/</a></p>
+<p><img loading="lazy" src="/images/%e4%bd%bf%e7%94%a8Helm%e9%83%a8%e7%bd%b2Consul%e9%9b%86%e7%be%a4/a8atv-9xfue.png" alt=""  />
+</p>
+<h3 id="题外话">题外话<a hidden class="anchor" aria-hidden="true" href="#题外话">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看helm已安装列表</span>
+</span></span><span style="display:flex;"><span>helm list -n consul
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 卸载</span>
+</span></span><span style="display:flex;"><span>helm uninstall hi-consul -n consul
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 更多</span>
+</span></span><span style="display:flex;"><span>helm help
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/consul/">consul</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java常用API01</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>K8S中使用Ceph集群动态和静态方式挂载PV与PVC</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

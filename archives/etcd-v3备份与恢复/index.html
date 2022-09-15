@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Etcd v3备份与恢复 | ylw&#39;s blog</title>
+<meta name="keywords" content="k8s, etcd" />
+<meta name="description" content="ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Etcd v3备份与恢复" />
+<meta property="og:description" content="ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-30T17:56:53&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-30T17:56:53&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Etcd v3备份与恢复"/>
+<meta name="twitter:description" content="ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。
+ETCD 使用场景 ETCD 有很多使用场景，包括但不限于：
+ 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。
+ETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Etcd v3备份与恢复",
+      "item": "https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Etcd v3备份与恢复",
+  "name": "Etcd v3备份与恢复",
+  "description": "ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。\nETCD 使用场景 ETCD 有很多使用场景，包括但不限于：\n 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。\nETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.",
+  "keywords": [
+    "k8s", "etcd"
+  ],
+  "articleBody": "ETCD 简介 ETCD 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。\nETCD 使用场景 ETCD 有很多使用场景，包括但不限于：\n 配置管理 服务注册于发现 选主 应用调度 分布式队列 分布式锁  ETCD 存储 k8s 所有数据信息 ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。\nETCD 一些查询操作  查看集群状态  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  https://192.168.1.36:2379 is healthy: successfully committed proposal: took = 1.698385ms https://192.168.1.37:2379 is healthy: successfully committed proposal: took = 1.577913ms https://192.168.1.38:2379 is healthy: successfully committed proposal: took = 5.616079ms  获取某个 key 信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 get /registry/apiregistration.k8s.io/apiservices/v1.apps  获取 etcd 版本信息  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 version  获取 ETCD 所有的 key  $ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 get / --prefix --keys-only 环境 主机 IP k8s-master1 192.168.1.36 k8s-master2 192.168.1.37 k8s-master3 192.168.1.38  ETCD version 3.2.12 Kubernetes version v1.15.6 二进制安装  备份 注意：ETCD 不同的版本的 etcdctl 命令不一样，但大致差不多，本文备份使用 napshot save , 每次备份一个节点就行。\n命令备份（k8s-master1 机器上备份）：\n$ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379 snapshot save /data/etcd_backup_dir/etcd-snapshot-`date +%Y%m%d`.db 备份脚本（k8s-master1 机器上备份）：\n#!/usr/bin/env bash  date;  CACERT=\"/opt/kubernetes/ssl/ca.pem\" CERT=\"/opt/kubernetes/ssl/server.pem\" EKY=\"/opt/kubernetes/ssl/server-key.pem\" ENDPOINTS=\"192.168.1.36:2379\"  ETCDCTL_API=3 etcdctl \\ --cacert=\"${CACERT}\" --cert=\"${CERT}\" --key=\"${EKY}\" \\ --endpoints=${ENDPOINTS} \\ snapshot save /data/etcd_backup_dir/etcd-snapshot-`date +%Y%m%d`.db  # 备份保留30天 find /data/etcd_backup_dir/ -name *.db -mtime +30 -exec rm -f {} \\; 恢复 准备工作  停止所有 Master 上 kube-apiserver 服务  $ systemctl stop kube-apiserver  # 确认 kube-apiserver 服务是否停止  $ ps -ef | grep kube-apiserver  停止集群中所有 ETCD 服务  $ systemctl stop etcd  移除所有 ETCD 存储目录下数据  $ mv /var/lib/etcd/default.etcd /var/lib/etcd/default.etcd.bak  拷贝 ETCD 备份快照  # 从 k8s-master1 机器上拷贝备份  $ scp /data/etcd_backup_dir/etcd-snapshot-20191222.db root@k8s-master2:/data/etcd_backup_dir/ $ scp /data/etcd_backup_dir/etcd-snapshot-20191222.db root@k8s-master3:/data/etcd_backup_dir/ 恢复备份 # k8s-master1 机器上操作 $ ETCDCTL_API=3 etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db \\  --name etcd-0 \\  --initial-cluster \"etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380\" \\  --initial-cluster-token etcd-cluster \\  --initial-advertise-peer-urls https://192.168.1.36:2380 \\  --data-dir=/var/lib/etcd/default.etcd  # k8s-master2 机器上操作 $ ETCDCTL_API=3 etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db \\  --name etcd-1 \\  --initial-cluster \"etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380\" \\  --initial-cluster-token etcd-cluster \\  --initial-advertise-peer-urls https://192.168.1.37:2380 \\  --data-dir=/var/lib/etcd/default.etcd  # k8s-master3 机器上操作 $ ETCDCTL_API=3 etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db \\  --name etcd-2 \\  --initial-cluster \"etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380\" \\  --initial-cluster-token etcd-cluster \\  --initial-advertise-peer-urls https://192.168.1.38:2380 \\  --data-dir=/var/lib/etcd/default.etcd 上面三台 ETCD 都恢复完成后，依次登陆三台机器启动 ETCD\n$ systemctl start etcd 三台 ETCD 启动完成，检查 ETCD 集群状态\n$ ETCDCTL_API=3 etcdctl --cacert=/opt/kubernetes/ssl/ca.pem --cert=/opt/kubernetes/ssl/server.pem --key=/opt/kubernetes/ssl/server-key.pem --endpoints=https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health 三台 ETCD 全部健康，分别到每台 Master 启动 kube-apiserver\n$ systemctl start kube-apiserver 检查 Kubernetes 集群是否恢复正常\n$ kubectl get cs 总结 Kubernetes 集群备份主要是备份 ETCD 集群。而恢复时，主要考虑恢复整个顺序：\n停止kube-apiserver -- 停止ETCD -- 恢复数据 -- 启动ETCD -- 启动kube-apiserve 注意：备份ETCD集群时，只需要备份一个ETCD就行，恢复时，拿同一份备份数据恢复。\n",
+  "wordCount" : "346",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-30T17:56:53Z",
+  "dateModified": "2021-12-30T17:56:53Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/etcd-v3%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Etcd v3备份与恢复
+    </h1>
+    <div class="post-meta"><span title='2021-12-30 17:56:53 +0000 UTC'>2021-12-30</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#etcd-%e7%ae%80%e4%bb%8b" aria-label="ETCD 简介"><strong>ETCD 简介</strong></a></li>
+                    <li>
+                        <a href="#etcd-%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" aria-label="ETCD 使用场景"><strong>ETCD 使用场景</strong></a></li>
+                    <li>
+                        <a href="#etcd-%e5%ad%98%e5%82%a8-k8s-%e6%89%80%e6%9c%89%e6%95%b0%e6%8d%ae%e4%bf%a1%e6%81%af" aria-label="ETCD 存储 k8s 所有数据信息"><strong>ETCD 存储 k8s 所有数据信息</strong></a></li>
+                    <li>
+                        <a href="#etcd-%e4%b8%80%e4%ba%9b%e6%9f%a5%e8%af%a2%e6%93%8d%e4%bd%9c" aria-label="ETCD 一些查询操作"><strong>ETCD 一些查询操作</strong></a></li>
+                    <li>
+                        <a href="#%e7%8e%af%e5%a2%83" aria-label="环境"><strong>环境</strong></a></li>
+                    <li>
+                        <a href="#%e5%a4%87%e4%bb%bd" aria-label="备份"><strong>备份</strong></a></li>
+                    <li>
+                        <a href="#%e6%81%a2%e5%a4%8d" aria-label="恢复"><strong>恢复</strong></a><ul>
+                            
+                    <li>
+                        <a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" aria-label="准备工作"><strong>准备工作</strong></a></li>
+                    <li>
+                        <a href="#%e6%81%a2%e5%a4%8d%e5%a4%87%e4%bb%bd" aria-label="恢复备份"><strong>恢复备份</strong></a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e6%80%bb%e7%bb%93" aria-label="总结"><strong>总结</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="etcd-简介"><strong>ETCD 简介</strong><a hidden class="anchor" aria-hidden="true" href="#etcd-简介">#</a></h2>
+<p><code>ETCD</code> 是用于共享配置和服务发现的分布式，一致性的KV存储系统。ETCD是CoreOS公司发起的一个开源项目，授权协议为Apache。</p>
+<h2 id="etcd-使用场景"><strong>ETCD 使用场景</strong><a hidden class="anchor" aria-hidden="true" href="#etcd-使用场景">#</a></h2>
+<p>ETCD 有很多使用场景，包括但不限于：</p>
+<ul>
+<li>配置管理</li>
+<li>服务注册于发现</li>
+<li>选主</li>
+<li>应用调度</li>
+<li>分布式队列</li>
+<li>分布式锁</li>
+</ul>
+<h2 id="etcd-存储-k8s-所有数据信息"><strong>ETCD 存储 k8s 所有数据信息</strong><a hidden class="anchor" aria-hidden="true" href="#etcd-存储-k8s-所有数据信息">#</a></h2>
+<p>ETCD 是k8s集群极为重要的一块服务，存储了集群所有的数据信息。同理，如果发生灾难或者 etcd 的数据丢失，都会影响集群数据的恢复。所以，本文重点讲如何备份和恢复数据。</p>
+<h2 id="etcd-一些查询操作"><strong>ETCD 一些查询操作</strong><a hidden class="anchor" aria-hidden="true" href="#etcd-一些查询操作">#</a></h2>
+<ul>
+<li>查看集群状态</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>https://192.168.1.36:2379 is healthy: successfully committed proposal: took <span style="color:#f92672">=</span> 1.698385ms 
+</span></span><span style="display:flex;"><span>https://192.168.1.37:2379 is healthy: successfully committed proposal: took <span style="color:#f92672">=</span> 1.577913ms 
+</span></span><span style="display:flex;"><span>https://192.168.1.38:2379 is healthy: successfully committed proposal: took <span style="color:#f92672">=</span> 5.616079ms
+</span></span></code></pre></div><ul>
+<li>获取某个 key 信息</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 get /registry/apiregistration.k8s.io/apiservices/v1.apps
+</span></span></code></pre></div><ul>
+<li>获取 etcd 版本信息</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 version
+</span></span></code></pre></div><ul>
+<li>获取 ETCD 所有的 key</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 get / --prefix --keys-only
+</span></span></code></pre></div><h2 id="环境"><strong>环境</strong><a hidden class="anchor" aria-hidden="true" href="#环境">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>主机   IP
+</span></span><span style="display:flex;"><span>k8s-master1 192.168.1.36
+</span></span><span style="display:flex;"><span>k8s-master2 192.168.1.37
+</span></span><span style="display:flex;"><span>k8s-master3 192.168.1.38
+</span></span></code></pre></div><ul>
+<li>ETCD version 3.2.12</li>
+<li>Kubernetes version v1.15.6 二进制安装</li>
+</ul>
+<h2 id="备份"><strong>备份</strong><a hidden class="anchor" aria-hidden="true" href="#备份">#</a></h2>
+<p><code>注意</code>：ETCD 不同的版本的 etcdctl 命令不一样，但大致差不多，本文备份使用 <code>napshot save</code> , 每次备份<code>一个节点</code>就行。</p>
+<p><code>命令备份</code>（k8s-master1 机器上备份）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379 snapshot save /data/etcd_backup_dir/etcd-snapshot-<span style="color:#e6db74">`</span>date +%Y%m%d<span style="color:#e6db74">`</span>.db
+</span></span></code></pre></div><p><code>备份脚本</code>（k8s-master1 机器上备份）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>date;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CACERT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/opt/kubernetes/ssl/ca.pem&#34;</span>
+</span></span><span style="display:flex;"><span>CERT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/opt/kubernetes/ssl/server.pem&#34;</span>
+</span></span><span style="display:flex;"><span>EKY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/opt/kubernetes/ssl/server-key.pem&#34;</span>
+</span></span><span style="display:flex;"><span>ENDPOINTS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;192.168.1.36:2379&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--cacert<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CACERT<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> --cert<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CERT<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> --key<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>EKY<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--endpoints<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>ENDPOINTS<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>snapshot save /data/etcd_backup_dir/etcd-snapshot-<span style="color:#e6db74">`</span>date +%Y%m%d<span style="color:#e6db74">`</span>.db
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 备份保留30天</span>
+</span></span><span style="display:flex;"><span>find /data/etcd_backup_dir/ -name *.db -mtime +30 -exec rm -f <span style="color:#f92672">{}</span> <span style="color:#ae81ff">\;</span>
+</span></span></code></pre></div><h2 id="恢复"><strong>恢复</strong><a hidden class="anchor" aria-hidden="true" href="#恢复">#</a></h2>
+<h3 id="准备工作"><strong>准备工作</strong><a hidden class="anchor" aria-hidden="true" href="#准备工作">#</a></h3>
+<ul>
+<li>停止所有 Master 上 <code>kube-apiserver</code> 服务</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl stop kube-apiserver  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 确认 kube-apiserver 服务是否停止 </span>
+</span></span><span style="display:flex;"><span>$ ps -ef | grep kube-apiserver
+</span></span></code></pre></div><ul>
+<li>停止集群中所有 ETCD 服务</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl stop etcd
+</span></span></code></pre></div><ul>
+<li>移除所有 ETCD 存储目录下数据</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mv /var/lib/etcd/default.etcd /var/lib/etcd/default.etcd.bak
+</span></span></code></pre></div><ul>
+<li>拷贝 ETCD 备份快照</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 从 k8s-master1 机器上拷贝备份 </span>
+</span></span><span style="display:flex;"><span>$ scp /data/etcd_backup_dir/etcd-snapshot-20191222.db root@k8s-master2:/data/etcd_backup_dir/ 
+</span></span><span style="display:flex;"><span>$ scp /data/etcd_backup_dir/etcd-snapshot-20191222.db root@k8s-master3:/data/etcd_backup_dir/
+</span></span></code></pre></div><h3 id="恢复备份"><strong>恢复备份</strong><a hidden class="anchor" aria-hidden="true" href="#恢复备份">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># k8s-master1 机器上操作</span>
+</span></span><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --name etcd-0 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster <span style="color:#e6db74">&#34;etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster-token etcd-cluster <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-advertise-peer-urls https://192.168.1.36:2380 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --data-dir<span style="color:#f92672">=</span>/var/lib/etcd/default.etcd
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># k8s-master2 机器上操作</span>
+</span></span><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --name etcd-1 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster <span style="color:#e6db74">&#34;etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380&#34;</span>  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster-token etcd-cluster <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-advertise-peer-urls https://192.168.1.37:2380 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --data-dir<span style="color:#f92672">=</span>/var/lib/etcd/default.etcd
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># k8s-master3 机器上操作</span>
+</span></span><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl snapshot restore /data/etcd_backup_dir/etcd-snapshot-20191222.db <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --name etcd-2 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster <span style="color:#e6db74">&#34;etcd-0=https://192.168.1.36:2380,etcd-1=https://192.168.1.37:2380,etcd-2=https://192.168.1.38:2380&#34;</span>  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-cluster-token etcd-cluster <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --initial-advertise-peer-urls https://192.168.1.38:2380 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --data-dir<span style="color:#f92672">=</span>/var/lib/etcd/default.etcd
+</span></span></code></pre></div><p>上面三台 ETCD 都恢复完成后，依次登陆三台机器启动 ETCD</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl start etcd
+</span></span></code></pre></div><p>三台 ETCD 启动完成，检查 ETCD 集群状态</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --cacert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/ca.pem --cert<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server.pem --key<span style="color:#f92672">=</span>/opt/kubernetes/ssl/server-key.pem --endpoints<span style="color:#f92672">=</span>https://192.168.1.36:2379,https://192.168.1.37:2379,https://192.168.1.38:2379 endpoint health
+</span></span></code></pre></div><p>三台 ETCD 全部健康，分别到每台 Master 启动 kube-apiserver</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl start kube-apiserver
+</span></span></code></pre></div><p>检查 Kubernetes 集群是否恢复正常</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ kubectl get cs
+</span></span></code></pre></div><h2 id="总结"><strong>总结</strong><a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>Kubernetes 集群备份主要是备份 ETCD 集群。而恢复时，主要考虑恢复整个顺序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>停止kube-apiserver --&gt; 停止ETCD --&gt; 恢复数据 --&gt; 启动ETCD --&gt; 启动kube-apiserve
+</span></span></code></pre></div><p><code>注意</code>：备份ETCD集群时，只需要备份一个ETCD就行，恢复时，拿同一份备份数据恢复。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/k8s/">k8s</a></li>
+      <li><a href="https://iblog.zone/tags/etcd/">etcd</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/kubernetes%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E4%B9%8B%E6%97%85/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Kubernetes落地实践之旅</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E8%B5%B0%E8%BF%9Bdocker%E7%9A%84%E4%B8%96%E7%95%8C/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>走进Docker的世界</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

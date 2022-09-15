@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>mysql | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/categories/mysql/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/categories/mysql/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="mysql" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/categories/mysql/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="mysql"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/categories/">Categories</a></div>
+  <h1>mysql</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>GRAFANA&#43;INFLUXDB&#43;TELEGRAF 快速监控主机与MYSQL
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、安装 1.1、配置INFLUXDB YUM源 [root@node ~]# cat /etc/yum.repos.d/influxdb.repo  [influxdb] name = InfluxDB Repository - RHEL \$releasever baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable enabled = 1 gpgcheck = 1 gpgkey = https://repos.influxdata.com/influxdb.key 1.2、安装GRAFANA&#43;INFLUXDB&#43;TELEGRAF 安装influxdb yum install influxdb 安装telegraf yum install telegraf 安装grafana wget https://dl.grafana.com/oss/release/grafana-6.1.3-1.x86_64.rpm yum localinstall grafana-6.1.3-1.x86_64.rpm 1.3、软件版本 InfluxDB version: 1.7.4 Telegraf version: 1.10.2 Grafana version: 6.1.3 1.4、启动服务，添加开机启动 systemctl start influxdb.service systemctl start telegraf.service systemctl start grafana-server.service  systemctl enable influxdb.service systemctl enable telegraf.service systemctl enable grafana-server....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-19 14:35:30 +0800 CST'>2022-04-19</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to GRAFANA&#43;INFLUXDB&#43;TELEGRAF 快速监控主机与MYSQL" href="https://iblog.zone/archives/grafana-influxdb-telegraf-%E5%BF%AB%E9%80%9F%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>MySQL生产级全备&#43;增备备份脚本
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&#34;/data/mysql_backup&#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&#34;root&#34; MYSQL_PASSWORD=&#34;root&#34; MYSQL_HOST=&#34;10.0.0.1&#34;  MYSQL_CNF=&#34;/etc/my.cnf&#34; MYSQL_MULTI_GROUP=&#34;--socket=/data/mysql/mysql.sock&#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&#34;  CURRENT_WEEK_OF_YEAR=$(date &#43;%U) CURRENT_DAY_OF_WEEK=$(date &#43;%u) CURRENT_DATE=$(date &#43;%F) CURRENT_TIME=$(date &#43;%H-%M-%S) CURRENT_DATETIME=&#34;${CURRENT_DATE}_${CURRENT_TIME}&#34;  BAK_WEEK_DIR=&#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&#34;  BAK_FULL_DIR=&#34;${BAK_WEEK_DIR}/FULL&#34;  BAK_LOG=&#34;${BAK_WEEK_DIR}/backup.log&#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime &#43;${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-13 17:19:20 +0800 CST'>2022-04-13</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to MySQL生产级全备&#43;增备备份脚本" href="https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>MySQL权限级别介绍
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-12 10:26:52 +0800 CST'>2022-04-12</span>&nbsp;·&nbsp;3 分钟</footer>
+  <a class="entry-link" aria-label="post link to MySQL权限级别介绍" href="https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>CentOS7编译安装MySQL5.6
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c&#43;&#43; make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &#39;s#SELINUX=enforcing#SELINUX=disabled#g&#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-29 17:04:41 +0800 CST'>2022-03-29</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to CentOS7编译安装MySQL5.6" href="https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Mysql备份和恢复（Xtrabackup方式）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、Xtrabackup介绍 　MySQL冷备、mysqldump、MySQL热拷贝都无法实现对数据库进行增量备份。在实际生产环境中增量备份是非常实用的，如果数据大于50G或100G，存储空间足够的情况下，可以每天进行完整备份，如果每天产生的数据量较大，需要定制数据备份策略。例如每周实用完整备份，周一到周六实用增量备份。而Percona-Xtrabackup就是为了实现增量备份而出现的一款主流备份工具，xtrabakackup有2个工具，分别是xtrabakup、innobakupe。
+　Percona-xtrabackup是 Percona公司开发的一个用于MySQL数据库物理热备的备份工具，支持MySQL、Percona server和MariaDB，开源免费，是目前较为受欢迎的主流备份工具。xtrabackup只能备份innoDB和xtraDB两种数据引擎的表，而不能备份MyISAM数据表。
+二、Xtrabackup优点 （1）备份速度快，物理备份可靠
+（2）备份过程不会打断正在执行的事务（无需锁表）
+（3）能够基于压缩等功能节约磁盘空间和流量
+（4）自动备份校验
+（5）还原速度快
+（6）可以流传将备份传输到另外一台机器上
+（7）在不增加服务器负载的情况备份数据
+三、Xtrabackup备份原理 Xtrabackup备份流程图：
+（1）innobackupex启动后，会先fork一个进程，用于启动xtrabackup，然后等待xtrabackup备份ibd数据文件；
+（2）xtrabackup在备份innoDB数据是，有2种线程：redo拷贝线程和ibd数据拷贝线程。xtrabackup进程开始执行后，会启动一个redo拷贝的线程，用于从最新的checkpoint点开始顺序拷贝redo.log；再启动ibd数据拷贝线程，进行拷贝ibd数据。这里是先启动redo拷贝线程的。在此阶段，innobackupex进行处于等待状态（等待文件被创建）
+（4）xtrabackup拷贝完成ibd数据文件后，会通知innobackupex（通过创建文件），同时xtrabackup进入等待状态（redo线程依旧在拷贝redo.log）
+（5）innobackupex收到xtrabackup通知后哦，执行FLUSH TABLES WITH READ LOCK（FTWRL），取得一致性位点，然后开始备份非InnoDB文件（如frm、MYD、MYI、CSV、opt、par等格式的文件），在拷贝非InnoDB文件的过程当中，数据库处于全局只读状态。
+（6）当innobackup拷贝完所有的非InnoDB文件后，会通知xtrabackup，通知完成后，进入等待状态；
+（7）xtrabackup收到innobackupex备份完成的通知后，会停止redo拷贝线程，然后通知innobackupex，redo.log文件拷贝完成；
+（8）innobackupex收到redo.log备份完成后，就进行解锁操作，执行：UNLOCK TABLES；
+（9）最后innbackupex和xtrabackup进程各自释放资源，写备份元数据信息等，innobackupex等xtrabackup子进程结束后退出。
+四、xtrabackup的安装部署以及备份恢复实现 1、xtrabackup的安装 下载地址：https://www.percona.com/downloads/XtraBackup/LATEST/
+可以选择rpm包方式安装，也可以下载源码包编译安装，这里直接采用rpm包的方式进行安装
+[root@master tools]# wget https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.9/binary/redhat/7/x86_64/percona-xtrabackup-24-2.4.9-1.el7.x86_64.rpm [root@master tools]# yum install -y percona-xtrabackup-24-2.4.9-1.el7.x86_64.rpm  [root@master ~]# rpm -qa |grep xtrabackup percona-xtrabackup-24-2.4.9-1.el7.x86_64  Xtrabackup中主要包含两个工具： xtrabackup：是用于热备innodb，xtradb表中数据的工具，不能备份其他类型的表，也不能备份数据表结构； innobackupex：是将xtrabackup进行封装的perl脚本，提供了备份myisam表的能力。 常用选项:  --host 指定主机  --user 指定用户名  --password 指定密码  --port 指定端口  --databases 指定数据库  --incremental 创建增量备份  --incremental-basedir 指定包含完全备份的目录  --incremental-dir 指定包含增量备份的目录  --apply-log 对备份进行预处理操作  一般情况下，在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据文件仍处理不一致状态。“准备”的主要作用正是通过回滚未提交的事务及同步已经提交的事务至数据文件也使得数据文件处于一致性状态。  --redo-only 不回滚未提交事务  --copy-back 恢复备份目录 使用innobackupex备份时，其会调用xtrabackup备份所有的InnoDB表，复制所有关于表结构定义的相关文件(....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-25 18:03:04 +0800 CST'>2022-03-25</span>&nbsp;·&nbsp;7 分钟</footer>
+  <a class="entry-link" aria-label="post link to Mysql备份和恢复（Xtrabackup方式）" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dxtrabackup%E6%96%B9%E5%BC%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Mysql备份和恢复（mysqldump方式）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、备份单个数据库 1、备份命令：mysqldump
+　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。
+单实例语法（Syntax）: mysqldump -u &lt;username&gt; -p &lt;dbname&gt; &gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u &lt;username&gt; -p &lt;dbname&gt; -S &lt;sockPath&gt; &gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress &gt; /opt/wordpress_$(date &#43;%F).sql 2、参数解析
+ 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-25 17:55:51 +0800 CST'>2022-03-25</span>&nbsp;·&nbsp;3 分钟</footer>
+  <a class="entry-link" aria-label="post link to Mysql备份和恢复（mysqldump方式）" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Mysql用户操作
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Mysql 5.6 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&#39;qweasd11&#39;) where user=&#39;joker&#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-25 17:05:07 +0800 CST'>2022-03-25</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Mysql用户操作" href="https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>查看mysql库大小，表大小，索引大小
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>说明：
+通过MySQL的 information_schema 数据库，可查询数据库中每个表占用的空间、表记录的行数；该库中有一个 TABLES 表，这个表主要字段分别是：
+ TABLE_SCHEMA : 数据库名 TABLE_NAME：表名 ENGINE：所使用的存储引擎 TABLES_ROWS：记录数 DATA_LENGTH：数据大小 INDEX_LENGTH：索引大小  其他字段请参考MySQL的手册，查看一个表占用空间的大小，那就相当于是 数据大小 &#43; 索引大小 。
+查看所有库的大小
+mysql&gt; use information_schema; Database changed mysql&gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&#39;MB&#39;) as data from TABLES; &#43;----------&#43; | data | &#43;----------&#43; | 104.21MB | &#43;----------&#43; 1 row in set (0.11 sec) 查看指定库的大小
+mysql&gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&#39;MB&#39;) as data from TABLES where table_schema=&#39;jishi&#39;; &#43;---------&#43; | data | &#43;---------&#43; | 26.17MB | &#43;---------&#43; 1 row in set (0....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-18 16:38:25 +0000 UTC'>2022-03-18</span>&nbsp;·&nbsp;2 分钟</footer>
+  <a class="entry-link" aria-label="post link to 查看mysql库大小，表大小，索引大小" href="https://iblog.zone/archives/%E6%9F%A5%E7%9C%8Bmysql%E5%BA%93%E5%A4%A7%E5%B0%8F%E8%A1%A8%E5%A4%A7%E5%B0%8F%E7%B4%A2%E5%BC%95%E5%A4%A7%E5%B0%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Linux iowait高问题排查及处理
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &#39;Sleep&#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-01-07 14:11:47 +0000 UTC'>2022-01-07</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Linux iowait高问题排查及处理" href="https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

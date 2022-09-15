@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>mysql on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/mysql/</link>
+    <description>Recent content in mysql on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 19 Apr 2022 14:35:30 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GRAFANA&#43;INFLUXDB&#43;TELEGRAF 快速监控主机与MYSQL</title>
+      <link>https://iblog.zone/archives/grafana-influxdb-telegraf-%E5%BF%AB%E9%80%9F%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql/</link>
+      <pubDate>Tue, 19 Apr 2022 14:35:30 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/grafana-influxdb-telegraf-%E5%BF%AB%E9%80%9F%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql/</guid>
+      <description>一、安装 1.1、配置INFLUXDB YUM源 [root@node ~]# cat /etc/yum.repos.d/influxdb.repo  [influxdb] name = InfluxDB Repository - RHEL \$releasever baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable enabled = 1 gpgcheck = 1 gpgkey = https://repos.influxdata.com/influxdb.key 1.2、安装GRAFANA+INFLUXDB+TELEGRAF 安装influxdb yum install influxdb 安装telegraf yum install telegraf 安装grafana wget https://dl.grafana.com/oss/release/grafana-6.1.3-1.x86_64.rpm yum localinstall grafana-6.1.3-1.x86_64.rpm 1.3、软件版本 InfluxDB version: 1.7.4 Telegraf version: 1.10.2 Grafana version: 6.1.3 1.4、启动服务，添加开机启动 systemctl start influxdb.service systemctl start telegraf.service systemctl start grafana-server.service  systemctl enable influxdb.service systemctl enable telegraf.service systemctl enable grafana-server.</description>
+    </item>
+    
+    <item>
+      <title>MySQL生产级全备&#43;增备备份脚本</title>
+      <link>https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/</link>
+      <pubDate>Wed, 13 Apr 2022 17:19:20 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/</guid>
+      <description>脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&amp;#34;/data/mysql_backup&amp;#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&amp;#34;root&amp;#34; MYSQL_PASSWORD=&amp;#34;root&amp;#34; MYSQL_HOST=&amp;#34;10.0.0.1&amp;#34;  MYSQL_CNF=&amp;#34;/etc/my.cnf&amp;#34; MYSQL_MULTI_GROUP=&amp;#34;--socket=/data/mysql/mysql.sock&amp;#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&amp;#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&amp;#34;  CURRENT_WEEK_OF_YEAR=$(date +%U) CURRENT_DAY_OF_WEEK=$(date +%u) CURRENT_DATE=$(date +%F) CURRENT_TIME=$(date +%H-%M-%S) CURRENT_DATETIME=&amp;#34;${CURRENT_DATE}_${CURRENT_TIME}&amp;#34;  BAK_WEEK_DIR=&amp;#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&amp;#34;  BAK_FULL_DIR=&amp;#34;${BAK_WEEK_DIR}/FULL&amp;#34;  BAK_LOG=&amp;#34;${BAK_WEEK_DIR}/backup.log&amp;#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime +${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !</description>
+    </item>
+    
+    <item>
+      <title>MySQL权限级别介绍</title>
+      <link>https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Tue, 12 Apr 2022 10:26:52 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/</guid>
+      <description>MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&amp;gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&amp;gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&amp;gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&amp;gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&amp;gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限</description>
+    </item>
+    
+    <item>
+      <title>CentOS7编译安装MySQL5.6</title>
+      <link>https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/</link>
+      <pubDate>Tue, 29 Mar 2022 17:04:41 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/</guid>
+      <description>1、下载mysql的安装包
+#下载mysql wget https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.30.tar.gz 2、编译安装mysql
+#查看系统发行版本号 cat /etc/redhat-release CentOS Linux release 7.8.2003 (Core)  # 安装依赖包 yum install ncurses-devel libaio-devel -y yum install cmake gcc gcc-c++ make autoconf -y  #关闭SELinux #临时关闭selinux setenforce 0 #永久关闭selinux sed -i &amp;#39;s#SELINUX=enforcing#SELINUX=disabled#g&amp;#39; /etc/selinux/config  #关闭防火墙 #查看防火墙状态 systemctl status firewalld.service #临时关闭防火墙 systemctl stop firewalld.service #永久关闭防火墙 systemctl disable firewalld.service  #创建mysql帐号 groupadd -r mysql useradd -r -g mysql -s /sbin/nologin mysql  # 编译安装mysql tar xf mysql-5.</description>
+    </item>
+    
+    <item>
+      <title>Mysql备份和恢复（Xtrabackup方式）</title>
+      <link>https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dxtrabackup%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Fri, 25 Mar 2022 18:03:04 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dxtrabackup%E6%96%B9%E5%BC%8F/</guid>
+      <description>一、Xtrabackup介绍 　MySQL冷备、mysqldump、MySQL热拷贝都无法实现对数据库进行增量备份。在实际生产环境中增量备份是非常实用的，如果数据大于50G或100G，存储空间足够的情况下，可以每天进行完整备份，如果每天产生的数据量较大，需要定制数据备份策略。例如每周实用完整备份，周一到周六实用增量备份。而Percona-Xtrabackup就是为了实现增量备份而出现的一款主流备份工具，xtrabakackup有2个工具，分别是xtrabakup、innobakupe。
+　Percona-xtrabackup是 Percona公司开发的一个用于MySQL数据库物理热备的备份工具，支持MySQL、Percona server和MariaDB，开源免费，是目前较为受欢迎的主流备份工具。xtrabackup只能备份innoDB和xtraDB两种数据引擎的表，而不能备份MyISAM数据表。
+二、Xtrabackup优点 （1）备份速度快，物理备份可靠
+（2）备份过程不会打断正在执行的事务（无需锁表）
+（3）能够基于压缩等功能节约磁盘空间和流量
+（4）自动备份校验
+（5）还原速度快
+（6）可以流传将备份传输到另外一台机器上
+（7）在不增加服务器负载的情况备份数据
+三、Xtrabackup备份原理 Xtrabackup备份流程图：
+（1）innobackupex启动后，会先fork一个进程，用于启动xtrabackup，然后等待xtrabackup备份ibd数据文件；
+（2）xtrabackup在备份innoDB数据是，有2种线程：redo拷贝线程和ibd数据拷贝线程。xtrabackup进程开始执行后，会启动一个redo拷贝的线程，用于从最新的checkpoint点开始顺序拷贝redo.log；再启动ibd数据拷贝线程，进行拷贝ibd数据。这里是先启动redo拷贝线程的。在此阶段，innobackupex进行处于等待状态（等待文件被创建）
+（4）xtrabackup拷贝完成ibd数据文件后，会通知innobackupex（通过创建文件），同时xtrabackup进入等待状态（redo线程依旧在拷贝redo.log）
+（5）innobackupex收到xtrabackup通知后哦，执行FLUSH TABLES WITH READ LOCK（FTWRL），取得一致性位点，然后开始备份非InnoDB文件（如frm、MYD、MYI、CSV、opt、par等格式的文件），在拷贝非InnoDB文件的过程当中，数据库处于全局只读状态。
+（6）当innobackup拷贝完所有的非InnoDB文件后，会通知xtrabackup，通知完成后，进入等待状态；
+（7）xtrabackup收到innobackupex备份完成的通知后，会停止redo拷贝线程，然后通知innobackupex，redo.log文件拷贝完成；
+（8）innobackupex收到redo.log备份完成后，就进行解锁操作，执行：UNLOCK TABLES；
+（9）最后innbackupex和xtrabackup进程各自释放资源，写备份元数据信息等，innobackupex等xtrabackup子进程结束后退出。
+四、xtrabackup的安装部署以及备份恢复实现 1、xtrabackup的安装 下载地址：https://www.percona.com/downloads/XtraBackup/LATEST/
+可以选择rpm包方式安装，也可以下载源码包编译安装，这里直接采用rpm包的方式进行安装
+[root@master tools]# wget https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.9/binary/redhat/7/x86_64/percona-xtrabackup-24-2.4.9-1.el7.x86_64.rpm [root@master tools]# yum install -y percona-xtrabackup-24-2.4.9-1.el7.x86_64.rpm  [root@master ~]# rpm -qa |grep xtrabackup percona-xtrabackup-24-2.4.9-1.el7.x86_64  Xtrabackup中主要包含两个工具： xtrabackup：是用于热备innodb，xtradb表中数据的工具，不能备份其他类型的表，也不能备份数据表结构； innobackupex：是将xtrabackup进行封装的perl脚本，提供了备份myisam表的能力。 常用选项:  --host 指定主机  --user 指定用户名  --password 指定密码  --port 指定端口  --databases 指定数据库  --incremental 创建增量备份  --incremental-basedir 指定包含完全备份的目录  --incremental-dir 指定包含增量备份的目录  --apply-log 对备份进行预处理操作  一般情况下，在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据文件仍处理不一致状态。“准备”的主要作用正是通过回滚未提交的事务及同步已经提交的事务至数据文件也使得数据文件处于一致性状态。  --redo-only 不回滚未提交事务  --copy-back 恢复备份目录 使用innobackupex备份时，其会调用xtrabackup备份所有的InnoDB表，复制所有关于表结构定义的相关文件(.</description>
+    </item>
+    
+    <item>
+      <title>Mysql备份和恢复（mysqldump方式）</title>
+      <link>https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Fri, 25 Mar 2022 17:55:51 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/</guid>
+      <description>一、备份单个数据库 1、备份命令：mysqldump
+　MySQL数据库自带的一个很好用的备份命令。是逻辑备份，导出的是SQL语句。也就是把数据从MySQL库中以逻辑的SQL语句的形式直接输出或生成备份的文件的过程。
+单实例语法（Syntax）: mysqldump -u &amp;lt;username&amp;gt; -p &amp;lt;dbname&amp;gt; &amp;gt; /path/to/***.sql  多实例的备份语法（Syntax）： mysqldump -u &amp;lt;username&amp;gt; -p &amp;lt;dbname&amp;gt; -S &amp;lt;sockPath&amp;gt; &amp;gt; /path/to/***.sql  eg: mysqldump -u root -p wordpress &amp;gt; /opt/wordpress_$(date +%F).sql 2、参数解析
+ 1 -A --all-databases：导出全部数据库  2 -Y --all-tablespaces：导出全部表空间  3 -y --no-tablespaces：不导出任何表空间信息  4 --add-drop-database每个数据库创建之前添加drop数据库语句。  5 --add-drop-table每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用--skip-add-drop-table取消选项)  6 --add-locks在每个表导出之前增加LOCK TABLES并且之后UNLOCK TABLE。(默认为打开状态，使用--skip-add-locks取消选项)  7 --comments附加注释信息。默认为打开，可以用--skip-comments取消  8 --compact导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：--skip-add-drop-table --skip-add-locks --skip-comments --skip-disable-keys  9 -c --complete-insert：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。 10 -C --compress：在客户端和服务器之间启用压缩传递所有信息 11 -B--databases：导出几个数据库。参数后面所有名字参量都被看作数据库名。 12 --debug输出debug信息，用于调试。默认值为：d:t:o,/tmp/ 13 --debug-info输出调试信息并退出 14 --default-character-set设置默认字符集，默认值为utf8 15 --delayed-insert采用延时插入方式（INSERT DELAYED）导出数据 16 -E--events：导出事件。 17 --master-data：在备份文件中写入备份时的binlog文件，在恢复进，增量数据从这个文件之后的日志开始恢复。值为1时，binlog文件名和位置没有注释，为2时，则在备份文件中将binlog的文件名和位置进行注释 18 --flush-logs开始导出之前刷新日志。请注意：假如一次导出多个数据库(使用选项--databases或者--all-databases)，将会逐个数据库刷新日志。除使用--lock-all-tables或者--master-data外。在这种情况下，日志将会被刷新一次，相应的所以表同时被锁定。因此，如果打算同时导出和刷新日志应该使用--lock-all-tables 或者--master-data 和--flush-logs。 19 --flush-privileges在导出mysql数据库之后，发出一条FLUSH PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。 20 --force在导出过程中忽略出现的SQL错误。 21 -h --host：需要导出的主机信息 22 --ignore-table不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：--ignore-table=database.</description>
+    </item>
+    
+    <item>
+      <title>Mysql用户操作</title>
+      <link>https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Fri, 25 Mar 2022 17:05:07 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</guid>
+      <description>Mysql 5.6 -- 创建用户 CREATE USER &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39; IDENTIFIED BY &amp;#39;qweasd11&amp;#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&amp;#39;qweasd11&amp;#39;) where user=&amp;#39;joker&amp;#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39; IDENTIFIED BY &amp;#39;qweasd11&amp;#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.</description>
+    </item>
+    
+    <item>
+      <title>查看mysql库大小，表大小，索引大小</title>
+      <link>https://iblog.zone/archives/%E6%9F%A5%E7%9C%8Bmysql%E5%BA%93%E5%A4%A7%E5%B0%8F%E8%A1%A8%E5%A4%A7%E5%B0%8F%E7%B4%A2%E5%BC%95%E5%A4%A7%E5%B0%8F/</link>
+      <pubDate>Fri, 18 Mar 2022 16:38:25 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E6%9F%A5%E7%9C%8Bmysql%E5%BA%93%E5%A4%A7%E5%B0%8F%E8%A1%A8%E5%A4%A7%E5%B0%8F%E7%B4%A2%E5%BC%95%E5%A4%A7%E5%B0%8F/</guid>
+      <description>说明：
+通过MySQL的 information_schema 数据库，可查询数据库中每个表占用的空间、表记录的行数；该库中有一个 TABLES 表，这个表主要字段分别是：
+ TABLE_SCHEMA : 数据库名 TABLE_NAME：表名 ENGINE：所使用的存储引擎 TABLES_ROWS：记录数 DATA_LENGTH：数据大小 INDEX_LENGTH：索引大小  其他字段请参考MySQL的手册，查看一个表占用空间的大小，那就相当于是 数据大小 + 索引大小 。
+查看所有库的大小
+mysql&amp;gt; use information_schema; Database changed mysql&amp;gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&amp;#39;MB&amp;#39;) as data from TABLES; +----------+ | data | +----------+ | 104.21MB | +----------+ 1 row in set (0.11 sec) 查看指定库的大小
+mysql&amp;gt; select concat(round(sum(DATA_LENGTH/1024/1024),2),&amp;#39;MB&amp;#39;) as data from TABLES where table_schema=&amp;#39;jishi&amp;#39;; +---------+ | data | +---------+ | 26.17MB | +---------+ 1 row in set (0.</description>
+    </item>
+    
+    <item>
+      <title>Linux iowait高问题排查及处理</title>
+      <link>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</link>
+      <pubDate>Fri, 07 Jan 2022 14:11:47 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</guid>
+      <description>一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &amp;#39;Sleep&amp;#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？</description>
+    </item>
+    
+  </channel>
+</rss>

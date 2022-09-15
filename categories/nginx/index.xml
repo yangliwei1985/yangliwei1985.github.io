@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>nginx on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/nginx/</link>
+    <description>Recent content in nginx on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 27 Apr 2022 17:20:18 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nginx Stream日志设置</title>
+      <link>https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/</link>
+      <pubDate>Wed, 27 Apr 2022 17:20:18 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/</guid>
+      <description>nginx自1.9.0开始提供tcp/udp的反向代理功能，直到1.11.4才开始提供session日志功能。
+启用stream日志配置文件 主配置文件/etc/nginx/nginx.conf增加内容：
+stream { log_format proxy &amp;#39;$remote_addr [$time_local] &amp;#39; &amp;#39;$protocol $status $bytes_sent $bytes_received &amp;#39; &amp;#39;$session_time &amp;#34;$upstream_addr&amp;#34; &amp;#39; &amp;#39;&amp;#34;$upstream_bytes_sent&amp;#34; &amp;#34;$upstream_bytes_received&amp;#34; &amp;#34;$upstream_connect_time&amp;#34;&amp;#39;; access_log /var/log/nginx/tcp-access.log proxy ; open_log_file_cache off; include /etc/nginx/conf.d/*.stream; } 具体的tcp.stream配置文件
+ upstream TCP59001 { hash $remote_addr consistent; server 192.168.1.176:59001; } server { listen 59001; proxy_connect_timeout 5s; proxy_timeout 30s; proxy_pass TCP59001; } nginx重读配置并检查tcp session日志的生成 nginx重读配置
+nginx -s reload 检查日志
+tail /var/log/nginx/tcp-access.log
+192.168.3.218 [25/Apr/2017:17:55:57 +0800] TCP 200 103 122 10.671 &amp;#34;192.168.1.176:59001&amp;#34; &amp;#34;122&amp;#34; &amp;#34;103&amp;#34; &amp;#34;0.</description>
+    </item>
+    
+    <item>
+      <title>Nginx官方推荐的nginx.conf标准配置</title>
+      <link>https://iblog.zone/archives/nginx%E5%AE%98%E6%96%B9%E6%8E%A8%E8%8D%90%E7%9A%84nginx.conf%E6%A0%87%E5%87%86%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Mon, 18 Apr 2022 11:28:45 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx%E5%AE%98%E6%96%B9%E6%8E%A8%E8%8D%90%E7%9A%84nginx.conf%E6%A0%87%E5%87%86%E9%85%8D%E7%BD%AE/</guid>
+      <description>Nginx官方发布“避免10大NGINX配置错误”中，推荐nginx.conf配置为：
+http {   upstream node_backend {  zone upstreams 64K;  server 127.0.0.1:3000 max_fails=1 fail_timeout=2s;  keepalive 2;  }   server {  listen 80;  server_name example.com;   location / {  proxy_set_header Host $host;  proxy_pass http://node_backend/;  proxy_next_upstream error timeout http_500;   }  } } 即使没有负载平衡或在一台机器内，也要启用upstream{}块，它解锁了几个提高性能的功能：
+ 该zone指令建立了一个共享内存区域，主机上的所有 NGINX 工作进程都可以访问有关上游服务器的配置和状态信息。几个上游组可以共享该区域。 该server指令有几个参数可用于调整服务器行为。在这个例子中，我们改变了 NGINX 用来确定服务器不健康并因此没有资格接受请求的条件。在这里，如果通信尝试在每 2 秒内失败一次（而不是默认的每10 秒一次），它就会认为服务器不健康。 我们把这个设置和proxy_next_upstream指令结合起来，以配置NGINX认为的失败的通信尝试，在这种情况下，它把请求传递给上游组的下一个服务器。在默认的错误和超时条件中，我们添加了http_500，以便NGINX认为来自上游服务器的HTTP 500（内部服务器错误）代码代表一个失败的尝试。 keepalive指令设置每个工作进程的缓存中保存的与上游服务器的空闲keepalive连接的数量。默认情况下，NGINX 会为每个新的传入请求打开一个到上游（后端）服务器的新连接。这是安全但低效的，因为 NGINX 和服务器必须交换三个数据包来建立连接，并交换三个或四个数据包来终止它。在高流量时，为每个请求打开一个新连接会耗尽系统资源，并且根本无法打开连接。修复是在 NGINX 和上游服务器之间启用keepalive 连接——而不是在请求完成时关闭，连接保持打开状态以用于其他请求。这既减少了源端口用完的可能性，又提高了性能。该参数设置为块中列出的服务器数量的两倍。  </description>
+    </item>
+    
+    <item>
+      <title>Nginx根据请求IP转发请求</title>
+      <link>https://iblog.zone/archives/nginx%E6%A0%B9%E6%8D%AE%E8%AF%B7%E6%B1%82ip%E8%BD%AC%E5%8F%91%E8%AF%B7%E6%B1%82/</link>
+      <pubDate>Thu, 14 Apr 2022 16:37:54 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx%E6%A0%B9%E6%8D%AE%E8%AF%B7%E6%B1%82ip%E8%BD%AC%E5%8F%91%E8%AF%B7%E6%B1%82/</guid>
+      <description>规则：
+$remote_addr ~* ^(.*)\.(.*)\.(.*)\.*[0268]$ 匹配末尾为0268这样的偶数ip，跳转到指定域名
+$remote_addr ~* ^(112)\.(.*)\.(.*)\.(.*)$ 开头为 112 的 IP 跳转到指定的域名；
+$http_x_forwarded_for ~* ^(112)\.(.*)\.(.*)\.(.*)$ 根据 forward 地址段来分流，开头为 112 的跳转到指定域名
+例如：
+server {  listen 8080; # 监听端口  server_name 10.0.0.1; # 监听地址   access_log /data/logs/nginx_logs/10.0.0.1.log main;   location / {  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  if ( $remote_addr ~* 10.0.0.2) { ## 请求ip为10.0.0.2的流量转发到下列地址  proxy_pass http://172.16.0.2:10000;  break;  }  if ( $remote_addr ~* ^(.*)\.(.*)\.(.*)\.*[0268]$) { ## 请求ip尾数为0268的ip转发到下列地址  proxy_pass http://172.</description>
+    </item>
+    
+    <item>
+      <title>Nginx常用操作及配置</title>
+      <link>https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Mon, 11 Apr 2022 17:20:11 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/</guid>
+      <description>一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置
+proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。
+ Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置
+upstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192.</description>
+    </item>
+    
+    <item>
+      <title>用yum安装的nginx，报unknown directive “stream”</title>
+      <link>https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/</link>
+      <pubDate>Wed, 16 Mar 2022 16:18:46 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/</guid>
+      <description>用yum安装的nginx，报unknown directive “stream”
+解决方法：yum install nginx-mod-stream -y
+[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置
+[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入
+[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... </description>
+    </item>
+    
+  </channel>
+</rss>

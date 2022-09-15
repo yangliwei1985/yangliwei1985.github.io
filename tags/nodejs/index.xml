@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>nodejs on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/nodejs/</link>
+    <description>Recent content in nodejs on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 06 Dec 2021 18:06:03 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/nodejs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解决npm install下载chromedriver@2.46.0依赖包超级慢问题</title>
+      <link>https://iblog.zone/archives/%E8%A7%A3%E5%86%B3npm-install%E4%B8%8B%E8%BD%BDchromedriver2.46.0%E4%BE%9D%E8%B5%96%E5%8C%85%E8%B6%85%E7%BA%A7%E6%85%A2%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 06 Dec 2021 18:06:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E8%A7%A3%E5%86%B3npm-install%E4%B8%8B%E8%BD%BDchromedriver2.46.0%E4%BE%9D%E8%B5%96%E5%8C%85%E8%B6%85%E7%BA%A7%E6%85%A2%E9%97%AE%E9%A2%98/</guid>
+      <description>一、问题出现原因 使用gitlab-runner部署前端js项目时，下载chromedriver@2.46.0有时候相当的慢。
+主要原因是npm install老去国外github下载
+&amp;gt; chromedriver@2.45.0 install /app/node_modules/chromedriver &amp;gt; node install.js  Current existing ChromeDriver binary is unavailable, proceding with download and extraction. Downloading from file: https://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip Saving to file: /app/node_modules/chromedriver/chromedriver/chromedriver_linux64.zip ... 后来去放置gitlab-runner那台主机wget一下，结果一直响应中
+cuiyf@gitlabrunner:~$ wget https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip --2019-08-05 17:46:32-- https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip Resolving chromedriver.storage.googleapis.com (chromedriver.storage.googleapis.com)... 216.58.200.48, 2404:6800:4008:801::2010 Connecting to chromedriver.storage.googleapis.com (chromedriver.storage.googleapis.com)|216.58.200.48|:443... connected. HTTP request sent, awaiting response... 二、解决思路 设法使其去淘宝镜像源地址下载
+https://registry.npm.taobao.org/ 三、解决方案 由于我是用docker部署的，修改Dockerfile添加如下配置 npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+FROMcuiyf/node:8.12.0-alpine as build-stageCOPY . /appWORKDIR/appRUN npm config set registry http://172.</description>
+    </item>
+    
+  </channel>
+</rss>

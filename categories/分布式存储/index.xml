@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>分布式存储 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/</link>
+    <description>Recent content in 分布式存储 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 01 Mar 2022 14:12:42 +0000</lastBuildDate><atom:link href="https://iblog.zone/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>K8S中使用Ceph集群动态和静态方式挂载PV与PVC</title>
+      <link>https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/</link>
+      <pubDate>Tue, 01 Mar 2022 14:12:42 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/</guid>
+      <description>一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+对象存储的成本比起普通的文件存储还是较高，需要购买专门的对象存储软件以及大容量硬盘。如果对数据量要求不是海量，只是为了做文件共享的时候，直接用文件存储的形式好了，性价比高。
+二、使用CephFS类型Volume直接挂载  cephfs卷允许将现有的cephfs卷挂载到你的Pod中，与emptyDir类型不同的是，emptyDir会在删除Pod时把数据清除掉，而cephfs卷的数据会被保留下来,仅仅是被卸载，并且cephfs可以被多个设备进行读写。
+1、安装 Ceph 客户端 在部署 kubernetes 之前我们就已经有了 Ceph 集群，因此我们可以直接拿来用。但是 kubernetes 的所有节点（尤其是 master 节点）上依然需要安装 ceph 客户端。
+yum install -y ceph-common  还需要将 ceph 的配置文件 ceph.conf 放在所有节点的 /etc/ceph 目录下  2、创建Ceph secret  注意： ceph_secret.</description>
+    </item>
+    
+    <item>
+      <title>Ceph文件系统—CephFS部署</title>
+      <link>https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/</link>
+      <pubDate>Tue, 01 Mar 2022 11:34:22 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/</guid>
+      <description>一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+ 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统.</description>
+    </item>
+    
+    <item>
+      <title>Ceph存储集群部署</title>
+      <link>https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</link>
+      <pubDate>Tue, 01 Mar 2022 10:50:57 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</guid>
+      <description>一、CEPH 简介 不管你是想为云平台提供Ceph 对象存储或Ceph 块设备，还是想部署一个Ceph 文件系统或者把 Ceph 作为他用，所有Ceph 存储集群的部署都始于部署一个个Ceph 节点、网络和 Ceph 存储集群。 Ceph 存储集群至少需要一个 Ceph Monitor 和两个 OSD 守护进程。而运行 Ceph 文件系统客户端时，则必须要有元数据服务器（ Metadata Server ）。
+ **Ceph OSDs：**Ceph OSD 守护进程（ Ceph OSD ）的功能是存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其他OSD 守护进程的心跳来向 Ceph Monitors 提供一些监控信息。当 Ceph 存储集群设定为有2个副本时，至少需要2个 OSD 守护进程，集群才能达到 active+clean 状态（ Ceph 默认有3个副本，但你可以调整副本数）。 **Monitors：**Ceph Monitor维护着展示集群状态的各种图表，包括监视器图、 OSD 图、归置组（ PG ）图、和 CRUSH 图。 Ceph 保存着发生在Monitors 、 OSD 和 PG上的每一次状态变更的历史信息（称为 epoch ）。 **MDSs：**Ceph 元数据服务器（ MDS ）为 Ceph 文件系统存储元数据（也就是说，Ceph 块设备和 Ceph 对象存储不使用MDS ）。元数据服务器使得 POSIX 文件系统的用户们，可以在不对 Ceph 存储集群造成负担的前提下，执行诸如 ls、find 等基本命令。  Ceph 把客户端数据保存为存储池内的对象。通过使用 CRUSH 算法， Ceph 可以计算出哪个归置组（PG）应该持有指定的对象(Object)，然后进一步计算出哪个 OSD 守护进程持有该归置组。 CRUSH 算法使得 Ceph 存储集群能够动态地伸缩、再均衡和修复。</description>
+    </item>
+    
+  </channel>
+</rss>

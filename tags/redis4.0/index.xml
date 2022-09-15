@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>redis4.0 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/redis4.0/</link>
+    <description>Recent content in redis4.0 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 29 Mar 2022 18:07:53 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/redis4.0/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS7安装Redis4.0</title>
+      <link>https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/</link>
+      <pubDate>Tue, 29 Mar 2022 18:07:53 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/</guid>
+      <description>一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c++ make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译&amp;amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译&amp;amp;安装 sudo make -j 16 &amp;amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1</description>
+    </item>
+    
+  </channel>
+</rss>

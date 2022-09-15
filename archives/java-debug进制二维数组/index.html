@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java Debug&amp;进制&amp;二维数组 | ylw&#39;s blog</title>
+<meta name="keywords" content="基础语法" />
+<meta name="description" content="1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。
+1.2 Debug介绍与操作流程   如何加断点
+ 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序
+ 在代码区域右键Debug执行    看哪里
+  看Debugger窗口
+  看Console窗口
+    点哪里
+ 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点
+  选择要删除的断点，单击鼠标左键即可
+  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除
+    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :
+public class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java Debug&amp;进制&amp;二维数组" />
+<meta property="og:description" content="1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。
+1.2 Debug介绍与操作流程   如何加断点
+ 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序
+ 在代码区域右键Debug执行    看哪里
+  看Debugger窗口
+  看Console窗口
+    点哪里
+ 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点
+  选择要删除的断点，单击鼠标左键即可
+  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除
+    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :
+public class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-07T14:44:39&#43;00:00" />
+<meta property="article:modified_time" content="2022-02-07T14:44:39&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java Debug&amp;进制&amp;二维数组"/>
+<meta name="twitter:description" content="1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。
+1.2 Debug介绍与操作流程   如何加断点
+ 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序
+ 在代码区域右键Debug执行    看哪里
+  看Debugger窗口
+  看Console窗口
+    点哪里
+ 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点
+  选择要删除的断点，单击鼠标左键即可
+  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除
+    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :
+public class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java Debug\u0026进制\u0026二维数组",
+      "item": "https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java Debug\u0026进制\u0026二维数组",
+  "name": "Java Debug\u0026进制\u0026二维数组",
+  "description": "1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。\n1.2 Debug介绍与操作流程   如何加断点\n 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序\n 在代码区域右键Debug执行    看哪里\n  看Debugger窗口\n  看Console窗口\n    点哪里\n 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点\n  选择要删除的断点，单击鼠标左键即可\n  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除\n    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :\npublic class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System.",
+  "keywords": [
+    "基础语法"
+  ],
+  "articleBody": "1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。\n1.2 Debug介绍与操作流程   如何加断点\n 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序\n 在代码区域右键Debug执行    看哪里\n  看Debugger窗口\n  看Console窗口\n    点哪里\n 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点\n  选择要删除的断点，单击鼠标左键即可\n  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除\n    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :\npublic class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System.out.println(10);  System.out.println(\"二进制数据0b10的十进制表示为:\" + 0b10);  System.out.println(\"八进制数据010的十进制表示为:\" + 010);  System.out.println(\"十六进制数据0x10的十进制表示为:\" + 0x10);  } } 2.2 任意进制到十进制的转换 2.3 进制转换-十进制到任意进制转换 ​\t2.3.1 : 十进制到二进制的转换\n​\t公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着拼起来即可。\n​\t需求：将十进制数字11，转换为2进制。\n​\t实现方式：源数据为11，使用11不断的除以基数，也就是2，直到商为0。\n​\t2.3.2 : 十进制到十六进制的转换\n​\t公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着拼起来即可。\n​\t需求：将十进制数字60，转换为16进制。\n​\t实现方式：源数据为60，使用60不断的除以基数，也就是16，直到商为0。\n​\t结论：十进制到任意进制的转换\n​\t公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着\t拼起来即可\n2.4 快速进制转换法 ​\t8421码：\n​\t8421码又称BCD码，是BCD代码中最常用的一种BCD： (Binary-Coded Decimal‎) 二进制码十进制数在这种编码方式中，每一位二进制值的1都是代表一个固定数值，把每一位的1代表的十进制数加起来得到的结果就是它所代表的十进制数。\n2.5 原码反码补码 前言 : 计算机中的数据，都是以二进制补码的形式在运算，而补码则是通过反码和原码推算出来的\n**原码 **:（可直观看出数据大小）\n就是二进制定点表示法，即最高位为符号位，【0】表示正，【1】表示负，其余位表示数值的大小。\n通过一个字节表示+7和-7，代码：byte b1 = 7; byte b2 = -7;一个字节等于8个比特位，也就是8个二进制位\n0(符号位)\t0000111\n1(符号位)\t0000111\n反码 : 正数的反码与其原码相同；负数的反码是对其原码逐位取反，但符号位除外。\n补码 : （数据以该状态进行运算）正数的补码与其原码相同；负数的补码是在其反码的末位加1。\n2.6 位运算-基本位运算符 package com.itheima.demo;  public class Demo2 {  /* 位运算: 位运算符指的是二进制位的运算，先将十进制数转成二进制后再进行运算。 在二进制位运算中，1表示true，0表示false。 \u0026 位与 : 遇false则false, 遇0则0 00000000 00000000 00000000 00000110 // 6的二进制 \u0026 00000000 00000000 00000000 00000010 // 2的二进制 ----------------------------------------- 00000000 00000000 00000000 00000010 // 结果: 2 | 位或 : 遇true则true, 遇1则1 ^ 位异或 : 相同为false, 不同为true ~ 取反 : 全部取反, 0变1, 1变0 (也包括符号位) 00000000 00000000 00000000 00000110 // 6的二进制补码 ~ 11111111 11111111 11111111 11111001 - 1 // -1求反码 ------------------------------------ 11111111 11111111 11111111 11111000 // 反码推原码 10000000 00000000 00000000 00000111 // -7 */  public static void main(String[] args) {  System.out.println(6 \u0026 2);  System.out.println(~6);  } } 2.7 位运算-位移运算符 位运算概述 : 位运算符指的是二进制位的运算，先将十进制数转成二进制后再进行运算。在二进制位运算中，1表示true，0表示false。\n位运算符介绍 :\n代码 :\npackage com.itheima.demo;  public class Demo3 {  /* 位移运算符: 运算规律: 向左移动几位, 就是乘以2的几次幂 12 (0)0000000 00000000 00000000 000011000 // 12的二进制 -----------------------------------------------------------------------------  有符号右移运算，二进制位向右移动, 使用符号位进行补位 运算规律: 向右移动几位, 就是除以2的几次幂 000000000 00000000 00000000 0000001(1) // 3的二进制 -----------------------------------------------------------------------------  无符号右移运算符, 无论符号位是0还是1，都补0 010000000 00000000 00000000 00000110 // -6的二进制 */  public static void main(String[] args) {  System.out.println(12  1); // 24  System.out.println(12  2); // 48   } } package com.itheima.demo;  public class Demo4 {  /* ^ 运算符的特点 一个数, 被另外一个数, 异或两次, 该数本身不变 */  public static void main(String[] args) {  System.out.println(10 ^ 5 ^ 10);  } } 3.基础练习 3.1 数据交换 案例需求\n​\t已知两个整数变量a = 10，b = 20，使用程序实现这两个变量的数据交换 ​ 最终输出a = 20，b = 10;\n代码实现\npackage com.itheima.test;  public class Test1 {  /* 需求：已知两个整数变量a = 10，b = 20，使用程序实现这两个变量的数据交换 最终输出a = 20，b = 10; 思路： 1. 定义一个三方变量temp，将a原本记录的值，交给temp记录 （a的值，不会丢了） 2. 使用 a 变量记录 b 的值，（第一步交换完毕，b的值也丢不了了） 3. 使用 b 变量记录 temp的值，也就是a原本的值 （交换完毕） 4. 输出 a 和 b 变量即可 */  /* 动态初始化格式： 数据类型[][] 变量名 = new 数据类型[m][n]; m表示这个二维数组，可以存放多少个一维数组 n表示每一个一维数组，可以存放多少个元素 */  public static void main(String[] args) {  int a = 10;  int b = 20;   // 将a原本记录的值，交给temp记录 （a的值，不会丢了）  int temp = a;  // 用 a 变量记录 b 的值，（第一步交换完毕，b的值也丢不了了）  a = b;  // 使用 b 变量记录 temp的值，也就是a原本的值 （交换完毕）  b = temp;   // 输出 a 和 b 变量即可  System.out.println(\"a=\" + a);  System.out.println(\"b=\" + b);  } } 3.2 数组反转【应用】 案例需求 :\n​\t已知一个数组 arr = {19, 28, 37, 46, 50}; 用程序实现把数组中的元素值交换，\n​\t交换后的数组 arr = {50, 46, 37, 28, 19}; 并在控制台输出交换后的数组元素\n实现步骤 :\n  定义两个变量, start和end来表示开始和结束的指针.\n  确定交换条件, start  循环中编写交换逻辑代码\n  每一次交换完成, 改变两个指针所指向的索引 start++, end–\n  循环结束后, 遍历数组并打印, 查看反转后的数组\n  代码实现 :\npackage com.itheima.test;  public class Test2 {  /* 需求：已知一个数组 arr = {19, 28, 37, 46, 50}; 用程序实现把数组中的元素值交换， 交换后的数组 arr = {50, 46, 37, 28, 19}; 并在控制台输出交换后的数组元素。 步骤: 1. 定义两个变量, start和end来表示开始和结束的指针. 2. 确定交换条件, start 3. 循环中编写交换逻辑代码 4. 每一次交换完成, 改变两个指针所指向的索引 start++, end-- 5. 循环结束后, 遍历数组并打印, 查看反转后的数组 */  public static void main(String[] args) {  int[] arr = {19, 28, 37, 46, 50};  // 1. 定义两个变量, start和end来表示开始和结束的指针.  int start = 0;  int end = arr.length -1;  // 2. 确定交换条件, start  // 4. 每一次交换完成, 改变两个指针所指向的索引 start++, end--  // for(int start = 0, end = arr.length -1; start  for( ; start  end; start++, end--){  // 3. 循环中编写交换逻辑代码  int temp = arr[start];  arr[start] = arr[end];  arr[end] = temp;  }   for (int i = 0; i  arr.length; i++) {  System.out.println(arr[i]);  }  } } 3.3 二维数组概述 ​\t概述 : 二维数组也是一种容器，不同于一维数组，该容器存储的都是一维数组容器\n3.4 二维数组动态初始化 动态初始化格式：  数据类型[][] 变量名 = new 数据类型[m][n]; m表示这个二维数组，可以存放多少个一维数组 n表示每一个一维数组，可以存放多少个元素 package com.itheima.demo;  public class Demo1Array {  /* 动态初始化格式： 数据类型[][] 变量名 = new 数据类型[m][n]; m表示这个二维数组，可以存放多少个一维数组 n表示每一个一维数组，可以存放多少个元素 */  public static void main(String[] args) {  // 数据类型[][] 变量名 = new 数据类型[m][n];  int[][] arr = new int[3][3];  /* [[I@10f87f48 @ : 分隔符 10f87f48 : 十六进制内存地址 I : 数组中存储的数据类型 [[ : 几个中括号就代表的是几维数组 */  System.out.println(arr);   /* 二维数组存储一维数组的时候, 存储的是一维数组的内存地址 */  System.out.println(arr[0]);  System.out.println(arr[1]);  System.out.println(arr[2]);   System.out.println(arr[0][0]);  System.out.println(arr[1][1]);  System.out.println(arr[2][2]);   // 向二维数组中存储元素  arr[0][0] = 11;  arr[0][1] = 22;  arr[0][2] = 33;   arr[1][0] = 11;  arr[1][1] = 22;  arr[1][2] = 33;   arr[2][0] = 11;  arr[2][1] = 22;  arr[2][2] = 33;   // 从二维数组中取出元素并打印  System.out.println(arr[0][0]);  System.out.println(arr[0][1]);  System.out.println(arr[0][2]);  System.out.println(arr[1][0]);  System.out.println(arr[1][1]);  System.out.println(arr[1][2]);  System.out.println(arr[2][0]);  System.out.println(arr[2][1]);  System.out.println(arr[2][2]);  } } 3.5 二维数组访问元素的细节问题 问题 : 二维数组中存储的是一维数组, 那能不能存入 [提前创建好的一维数组] 呢 ?\n答 : 可以的\n代码实现 package com.itheima.demo;  public class Demo2Array {  /* 问题: 二维数组中存储的是一维数组, 那能不能存入 [提前创建好的一维数组] 呢 ? 答 : 可以的 */  public static void main(String[] args) {  int[] arr1 = {11,22,33};  int[] arr2 = {44,55,66};  int[] arr3 = {77,88,99,100};   int[][] arr = new int[3][3];   arr[2][3] = 100;   arr[0] = arr1;  arr[1] = arr2;  arr[2] = arr3;   System.out.println(arr[1][2]);  System.out.println(arr[2][3]);  } } 3.6 二维数组静态初始化 **完整格式 :** 数据类型[][] 变量名 = new 数据类型[][]{ {元素1, 元素2...} , {元素1, 元素2...} **简化格式 :** 数据类型[][] 变量名 = { {元素1, 元素2...} , {元素1, 元素2...} ...};  **代码实现 : **\npackage com.itheima.demo;  public class Demo3Array {  /* 完整格式：数据类型[][] 变量名 = new 数据类型[][]{ {元素1, 元素2...} , {元素1, 元素2...} ...}; 简化格式: 数据类型[][] 变量名 = { {元素1, 元素2...} , {元素1, 元素2...} ...}; */  public static void main(String[] args) {  int[] arr1 = {11,22,33};  int[] arr2 = {44,55,66};   int[][] arr = {{11,22,33}, {44,55,66}};  System.out.println(arr[0][2]);   int[][] array = {arr1,arr2};  System.out.println(array[0][2]);  } } 3.7 二维数组遍历 需求 :\n​\t已知一个二维数组 arr = {{11, 22, 33},{33, 44, 55}};\n​\t遍历该数组，取出所有元素并打印\n步骤 :\n1. 遍历二维数组，取出里面每一个一维数组 2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素  代码实现 :\npackage com.itheima.test;  public class Test1 {  /* 需求: 已知一个二维数组 arr = {{11, 22, 33}, {33, 44, 55}}; 遍历该数组，取出所有元素并打印 步骤: 1. 遍历二维数组，取出里面每一个一维数组 2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素 */  public static void main(String[] args) {  int[][] arr = {{11, 22, 33}, {33, 44, 55}};   // 1. 遍历二维数组，取出里面每一个一维数组  for (int i = 0; i  arr.length; i++) {  //System.out.println(arr[i]);  // 2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素  //int[] temp = arr[i];  for (int j = 0; j  arr[i].length; j++) {  System.out.println(arr[i][j]);  }  }  } } 3.8 二维数组求和 需求 :\n某公司季度和月份统计的数据如下：单位(万元) 第一季度：22,66,44 第二季度：77,33,88 第三季度：25,45,65 第四季度：11,66,99  步骤 :\n 定义求和变量，准备记录最终累加结果 使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来 遍历二维数组，获取所有元素，累加求和 输出最终结果  代码实现 :\npackage com.itheima.test;  public class Test2 {  /* 需求: 某公司季度和月份统计的数据如下：单位(万元) 第一季度：22,66,44 第二季度：77,33,88 第三季度：25,45,65 第四季度：11,66,99 步骤: 1. 定义求和变量，准备记录最终累加结果 2. 使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来 3. 遍历二维数组，获取所有元素，累加求和 4. 输出最终结果 */  public static void main(String[] args) {  // 1. 定义求和变量，准备记录最终累加结果  int sum = 0;  // 2. 使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来  int[][] arr = { {22,66,44} , {77,33,88} , {25,45,65} , {11,66,99}};  // 3. 遍历二维数组，获取所有元素，累加求和  for (int i = 0; i  arr.length; i++) {  for(int j = 0; j  arr[i].length; j++){  sum += arr[i][j];  }  }  // 4. 输出最终结果  System.out.println(sum);  } } ",
+  "wordCount" : "1088",
+  "inLanguage": "zh",
+  "datePublished": "2022-02-07T14:44:39Z",
+  "dateModified": "2022-02-07T14:44:39Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java Debug&amp;进制&amp;二维数组
+    </h1>
+    <div class="post-meta"><span title='2022-02-07 14:44:39 +0000 UTC'>2022-02-07</span>&nbsp;·&nbsp;6 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1debug%e6%a8%a1%e5%bc%8f" aria-label="1.Debug模式">1.Debug模式</a><ul>
+                            
+                    <li>
+                        <a href="#11-%e4%bb%80%e4%b9%88%e6%98%afdebug%e6%a8%a1%e5%bc%8f" aria-label="1.1 什么是Debug模式">1.1 什么是Debug模式</a></li>
+                    <li>
+                        <a href="#12-debug%e4%bb%8b%e7%bb%8d%e4%b8%8e%e6%93%8d%e4%bd%9c%e6%b5%81%e7%a8%8b" aria-label="1.2 Debug介绍与操作流程">1.2 Debug介绍与操作流程</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2-%e8%bf%9b%e5%88%b6%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%b9%a6%e5%86%99%e6%a0%bc%e5%bc%8f" aria-label="2. 进制的介绍与书写格式">2. 进制的介绍与书写格式</a><ul>
+                            
+                    <li>
+                        <a href="#21-%e8%bf%9b%e5%88%b6%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%b9%a6%e5%86%99%e6%a0%bc%e5%bc%8f" aria-label="2.1 进制的介绍与书写格式">2.1 进制的介绍与书写格式</a></li>
+                    <li>
+                        <a href="#22-%e4%bb%bb%e6%84%8f%e8%bf%9b%e5%88%b6%e5%88%b0%e5%8d%81%e8%bf%9b%e5%88%b6%e7%9a%84%e8%bd%ac%e6%8d%a2" aria-label="2.2 任意进制到十进制的转换">2.2 任意进制到十进制的转换</a></li>
+                    <li>
+                        <a href="#23-%e8%bf%9b%e5%88%b6%e8%bd%ac%e6%8d%a2-%e5%8d%81%e8%bf%9b%e5%88%b6%e5%88%b0%e4%bb%bb%e6%84%8f%e8%bf%9b%e5%88%b6%e8%bd%ac%e6%8d%a2" aria-label="2.3 进制转换-十进制到任意进制转换">2.3 进制转换-十进制到任意进制转换</a></li>
+                    <li>
+                        <a href="#24--%e5%bf%ab%e9%80%9f%e8%bf%9b%e5%88%b6%e8%bd%ac%e6%8d%a2%e6%b3%95" aria-label="2.4  快速进制转换法">2.4  快速进制转换法</a></li>
+                    <li>
+                        <a href="#25--%e5%8e%9f%e7%a0%81%e5%8f%8d%e7%a0%81%e8%a1%a5%e7%a0%81" aria-label="2.5  原码反码补码">2.5  原码反码补码</a></li>
+                    <li>
+                        <a href="#26-%e4%bd%8d%e8%bf%90%e7%ae%97-%e5%9f%ba%e6%9c%ac%e4%bd%8d%e8%bf%90%e7%ae%97%e7%ac%a6" aria-label="2.6 位运算-基本位运算符">2.6 位运算-基本位运算符</a></li>
+                    <li>
+                        <a href="#27-%e4%bd%8d%e8%bf%90%e7%ae%97-%e4%bd%8d%e7%a7%bb%e8%bf%90%e7%ae%97%e7%ac%a6" aria-label="2.7 位运算-位移运算符">2.7 位运算-位移运算符</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e5%9f%ba%e7%a1%80%e7%bb%83%e4%b9%a0" aria-label="3.基础练习">3.基础练习</a><ul>
+                            
+                    <li>
+                        <a href="#31-%e6%95%b0%e6%8d%ae%e4%ba%a4%e6%8d%a2" aria-label="3.1 数据交换">3.1 数据交换</a></li>
+                    <li>
+                        <a href="#32-%e6%95%b0%e7%bb%84%e5%8f%8d%e8%bd%ac%e5%ba%94%e7%94%a8" aria-label="3.2 数组反转【应用】">3.2 数组反转【应用】</a></li>
+                    <li>
+                        <a href="#33-%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e6%a6%82%e8%bf%b0" aria-label="3.3 二维数组概述">3.3 二维数组概述</a></li>
+                    <li>
+                        <a href="#34-%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e5%8a%a8%e6%80%81%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="3.4 二维数组动态初始化">3.4 二维数组动态初始化</a></li>
+                    <li>
+                        <a href="#35--%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e8%ae%bf%e9%97%ae%e5%85%83%e7%b4%a0%e7%9a%84%e7%bb%86%e8%8a%82%e9%97%ae%e9%a2%98" aria-label="3.5  二维数组访问元素的细节问题">3.5  二维数组访问元素的细节问题</a><ul>
+                            
+                    <li>
+                        <a href="#%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0" aria-label="代码实现">代码实现</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#36-%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e9%9d%99%e6%80%81%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="3.6 二维数组静态初始化">3.6 二维数组静态初始化</a></li>
+                    <li>
+                        <a href="#37-%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e9%81%8d%e5%8e%86" aria-label="3.7 二维数组遍历">3.7 二维数组遍历</a></li>
+                    <li>
+                        <a href="#38-%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e6%b1%82%e5%92%8c" aria-label="3.8 二维数组求和">3.8 二维数组求和</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1debug模式">1.Debug模式<a hidden class="anchor" aria-hidden="true" href="#1debug模式">#</a></h2>
+<h3 id="11-什么是debug模式">1.1 什么是Debug模式<a hidden class="anchor" aria-hidden="true" href="#11-什么是debug模式">#</a></h3>
+<p>是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。</p>
+<h3 id="12-debug介绍与操作流程">1.2 Debug介绍与操作流程<a hidden class="anchor" aria-hidden="true" href="#12-debug介绍与操作流程">#</a></h3>
+<ul>
+<li>
+<p>如何加断点</p>
+<ul>
+<li>选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可</li>
+</ul>
+</li>
+<li>
+<p>如何运行加了断点的程序</p>
+<ul>
+<li>在代码区域右键Debug执行</li>
+</ul>
+</li>
+<li>
+<p>看哪里</p>
+<ul>
+<li>
+<p>看Debugger窗口</p>
+</li>
+<li>
+<p>看Console窗口</p>
+</li>
+</ul>
+</li>
+<li>
+<p>点哪里</p>
+<ul>
+<li>点Step Into (F7)这个箭头，也可以直接按F7</li>
+</ul>
+</li>
+<li>
+<p>如何删除断点</p>
+<ul>
+<li>
+<p>选择要删除的断点，单击鼠标左键即可</p>
+</li>
+<li>
+<p>如果是多个断点，可以每一个再点击一次。也可以一次性全部删除</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-进制的介绍与书写格式">2. 进制的介绍与书写格式<a hidden class="anchor" aria-hidden="true" href="#2-进制的介绍与书写格式">#</a></h2>
+<h3 id="21-进制的介绍与书写格式">2.1 进制的介绍与书写格式<a hidden class="anchor" aria-hidden="true" href="#21-进制的介绍与书写格式">#</a></h3>
+<p>代码 :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        十进制：Java中，数值默认都是10进制，不需要加任何修饰。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        二进制：数值前面以0b开头，b大小写都可以。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        八进制：数值前面以0开头。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        十六进制：数值前面以0x开头，x大小写都可以。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制数据0b10的十进制表示为:&#34;</span> <span style="color:#f92672">+</span> 0b10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;八进制数据010的十进制表示为:&#34;</span> <span style="color:#f92672">+</span> 010<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十六进制数据0x10的十进制表示为:&#34;</span> <span style="color:#f92672">+</span> 0x10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="22-任意进制到十进制的转换">2.2 任意进制到十进制的转换<a hidden class="anchor" aria-hidden="true" href="#22-任意进制到十进制的转换">#</a></h3>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590937009286.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590937024104.png" alt=""  />
+</p>
+<h3 id="23-进制转换-十进制到任意进制转换">2.3 进制转换-十进制到任意进制转换<a hidden class="anchor" aria-hidden="true" href="#23-进制转换-十进制到任意进制转换">#</a></h3>
+<p>​	<strong>2.3.1 : 十进制到二进制的转换</strong></p>
+<p>​	公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着拼起来即可。</p>
+<p>​	需求：将十进制数字11，转换为2进制。</p>
+<p>​	实现方式：源数据为11，使用11不断的除以基数，也就是2，直到商为0。</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936221838.png" alt=""  />
+</p>
+<p>​	<strong>2.3.2 : 十进制到十六进制的转换</strong></p>
+<p>​	公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着拼起来即可。</p>
+<p>​	需求：将十进制数字60，转换为16进制。</p>
+<p>​	实现方式：源数据为60，使用60不断的除以基数，也就是16，直到商为0。</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936342865.png" alt=""  />
+</p>
+<p>​	结论：十进制到任意进制的转换</p>
+<p>​	公式：除基取余使用源数据，不断的除以基数（几进制，基数就是几）得到余数，直到商为0，再将余数倒着	拼起来即可</p>
+<h3 id="24--快速进制转换法">2.4  快速进制转换法<a hidden class="anchor" aria-hidden="true" href="#24--快速进制转换法">#</a></h3>
+<p>​	8421码：</p>
+<p>​	8421码又称BCD码，是BCD代码中最常用的一种BCD： (Binary-Coded Decimal‎) 二进制码十进制数在这种编码方式中，每一位二进制值的1都是代表一个固定数值，把每一位的1代表的十进制数加起来得到的结果就是它所代表的十进制数。</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936493344.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936529957.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936548060.png" alt=""  />
+</p>
+<h3 id="25--原码反码补码">2.5  原码反码补码<a hidden class="anchor" aria-hidden="true" href="#25--原码反码补码">#</a></h3>
+<p>前言 : 计算机中的数据，都是以二进制补码的形式在运算，而补码则是通过反码和原码推算出来的</p>
+<p>**原码 **:（可直观看出数据大小）</p>
+<p>就是二进制定点表示法，即最高位为符号位，【0】表示正，【1】表示负，其余位表示数值的大小。</p>
+<p>通过一个字节表示+7和-7，代码：byte b1 = 7;   byte b2 = -7;一个字节等于8个比特位，也就是8个二进制位</p>
+<p>0(符号位)	0000111</p>
+<p>1(符号位)	0000111</p>
+<p><strong>反码 :</strong> 正数的反码与其原码相同；负数的反码是对其原码逐位取反，但符号位除外。</p>
+<p><strong>补码 :</strong> （数据以该状态进行运算）正数的补码与其原码相同；负数的补码是在其反码的末位加1。</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936726746.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590936745245.png" alt=""  />
+</p>
+<h3 id="26-位运算-基本位运算符">2.6 位运算-基本位运算符<a hidden class="anchor" aria-hidden="true" href="#26-位运算-基本位运算符">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        位运算:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            位运算符指的是二进制位的运算，先将十进制数转成二进制后再进行运算。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            在二进制位运算中，1表示true，0表示false。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             &amp; 位与 : 遇false则false, 遇0则0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                        00000000 00000000 00000000 00000110     // 6的二进制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                     &amp;  00000000 00000000 00000000 00000010     // 2的二进制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    -----------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                        00000000 00000000 00000000 00000010     // 结果: 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             | 位或 : 遇true则true, 遇1则1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             ^ 位异或 : 相同为false, 不同为true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             ~ 取反 : 全部取反, 0变1, 1变0  (也包括符号位)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    00000000 00000000 00000000 00000110         // 6的二进制补码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                  ~ 11111111 11111111 11111111 11111001
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                  -                                   1         // -1求反码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                   ------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    11111111 11111111 11111111 11111000         // 反码推原码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    10000000 00000000 00000000 00000111         // -7
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>6 <span style="color:#f92672">&amp;</span> 2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(~</span>6<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="27-位运算-位移运算符">2.7 位运算-位移运算符<a hidden class="anchor" aria-hidden="true" href="#27-位运算-位移运算符">#</a></h3>
+<p><strong>位运算概述 :</strong>  位运算符指的是二进制位的运算，先将十进制数转成二进制后再进行运算。在二进制位运算中，1表示true，0表示false。</p>
+<p><strong>位运算符介绍 :</strong></p>
+<p><img loading="lazy" src="/images/JavaDebug&amp;%e8%bf%9b%e5%88%b6&amp;%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84/1590937235620.png" alt=""  />
+</p>
+<p><strong>代码 :</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo3</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       位移运算符:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">               &lt;&lt; 有符号左移运算，二进制位向左移动, 左边符号位丢弃, 右边补齐0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                        运算规律: 向左移动几位, 就是乘以2的几次幂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                                12 &lt;&lt; 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                                (0)0000000 00000000 00000000 000011000  // 12的二进制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       -----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">               &gt;&gt; 有符号右移运算，二进制位向右移动, 使用符号位进行补位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                        运算规律: 向右移动几位, 就是除以2的几次幂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                                000000000 00000000 00000000 0000001(1)  // 3的二进制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       -----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                &gt;&gt;&gt; 无符号右移运算符,  无论符号位是0还是1，都补0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                                010000000 00000000 00000000 00000110  // -6的二进制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>12 <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">);</span>  <span style="color:#75715e">// 24
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>12 <span style="color:#f92672">&lt;&lt;</span> 2<span style="color:#f92672">);</span>  <span style="color:#75715e">// 48
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo4</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        ^ 运算符的特点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                一个数, 被另外一个数, 异或两次, 该数本身不变
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>10 <span style="color:#f92672">^</span> 5 <span style="color:#f92672">^</span> 10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="3基础练习">3.基础练习<a hidden class="anchor" aria-hidden="true" href="#3基础练习">#</a></h2>
+<h3 id="31-数据交换">3.1 数据交换<a hidden class="anchor" aria-hidden="true" href="#31-数据交换">#</a></h3>
+<p><strong>案例需求</strong></p>
+<p>​	已知两个整数变量a = 10，b = 20，使用程序实现这两个变量的数据交换
+​        最终输出a = 20，b = 10;</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.test<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        需求：已知两个整数变量a = 10，b = 20，使用程序实现这两个变量的数据交换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        最终输出a = 20，b = 10;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        思路：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        1. 定义一个三方变量temp，将a原本记录的值，交给temp记录 （a的值，不会丢了）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        2. 使用 a 变量记录 b 的值，（第一步交换完毕，b的值也丢不了了）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        3. 使用 b 变量记录 temp的值，也就是a原本的值 （交换完毕）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        4. 输出 a 和 b 变量即可
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        动态初始化格式：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            数据类型[][] 变量名 = new 数据类型[m][n];
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            m表示这个二维数组，可以存放多少个一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            n表示每一个一维数组，可以存放多少个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 10<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 20<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将a原本记录的值，交给temp记录 （a的值，不会丢了）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> a<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 用 a 变量记录 b 的值，（第一步交换完毕，b的值也丢不了了）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        a <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 使用 b 变量记录 temp的值，也就是a原本的值 （交换完毕）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        b <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 输出 a 和 b 变量即可
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a=&#34;</span> <span style="color:#f92672">+</span> a<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b=&#34;</span> <span style="color:#f92672">+</span> b<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="32-数组反转应用">3.2 数组反转【应用】<a hidden class="anchor" aria-hidden="true" href="#32-数组反转应用">#</a></h3>
+<p><strong>案例需求 :</strong></p>
+<p>​	已知一个数组 arr = {19, 28, 37, 46, 50}; 用程序实现把数组中的元素值交换，</p>
+<p>​	交换后的数组 arr = {50, 46, 37, 28, 19}; 并在控制台输出交换后的数组元素</p>
+<p><strong>实现步骤 :</strong></p>
+<ol>
+<li>
+<p>定义两个变量, start和end来表示开始和结束的指针.</p>
+</li>
+<li>
+<p>确定交换条件, start &lt; end 允许交换</p>
+</li>
+<li>
+<p>循环中编写交换逻辑代码</p>
+</li>
+<li>
+<p>每一次交换完成, 改变两个指针所指向的索引 start++, end&ndash;</p>
+</li>
+<li>
+<p>循环结束后, 遍历数组并打印, 查看反转后的数组</p>
+</li>
+</ol>
+<p><strong>代码实现 :</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.test<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        需求：已知一个数组 arr = {19, 28, 37, 46, 50}; 用程序实现把数组中的元素值交换，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          交换后的数组 arr = {50, 46, 37, 28, 19}; 并在控制台输出交换后的数组元素。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        步骤:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">              1. 定义两个变量, start和end来表示开始和结束的指针.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">              2. 确定交换条件, start &lt; end 允许交换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">              3. 循环中编写交换逻辑代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">              4. 每一次交换完成, 改变两个指针所指向的索引 start++, end--
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">              5. 循环结束后, 遍历数组并打印, 查看反转后的数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>19<span style="color:#f92672">,</span> 28<span style="color:#f92672">,</span> 37<span style="color:#f92672">,</span> 46<span style="color:#f92672">,</span> 50<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//  1. 定义两个变量, start和end来表示开始和结束的指针.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> start <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> end <span style="color:#f92672">=</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//  2. 确定交换条件, start &lt; end 允许交换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 4. 每一次交换完成, 改变两个指针所指向的索引 start++, end--
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// for(int start = 0, end = arr.length -1; start &lt; end; start++, end--)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span> <span style="color:#f92672">;</span> start <span style="color:#f92672">&lt;</span> end<span style="color:#f92672">;</span> start<span style="color:#f92672">++,</span> end<span style="color:#f92672">--){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 3. 循环中编写交换逻辑代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>start<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            arr<span style="color:#f92672">[</span>start<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>end<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            arr<span style="color:#f92672">[</span>end<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="33-二维数组概述">3.3 二维数组概述<a hidden class="anchor" aria-hidden="true" href="#33-二维数组概述">#</a></h3>
+<p>​	<strong>概述 :</strong>  二维数组也是一种容器，不同于一维数组，该容器存储的都是一维数组容器</p>
+<h3 id="34-二维数组动态初始化">3.4 二维数组动态初始化<a hidden class="anchor" aria-hidden="true" href="#34-二维数组动态初始化">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>动态初始化格式<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>数据类型<span style="color:#f92672">[][]</span> 变量名 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> 数据类型<span style="color:#f92672">[</span>m<span style="color:#f92672">][</span>n<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>m表示这个二维数组<span style="color:#960050;background-color:#1e0010">，</span>可以存放多少个一维数组
+</span></span><span style="display:flex;"><span>n表示每一个一维数组<span style="color:#960050;background-color:#1e0010">，</span>可以存放多少个元素
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo1Array</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        动态初始化格式：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            数据类型[][] 变量名 = new 数据类型[m][n];
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            m表示这个二维数组，可以存放多少个一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            n表示每一个一维数组，可以存放多少个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 数据类型[][] 变量名 = new 数据类型[m][n];
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>3<span style="color:#f92672">][</span>3<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            [[I@10f87f48
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            @ : 分隔符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            10f87f48 : 十六进制内存地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            I : 数组中存储的数据类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            [[ : 几个中括号就代表的是几维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            二维数组存储一维数组的时候, 存储的是一维数组的内存地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>1<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 向二维数组中存储元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 11<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 22<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>2<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 33<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 11<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 22<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>2<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 33<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 11<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 22<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>2<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 33<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 从二维数组中取出元素并打印
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>1<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>1<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>1<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="35--二维数组访问元素的细节问题">3.5  二维数组访问元素的细节问题<a hidden class="anchor" aria-hidden="true" href="#35--二维数组访问元素的细节问题">#</a></h3>
+<p>问题 :  二维数组中存储的是一维数组, 那能不能存入 [提前创建好的一维数组] 呢 ?</p>
+<p>答 : 可以的</p>
+<h4 id="代码实现">代码实现<a hidden class="anchor" aria-hidden="true" href="#代码实现">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo2Array</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        问题: 二维数组中存储的是一维数组, 那能不能存入 [提前创建好的一维数组] 呢 ?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        答 : 可以的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr1 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>11<span style="color:#f92672">,</span>22<span style="color:#f92672">,</span>33<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr2 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>44<span style="color:#f92672">,</span>55<span style="color:#f92672">,</span>66<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr3 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>77<span style="color:#f92672">,</span>88<span style="color:#f92672">,</span>99<span style="color:#f92672">,</span>100<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>3<span style="color:#f92672">][</span>3<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>3<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr2<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr3<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>1<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>2<span style="color:#f92672">][</span>3<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="36-二维数组静态初始化">3.6 二维数组静态初始化<a hidden class="anchor" aria-hidden="true" href="#36-二维数组静态初始化">#</a></h3>
+<pre><code>**完整格式 :** 数据类型[][] 变量名 = new 数据类型[][]{ {元素1, 元素2...} , {元素1, 元素2...} 
+ 
+**简化格式 :**  数据类型[][] 变量名 = { {元素1, 元素2...} , {元素1, 元素2...} ...};
+</code></pre>
+<p>**代码实现 : **</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.demo<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Demo3Array</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        完整格式：数据类型[][] 变量名 = new 数据类型[][]{ {元素1, 元素2...} , {元素1, 元素2...} ...};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        简化格式: 数据类型[][] 变量名 = { {元素1, 元素2...} , {元素1, 元素2...} ...};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr1 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>11<span style="color:#f92672">,</span>22<span style="color:#f92672">,</span>33<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr2 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>44<span style="color:#f92672">,</span>55<span style="color:#f92672">,</span>66<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{{</span>11<span style="color:#f92672">,</span>22<span style="color:#f92672">,</span>33<span style="color:#f92672">},</span> <span style="color:#f92672">{</span>44<span style="color:#f92672">,</span>55<span style="color:#f92672">,</span>66<span style="color:#f92672">}};</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> array <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>arr1<span style="color:#f92672">,</span>arr2<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>0<span style="color:#f92672">][</span>2<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="37-二维数组遍历">3.7 二维数组遍历<a hidden class="anchor" aria-hidden="true" href="#37-二维数组遍历">#</a></h3>
+<p><strong>需求 :</strong></p>
+<p>​	已知一个二维数组 <code>arr = {{11, 22, 33},{33, 44, 55}};</code></p>
+<p>​	遍历该数组，取出所有元素并打印</p>
+<p><strong>步骤 :</strong></p>
+<pre><code>1. 遍历二维数组，取出里面每一个一维数组
+2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素
+</code></pre>
+<p><strong>代码实现 :</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.test<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        需求:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            已知一个二维数组 arr = {{11, 22, 33}, {33, 44, 55}};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            遍历该数组，取出所有元素并打印
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        步骤:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            1. 遍历二维数组，取出里面每一个一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{{</span>11<span style="color:#f92672">,</span> 22<span style="color:#f92672">,</span> 33<span style="color:#f92672">},</span> <span style="color:#f92672">{</span>33<span style="color:#f92672">,</span> 44<span style="color:#f92672">,</span> 55<span style="color:#f92672">}};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 1. 遍历二维数组，取出里面每一个一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//System.out.println(arr[i]);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 2. 在遍历的过程中，对每一个一维数组继续完成遍历，获取内部存储的每一个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//int[] temp = arr[i];
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> j <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> j<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">][</span>j<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="38-二维数组求和">3.8 二维数组求和<a hidden class="anchor" aria-hidden="true" href="#38-二维数组求和">#</a></h3>
+<p><strong>需求 :</strong></p>
+<pre><code>某公司季度和月份统计的数据如下：单位(万元)
+第一季度：22,66,44
+第二季度：77,33,88
+第三季度：25,45,65
+第四季度：11,66,99
+</code></pre>
+<p><strong>步骤 :</strong></p>
+<ol>
+<li>定义求和变量，准备记录最终累加结果</li>
+<li>使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来</li>
+<li>遍历二维数组，获取所有元素，累加求和</li>
+<li>输出最终结果</li>
+</ol>
+<p><strong>代码实现 :</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.itheima.test<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        需求:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            某公司季度和月份统计的数据如下：单位(万元)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            第一季度：22,66,44
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            第二季度：77,33,88
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            第三季度：25,45,65
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            第四季度：11,66,99
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        步骤:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            1. 定义求和变量，准备记录最终累加结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            2. 使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            3. 遍历二维数组，获取所有元素，累加求和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            4. 输出最终结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 1. 定义求和变量，准备记录最终累加结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 2. 使用二维数组来存储数据，每个季度是一个一维数组，再将4个一维数组装起来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[][]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span> <span style="color:#f92672">{</span>22<span style="color:#f92672">,</span>66<span style="color:#f92672">,</span>44<span style="color:#f92672">}</span> <span style="color:#f92672">,</span> <span style="color:#f92672">{</span>77<span style="color:#f92672">,</span>33<span style="color:#f92672">,</span>88<span style="color:#f92672">}</span> <span style="color:#f92672">,</span> <span style="color:#f92672">{</span>25<span style="color:#f92672">,</span>45<span style="color:#f92672">,</span>65<span style="color:#f92672">}</span> <span style="color:#f92672">,</span> <span style="color:#f92672">{</span>11<span style="color:#f92672">,</span>66<span style="color:#f92672">,</span>99<span style="color:#f92672">}};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 3. 遍历二维数组，获取所有元素，累加求和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> j <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> j<span style="color:#f92672">++){</span>
+</span></span><span style="display:flex;"><span>                sum <span style="color:#f92672">+=</span> arr<span style="color:#f92672">[</span>i<span style="color:#f92672">][</span>j<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 4. 输出最终结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>sum<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/">基础语法</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java面向对象</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E6%96%B9%E6%B3%95/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java方法</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

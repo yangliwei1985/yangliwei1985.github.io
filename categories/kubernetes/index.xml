@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>kubernetes on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/kubernetes/</link>
+    <description>Recent content in kubernetes on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 15 Dec 2021 14:58:45 +0000</lastBuildDate><atom:link href="https://iblog.zone/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes1.16安装[kubadm方式]</title>
+      <link>https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Wed, 15 Dec 2021 14:58:45 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/</guid>
+      <description>集群信息 1. 节点规划 部署k8s集群的节点按照用途可以划分为如下2类角色：
+ master：集群的master节点，集群的初始化节点，基础配置不低于2C4G slave：集群的slave节点，可以多台，基础配置不低于2C4G  本例为了演示slave节点的添加，会部署一台master+2台slave，节点规划如下：
+   主机名 节点ip 角色 部署组件     k8s-master 192.168.136.128 master etcd, kube-apiserver, kube-controller-manager, kubectl, kubeadm, kubelet, kube-proxy, flannel   k8s-slave1 192.168.136.131 slave kubectl, kubelet, kube-proxy, flannel   k8s-slave2 192.168.136.132 slave kubectl, kubelet, kube-proxy, flannel    2. 组件版本    组件 版本 说明     CentOS 7.6.1810    Kernel Linux 3.</description>
+    </item>
+    
+  </channel>
+</rss>

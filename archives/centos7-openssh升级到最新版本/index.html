@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>centos7 openssh升级到最新版本 | ylw&#39;s blog</title>
+<meta name="keywords" content="openssh升级" />
+<meta name="description" content="注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。
+安装之前可以先试试yum更新,若是可以更新，就不需要往下看了
+# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz
+$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略
+1.安装
+$ yum install telnet telnet-server -y 2.启动
+$ systemctl enable telnet.socket $ systemctl start telnet.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="centos7 openssh升级到最新版本" />
+<meta property="og:description" content="注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。
+安装之前可以先试试yum更新,若是可以更新，就不需要往下看了
+# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz
+$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略
+1.安装
+$ yum install telnet telnet-server -y 2.启动
+$ systemctl enable telnet.socket $ systemctl start telnet." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-24T11:13:27&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-24T11:13:27&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="centos7 openssh升级到最新版本"/>
+<meta name="twitter:description" content="注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。
+安装之前可以先试试yum更新,若是可以更新，就不需要往下看了
+# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz
+$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略
+1.安装
+$ yum install telnet telnet-server -y 2.启动
+$ systemctl enable telnet.socket $ systemctl start telnet."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "centos7 openssh升级到最新版本",
+      "item": "https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "centos7 openssh升级到最新版本",
+  "name": "centos7 openssh升级到最新版本",
+  "description": "注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。\n安装之前可以先试试yum更新,若是可以更新，就不需要往下看了\n# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz\n$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略\n1.安装\n$ yum install telnet telnet-server -y 2.启动\n$ systemctl enable telnet.socket $ systemctl start telnet.",
+  "keywords": [
+    "openssh升级"
+  ],
+  "articleBody": "注意事项 本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。\n安装之前可以先试试yum更新,若是可以更新，就不需要往下看了\n# centos8  $ yum update openssh -y # 重启sshd $ systemctl restart sshd 准备工作 系统说明  系统版本：CentOS Linux release 7.7.1908 (Core) openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017 openssl: OpenSSL 1.0.2k-fips 26 Jan 2017  下载最新包  openssh openssl  本文选择的是: openssh-8.2p1.tar.gz openssl-1.1.1g.tar.gz\n$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz  $ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz 安装telnet备用（可选） 安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略\n1.安装\n$ yum install telnet telnet-server -y 2.启动\n$ systemctl enable telnet.socket $ systemctl start telnet.socket 3.连接\n# telnet 默认禁止root用户连接，我们先生成一个普通用户  $ useradd testuser $ passwd testuser  # 本地测试 $ telnet 127.0.0.1 VM_0_6_centos login: testuser Password: [testuser@VM_0_6_centos ~]$ # 切换root [testuser@VM_0_6_centos ~]$ su 升级openssl 备份 $ mv /usr/bin/openssl /usr/bin/openssl_old 安装 $ tar xzvf openssl-1.1.1g.tar.gz $ cd openssl-1.1.1g/ $ ./config shared \u0026\u0026 make \u0026\u0026 make install 配置软连接 $ ln -s /usr/local/bin/openssl /usr/bin/openssl 如果执行openssl version报下面的错误\nopenssl: error while loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory 则执行下面命令解决：\n$ ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/ $ ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/ 旧版本:\n$ openssl_old version OpenSSL 1.0.2k-fips 26 Jan 2017 升级openssh 安装所需依赖 $ yum install zlib-devel openssl-devel pam-devel -y 备份 $ mkdir /etc/ssh_old $ mv /etc/ssh/* /etc/ssh_old/ 解压、编译安装 $ tar xzvf openssh-8.2p1.tar.gz $ cd openssh-8.2p1/  $ ./configure --prefix=/usr/ --sysconfdir=/etc/ssh --with-ssl-dir=/usr/local/lib64/ --with-zlib --with-pam --with-md5-password --with-ssl-engine --with-selinux  # 安装 $ make \u0026\u0026 make install  # 验证 $ ssh -V OpenSSH_8.2p1, OpenSSL 1.1.1g 21 Apr 2020  $ ls /etc/ssh moduli ssh_config sshd_config ssh_host_dsa_key ssh_host_dsa_key.pub ssh_host_ecdsa_key ssh_host_ecdsa_key.pub ssh_host_ed25519_key ssh_host_ed25519_key.pub ssh_host_rsa_key ssh_host_rsa_key.pub 配置 1.修改sshd_config\n$ vim /etc/ssh/sshd_config  # 例子：配置root登录, 根据你以前的配置来 PermitRootLogin yes 2.启动\n# 移走以前的ssh服务, 防止与新的冲突 $ mv /usr/lib/systemd/system/sshd.service /etc/ssh_old/sshd.service $ mv /usr/lib/systemd/system/sshd.socket /etc/ssh_old/sshd.socket  # 在解压包中拷贝一些文件 $ cp -a contrib/redhat/sshd.init /etc/init.d/sshd    # 重新启动 $ /etc/init.d/sshd restart $ systemctl daemon-reload  # 添加自启动 $ chkconfig --add sshd $ chkconfig sshd on 可能碰到的问题：  /etc/init.d/sshd restart之后报错  Reloading systemd: [ 确定 ] Restarting sshd (via systemctl): Job for sshd.service failed because the control process exited with error code. See \"systemctl status sshd.service\" and \"journalctl -xe\" for details.  [失败] 是selinux导致，需要关闭\n# 临时修改 setenforce 0 # 永久修改 sed -i 's/SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config # 重启 /etc/init.d/sshd restart ",
+  "wordCount" : "321",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-24T11:13:27Z",
+  "dateModified": "2021-12-24T11:13:27Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7-openssh%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      centos7 openssh升级到最新版本
+    </h1>
+    <div class="post-meta"><span title='2021-12-24 11:13:27 +0000 UTC'>2021-12-24</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9" aria-label="注意事项">注意事项</a></li>
+                    <li>
+                        <a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" aria-label="准备工作">准备工作</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%b3%bb%e7%bb%9f%e8%af%b4%e6%98%8e" aria-label="系统说明">系统说明</a></li>
+                    <li>
+                        <a href="#%e4%b8%8b%e8%bd%bd%e6%9c%80%e6%96%b0%e5%8c%85" aria-label="下载最新包">下载最新包</a></li>
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85telnet%e5%a4%87%e7%94%a8%e5%8f%af%e9%80%89" aria-label="安装telnet备用（可选）">安装telnet备用（可选）</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%87%e7%ba%a7openssl" aria-label="升级openssl">升级openssl</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%a4%87%e4%bb%bd" aria-label="备份">备份</a></li>
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85" aria-label="安装">安装</a></li>
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%ae%e8%bd%af%e8%bf%9e%e6%8e%a5" aria-label="配置软连接">配置软连接</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%87%e7%ba%a7openssh" aria-label="升级openssh">升级openssh</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%ae%89%e8%a3%85%e6%89%80%e9%9c%80%e4%be%9d%e8%b5%96" aria-label="安装所需依赖">安装所需依赖</a></li>
+                    <li>
+                        <a href="#%e5%a4%87%e4%bb%bd-1" aria-label="备份">备份</a></li>
+                    <li>
+                        <a href="#%e8%a7%a3%e5%8e%8b%e7%bc%96%e8%af%91%e5%ae%89%e8%a3%85" aria-label="解压、编译安装">解压、编译安装</a></li>
+                    <li>
+                        <a href="#%e9%85%8d%e7%bd%ae" aria-label="配置">配置</a></li>
+                    <li>
+                        <a href="#%e5%8f%af%e8%83%bd%e7%a2%b0%e5%88%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="可能碰到的问题：">可能碰到的问题：</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h3 id="注意事项">注意事项<a hidden class="anchor" aria-hidden="true" href="#注意事项">#</a></h3>
+<p>本文的环境都是系统自带的openssh，若是手动编译安装的，不保证成功。若是自带的，则升级过程中不需要卸载旧版本openssh。</p>
+<p><strong>安装之前可以先试试yum更新,若是可以更新，就不需要往下看了</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># centos8 </span>
+</span></span><span style="display:flex;"><span>$ yum update openssh -y
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重启sshd</span>
+</span></span><span style="display:flex;"><span>$ systemctl restart sshd
+</span></span></code></pre></div><h3 id="准备工作">准备工作<a hidden class="anchor" aria-hidden="true" href="#准备工作">#</a></h3>
+<h4 id="系统说明">系统说明<a hidden class="anchor" aria-hidden="true" href="#系统说明">#</a></h4>
+<ul>
+<li>系统版本：CentOS Linux release 7.7.1908 (Core)</li>
+<li>openssh：OpenSSH_7.4p1, OpenSSL 1.0.2k-fips 26 Jan 2017</li>
+<li>openssl: OpenSSL 1.0.2k-fips 26 Jan 2017</li>
+</ul>
+<h4 id="下载最新包">下载最新包<a hidden class="anchor" aria-hidden="true" href="#下载最新包">#</a></h4>
+<ul>
+<li><a href="https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/">openssh</a></li>
+<li><a href="https://ftp.openssl.org/source/?utm_source=hacpai.com">openssl</a></li>
+</ul>
+<p>本文选择的是:
+openssh-8.2p1.tar.gz
+openssl-1.1.1g.tar.gz</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ wget https://ftp.openssl.org/source/openssl-1.1.1g.tar.gz
+</span></span></code></pre></div><h4 id="安装telnet备用可选">安装telnet备用（可选）<a hidden class="anchor" aria-hidden="true" href="#安装telnet备用可选">#</a></h4>
+<p>安装新的ssh之后，只要配置好启动，就可以做到无缝切换，但是中途断开就不能连接了，为了防止这种情况，我们可以安装telnet当作备用，若是你能保证中途不会断开，此步骤可以忽略</p>
+<p>1.安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ yum install telnet telnet-server -y
+</span></span></code></pre></div><p>2.启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl enable telnet.socket
+</span></span><span style="display:flex;"><span>$ systemctl start telnet.socket
+</span></span></code></pre></div><p>3.连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># telnet 默认禁止root用户连接，我们先生成一个普通用户 </span>
+</span></span><span style="display:flex;"><span>$ useradd testuser
+</span></span><span style="display:flex;"><span>$ passwd testuser
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 本地测试</span>
+</span></span><span style="display:flex;"><span>$ telnet 127.0.0.1
+</span></span><span style="display:flex;"><span>VM_0_6_centos login: testuser
+</span></span><span style="display:flex;"><span>Password: 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>testuser@VM_0_6_centos ~<span style="color:#f92672">]</span>$ 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 切换root</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>testuser@VM_0_6_centos ~<span style="color:#f92672">]</span>$ su
+</span></span></code></pre></div><h3 id="升级openssl">升级openssl<a hidden class="anchor" aria-hidden="true" href="#升级openssl">#</a></h3>
+<h4 id="备份">备份<a hidden class="anchor" aria-hidden="true" href="#备份">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mv /usr/bin/openssl /usr/bin/openssl_old
+</span></span></code></pre></div><h4 id="安装">安装<a hidden class="anchor" aria-hidden="true" href="#安装">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tar xzvf openssl-1.1.1g.tar.gz
+</span></span><span style="display:flex;"><span>$ cd openssl-1.1.1g/
+</span></span><span style="display:flex;"><span>$ ./config shared <span style="color:#f92672">&amp;&amp;</span> make <span style="color:#f92672">&amp;&amp;</span> make install
+</span></span></code></pre></div><h4 id="配置软连接">配置软连接<a hidden class="anchor" aria-hidden="true" href="#配置软连接">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ln -s /usr/local/bin/openssl /usr/bin/openssl
+</span></span></code></pre></div><p>如果执行<code>openssl version</code>报下面的错误</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>openssl: error <span style="color:#66d9ef">while</span> loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory
+</span></span></code></pre></div><p>则执行下面命令解决：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/
+</span></span><span style="display:flex;"><span>$ ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/
+</span></span></code></pre></div><p>旧版本:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ openssl_old version
+</span></span><span style="display:flex;"><span>OpenSSL 1.0.2k-fips  <span style="color:#ae81ff">26</span> Jan <span style="color:#ae81ff">2017</span>
+</span></span></code></pre></div><h3 id="升级openssh">升级openssh<a hidden class="anchor" aria-hidden="true" href="#升级openssh">#</a></h3>
+<h4 id="安装所需依赖">安装所需依赖<a hidden class="anchor" aria-hidden="true" href="#安装所需依赖">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ yum install zlib-devel  openssl-devel  pam-devel -y
+</span></span></code></pre></div><h4 id="备份-1">备份<a hidden class="anchor" aria-hidden="true" href="#备份-1">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mkdir /etc/ssh_old
+</span></span><span style="display:flex;"><span>$ mv /etc/ssh/* /etc/ssh_old/
+</span></span></code></pre></div><h4 id="解压编译安装">解压、编译安装<a hidden class="anchor" aria-hidden="true" href="#解压编译安装">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tar xzvf openssh-8.2p1.tar.gz 
+</span></span><span style="display:flex;"><span>$ cd openssh-8.2p1/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ./configure --prefix<span style="color:#f92672">=</span>/usr/ --sysconfdir<span style="color:#f92672">=</span>/etc/ssh --with-ssl-dir<span style="color:#f92672">=</span>/usr/local/lib64/ --with-zlib --with-pam --with-md5-password --with-ssl-engine --with-selinux
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装</span>
+</span></span><span style="display:flex;"><span>$ make <span style="color:#f92672">&amp;&amp;</span> make install
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 验证</span>
+</span></span><span style="display:flex;"><span>$  ssh -V
+</span></span><span style="display:flex;"><span>OpenSSH_8.2p1, OpenSSL 1.1.1g  <span style="color:#ae81ff">21</span> Apr <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ls /etc/ssh
+</span></span><span style="display:flex;"><span>moduli  ssh_config  sshd_config  ssh_host_dsa_key  ssh_host_dsa_key.pub  ssh_host_ecdsa_key  ssh_host_ecdsa_key.pub  ssh_host_ed25519_key  ssh_host_ed25519_key.pub  ssh_host_rsa_key  ssh_host_rsa_key.pub
+</span></span></code></pre></div><h4 id="配置">配置<a hidden class="anchor" aria-hidden="true" href="#配置">#</a></h4>
+<p>1.修改sshd_config</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ vim /etc/ssh/sshd_config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 例子：配置root登录,   根据你以前的配置来</span>
+</span></span><span style="display:flex;"><span>PermitRootLogin yes
+</span></span></code></pre></div><p>2.启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 移走以前的ssh服务, 防止与新的冲突</span>
+</span></span><span style="display:flex;"><span>$ mv /usr/lib/systemd/system/sshd.service /etc/ssh_old/sshd.service
+</span></span><span style="display:flex;"><span>$ mv /usr/lib/systemd/system/sshd.socket /etc/ssh_old/sshd.socket
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在解压包中拷贝一些文件</span>
+</span></span><span style="display:flex;"><span>$ cp -a contrib/redhat/sshd.init /etc/init.d/sshd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重新启动</span>
+</span></span><span style="display:flex;"><span>$ /etc/init.d/sshd restart
+</span></span><span style="display:flex;"><span>$ systemctl daemon-reload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 添加自启动</span>
+</span></span><span style="display:flex;"><span>$ chkconfig --add sshd
+</span></span><span style="display:flex;"><span>$ chkconfig sshd on
+</span></span></code></pre></div><h4 id="可能碰到的问题">可能碰到的问题：<a hidden class="anchor" aria-hidden="true" href="#可能碰到的问题">#</a></h4>
+<ol>
+<li><code>/etc/init.d/sshd restart</code>之后报错</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Reloading systemd:                                         <span style="color:#f92672">[</span>  确定  <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Restarting sshd <span style="color:#f92672">(</span>via systemctl<span style="color:#f92672">)</span>:  Job <span style="color:#66d9ef">for</span> sshd.service failed because the control process exited with error code. See <span style="color:#e6db74">&#34;systemctl status sshd.service&#34;</span> and <span style="color:#e6db74">&#34;journalctl -xe&#34;</span> <span style="color:#66d9ef">for</span> details.
+</span></span><span style="display:flex;"><span>                                                           <span style="color:#f92672">[</span>失败<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>是selinux导致，需要关闭</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 临时修改</span>
+</span></span><span style="display:flex;"><span>setenforce <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 永久修改</span>
+</span></span><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s/SELINUX=.*/SELINUX=disabled/g&#39;</span> /etc/selinux/config
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重启</span>
+</span></span><span style="display:flex;"><span>/etc/init.d/sshd restart
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/openssh%E5%8D%87%E7%BA%A7/">openssh升级</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/yum%E4%B8%8B%E8%BD%BD%E5%85%A8%E9%87%8Frpm%E4%BE%9D%E8%B5%96%E5%8C%85%E5%8F%8A%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>yum下载全量rpm依赖包及离线安装</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Centos7升级内核版本</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

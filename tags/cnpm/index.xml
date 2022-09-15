@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>cnpm on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/cnpm/</link>
+    <description>Recent content in cnpm on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 08 Apr 2022 18:08:30 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/cnpm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>前端npm私服搭建</title>
+      <link>https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Fri, 08 Apr 2022 18:08:30 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/</guid>
+      <description>前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。
+cnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/
+2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: &amp;#39;127.0.0.1&amp;#39;,  // 数据库配置  database: {  db: &amp;#39;cnpmjs&amp;#39;, // 数据库  username: &amp;#39;root&amp;#39;, // 数据库用户名  password: &amp;#39;&amp;#39;, // 数据库密码  dialect: &amp;#39;mysql&amp;#39;, // 数据库类型 &amp;#39;mysql&amp;#39;, &amp;#39;sqlite&amp;#39;, &amp;#39;postgres&amp;#39;, &amp;#39;mariadb&amp;#39;  host: &amp;#39;&amp;#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: &amp;#39;yanghui3021@163.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java常用API01 | ylw&#39;s blog</title>
+<meta name="keywords" content="常用API&amp;异常" />
+<meta name="description" content="1.API 1.1 API概述【理解】   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  1.2 如何使用API帮助文档【应用】   打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  2.常用API 2.1 Math（应用）   1、Math类概述
+ Math 包含执行基本数字运算的方法    2、Math中方法的调用方式
+ Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法
+   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java常用API01" />
+<meta property="og:description" content="1.API 1.1 API概述【理解】   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  1.2 如何使用API帮助文档【应用】   打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  2.常用API 2.1 Math（应用）   1、Math类概述
+ Math 包含执行基本数字运算的方法    2、Math中方法的调用方式
+ Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法
+   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T16:42:06&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-07T16:42:06&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java常用API01"/>
+<meta name="twitter:description" content="1.API 1.1 API概述【理解】   什么是API
+​	API (Application Programming Interface) ：应用程序编程接口
+  java中的API
+​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。
+  1.2 如何使用API帮助文档【应用】   打开帮助文档
+  找到索引选项卡中的输入框
+  在输入框中输入Random
+  看类在哪个包下
+  看类的描述
+  看构造方法
+  看成员方法
+  2.常用API 2.1 Math（应用）   1、Math类概述
+ Math 包含执行基本数字运算的方法    2、Math中方法的调用方式
+ Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法
+   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java常用API01",
+      "item": "https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java常用API01",
+  "name": "Java常用API01",
+  "description": "1.API 1.1 API概述【理解】   什么是API\n​\tAPI (Application Programming Interface) ：应用程序编程接口\n  java中的API\n​\t指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。\n  1.2 如何使用API帮助文档【应用】   打开帮助文档\n  找到索引选项卡中的输入框\n  在输入框中输入Random\n  看类在哪个包下\n  看类的描述\n  看构造方法\n  看成员方法\n  2.常用API 2.1 Math（应用）   1、Math类概述\n Math 包含执行基本数字运算的方法    2、Math中方法的调用方式\n Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法\n   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0.",
+  "keywords": [
+    "常用API\u0026异常"
+  ],
+  "articleBody": "1.API 1.1 API概述【理解】   什么是API\n​\tAPI (Application Programming Interface) ：应用程序编程接口\n  java中的API\n​\t指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。\n  1.2 如何使用API帮助文档【应用】   打开帮助文档\n  找到索引选项卡中的输入框\n  在输入框中输入Random\n  看类在哪个包下\n  看类的描述\n  看构造方法\n  看成员方法\n  2.常用API 2.1 Math（应用）   1、Math类概述\n Math 包含执行基本数字运算的方法    2、Math中方法的调用方式\n Math类中无构造方法，但内部的方法都是静态的，则可以通过 类名.进行调用    3、Math类的常用方法\n   方法名 方法名 说明     public static int abs(int a) 返回参数的绝对值   public static double ceil(double a) 返回大于或等于参数的最小double值，等于一个整数   public static double floor(double a) 返回小于或等于参数的最大double值，等于一个整数   public static int round(float a) 按照四舍五入返回最接近参数的int   public static int max(int a,int b) 返回两个int值中的较大值   public static int min(int a,int b) 返回两个int值中的较小值   public static double pow (double a,double b) 返回a的b次幂的值   public static double random() 返回值为double的正值，[0.0,1.0)      2.2 System（应用）   System类的常用方法\n   方法名 说明     public static void exit(int status) 终止当前运行的 Java 虚拟机，非零表示异常终止   public static long currentTimeMillis() 返回当前时间(以毫秒为单位)      示例代码\n 需求：在控制台输出1-10000，计算这段代码执行了多少毫秒  public class SystemDemo {  public static void main(String[] args) {  // 获取开始的时间节点  long start = System.currentTimeMillis();  for (int i = 1; i  10000; i++) {  System.out.println(i);  }  // 获取代码运行结束后的时间节点  long end = System.currentTimeMillis();  System.out.println(\"共耗时：\" + (end - start) + \"毫秒\");  } }   2.3 Object类的toString方法（应用）   Object类概述\n Object 是类层次结构的根，每个类都可以将 Object 作为超类。所有类都直接或者间接的继承自该类，换句话说，该类所具备的方法，所有类都会有一份    查看方法源码的方式\n 选中方法，按下Ctrl + B    重写toString方法的方式\n   Alt + Insert 选择toString     在类的空白区域，右键 - Generate - 选择toString      toString方法的作用：\n 以良好的格式，更方便的展示对象中的属性值    示例代码：\nclass Student extends Object {  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  } } public class ObjectDemo {  public static void main(String[] args) {  Student s = new Student();  s.setName(\"林青霞\");  s.setAge(30);  System.out.println(s);  System.out.println(s.toString());  } }   运行结果：\nStudent{name='林青霞', age=30} Student{name='林青霞', age=30}   2.4 Object类的equals方法（应用）   equals方法的作用\n 用于对象之间的比较，返回true和false的结果 举例：s1.equals(s2); s1和s2是两个对象    重写equals方法的场景\n 不希望比较对象的地址值，想要结合对象属性进行比较的时候。    重写equals方法的方式\n   alt + insert 选择equals() and hashCode()，IntelliJ Default，一路next，finish即可     在类的空白区域，右键 - Generate - 选择equals() and hashCode()，后面的同上。      示例代码：\nclass Student {  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public boolean equals(Object o) {  //this -- s1  //o -- s2  if (this == o) return true;  if (o == null || getClass() != o.getClass()) return false;   Student student = (Student) o; //student -- s2   if (age != student.age) return false;  return name != null ? name.equals(student.name) : student.name == null;  } } public class ObjectDemo {  public static void main(String[] args) {  Student s1 = new Student();  s1.setName(\"林青霞\");  s1.setAge(30);   Student s2 = new Student();  s2.setName(\"林青霞\");  s2.setAge(30);   //需求：比较两个对象的内容是否相同  System.out.println(s1.equals(s2));  } }   面试题\n// 看程序,分析结果 String s = “abc”; StringBuilder sb = new StringBuilder(“abc”); s.equals(sb); sb.equals(s);  public class InterviewTest {  public static void main(String[] args) {  String s1 = \"abc\";  StringBuilder sb = new StringBuilder(\"abc\");  //1.此时调用的是String类中的equals方法.  //保证参数也是字符串,否则不会比较属性值而直接返回false  //System.out.println(s1.equals(sb)); // false   //StringBuilder类中是没有重写equals方法,用的就是Object类中的.  System.out.println(sb.equals(s1)); // false  } }   2.5 Objects (应用)   常用方法\n   方法名 说明     public static String toString(对象) 返回参数中对象的字符串表示形式。   public static String toString(对象, 默认字符串) 返回对象的字符串表示形式。   public static Boolean isNull(对象) 判断对象是否为空   public static Boolean nonNull(对象) 判断对象是否不为空      示例代码\n学生类\nclass Student {  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  }  } 测试类\npublic class MyObjectsDemo {  public static void main(String[] args) {  // public static String toString(对象): 返回参数中对象的字符串表示形式。  // Student s = new Student(\"小罗同学\",50);  // String result = Objects.toString(s);  // System.out.println(result);  // System.out.println(s);   // public static String toString(对象, 默认字符串): 返回对象的字符串表示形式。如果对象为空,那么返回第二个参数.  //Student s = new Student(\"小花同学\",23);  // Student s = null;  // String result = Objects.toString(s, \"随便写一个\");  // System.out.println(result);   // public static Boolean isNull(对象): 判断对象是否为空  //Student s = null;  // Student s = new Student();  // boolean result = Objects.isNull(s);  // System.out.println(result);   // public static Boolean nonNull(对象): 判断对象是否不为空  //Student s = new Student();  Student s = null;  boolean result = Objects.nonNull(s);  System.out.println(result);  }  }   2.6 BigDecimal (应用)   作用\n可以用来进行精确计算\n  构造方法\n   方法名 说明     BigDecimal(double val) 参数为double   BigDecimal(String val) 参数为String      常用方法\n   方法名 说明     public BigDecimal add(另一个BigDecimal对象) 加法   public BigDecimal subtract (另一个BigDecimal对象) 减法   public BigDecimal multiply (另一个BigDecimal对象) 乘法   public BigDecimal divide (另一个BigDecimal对象) 除法   public BigDecimal divide (另一个BigDecimal对象，精确几位，舍入模式) 除法      总结\n BigDecimal是用来进行精确计算的 创建BigDecimal的对象，构造方法使用参数类型为字符串的。 四则运算中的除法，如果除不尽请使用divide的三个参数的方法。  代码示例：\nBigDecimal divide = bd1.divide(参与运算的对象,小数点后精确到多少位,舍入模式); 参数1 ，表示参与运算的BigDecimal 对象。 参数2 ，表示小数点后面精确到多少位 参数3 ，舍入模式  BigDecimal.ROUND_UP 进一法  BigDecimal.ROUND_FLOOR 去尾法  BigDecimal.ROUND_HALF_UP 四舍五入   3.包装类 3.1 基本类型包装类（记忆）   基本类型包装类的作用\n将基本数据类型封装成对象的好处在于可以在对象中定义更多的功能方法操作该数据\n常用的操作之一：用于基本数据类型与字符串之间的转换\n  基本类型对应的包装类\n   基本数据类型 包装类     byte Byte   short Short   int Integer   long Long   float Float   double Double   char Character   boolean Boolean      3.2 Integer类（应用）   Integer类概述\n包装一个对象中的原始类型 int 的值\n  Integer类构造方法\n   方法名 说明     public Integer(int value) 根据 int 值创建 Integer 对象(过时)   public Integer(String s) 根据 String 值创建 Integer 对象(过时)   public static Integer valueOf(int i) 返回表示指定的 int 值的 Integer 实例   public static Integer valueOf(String s) 返回一个保存指定值的 Integer 对象 String      示例代码\npublic class IntegerDemo {  public static void main(String[] args) {  //public Integer(int value)：根据 int 值创建 Integer 对象(过时)  Integer i1 = new Integer(100);  System.out.println(i1);   //public Integer(String s)：根据 String 值创建 Integer 对象(过时)  Integer i2 = new Integer(\"100\"); // Integer i2 = new Integer(\"abc\"); //NumberFormatException  System.out.println(i2);  System.out.println(\"--------\");   //public static Integer valueOf(int i)：返回表示指定的 int 值的 Integer 实例  Integer i3 = Integer.valueOf(100);  System.out.println(i3);   //public static Integer valueOf(String s)：返回一个保存指定值的Integer对象 String  Integer i4 = Integer.valueOf(\"100\");  System.out.println(i4);  } }   3.3 自动拆箱和自动装箱（理解）   自动装箱\n​\t把基本数据类型转换为对应的包装类类型\n  自动拆箱\n​\t把包装类类型转换为对应的基本数据类型\n  示例代码\nInteger i = 100; // 自动装箱 i += 200; // i = i + 200; i + 200 自动拆箱；i = i + 200; 是自动装箱   3.4 int和String类型的相互转换（记忆）   int转换为String\n  转换方式\n 方式一：直接在数字后加一个空字符串 方式二：通过String类静态方法valueOf()    示例代码\npublic class IntegerDemo {  public static void main(String[] args) {  //int --- String  int number = 100;  //方式1  String s1 = number + \"\";  System.out.println(s1);  //方式2  //public static String valueOf(int i)  String s2 = String.valueOf(number);  System.out.println(s2);  System.out.println(\"--------\");  } }     String转换为int\n  转换方式\n 方式一：先将字符串数字转成Integer，再调用valueOf()方法 方式二：通过Integer静态方法parseInt()进行转换    示例代码\npublic class IntegerDemo {  public static void main(String[] args) {  //String --- int  String s = \"100\";  //方式1：String --- Integer --- int  Integer i = Integer.valueOf(s);  //public int intValue()  int x = i.intValue();  System.out.println(x);  //方式2  //public static int parseInt(String s)  int y = Integer.parseInt(s);  System.out.println(y);  } }     3.5 字符串数据排序案例（应用）   案例需求\n​\t有一个字符串：“91 27 46 38 50”，请写程序实现最终输出结果是：27 38 46 50 91\n  代码实现\npublic class IntegerTest {  public static void main(String[] args) {  //定义一个字符串  String s = \"91 27 46 38 50\";   //把字符串中的数字数据存储到一个int类型的数组中  String[] strArray = s.split(\" \"); // for(int i=0; i// System.out.println(strArray[i]); // }   //定义一个int数组，把 String[] 数组中的每一个元素存储到 int 数组中  int[] arr = new int[strArray.length];  for(int i=0; iarr.length; i++) {  arr[i] = Integer.parseInt(strArray[i]);  }   //对 int 数组进行排序  Arrays.sort(arr);   for(int i=0; iarr.length; i++){  System.out.print(arr[i] + \" \");  } }   4.递归 4.1 递归【应用】   递归的介绍\n 以编程的角度来看，递归指的是方法定义中调用方法本身的现象 把一个复杂的问题层层转化为一个与原问题相似的规模较小的问题来求解 递归策略只需少量的程序就可描述出解题过程所需要的多次重复计算    递归的基本使用\npublic class MyFactorialDemo2 {  public static void main(String[] args) {  int sum = getSum(100);  System.out.println(sum);  }   private static int getSum(int i) {  //1- 100之间的和  //100 + (1-99之间的和)  // 99 + (1- 98之间的和)  //....  //1  //方法的作用: 求 1- i 之间和  if(i == 1){  return 1;  }else{  return i + getSum(i -1);  }  } }   递归的注意事项\n 递归一定要有出口。否则内存溢出 递归虽然有出口，但是递归的次数也不宜过多。否则内存溢出    4.2 递归求阶乘【应用】   案例需求\n​\t用递归求5的阶乘，并把结果在控制台输出\n  代码实现\npublic class DiGuiDemo01 {  public static void main(String[] args) {  //调用方法  int result = jc(5);  //输出结果  System.out.println(\"5的阶乘是：\" + result);  }   //定义一个方法，用于递归求阶乘，参数为一个int类型的变量  public static int jc(int n) {  //在方法内部判断该变量的值是否是1  if(n == 1) {  //是：返回1  return 1;  } else {  //不是：返回n*(n-1)!  return n*jc(n-1);  }  } }   内存图\n  5.数组的高级操作 5.1 二分查找 (理解)   二分查找概述\n查找指定元素在数组中的位置时,以前的方式是通过遍历,逐个获取每个元素,看是否是要查找的元素,这种方式当数组元素较多时,查找的效率很低\n二分查找也叫折半查找,每次可以去掉一半的查找范围,从而提高查找的效率\n  需求\n在数组{1,2,3,4,5,6,7,8,9,10}中,查找某个元素的位置\n  实现步骤\n 定义两个变量，表示要查找的范围。默认min = 0 ，max = 最大索引 循环查找，但是min 计算出mid的值 判断mid位置的元素是否为要查找的元素，如果是直接返回对应索引 如果要查找的值在mid的左半边，那么min值不变，max = mid -1.继续下次循环查找 如果要查找的值在mid的右半边，那么max值不变，min = mid + 1.继续下次循环查找 当min  max 时，表示要查找的元素在数组中不存在，返回-1.    代码实现\npublic class MyBinarySearchDemo {  public static void main(String[] args) {  int [] arr = {1,2,3,4,5,6,7,8,9,10};  int number = 11;   //1,我现在要干嘛? --- 二分查找  //2.我干这件事情需要什么? --- 数组 元素  //3,我干完了,要不要把结果返回调用者 --- 把索引返回给调用者  int index = binarySearchForIndex(arr,number);  System.out.println(index);  }   private static int binarySearchForIndex(int[] arr, int number) {  //1,定义查找的范围  int min = 0;  int max = arr.length - 1;  //2.循环查找 min  while(min  max){  //3.计算出中间位置 mid  int mid = (min + max)  1;  //mid指向的元素  number  if(arr[mid]  number){  //表示要查找的元素在左边.  max = mid -1;  }else if(arr[mid]  number){  //mid指向的元素  //表示要查找的元素在右边.  min = mid + 1;  }else{  //mid指向的元素 == number  return mid;  }  }  //如果min大于了max就表示元素不存在,返回-1.  return -1;  }  }   注意事项\n有一个前提条件，数组内的元素一定要按照大小顺序排列，如果没有大小顺序，是不能使用二分查找法的\n  5.2 冒泡排序 (理解)   冒泡排序概述\n一种排序的方式，对要进行排序的数据中相邻的数据进行两两比较，将较大的数据放在后面，依次对所有的数据进行操作，直至所有数据按要求完成排序\n如果有n个数据进行排序，总共需要比较n-1次\n每一次比较完毕，下一次的比较就会少一个数据参与\n  代码实现\npublic class MyBubbleSortDemo2 {  public static void main(String[] args) {  int[] arr = {3, 5, 2, 1, 4};  //1 2 3 4 5  bubbleSort(arr);  }   private static void bubbleSort(int[] arr) {  //外层循环控制的是次数 比数组的长度少一次.  for (int i = 0; i  arr.length -1; i++) {  //内存循环就是实际循环比较的  //-1 是为了让数组不要越界  //-i 每一轮结束之后,我们就会少比一个数字.  for (int j = 0; j  arr.length - 1 - i; j++) {  if (arr[j]  arr[j + 1]) {  int temp = arr[j];  arr[j] = arr[j + 1];  arr[j + 1] = temp;  }  }  }   printArr(arr);  }   private static void printArr(int[] arr) {  for (int i = 0; i  arr.length; i++) {  System.out.print(arr[i] + \" \");  }  System.out.println();  }  }   5.3 快速排序 (理解)   快速排序概述\n冒泡排序算法中,一次循环结束,就相当于确定了当前的最大值,也能确定最大值在数组中应存入的位置\n快速排序算法中,每一次递归时以第一个数为基准数,找到数组中所有比基准数小的.再找到所有比基准数大的.小的全部放左边,大的全部放右边,确定基准数的正确位置\n  核心步骤\n 从右开始找比基准数小的 从左开始找比基准数大的 交换两个值的位置 红色继续往左找，蓝色继续往右找，直到两个箭头指向同一个索引为止 基准数归位    代码实现\npublic class MyQuiteSortDemo2 {  public static void main(String[] args) { // 1，从右开始找比基准数小的 // 2，从左开始找比基准数大的 // 3，交换两个值的位置 // 4，红色继续往左找，蓝色继续往右找，直到两个箭头指向同一个索引为止 // 5，基准数归位  int[] arr = {6, 1, 2, 7, 9, 3, 4, 5, 10, 8};   quiteSort(arr,0,arr.length-1);   for (int i = 0; i  arr.length; i++) {  System.out.print(arr[i] + \" \");  }  }   private static void quiteSort(int[] arr, int left, int right) {  // 递归结束的条件  if(right  left){  return;  }   int left0 = left;  int right0 = right;   //计算出基准数  int baseNumber = arr[left0];   while(left != right){ // 1，从右开始找比基准数小的  while(arr[right] = baseNumber \u0026\u0026 right  left){  right--;  } // 2，从左开始找比基准数大的  while(arr[left]  baseNumber \u0026\u0026 right  left){  left++;  } // 3，交换两个值的位置  int temp = arr[left];  arr[left] = arr[right];  arr[right] = temp;  }  //基准数归位  int temp = arr[left];  arr[left] = arr[left0];  arr[left0] = temp;  \t// 递归调用自己,将左半部分排好序  quiteSort(arr,left0,left-1);  // 递归调用自己,将右半部分排好序  quiteSort(arr,left +1,right0);   } }   5.4 Arrays (应用)   Arrays的常用方法\n   方法名 说明     public static String toString(int[] a) 返回指定数组的内容的字符串表示形式   public static void sort(int[] a) 按照数字顺序排列指定的数组   public static int binarySearch(int[] a, int key) 利用二分查找返回指定元素的索引      示例代码\npublic class MyArraysDemo {  public static void main(String[] args) {  // public static String toString(int[] a) 返回指定数组的内容的字符串表示形式  // int [] arr = {3,2,4,6,7};  // System.out.println(Arrays.toString(arr));   // public static void sort(int[] a)\t按照数字顺序排列指定的数组  // int [] arr = {3,2,4,6,7};  // Arrays.sort(arr);  // System.out.println(Arrays.toString(arr));   // public static int binarySearch(int[] a, int key) 利用二分查找返回指定元素的索引  int [] arr = {1,2,3,4,5,6,7,8,9,10};  int index = Arrays.binarySearch(arr, 0);  System.out.println(index);  //1,数组必须有序  //2.如果要查找的元素存在,那么返回的是这个元素实际的索引  //3.如果要查找的元素不存在,那么返回的是 (-插入点-1)  //插入点:如果这个元素在数组中,他应该在哪个索引上.  }  }   工具类设计思想\n 构造方法用 private 修饰 成员用 public static 修饰    ",
+  "wordCount" : "1756",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-07T16:42:06Z",
+  "dateModified": "2022-03-07T16:42:06Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api01/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java常用API01
+    </h1>
+    <div class="post-meta"><span title='2022-03-07 16:42:06 +0000 UTC'>2022-03-07</span>&nbsp;·&nbsp;9 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1api" aria-label="1.API">1.API</a><ul>
+                            
+                    <li>
+                        <a href="#11-api%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="1.1 API概述【理解】">1.1 API概述【理解】</a></li>
+                    <li>
+                        <a href="#12-%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8api%e5%b8%ae%e5%8a%a9%e6%96%87%e6%a1%a3%e5%ba%94%e7%94%a8" aria-label="1.2 如何使用API帮助文档【应用】">1.2 如何使用API帮助文档【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2%e5%b8%b8%e7%94%a8api" aria-label="2.常用API">2.常用API</a><ul>
+                            
+                    <li>
+                        <a href="#21-math%e5%ba%94%e7%94%a8" aria-label="2.1 Math（应用）">2.1 Math（应用）</a></li>
+                    <li>
+                        <a href="#22-system%e5%ba%94%e7%94%a8" aria-label="2.2 System（应用）">2.2 System（应用）</a></li>
+                    <li>
+                        <a href="#23-object%e7%b1%bb%e7%9a%84tostring%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="2.3 Object类的toString方法（应用）">2.3 Object类的toString方法（应用）</a></li>
+                    <li>
+                        <a href="#24-object%e7%b1%bb%e7%9a%84equals%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="2.4 Object类的equals方法（应用）">2.4 Object类的equals方法（应用）</a></li>
+                    <li>
+                        <a href="#25-objects-%e5%ba%94%e7%94%a8" aria-label="2.5 Objects (应用)">2.5 Objects (应用)</a></li>
+                    <li>
+                        <a href="#26-bigdecimal-%e5%ba%94%e7%94%a8" aria-label="2.6 BigDecimal (应用)">2.6 BigDecimal (应用)</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e5%8c%85%e8%a3%85%e7%b1%bb" aria-label="3.包装类">3.包装类</a><ul>
+                            
+                    <li>
+                        <a href="#31-%e5%9f%ba%e6%9c%ac%e7%b1%bb%e5%9e%8b%e5%8c%85%e8%a3%85%e7%b1%bb%e8%ae%b0%e5%bf%86" aria-label="3.1 基本类型包装类（记忆）">3.1 基本类型包装类（记忆）</a></li>
+                    <li>
+                        <a href="#32-integer%e7%b1%bb%e5%ba%94%e7%94%a8" aria-label="3.2 Integer类（应用）">3.2 Integer类（应用）</a></li>
+                    <li>
+                        <a href="#33-%e8%87%aa%e5%8a%a8%e6%8b%86%e7%ae%b1%e5%92%8c%e8%87%aa%e5%8a%a8%e8%a3%85%e7%ae%b1%e7%90%86%e8%a7%a3" aria-label="3.3 自动拆箱和自动装箱（理解）">3.3 自动拆箱和自动装箱（理解）</a></li>
+                    <li>
+                        <a href="#34-int%e5%92%8cstring%e7%b1%bb%e5%9e%8b%e7%9a%84%e7%9b%b8%e4%ba%92%e8%bd%ac%e6%8d%a2%e8%ae%b0%e5%bf%86" aria-label="3.4 int和String类型的相互转换（记忆）">3.4 int和String类型的相互转换（记忆）</a></li>
+                    <li>
+                        <a href="#35-%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%95%b0%e6%8d%ae%e6%8e%92%e5%ba%8f%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="3.5 字符串数据排序案例（应用）">3.5 字符串数据排序案例（应用）</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4%e9%80%92%e5%bd%92" aria-label="4.递归">4.递归</a><ul>
+                            
+                    <li>
+                        <a href="#41-%e9%80%92%e5%bd%92%e5%ba%94%e7%94%a8" aria-label="4.1 递归【应用】">4.1 递归【应用】</a></li>
+                    <li>
+                        <a href="#42-%e9%80%92%e5%bd%92%e6%b1%82%e9%98%b6%e4%b9%98%e5%ba%94%e7%94%a8" aria-label="4.2 递归求阶乘【应用】">4.2 递归求阶乘【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#5%e6%95%b0%e7%bb%84%e7%9a%84%e9%ab%98%e7%ba%a7%e6%93%8d%e4%bd%9c" aria-label="5.数组的高级操作">5.数组的高级操作</a><ul>
+                            
+                    <li>
+                        <a href="#51-%e4%ba%8c%e5%88%86%e6%9f%a5%e6%89%be-%e7%90%86%e8%a7%a3" aria-label="5.1 二分查找 (理解)">5.1 二分查找 (理解)</a></li>
+                    <li>
+                        <a href="#52-%e5%86%92%e6%b3%a1%e6%8e%92%e5%ba%8f-%e7%90%86%e8%a7%a3" aria-label="5.2 冒泡排序 (理解)">5.2 冒泡排序 (理解)</a></li>
+                    <li>
+                        <a href="#53-%e5%bf%ab%e9%80%9f%e6%8e%92%e5%ba%8f-%e7%90%86%e8%a7%a3" aria-label="5.3 快速排序 (理解)">5.3 快速排序 (理解)</a></li>
+                    <li>
+                        <a href="#54-arrays-%e5%ba%94%e7%94%a8" aria-label="5.4 Arrays (应用)">5.4 Arrays (应用)</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1api">1.API<a hidden class="anchor" aria-hidden="true" href="#1api">#</a></h2>
+<h3 id="11-api概述理解">1.1 API概述【理解】<a hidden class="anchor" aria-hidden="true" href="#11-api概述理解">#</a></h3>
+<ul>
+<li>
+<p>什么是API</p>
+<p>​	API (Application Programming Interface) ：应用程序编程接口</p>
+</li>
+<li>
+<p>java中的API</p>
+<p>​	指的就是 JDK 中提供的各种功能的 Java类，这些类将底层的实现封装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可，我们可以通过帮助文档来学习这些API如何使用。</p>
+</li>
+</ul>
+<h3 id="12-如何使用api帮助文档应用">1.2 如何使用API帮助文档【应用】<a hidden class="anchor" aria-hidden="true" href="#12-如何使用api帮助文档应用">#</a></h3>
+<ul>
+<li>
+<p>打开帮助文档</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/01.png" alt=""  />
+</p>
+</li>
+<li>
+<p>找到索引选项卡中的输入框</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/02.png" alt=""  />
+</p>
+</li>
+<li>
+<p>在输入框中输入Random</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/03.png" alt=""  />
+</p>
+</li>
+<li>
+<p>看类在哪个包下</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/04.png" alt=""  />
+</p>
+</li>
+<li>
+<p>看类的描述</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/05.png" alt=""  />
+</p>
+</li>
+<li>
+<p>看构造方法</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/06.png" alt=""  />
+</p>
+</li>
+<li>
+<p>看成员方法</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/07.png" alt=""  />
+</p>
+</li>
+</ul>
+<h2 id="2常用api">2.常用API<a hidden class="anchor" aria-hidden="true" href="#2常用api">#</a></h2>
+<h3 id="21-math应用">2.1 Math（应用）<a hidden class="anchor" aria-hidden="true" href="#21-math应用">#</a></h3>
+<ul>
+<li>
+<p>1、Math类概述</p>
+<ul>
+<li>Math 包含执行基本数字运算的方法</li>
+</ul>
+</li>
+<li>
+<p>2、Math中方法的调用方式</p>
+<ul>
+<li>Math类中无构造方法，但内部的方法都是静态的，则可以通过   <strong>类名.进行调用</strong></li>
+</ul>
+</li>
+<li>
+<p>3、Math类的常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名    方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public static int   abs(int a)</td>
+<td>返回参数的绝对值</td>
+</tr>
+<tr>
+<td>public static double ceil(double a)</td>
+<td>返回大于或等于参数的最小double值，等于一个整数</td>
+</tr>
+<tr>
+<td>public static double floor(double a)</td>
+<td>返回小于或等于参数的最大double值，等于一个整数</td>
+</tr>
+<tr>
+<td>public   static int round(float a)</td>
+<td>按照四舍五入返回最接近参数的int</td>
+</tr>
+<tr>
+<td>public static int   max(int a,int b)</td>
+<td>返回两个int值中的较大值</td>
+</tr>
+<tr>
+<td>public   static int min(int a,int b)</td>
+<td>返回两个int值中的较小值</td>
+</tr>
+<tr>
+<td>public   static double pow (double a,double b)</td>
+<td>返回a的b次幂的值</td>
+</tr>
+<tr>
+<td>public   static double random()</td>
+<td>返回值为double的正值，[0.0,1.0)</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h3 id="22-system应用">2.2 System（应用）<a hidden class="anchor" aria-hidden="true" href="#22-system应用">#</a></h3>
+<ul>
+<li>
+<p>System类的常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public   static void exit(int status)</td>
+<td>终止当前运行的   Java   虚拟机，非零表示异常终止</td>
+</tr>
+<tr>
+<td>public   static long currentTimeMillis()</td>
+<td>返回当前时间(以毫秒为单位)</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<ul>
+<li>需求：在控制台输出1-10000，计算这段代码执行了多少毫秒</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SystemDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取开始的时间节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">long</span> start <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;=</span> 10000<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取代码运行结束后的时间节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">long</span> end <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;共耗时：&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>end <span style="color:#f92672">-</span> start<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;毫秒&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="23-object类的tostring方法应用">2.3 Object类的toString方法（应用）<a hidden class="anchor" aria-hidden="true" href="#23-object类的tostring方法应用">#</a></h3>
+<ul>
+<li>
+<p>Object类概述</p>
+<ul>
+<li>Object 是类层次结构的根，每个类都可以将 Object 作为超类。所有类都直接或者间接的继承自该类，换句话说，该类所具备的方法，所有类都会有一份</li>
+</ul>
+</li>
+<li>
+<p>查看方法源码的方式</p>
+<ul>
+<li>选中方法，按下Ctrl + B</li>
+</ul>
+</li>
+<li>
+<p>重写toString方法的方式</p>
+<ul>
+<li>
+<ol>
+<li>Alt + Insert 选择toString</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>在类的空白区域，右键 -&gt; Generate -&gt; 选择toString</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>toString方法的作用：</p>
+<ul>
+<li>以良好的格式，更方便的展示对象中的属性值</li>
+</ul>
+</li>
+<li>
+<p>示例代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">extends</span> Object <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        s<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;林青霞&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        s<span style="color:#f92672">.</span><span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>运行结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Student<span style="color:#f92672">{</span>name<span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">&#39;</span>林青霞<span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">,</span> age<span style="color:#f92672">=</span>30<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>Student<span style="color:#f92672">{</span>name<span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">&#39;</span>林青霞<span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">,</span> age<span style="color:#f92672">=</span>30<span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24-object类的equals方法应用">2.4 Object类的equals方法（应用）<a hidden class="anchor" aria-hidden="true" href="#24-object类的equals方法应用">#</a></h3>
+<ul>
+<li>
+<p>equals方法的作用</p>
+<ul>
+<li>用于对象之间的比较，返回true和false的结果</li>
+<li>举例：s1.equals(s2);    s1和s2是两个对象</li>
+</ul>
+</li>
+<li>
+<p>重写equals方法的场景</p>
+<ul>
+<li>不希望比较对象的地址值，想要结合对象属性进行比较的时候。</li>
+</ul>
+</li>
+<li>
+<p>重写equals方法的方式</p>
+<ul>
+<li>
+<ol>
+<li>alt + insert  选择equals() and hashCode()，IntelliJ Default，一路next，finish即可</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>在类的空白区域，右键 -&gt; Generate -&gt; 选择equals() and hashCode()，后面的同上。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>示例代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//this -- s1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//o -- s2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span> <span style="color:#f92672">==</span> o<span style="color:#f92672">)</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>o <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> getClass<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">())</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Student student <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Student<span style="color:#f92672">)</span> o<span style="color:#f92672">;</span> <span style="color:#75715e">//student -- s2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>age <span style="color:#f92672">!=</span> student<span style="color:#f92672">.</span><span style="color:#a6e22e">age</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> name<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">)</span> <span style="color:#f92672">:</span> student<span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Student s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;林青霞&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Student s2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        s2<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;林青霞&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        s2<span style="color:#f92672">.</span><span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//需求：比较两个对象的内容是否相同
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>面试题</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 看程序,分析结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>String s <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">“</span>abc<span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>StringBuilder sb <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">“</span>abc<span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>sb<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>sb<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InterviewTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        StringBuilder sb <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.此时调用的是String类中的equals方法.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//保证参数也是字符串,否则不会比较属性值而直接返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//System.out.println(s1.equals(sb)); // false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//StringBuilder类中是没有重写equals方法,用的就是Object类中的.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>sb<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">));</span> <span style="color:#75715e">// false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="25-objects-应用">2.5 Objects (应用)<a hidden class="anchor" aria-hidden="true" href="#25-objects-应用">#</a></h3>
+<ul>
+<li>
+<p>常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public static String toString(对象)</td>
+<td>返回参数中对象的字符串表示形式。</td>
+</tr>
+<tr>
+<td>public static String toString(对象, 默认字符串)</td>
+<td>返回对象的字符串表示形式。</td>
+</tr>
+<tr>
+<td>public static Boolean isNull(对象)</td>
+<td>判断对象是否为空</td>
+</tr>
+<tr>
+<td>public static Boolean nonNull(对象)</td>
+<td>判断对象是否不为空</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyObjectsDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//        public static String toString(对象): 返回参数中对象的字符串表示形式。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        Student s = new Student(&#34;小罗同学&#34;,50);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        String result = Objects.toString(s);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        System.out.println(result);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        System.out.println(s);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//        public static String toString(对象, 默认字符串): 返回对象的字符串表示形式。如果对象为空,那么返回第二个参数.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#75715e">//Student s = new Student(&#34;小花同学&#34;,23);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        Student s = null;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        String result = Objects.toString(s, &#34;随便写一个&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        System.out.println(result);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//        public static Boolean isNull(对象): 判断对象是否为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#75715e">//Student s = null;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        Student s = new Student();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        boolean result = Objects.isNull(s);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">//        System.out.println(result);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//        public static Boolean nonNull(对象): 判断对象是否不为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#75715e">//Student s = new Student();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">boolean</span> result <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">nonNull</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>              System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="26-bigdecimal-应用">2.6 BigDecimal (应用)<a hidden class="anchor" aria-hidden="true" href="#26-bigdecimal-应用">#</a></h3>
+<ul>
+<li>
+<p>作用</p>
+<p>可以用来进行精确计算</p>
+</li>
+<li>
+<p>构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BigDecimal(double val)</td>
+<td>参数为double</td>
+</tr>
+<tr>
+<td>BigDecimal(String val)</td>
+<td>参数为String</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public BigDecimal add(另一个BigDecimal对象)</td>
+<td>加法</td>
+</tr>
+<tr>
+<td>public BigDecimal subtract (另一个BigDecimal对象)</td>
+<td>减法</td>
+</tr>
+<tr>
+<td>public BigDecimal multiply (另一个BigDecimal对象)</td>
+<td>乘法</td>
+</tr>
+<tr>
+<td>public BigDecimal divide (另一个BigDecimal对象)</td>
+<td>除法</td>
+</tr>
+<tr>
+<td>public BigDecimal divide (另一个BigDecimal对象，精确几位，舍入模式)</td>
+<td>除法</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>总结</p>
+<ol>
+<li>BigDecimal是用来进行精确计算的</li>
+<li>创建BigDecimal的对象，构造方法使用参数类型为字符串的。</li>
+<li>四则运算中的除法，如果除不尽请使用divide的三个参数的方法。</li>
+</ol>
+<p>代码示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>BigDecimal divide <span style="color:#f92672">=</span> bd1<span style="color:#f92672">.</span><span style="color:#a6e22e">divide</span><span style="color:#f92672">(</span>参与运算的对象<span style="color:#f92672">,</span>小数点后精确到多少位<span style="color:#f92672">,</span>舍入模式<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>参数1 <span style="color:#960050;background-color:#1e0010">，</span>表示参与运算的BigDecimal 对象<span style="color:#960050;background-color:#1e0010">。</span>
+</span></span><span style="display:flex;"><span>参数2 <span style="color:#960050;background-color:#1e0010">，</span>表示小数点后面精确到多少位
+</span></span><span style="display:flex;"><span>参数3 <span style="color:#960050;background-color:#1e0010">，</span>舍入模式  
+</span></span><span style="display:flex;"><span>  BigDecimal<span style="color:#f92672">.</span><span style="color:#a6e22e">ROUND_UP</span>  进一法
+</span></span><span style="display:flex;"><span>  BigDecimal<span style="color:#f92672">.</span><span style="color:#a6e22e">ROUND_FLOOR</span> 去尾法
+</span></span><span style="display:flex;"><span>  BigDecimal<span style="color:#f92672">.</span><span style="color:#a6e22e">ROUND_HALF_UP</span> 四舍五入
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="3包装类">3.包装类<a hidden class="anchor" aria-hidden="true" href="#3包装类">#</a></h2>
+<h3 id="31-基本类型包装类记忆">3.1 基本类型包装类（记忆）<a hidden class="anchor" aria-hidden="true" href="#31-基本类型包装类记忆">#</a></h3>
+<ul>
+<li>
+<p>基本类型包装类的作用</p>
+<p>将基本数据类型封装成对象的好处在于可以在对象中定义更多的功能方法操作该数据</p>
+<p>常用的操作之一：用于基本数据类型与字符串之间的转换</p>
+</li>
+<li>
+<p>基本类型对应的包装类</p>
+<table>
+<thead>
+<tr>
+<th>基本数据类型</th>
+<th>包装类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>char</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h3 id="32-integer类应用">3.2 Integer类（应用）<a hidden class="anchor" aria-hidden="true" href="#32-integer类应用">#</a></h3>
+<ul>
+<li>
+<p>Integer类概述</p>
+<p>包装一个对象中的原始类型 int 的值</p>
+</li>
+<li>
+<p>Integer类构造方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public Integer(int   value)</td>
+<td>根据 int 值创建 Integer 对象(过时)</td>
+</tr>
+<tr>
+<td>public Integer(String s)</td>
+<td>根据 String 值创建 Integer 对象(过时)</td>
+</tr>
+<tr>
+<td>public static Integer valueOf(int i)</td>
+<td>返回表示指定的 int 值的 Integer   实例</td>
+</tr>
+<tr>
+<td>public static Integer valueOf(String s)</td>
+<td>返回一个保存指定值的 Integer 对象 String</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//public Integer(int value)：根据 int 值创建 Integer 对象(过时)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Integer i1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Integer<span style="color:#f92672">(</span>100<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//public Integer(String s)：根据 String 值创建 Integer 对象(过时)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Integer i2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Integer<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;100&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        Integer i2 = new Integer(&#34;abc&#34;); //NumberFormatException
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//public static Integer valueOf(int i)：返回表示指定的 int 值的 Integer 实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Integer i3 <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>100<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//public static Integer valueOf(String s)：返回一个保存指定值的Integer对象 String
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Integer i4 <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;100&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="33-自动拆箱和自动装箱理解">3.3 自动拆箱和自动装箱（理解）<a hidden class="anchor" aria-hidden="true" href="#33-自动拆箱和自动装箱理解">#</a></h3>
+<ul>
+<li>
+<p>自动装箱</p>
+<p>​	把基本数据类型转换为对应的包装类类型</p>
+</li>
+<li>
+<p>自动拆箱</p>
+<p>​	把包装类类型转换为对应的基本数据类型</p>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Integer i <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>  <span style="color:#75715e">// 自动装箱
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>i <span style="color:#f92672">+=</span> 200<span style="color:#f92672">;</span>         <span style="color:#75715e">// i = i + 200;  i + 200 自动拆箱；i = i + 200; 是自动装箱
+</span></span></span></code></pre></div></li>
+</ul>
+<h3 id="34-int和string类型的相互转换记忆">3.4 int和String类型的相互转换（记忆）<a hidden class="anchor" aria-hidden="true" href="#34-int和string类型的相互转换记忆">#</a></h3>
+<ul>
+<li>
+<p>int转换为String</p>
+<ul>
+<li>
+<p>转换方式</p>
+<ul>
+<li>方式一：直接在数字后加一个空字符串</li>
+<li>方式二：通过String类静态方法valueOf()</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//int --- String
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//方式1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s1 <span style="color:#f92672">=</span> number <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//方式2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//public static String valueOf(int i)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s2 <span style="color:#f92672">=</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>number<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;--------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>String转换为int</p>
+<ul>
+<li>
+<p>转换方式</p>
+<ul>
+<li>方式一：先将字符串数字转成Integer，再调用valueOf()方法</li>
+<li>方式二：通过Integer静态方法parseInt()进行转换</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//String --- int
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;100&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//方式1：String --- Integer --- int
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Integer i <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//public int intValue()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> i<span style="color:#f92672">.</span><span style="color:#a6e22e">intValue</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>x<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//方式2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//public static int parseInt(String s)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> y <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>y<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="35-字符串数据排序案例应用">3.5 字符串数据排序案例（应用）<a hidden class="anchor" aria-hidden="true" href="#35-字符串数据排序案例应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>​	有一个字符串：“91 27 46 38 50”，请写程序实现最终输出结果是：27 38 46 50 91</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//定义一个字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;91 27 46 38 50&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//把字符串中的数字数据存储到一个int类型的数组中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String<span style="color:#f92672">[]</span> strArray <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        for(int i=0; i&lt;strArray.length; i++) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(strArray[i]);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//定义一个int数组，把 String[] 数组中的每一个元素存储到 int 数组中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>strArray<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span> i<span style="color:#f92672">&lt;</span>arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>strArray<span style="color:#f92672">[</span>i<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//对 int 数组进行排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">sort</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span> i<span style="color:#f92672">&lt;</span>arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++){</span>
+</span></span><span style="display:flex;"><span>         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="4递归">4.递归<a hidden class="anchor" aria-hidden="true" href="#4递归">#</a></h2>
+<h3 id="41-递归应用">4.1 递归【应用】<a hidden class="anchor" aria-hidden="true" href="#41-递归应用">#</a></h3>
+<ul>
+<li>
+<p>递归的介绍</p>
+<ul>
+<li>以编程的角度来看，递归指的是方法定义中调用方法本身的现象</li>
+<li>把一个复杂的问题层层转化为一个与原问题相似的规模较小的问题来求解</li>
+<li>递归策略只需少量的程序就可描述出解题过程所需要的多次重复计算</li>
+</ul>
+</li>
+<li>
+<p>递归的基本使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyFactorialDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> getSum<span style="color:#f92672">(</span>100<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>sum<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getSum</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1- 100之间的和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//100 + (1-99之间的和)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 99 + (1- 98之间的和)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#75715e">//....
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#75715e">//1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//方法的作用: 求 1- i 之间和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>i <span style="color:#f92672">==</span> 1<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> i <span style="color:#f92672">+</span> getSum<span style="color:#f92672">(</span>i <span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>    
+</span></span></code></pre></div></li>
+<li>
+<p>递归的注意事项</p>
+<ul>
+<li>递归一定要有出口。否则内存溢出</li>
+<li>递归虽然有出口，但是递归的次数也不宜过多。否则内存溢出</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-递归求阶乘应用">4.2 递归求阶乘【应用】<a hidden class="anchor" aria-hidden="true" href="#42-递归求阶乘应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<p>​	用递归求5的阶乘，并把结果在控制台输出</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DiGuiDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//调用方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> jc<span style="color:#f92672">(</span>5<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//输出结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;5的阶乘是：&#34;</span> <span style="color:#f92672">+</span> result<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个方法，用于递归求阶乘，参数为一个int类型的变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jc</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> n<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//在方法内部判断该变量的值是否是1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>n <span style="color:#f92672">==</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//是：返回1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//不是：返回n*(n-1)!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> n<span style="color:#f92672">*</span>jc<span style="color:#f92672">(</span>n<span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>内存图</p>
+<p><img loading="lazy" src="/images/Java%e5%b8%b8%e7%94%a8API01/08_%e9%80%92%e5%bd%92%e5%86%85%e5%ad%98%e5%9b%be.png" alt=""  />
+</p>
+</li>
+</ul>
+<h2 id="5数组的高级操作">5.数组的高级操作<a hidden class="anchor" aria-hidden="true" href="#5数组的高级操作">#</a></h2>
+<h3 id="51-二分查找-理解">5.1 二分查找 (理解)<a hidden class="anchor" aria-hidden="true" href="#51-二分查找-理解">#</a></h3>
+<ul>
+<li>
+<p>二分查找概述</p>
+<p>查找指定元素在数组中的位置时,以前的方式是通过遍历,逐个获取每个元素,看是否是要查找的元素,这种方式当数组元素较多时,查找的效率很低</p>
+<p>二分查找也叫折半查找,每次可以去掉一半的查找范围,从而提高查找的效率</p>
+</li>
+<li>
+<p>需求</p>
+<p>在数组{1,2,3,4,5,6,7,8,9,10}中,查找某个元素的位置</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>定义两个变量，表示要查找的范围。默认min = 0 ，max = 最大索引</li>
+<li>循环查找，但是min &lt;= max</li>
+<li>计算出mid的值</li>
+<li>判断mid位置的元素是否为要查找的元素，如果是直接返回对应索引</li>
+<li>如果要查找的值在mid的左半边，那么min值不变，max = mid -1.继续下次循环查找</li>
+<li>如果要查找的值在mid的右半边，那么max值不变，min = mid + 1.继续下次循环查找</li>
+<li>当min &gt; max 时，表示要查找的元素在数组中不存在，返回-1.</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyBinarySearchDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> <span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>1<span style="color:#f92672">,</span>2<span style="color:#f92672">,</span>3<span style="color:#f92672">,</span>4<span style="color:#f92672">,</span>5<span style="color:#f92672">,</span>6<span style="color:#f92672">,</span>7<span style="color:#f92672">,</span>8<span style="color:#f92672">,</span>9<span style="color:#f92672">,</span>10<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> 11<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1,我现在要干嘛? --- 二分查找
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//2.我干这件事情需要什么? --- 数组 元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//3,我干完了,要不要把结果返回调用者 --- 把索引返回给调用者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> binarySearchForIndex<span style="color:#f92672">(</span>arr<span style="color:#f92672">,</span>number<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">binarySearchForIndex</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> number<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1,定义查找的范围
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> max <span style="color:#f92672">=</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.循环查找 min &lt;= max
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>min <span style="color:#f92672">&lt;=</span> max<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//3.计算出中间位置 mid
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> mid <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>min <span style="color:#f92672">+</span> max<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;</span> 1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//mid指向的元素 &gt; number
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>mid<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> number<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//表示要查找的元素在左边.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                max <span style="color:#f92672">=</span> mid <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>mid<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> number<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//mid指向的元素 &lt; number
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">//表示要查找的元素在右边.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                min <span style="color:#f92672">=</span> mid <span style="color:#f92672">+</span> 1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//mid指向的元素 == number
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> mid<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//如果min大于了max就表示元素不存在,返回-1.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>注意事项</p>
+<p>有一个前提条件，数组内的元素一定要按照大小顺序排列，如果没有大小顺序，是不能使用二分查找法的</p>
+</li>
+</ul>
+<h3 id="52-冒泡排序-理解">5.2 冒泡排序 (理解)<a hidden class="anchor" aria-hidden="true" href="#52-冒泡排序-理解">#</a></h3>
+<ul>
+<li>
+<p>冒泡排序概述</p>
+<p>一种排序的方式，对要进行排序的数据中相邻的数据进行两两比较，将较大的数据放在后面，依次对所有的数据进行操作，直至所有数据按要求完成排序</p>
+<p>如果有n个数据进行排序，总共需要比较n-1次</p>
+<p>每一次比较完毕，下一次的比较就会少一个数据参与</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyBubbleSortDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>3<span style="color:#f92672">,</span> 5<span style="color:#f92672">,</span> 2<span style="color:#f92672">,</span> 1<span style="color:#f92672">,</span> 4<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1 2 3 4 5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        bubbleSort<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">bubbleSort</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//外层循环控制的是次数 比数组的长度少一次.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//内存循环就是实际循环比较的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//-1 是为了让数组不要越界
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//-i 每一轮结束之后,我们就会少比一个数字.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> j <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1 <span style="color:#f92672">-</span> i<span style="color:#f92672">;</span> j<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> arr<span style="color:#f92672">[</span>j <span style="color:#f92672">+</span> 1<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>j<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                    arr<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>j <span style="color:#f92672">+</span> 1<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                    arr<span style="color:#f92672">[</span>j <span style="color:#f92672">+</span> 1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        printArr<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printArr</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="53-快速排序-理解">5.3 快速排序 (理解)<a hidden class="anchor" aria-hidden="true" href="#53-快速排序-理解">#</a></h3>
+<ul>
+<li>
+<p>快速排序概述</p>
+<p>冒泡排序算法中,一次循环结束,就相当于确定了当前的最大值,也能确定最大值在数组中应存入的位置</p>
+<p>快速排序算法中,每一次递归时以第一个数为基准数,找到数组中所有比基准数小的.再找到所有比基准数大的.小的全部放左边,大的全部放右边,确定基准数的正确位置</p>
+</li>
+<li>
+<p>核心步骤</p>
+<ol>
+<li>从右开始找比基准数小的</li>
+<li>从左开始找比基准数大的</li>
+<li>交换两个值的位置</li>
+<li>红色继续往左找，蓝色继续往右找，直到两个箭头指向同一个索引为止</li>
+<li>基准数归位</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyQuiteSortDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1，从右开始找比基准数小的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        2，从左开始找比基准数大的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        3，交换两个值的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        4，红色继续往左找，蓝色继续往右找，直到两个箭头指向同一个索引为止
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        5，基准数归位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>6<span style="color:#f92672">,</span> 1<span style="color:#f92672">,</span> 2<span style="color:#f92672">,</span> 7<span style="color:#f92672">,</span> 9<span style="color:#f92672">,</span> 3<span style="color:#f92672">,</span> 4<span style="color:#f92672">,</span> 5<span style="color:#f92672">,</span> 10<span style="color:#f92672">,</span> 8<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        quiteSort<span style="color:#f92672">(</span>arr<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> arr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">quiteSort</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> left<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     	<span style="color:#75715e">// 递归结束的条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>right <span style="color:#f92672">&lt;</span> left<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> left0 <span style="color:#f92672">=</span> left<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> right0 <span style="color:#f92672">=</span> right<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//计算出基准数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> baseNumber <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>left0<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>left <span style="color:#f92672">!=</span> right<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1，从右开始找比基准数小的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>right<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;=</span> baseNumber <span style="color:#f92672">&amp;&amp;</span> right <span style="color:#f92672">&gt;</span> left<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                right<span style="color:#f92672">--;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        2，从左开始找比基准数大的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">[</span>left<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;=</span> baseNumber <span style="color:#f92672">&amp;&amp;</span> right <span style="color:#f92672">&gt;</span> left<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                left<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        3，交换两个值的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>left<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            arr<span style="color:#f92672">[</span>left<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>right<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>            arr<span style="color:#f92672">[</span>right<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//基准数归位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>left<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>left<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> arr<span style="color:#f92672">[</span>left0<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        arr<span style="color:#f92672">[</span>left0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 递归调用自己,将左半部分排好序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        quiteSort<span style="color:#f92672">(</span>arr<span style="color:#f92672">,</span>left0<span style="color:#f92672">,</span>left<span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 递归调用自己,将右半部分排好序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        quiteSort<span style="color:#f92672">(</span>arr<span style="color:#f92672">,</span>left <span style="color:#f92672">+</span>1<span style="color:#f92672">,</span>right0<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="54-arrays-应用">5.4 Arrays (应用)<a hidden class="anchor" aria-hidden="true" href="#54-arrays-应用">#</a></h3>
+<ul>
+<li>
+<p>Arrays的常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public static String toString(int[] a)</td>
+<td>返回指定数组的内容的字符串表示形式</td>
+</tr>
+<tr>
+<td>public static void sort(int[] a)</td>
+<td>按照数字顺序排列指定的数组</td>
+</tr>
+<tr>
+<td>public static int binarySearch(int[] a, int key)</td>
+<td>利用二分查找返回指定元素的索引</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyArraysDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//        public static String toString(int[] a)    返回指定数组的内容的字符串表示形式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//        int [] arr = {3,2,4,6,7};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//        System.out.println(Arrays.toString(arr));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//        public static void sort(int[] a)	  按照数字顺序排列指定的数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//        int [] arr = {3,2,4,6,7};
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//        Arrays.sort(arr);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//        System.out.println(Arrays.toString(arr));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//        public static int binarySearch(int[] a, int key) 利用二分查找返回指定元素的索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">int</span> <span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>1<span style="color:#f92672">,</span>2<span style="color:#f92672">,</span>3<span style="color:#f92672">,</span>4<span style="color:#f92672">,</span>5<span style="color:#f92672">,</span>6<span style="color:#f92672">,</span>7<span style="color:#f92672">,</span>8<span style="color:#f92672">,</span>9<span style="color:#f92672">,</span>10<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">binarySearch</span><span style="color:#f92672">(</span>arr<span style="color:#f92672">,</span> 0<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>          System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">//1,数组必须有序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#75715e">//2.如果要查找的元素存在,那么返回的是这个元素实际的索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#75715e">//3.如果要查找的元素不存在,那么返回的是 (-插入点-1)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#75715e">//插入点:如果这个元素在数组中,他应该在哪个索引上.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>工具类设计思想</p>
+<ol>
+<li>构造方法用 private 修饰</li>
+<li>成员用 public static 修饰</li>
+</ol>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%B8%B8%E7%94%A8api%E5%BC%82%E5%B8%B8/">常用API&amp;异常</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%B8%B8%E7%94%A8api02/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java常用API02</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>使用Helm部署Consul集群</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

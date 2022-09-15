@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>xrdp on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/xrdp/</link>
+    <description>Recent content in xrdp on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 20 Jan 2022 16:23:03 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/xrdp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用xrdp连接kali远程桌面</title>
+      <link>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8xrdp%E8%BF%9E%E6%8E%A5kali%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</link>
+      <pubDate>Thu, 20 Jan 2022 16:23:03 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8xrdp%E8%BF%9E%E6%8E%A5kali%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</guid>
+      <description>1、安装xrdp
+apt-get install xrdp 2、接下来安装xfce4
+apt-get instlal xfce4 3、最重要的一步
+用vim打开 /etc/xrdp/startwm.sh
+vim /etc/xrdp/startwm.sh 4、在里面添加
+ echo “xfce4-session” &amp;gt;~/.xsession 5、启动xrdp
+service xrdp start 6、创建vnc用户
+useradd -m vnc passwd vnc 7、连接</description>
+    </item>
+    
+  </channel>
+</rss>

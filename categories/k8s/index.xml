@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>k8s on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/k8s/</link>
+    <description>Recent content in k8s on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 04 Mar 2022 17:27:05 +0000</lastBuildDate><atom:link href="https://iblog.zone/categories/k8s/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用Helm部署Consul集群</title>
+      <link>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Fri, 04 Mar 2022 17:27:05 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/</guid>
+      <description>Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。
+在 helm 中有三大概念：
+ Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。
+准备阶段 拥有一个 Kubernetes 集群，如下：
+具体配置：</description>
+    </item>
+    
+    <item>
+      <title>K8S中使用Ceph集群动态和静态方式挂载PV与PVC</title>
+      <link>https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/</link>
+      <pubDate>Tue, 01 Mar 2022 14:12:42 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/</guid>
+      <description>一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+对象存储的成本比起普通的文件存储还是较高，需要购买专门的对象存储软件以及大容量硬盘。如果对数据量要求不是海量，只是为了做文件共享的时候，直接用文件存储的形式好了，性价比高。
+二、使用CephFS类型Volume直接挂载  cephfs卷允许将现有的cephfs卷挂载到你的Pod中，与emptyDir类型不同的是，emptyDir会在删除Pod时把数据清除掉，而cephfs卷的数据会被保留下来,仅仅是被卸载，并且cephfs可以被多个设备进行读写。
+1、安装 Ceph 客户端 在部署 kubernetes 之前我们就已经有了 Ceph 集群，因此我们可以直接拿来用。但是 kubernetes 的所有节点（尤其是 master 节点）上依然需要安装 ceph 客户端。
+yum install -y ceph-common  还需要将 ceph 的配置文件 ceph.conf 放在所有节点的 /etc/ceph 目录下  2、创建Ceph secret  注意： ceph_secret.</description>
+    </item>
+    
+    <item>
+      <title>生产环境搭建高可用Harbor</title>
+      <link>https://iblog.zone/archives/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8harbor/</link>
+      <pubDate>Fri, 18 Feb 2022 18:15:43 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8harbor/</guid>
+      <description>前言 因资源成本问题，本Harbor高可用架构为最小开销方案，如果资源充足，可以将PG、Redis全部使用使用云厂商集群模式。
+同时为了配置简单，并没有使用keepalived与heartbeat等高可用开源组件。
+准备工作    阿里云SLB 阿里云ECS 共享存储 Redis     最小实例SLB 2c4g 2台 阿里云NFS 阿里云Redis    操作系统为Ubuntu18.04，在2台ECS上搭建主从PG，如果不想用阿里云redis，也可以使用ECS搭建Redis。
+安装Harbor，用于导出基础harbor数据，恢复到PG集群中.   安装docker-compose
+curl -L &amp;#34;https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)&amp;#34; -o /usr/local/bin/docker-compose sudo chmod +x /usr/local/bin/docker-compose sudo add-apt-repository &amp;#34;deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs)stable&amp;#34; # 添加国内阿里云 curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add - #更新 sudo apt-get update [[查看docker]]版本 apt-cache madison docker-ce #安装最新版 sudo apt-get install -y docker-ce [[安装5]]:19.</description>
+    </item>
+    
+    <item>
+      <title>超好用的k8s中pod诊断工具：kubectl-debug</title>
+      <link>https://iblog.zone/archives/%E8%B6%85%E5%A5%BD%E7%94%A8%E7%9A%84k8s%E4%B8%ADpod%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7kubectl-debug/</link>
+      <pubDate>Fri, 18 Feb 2022 11:24:51 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E8%B6%85%E5%A5%BD%E7%94%A8%E7%9A%84k8s%E4%B8%ADpod%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7kubectl-debug/</guid>
+      <description>背景 容器技术的一个最佳实践是构建尽可能精简的容器镜像。但这一实践却会给排查问题带来麻烦：精简后的容器中普遍缺失常用的排障工具，部分容器里甚至没有 shell (比如 FROM scratch ）。 在这种状况下，我们只能通过日志或者到宿主机上通过 docker-cli 或 nsenter 来排查问题，效率很低，在K8s环境部署应用后，经常遇到需要进入pod进行排错。除了查看pod logs和describe方式之外，传统的解决方式是在业务pod基础镜像中提前安装好procps、net-tools、tcpdump、vim等工具。但这样既不符合最小化镜像原则，又徒增Pod安全漏洞风险。
+今天为大家推荐一款K8s pod诊断工具，kubectl-debug是一个简单、易用、强大的 kubectl 插件, 能够帮助你便捷地进行 Kubernetes 上的 Pod 排障诊断。它通过启动一个排错工具容器，并将其加入到目标业务容器的pid, network, user 以及 ipc namespace 中，这时我们就可以在新容器中直接用 netstat, tcpdump 这些熟悉的工具来解决问题了, 而业务容器可以保持最小化, 不需要预装任何额外的排障工具。 kubectl-debug 主要包含以下两部分:
+ kubectl-debug：命令行工具 debug-agent：部署在K8s的node上，用于启动关联排错工具容器  工作原理 我们知道，容器本质上是带有 cgroup 资源限制和 namespace 隔离的一组进程。因此，我们只要启动一个进程，并且让这个进程加入到目标容器的各种 namespace 中，这个进程就能 “进入容器内部”（注意引号），与容器中的进程”看到”相同的根文件系统、虚拟网卡、进程空间了——这也正是 docker exec 和 kubectl exec 等命令的运行方式。
+现在的状况是，我们不仅要 “进入容器内部”，还希望带一套工具集进去帮忙排查问题。那么，想要高效管理一套工具集，又要可以跨平台，最好的办法就是把工具本身都打包在一个容器镜像当中。 接下来，我们只需要通过这个”工具镜像”启动容器，再指定这个容器加入目标容器的的各种 namespace，自然就实现了 “携带一套工具集进入容器内部”。事实上，使用 docker-cli 就可以实现这个操作：
+export TARGET_ID=666666666 # 加入目标容器的 network, pid 以及 ipc namespace docker run -it --network=container:$TARGET_ID --pid=container:$TARGET_ID --ipc=container:$TARGET_ID busybox 这就是 kubectl-debug 的出发点： 用工具容器来诊断业务容器 。背后的设计思路和 sidecar 等模式是一致的：每个容器只做一件事情。</description>
+    </item>
+    
+    <item>
+      <title>k8s搭建consul集群</title>
+      <link>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Tue, 14 Dec 2021 14:44:57 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</guid>
+      <description>部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.</description>
+    </item>
+    
+  </channel>
+</rss>

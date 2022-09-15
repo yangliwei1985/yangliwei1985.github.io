@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>openvpn on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/openvpn/</link>
+    <description>Recent content in openvpn on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 08 Dec 2021 17:09:00 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/openvpn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenVPN 设置账号密码登录</title>
+      <link>https://iblog.zone/archives/openvpn-%E8%AE%BE%E7%BD%AE%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</link>
+      <pubDate>Wed, 08 Dec 2021 17:09:00 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/openvpn-%E8%AE%BE%E7%BD%AE%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</guid>
+      <description>前面我们是使用openvpn 秘钥的方式登录，这种登录安全性比较高。但是运维操作起来比较麻烦，如果有ldap的也推荐使用ldap集成openvpn。但是这里我们偷个懒，通过设置账号密码的方式连接vpn
+配置OpenVPN 首先我们需要编写一个用户认证的脚本 (脚本是由openvpn官网提供的)
+vim /etc/openvpn/checkpsw.sh #!/bin/sh ########################################################### # checkpsw.sh (C) 2004 Mathias Sundman  # # This script will authenticate OpenVPN users against # a plain text file. The passfile should simply contain # one row per user with the username first followed by # one or more space(s) or tab(s) and then the password.  PASSFILE=&amp;#34;/etc/openvpn/psw-file&amp;#34; LOG_FILE=&amp;#34;/etc/openvpn/openvpn-password.log&amp;#34; TIME_STAMP=`date &amp;#34;+%Y-%m-%d %T&amp;#34;`  ###########################################################  if [ ! -r &amp;#34;${PASSFILE}&amp;#34; ]; then  echo &amp;#34;${TIME_STAMP}: Could not open password file \&amp;#34;${PASSFILE}\&amp;#34; for reading.</description>
+    </item>
+    
+    <item>
+      <title>CentOS 7 搭建OpenVPN服务器</title>
+      <link>https://iblog.zone/archives/centos-7-%E6%90%AD%E5%BB%BAopenvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <pubDate>Sun, 05 Dec 2021 22:02:39 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos-7-%E6%90%AD%E5%BB%BAopenvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <description>OpenVPN的工作原理 在Linux2.4版本以上，操作系统支持一个名为tun的设备，tun设备的驱动程序中包含两个部分，一部分是字符设备驱动，一部分是网卡驱动。网卡的驱动把从TCP/IP协议栈收到的数据包结构skb放于tun设备的读取队列，用户进程通过调用字符设备接口read获得完整的IP数据包，字符驱动read函数的功能是从设备的读取队列读取数据，将核心态的skb传递给用户；反过来字符驱动write函数给用户提供了把用户态的数据写入核心态的接口，write函数把用户数据写入核心空间并穿入TCP/IP协议栈。该设备既能以字符设备的方式被读写，作为系统的虚拟网卡，也具有和物理网卡相同的特点：能够配置IP地址和路由。对虚拟网卡的使用是OpenVPN实现其SSL VPN功能的关键。
+OpenVPN服务器一般需要配置一个虚拟IP地址池和一个自用的静态虚拟IP地址（静态地址和地址池必须在同一个子网中），然后为每一个成功建立SSL连接的客户端动态分配一个虚拟IP地址池中未分配的地址。这样，物理网络中的客户端和OpenVPN服务器就连接成一个虚拟网络上的星型结构局域网，OpenVPN服务器成为每个客户端在虚拟网络上的网关。OpenVPN服务器同时提供对客户端虚拟网卡的路由管理。当客户端对OpenVPN服务器后端的应用服务器的任何访问时，数据包都会经过路由流经虚拟网卡，OpenVPN程序在虚拟网卡上截获数据IP报文，然后使用SSL协议将这些IP报文封装起来，再经过物理网卡发送出去。OpenVPN的服务器和客户端在虚拟网卡之上建立起一个虚拟的局域网络，这个虚拟的局域网对系统的用户来说是透明的。
+OpenVPN的服务器和客户端支持tcp和udp两种连接方式，只需在服务端和客户端预先定义好使用的连接方式（tcp或udp）和端口号，客户端和服务端在这个连接的基础上进行SSL握手。连接过程包括SSL的握手以及虚拟网络上的管理信息，OpenVPN将虚拟网上的网段、地址、路由发送给客户端。连接成功后，客户端和服务端建立起SSL安全连接，客户端和服务端的数据都流入虚拟网卡做SSL的处理，再在tcp或udp的连接上从物理网卡发送出去
+环境说明 192.168.0.10外网 10.4.82.10 内网  系统环境 [root@vpn ~]# cat /etc/redhat-release CentOS Linux release 7.7.1908 (Core) [root@vpn ~]# uname -r 3.10.0-1062.9.1.el7.x86_64  网卡为双网卡 [root@vpn ~]# ifconfig eth0: flags=4163&amp;lt;UP,BROADCAST,RUNNING,MULTICAST&amp;gt; mtu 1500  inet 192.168.0.11 netmask 255.255.255.0 broadcast 192.168.0.255  inet6 fe80::6b5a:9ab8:1bb:5f8d prefixlen 64 scopeid 0x20  ether 00:0c:29:32:b2:36 txqueuelen 1000 (Ethernet)  RX packets 15104 bytes 16993218 (16.2 MiB)  RX errors 0 dropped 0 overruns 0 frame 0  TX packets 8661 bytes 889872 (869.</description>
+    </item>
+    
+  </channel>
+</rss>

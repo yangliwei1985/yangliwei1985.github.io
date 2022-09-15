@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Firewall on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/firewall/</link>
+    <description>Recent content in Firewall on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 10 Feb 2022 16:24:38 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/firewall/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Firewall防火墙常用操作</title>
+      <link>https://iblog.zone/archives/firewall%E9%98%B2%E7%81%AB%E5%A2%99%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Thu, 10 Feb 2022 16:24:38 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/firewall%E9%98%B2%E7%81%AB%E5%A2%99%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/</guid>
+      <description>  查看防火墙某个端口是否开放
+firewall-cmd &amp;ndash;query-port=3306/tcp
+  开放防火墙端口3306
+firewall-cmd &amp;ndash;zone=public &amp;ndash;add-port=3306/tcp &amp;ndash;permanent
+注意：开放端口后要重启防火墙生效
+  重启防火墙
+systemctl restart firewalld
+  关闭防火墙端口
+firewall-cmd &amp;ndash;remove-port=3306/tcp &amp;ndash;permanent
+  查看防火墙状态
+systemctl status firewalld
+  关闭防火墙
+systemctl stop firewalld
+  打开防火墙
+systemctl start firewalld
+  开放一段端口
+firewall-cmd &amp;ndash;zone=public &amp;ndash;add-port=40000-45000/tcp &amp;ndash;permanent
+  查看开放的端口列表
+firewall-cmd &amp;ndash;zone=public &amp;ndash;list-ports
+  </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>maven on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/maven/</link>
+    <description>Recent content in maven on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 07 Apr 2022 17:51:55 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/maven/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS7上安装Apache Maven</title>
+      <link>https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/</link>
+      <pubDate>Thu, 07 Apr 2022 17:51:55 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E4%B8%8A%E5%AE%89%E8%A3%85apache-maven/</guid>
+      <description>Apache Maven主要用于Java项目的自由开源项目管理。 Maven使用项目对象模型（POM），该对象本质上是一个XML文件，其中包含关于项目，配置，依赖关系等信息。
+在本教程中，我们将向您展示两种在CentOS 7上安装Apache Maven的两种不同方法。它们分别：1.yum安装Apache Maven。2.从官方站点下载最新版本Apache Maven并配置环境变量PATH与JAVA_HOME环境变量。
+CentOS 默认储存库包含可以通过yum软件包管理器安装的Maven软件包。这是在CentOS上安装Maven的最简单方法，但是存储库中包含的版本可能落后于最新版本的Maven。
+要安装最新版本的Maven，请按照本文第二部分提供的说明进行操作，我们将从其官方网站上下载Maven。具体的取决于你的喜好，选择最适合您的设置和环境的安装方法。
+先决条件 您所登录的用户必须具有sudo权限，才能安装软件包。
+使用Yum在CentOS上安装Apache Maven 使用yum在CentOS 7上安装Maven是一个简单，直接的过程。通过在终端中键入以下命令来安装Maven：
+sudo yum install maven 验证安装，通过键入mvn -version命令：
+mvn -version 输出应如下所示：
+Apache Maven 3.0.5 (Red Hat 3.0.5-17) Maven home: /usr/share/maven Java version: 1.8.0_191, vendor: Oracle Corporation Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/jre Default locale: en_US, platform encoding: UTF-8 OS name: &amp;#34;linux&amp;#34;, version: &amp;#34;3.10.0-862.3.2.el7.x86_64&amp;#34;, arch: &amp;#34;amd64&amp;#34;, family: &amp;#34;unix&amp;#34; 现在，Maven已安装在CentOS系统上。
+安装Apache Maven的最新版本 以下提供了有关如何在CentOS 7上安装最新版本的Apache Maven的逐步说明。我们将从官方网站上下载最新版本的Apache Maven。
+1.安装OpenJDK Maven 3.3+需要安装JDK 1.7或更高版本。我们将安装OpenJDK ，这是CentOS 7中默认的Java开发和运行时。通过输入以下命令安装OpenJDK软件包：</description>
+    </item>
+    
+  </channel>
+</rss>

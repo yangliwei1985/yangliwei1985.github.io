@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>迁移备份 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E8%BF%81%E7%A7%BB%E5%A4%87%E4%BB%BD/</link>
+    <description>Recent content in 迁移备份 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 08 Feb 2022 17:59:42 +0000</lastBuildDate><atom:link href="https://iblog.zone/categories/%E8%BF%81%E7%A7%BB%E5%A4%87%E4%BB%BD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>redis-shake数据同步&amp;迁移工具</title>
+      <link>https://iblog.zone/archives/redis-shake%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E8%BF%81%E7%A7%BB%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Tue, 08 Feb 2022 17:59:42 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/redis-shake%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E8%BF%81%E7%A7%BB%E5%B7%A5%E5%85%B7/</guid>
+      <description>一、简介 redis-shake是阿里云Redis&amp;amp;MongoDB团队开源的用于redis数据同步的工具。
+1.1基本功能 它支持解析、恢复、备份、同步四个功能。以下主要介绍同步sync。
+ 恢复restore：将RDB文件恢复到目的redis数据库。 备份dump：将源redis的全量数据通过RDB文件备份起来。 解析decode：对RDB文件进行读取，并以json格式解析存储。 同步sync：支持源redis和目的redis的数据同步，支持全量和增量数据的迁移。 同步rump：支持源redis和目的redis的数据同步，仅支持全量的迁移。采用scan和restore命令进行迁移。  1.2 基本原理 redis-shake的基本原理就是模拟一个从节点加入源redis集群，首先进行全量拉取并回放，然后进行增量的拉取（通过psync命令）。如下图所示：
+如果源端是集群模式，只需要启动一个redis-shake进行拉取，同时不能开启源端的move slot操作。如果目的端是集群模式，可以写入到一个结点，然后再进行slot的迁移，当然也可以多对多写入。 目前，redis-shake到目的端采用单链路实现，对于正常情况下，这不会成为瓶颈，但对于极端情况，qps比较大的时候，此部分性能可能成为瓶颈，后续我们可能会计划对此进行优化。另外，redis-shake到目的端的数据同步采用异步的方式，读写分离在2个线程操作，降低因为网络时延带来的同步性能下降。
+1.3 高效性 全量同步阶段并发执行，增量同步阶段异步执行，能够达到毫秒级别延迟（取决于网络延迟）。同时，我们还对大key同步进行分批拉取，优化同步性能。
+1.4 监控 用户可以通过我们提供的restful拉取metric来对redis-shake进行实时监控：curl 127.0.0.1:9320/metric。
+1.5 校验 可采用redis-full-check来校验同步的正确性。
+二、安装redis-shake 2.1 下载 wget https://github.com/alibaba/RedisShake/releases/download/release-v2.0.3-20200724/redis-shake-v2.0.3.tar.gz; tar zxvf redis-shake-v2.0.3.tar.gz; cd redis-shake-v2.0.3; 2.2 修改配置文件 vim redis-shake.conf - source.type: 源redis的类型，支持一下4种类型： standalone: 单db节点/主从版模式。 sentinel: sentinel模式。 cluster: 集群模式。 proxy: proxy模式。如果是阿里云redis的集群版，从proxy拉取/写入请选择proxy - source.address: 源redis的地址，不同的类型对应不同的地址： standalone模式下，需填写单个db节点的地址，主从版需输入master或者slave的地址。 sentinel模式下，例如：master:master@127.0.0.1:26379;127.0.0.1:26380 cluster模式下，需填写集群地址，以分号（;）分割。例如：10.1.1.1:20331;10.1.1.2:20441 proxy模式下，需要填写单个proxy的地址，此模式目前仅用于rump。 - source.password_raw：源redis的密码。 - target.type: 目的redis的类型 - target.address：目的redis的地址。 sentinel模式，例如：mymaster@127.0.0.1:26379;127.0.0.1:26380 cluster模式，参见source.address。 proxy模式下，填写proxy的地址，如果是多个proxy，则round-robin循环负载均衡连接，保证一个源端db连接只会对应一个proxy。 - target.</description>
+    </item>
+    
+  </channel>
+</rss>

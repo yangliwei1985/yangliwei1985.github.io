@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>php on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/php/</link>
+    <description>Recent content in php on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 29 Dec 2021 15:38:23 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/php/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>nginx php-fpm安装配置</title>
+      <link>https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Wed, 29 Dec 2021 15:38:23 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</guid>
+      <description>nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx
+本文以php-fpm为例介绍如何使nginx支持PHP
+一、编译安装php-fpm
+什么是PHP-FPM
+PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.
+PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。
+新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。
+安装前准备 centos下执行
+yum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c++ glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)
+wget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5.</description>
+    </item>
+    
+  </channel>
+</rss>

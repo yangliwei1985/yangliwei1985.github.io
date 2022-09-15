@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>nginx | ylw&#39;s blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/tags/nginx/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://iblog.zone/tags/nginx/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="nginx" />
+<meta property="og:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://iblog.zone/tags/nginx/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="nginx"/>
+<meta name="twitter:description" content="本站主要用来收集整理资料、记录笔记，方便自己查询使用"/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/tags/">Tags</a></div>
+  <h1>nginx</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nginx官方推荐的nginx.conf标准配置
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Nginx官方发布“避免10大NGINX配置错误”中，推荐nginx.conf配置为：
+http {   upstream node_backend {  zone upstreams 64K;  server 127.0.0.1:3000 max_fails=1 fail_timeout=2s;  keepalive 2;  }   server {  listen 80;  server_name example.com;   location / {  proxy_set_header Host $host;  proxy_pass http://node_backend/;  proxy_next_upstream error timeout http_500;   }  } } 即使没有负载平衡或在一台机器内，也要启用upstream{}块，它解锁了几个提高性能的功能：
+ 该zone指令建立了一个共享内存区域，主机上的所有 NGINX 工作进程都可以访问有关上游服务器的配置和状态信息。几个上游组可以共享该区域。 该server指令有几个参数可用于调整服务器行为。在这个例子中，我们改变了 NGINX 用来确定服务器不健康并因此没有资格接受请求的条件。在这里，如果通信尝试在每 2 秒内失败一次（而不是默认的每10 秒一次），它就会认为服务器不健康。 我们把这个设置和proxy_next_upstream指令结合起来，以配置NGINX认为的失败的通信尝试，在这种情况下，它把请求传递给上游组的下一个服务器。在默认的错误和超时条件中，我们添加了http_500，以便NGINX认为来自上游服务器的HTTP 500（内部服务器错误）代码代表一个失败的尝试。 keepalive指令设置每个工作进程的缓存中保存的与上游服务器的空闲keepalive连接的数量。默认情况下，NGINX 会为每个新的传入请求打开一个到上游（后端）服务器的新连接。这是安全但低效的，因为 NGINX 和服务器必须交换三个数据包来建立连接，并交换三个或四个数据包来终止它。在高流量时，为每个请求打开一个新连接会耗尽系统资源，并且根本无法打开连接。修复是在 NGINX 和上游服务器之间启用keepalive 连接——而不是在请求完成时关闭，连接保持打开状态以用于其他请求。这既减少了源端口用完的可能性，又提高了性能。该参数设置为块中列出的服务器数量的两倍。  </p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-18 11:28:45 +0800 CST'>2022-04-18</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nginx官方推荐的nginx.conf标准配置" href="https://iblog.zone/archives/nginx%E5%AE%98%E6%96%B9%E6%8E%A8%E8%8D%90%E7%9A%84nginx.conf%E6%A0%87%E5%87%86%E9%85%8D%E7%BD%AE/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nginx根据请求IP转发请求
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>规则：
+$remote_addr ~* ^(.*)\.(.*)\.(.*)\.*[0268]$ 匹配末尾为0268这样的偶数ip，跳转到指定域名
+$remote_addr ~* ^(112)\.(.*)\.(.*)\.(.*)$ 开头为 112 的 IP 跳转到指定的域名；
+$http_x_forwarded_for ~* ^(112)\.(.*)\.(.*)\.(.*)$ 根据 forward 地址段来分流，开头为 112 的跳转到指定域名
+例如：
+server {  listen 8080; # 监听端口  server_name 10.0.0.1; # 监听地址   access_log /data/logs/nginx_logs/10.0.0.1.log main;   location / {  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  if ( $remote_addr ~* 10.0.0.2) { ## 请求ip为10.0.0.2的流量转发到下列地址  proxy_pass http://172.16.0.2:10000;  break;  }  if ( $remote_addr ~* ^(.*)\.(.*)\.(.*)\.*[0268]$) { ## 请求ip尾数为0268的ip转发到下列地址  proxy_pass http://172....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-14 16:37:54 +0800 CST'>2022-04-14</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nginx根据请求IP转发请求" href="https://iblog.zone/archives/nginx%E6%A0%B9%E6%8D%AE%E8%AF%B7%E6%B1%82ip%E8%BD%AC%E5%8F%91%E8%AF%B7%E6%B1%82/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nginx常用操作及配置
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、nginx获取客户端真实IP、域名、协议、端口 需要在Nginx的配置文件nginx.conf中添加如下配置
+proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; 各参数的含义如下所示。
+ Host包含客户端真实的域名和端口号； X-Forwarded-Proto表示客户端真实的协议（http还是https）； X-Real-IP表示客户端真实的IP； X-Forwarded-For这个Header和X-Real-IP类似，但它在多层代理时会包含真实客户端及中间每个代理服务器的IP  二、nginx负载均衡配置 http {  ……  upstream real_server {  server 192.168.103.100:2001 weight=1; #轮询服务器和访问权重  server 192.168.103.100:2002 weight=2;  }   server {  listen 80;   location / {  proxy_pass http://real_server;  }  } } nginx负载均衡失败重试配置
+upstream real_server {  server 192.168.103.100:2001 weight=1 max_fails=2 fail_timeout=60s;  server 192....</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-04-11 17:20:11 +0800 CST'>2022-04-11</span>&nbsp;·&nbsp;11 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nginx常用操作及配置" href="https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nignx导致java程序TruncatedChunkException解决办法
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>#项目异常信息 org.apache.http.TruncatedChunkException: Truncated chunk ( expected size: 7752; actual size: 4077)  at org.apache.http.impl.io.ChunkedInputStream.read(ChunkedInputStream.java:186)  at org.apache.http.conn.EofSensorInputStream.read(EofSensorInputStream.java:138)  at &lt;mypackage&gt;.&lt;MyServlet&gt;.service(&lt;MyServlet&gt;.java:XXX)  at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)  at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)  at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)  at org.jboss.resteasy.plugins.server.servlet.FilterDispatcher.doFilter(FilterDispatcher.java:63)  at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)  at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)  at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)  at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)  at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:127)  at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)  at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)  at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)  at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:859)  at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:602)  at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)  at java.lang.Thread.run(Thread.java:724) 当系统报以上错误时，接口表现出来的是数据传输不完整， 比如说接口返回 json ， 那么接收到的数据可能会少一截，json 数据说不定会少个 ｝ ，此时json就无法反序列化了。说白了就是丢包了。...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-24 16:49:20 +0800 CST'>2022-03-24</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nignx导致java程序TruncatedChunkException解决办法" href="https://iblog.zone/archives/nignx%E5%AF%BC%E8%87%B4java%E7%A8%8B%E5%BA%8Ftruncatedchunkexception%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>nginx解决内容安全策略CSP（Content-Security-Policy）配置方式
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>前端发布完页面后，无法正常显示，console控制台报
+在nginx配置文件中，增加header配置，有严格的顺序
+ add_header Content-Security-Policy &#34;default-src &#39;none&#39; 域名 &#39;unsafe-inline&#39; &#39;unsafe-eval&#39; blob: data: ;&#34;;  add_header X-Xss-Protection &#34;1;mode=block&#34;;  add_header X-Content-Type-Options nosniff; 执行结果，页面正常显示</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-03-10 18:39:24 +0000 UTC'>2022-03-10</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to nginx解决内容安全策略CSP（Content-Security-Policy）配置方式" href="https://iblog.zone/archives/nginx%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5cspcontent-security-policy%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Nginx安装和高可用
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>一、Nginx安装 1、去官网http://nginx.org/下载对应的nginx包，推荐使用稳定版本 2、上传nginx到linux系统 3、安装依赖环境 (1)安装gcc环境
+yum install gcc-c&#43;&#43; (2)安装PCRE库，用于解析正则表达式
+yum install -y pcre pcre-devel (3)zlib压缩和解压缩依赖
+yum install -y zlib zlib-devel (4)SSL 安全的加密的套接字协议层，用于HTTP安全传输，也就是https
+yum install -y openssl openssl-devel 4、解压，需要注意，解压后得到的是源码，源码需要编译后才能安装 tar -zxvf nginx-1.16.1.tar.gz 5、编译之前，先创建nginx临时目录，如果不创建，在启动nginx的过程中会报错 mkdir /var/temp/nginx -p 6、在nginx目录，输入如下命令进行配置，目的是为了创建makefile文件 ./configure \  --prefix=/usr/local/nginx \  --pid-path=/var/run/nginx/nginx.pid \  --lock-path=/var/lock/nginx.lock \  --error-log-path=/var/log/nginx/error.log \  --http-log-path=/var/log/nginx/access.log \  --with-http_gzip_static_module \  --http-client-body-temp-path=/var/temp/nginx/client \  --http-proxy-temp-path=/var/temp/nginx/proxy \  --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \  --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \  --http-scgi-temp-path=/var/temp/nginx/scgi 注：代表在命令行中换行，用于提高可读性配置命令：...</p>
+  </section>
+  <footer class="entry-footer"><span title='2022-02-11 10:50:49 +0000 UTC'>2022-02-11</span>&nbsp;·&nbsp;6 分钟</footer>
+  <a class="entry-link" aria-label="post link to Nginx安装和高可用" href="https://iblog.zone/archives/nginx%E5%AE%89%E8%A3%85%E5%92%8C%E9%AB%98%E5%8F%AF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>配置Nginx访问网页需要密码
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>1. 安装密码生成工具 $ yum -y install httpd-tools 2. 生成用户和密码文件 生成用户和密码
+$ htpasswd -c /usr/local/nginx/password username # 回车后输入密码 # -c 创建一个加密文件 查看生成的用户和密码
+如果要修改密码，或者删除密码，请参考下面操作
+删除用户和密码
+$ htpasswd -D /usr/local/nginx/password username # -D 删除指定的用户 修改用户和密码
+$ htpasswd -D /usr/local/nginx/password username $ htpasswd -b /usr/local/nginx/password username pass # -D 删除指定的用户 # -b htpassswd命令行中一并输入用户名和密码而不是根据提示输入密码 # -p htpassswd命令不对密码进行进行加密，即明文密码 3. 配置Nginx认证 找到 nginx 配置文件，通常默认的配置文件在/usr/local/nginx/conf/nginx.conf，要对整个站点开启验证，需在配置文件中的server加上认证配置 auth_basic 和 auth_basic_user_file
+server {  listen 80;  server_name localhost;  # ....</p>
+  </section>
+  <footer class="entry-footer"><span title='2021-12-21 14:28:29 +0000 UTC'>2021-12-21</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to 配置Nginx访问网页需要密码" href="https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

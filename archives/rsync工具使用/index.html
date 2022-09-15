@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>rsync工具使用 | ylw&#39;s blog</title>
+<meta name="keywords" content="rsync" />
+<meta name="description" content="一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。
+它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。
+它名称里面的r指的是 remote，rsync 其实就是&quot;远程同步&quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。
+二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
+ # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。
+三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。
+ $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。
+如果有多个文件或目录需要同步，可以写成下面这样。
+ $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="rsync工具使用" />
+<meta property="og:description" content="一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。
+它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。
+它名称里面的r指的是 remote，rsync 其实就是&quot;远程同步&quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。
+二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
+ # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。
+三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。
+ $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。
+如果有多个文件或目录需要同步，可以写成下面这样。
+ $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-28T15:28:34&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-28T15:28:34&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="rsync工具使用"/>
+<meta name="twitter:description" content="一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。
+它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。
+它名称里面的r指的是 remote，rsync 其实就是&quot;远程同步&quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。
+二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
+ # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。
+三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。
+ $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。
+如果有多个文件或目录需要同步，可以写成下面这样。
+ $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "rsync工具使用",
+      "item": "https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "rsync工具使用",
+  "name": "rsync工具使用",
+  "description": "一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。\n它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。\n它名称里面的r指的是 remote，rsync 其实就是\u0026quot;远程同步\u0026quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。\n二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。\n # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。\n三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。\n $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。\n如果有多个文件或目录需要同步，可以写成下面这样。\n $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。",
+  "keywords": [
+    "rsync"
+  ],
+  "articleBody": "一、简介 rsync 是一个常用的 Linux 应用程序，用于文件同步。\n它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代cp和mv命令。\n它名称里面的r指的是 remote，rsync 其实就是\"远程同步\"（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。\n二、安装 如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。\n # Debian $ sudo apt-get install rsync  # Red Hat $ sudo yum install rsync  # Arch Linux $ sudo pacman -S rsync  注意，传输的双方都必须安装 rsync。\n三、基本用法 3.1 -r 参数 本机使用 rsync 命令时，可以作为cp和mv命令的替代方法，将源目录同步到目标目录。\n $ rsync -r source destination  上面命令中，-r表示递归，即包含子目录。注意，-r是必须的，否则 rsync 运行不会成功。source目录表示源目录，destination表示目标目录。\n如果有多个文件或目录需要同步，可以写成下面这样。\n $ rsync -r source1 source2 destination  上面命令中，source1、source2都会被同步到destination目录。\n3.2 -a 参数 -a参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）。由于 rsync 默认使用文件大小和修改时间决定文件是否需要更新，所以-a比-r更有用。下面的用法才是常见的写法。\n $ rsync -a source destination  目标目录destination如果不存在，rsync 会自动创建。执行上面的命令后，源目录source被完整地复制到了目标目录destination下面，即形成了destination/source的目录结构。\n如果只想同步源目录source里面的内容到目标目录destination，则需要在源目录后面加上斜杠。\n $ rsync -a source/ destination  上面命令执行后，source目录里面的内容，就都被复制到了destination目录里面，并不会在destination下面创建一个source子目录。\n3.3 -n 参数 如果不确定 rsync 执行后会产生什么结果，可以先用-n或--dry-run参数模拟执行的结果。\n $ rsync -anv source/ destination  上面命令中，-n参数模拟命令执行的结果，并不真的执行命令。-v参数则是将结果输出到终端，这样就可以看到哪些内容会被同步。\n3.4 --delete 参数 默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录。它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用--delete参数，这将删除只存在于目标目录、不存在于源目录的文件。\n $ rsync -av --delete source/ destination  上面命令中，--delete参数会使得destination成为source的一个镜像。\n四、排除文件 4.1 --exclude 参数 有时，我们希望同步时排除某些文件或目录，这时可以用--exclude参数指定排除模式。\n $ rsync -av --exclude='*.txt' source/ destination # 或者 $ rsync -av --exclude '*.txt' source/ destination  上面命令排除了所有 TXT 文件。\n注意，rsync 会同步以\"点\"开头的隐藏文件，如果要排除隐藏文件，可以这样写--exclude=\".*\"。\n如果要排除某个目录里面的所有文件，但不希望排除目录本身，可以写成下面这样。\n $ rsync -av --exclude 'dir1/*' source/ destination  多个排除模式，可以用多个--exclude参数。\n $ rsync -av --exclude 'file1.txt' --exclude 'dir1/*' source/ destination  多个排除模式也可以利用 Bash 的大扩号的扩展功能，只用一个--exclude参数。\n $ rsync -av --exclude={'file1.txt','dir1/*'} source/ destination  如果排除模式很多，可以将它们写入一个文件，每个模式一行，然后用--exclude-from参数指定这个文件。\n $ rsync -av --exclude-from='exclude-file.txt' source/ destination  4.2 --include 参数 --include参数用来指定必须同步的文件模式，往往与--exclude结合使用。\n $ rsync -av --include=\"*.txt\" --exclude='*' source/ destination  上面命令指定同步时，排除所有文件，但是会包括 TXT 文件。\n五、远程同步 5.1 SSH 协议 rsync 除了支持本地两个目录之间的同步，也支持远程同步。它可以将本地内容，同步到远程服务器。\n $ rsync -av source/ username@remote_host:destination  也可以将远程内容同步到本地。\n $ rsync -av username@remote_host:source/ destination  rsync 默认使用 SSH 进行远程登录和数据传输。\n由于早期 rsync 不使用 SSH 协议，需要用-e参数指定协议，后来才改的。所以，下面-e ssh可以省略。\n $ rsync -av -e ssh source/ user@remote_host:/destination  但是，如果 ssh 命令有附加的参数，则必须使用-e参数指定所要执行的 SSH 命令。\n $ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination  上面命令中，-e参数指定 SSH 使用2234端口。\n5.2 rsync 协议 除了使用 SSH，如果另一台服务器安装并运行了 rsync 守护程序，则也可以用rsync://协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔::。\n $ rsync -av source/ 192.168.122.32::module/destination  注意，上面地址中的module并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配。\n如果想知道 rsync 守护程序分配的所有 module 列表，可以执行下面命令。\n $ rsync rsync://192.168.122.32  rsync 协议除了使用双冒号，也可以直接用rsync://协议指定地址。\n $ rsync -av source/ rsync://192.168.122.32/module/destination  六、增量备份 rsync 的最大特点就是它可以完成增量备份，也就是默认只复制有变动的文件。\n除了源目录与目标目录直接比较，rsync 还支持使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。\n具体做法是，第一次同步是全量备份，所有文件在基准目录里面同步一份。以后每一次同步都是增量备份，只同步源目录与基准目录之间有变动的部分，将这部分保存在一个新的目标目录。这个新的目标目录之中，也是包含所有文件，但实际上，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。\n--link-dest参数用来指定同步时的基准目录。\n $ rsync -a --delete --link-dest /compare/path /source/path /target/path  上面命令中，--link-dest参数指定基准目录/compare/path，然后源目录/source/path跟基准目录进行比较，找出变动的文件，将它们拷贝到目标目录/target/path。那些没变动的文件则会生成硬链接。这个命令的第一次备份时是全量备份，后面就都是增量备份了。\n下面是一个脚本示例，备份用户的主目录。\n #!/bin/bash  # A script to perform incremental backups using rsync  set -o errexit set -o nounset set -o pipefail  readonly SOURCE_DIR=\"${HOME}\" readonly BACKUP_DIR=\"/mnt/data/backups\" readonly DATETIME=\"$(date '+%Y-%m-%d_%H:%M:%S')\" readonly BACKUP_PATH=\"${BACKUP_DIR}/${DATETIME}\" readonly LATEST_LINK=\"${BACKUP_DIR}/latest\"  mkdir -p \"${BACKUP_DIR}\"  rsync -av --delete \\  \"${SOURCE_DIR}/\" \\  --link-dest \"${LATEST_LINK}\" \\  --exclude=\".cache\" \\  \"${BACKUP_PATH}\"  rm -rf \"${LATEST_LINK}\" ln -s \"${BACKUP_PATH}\" \"${LATEST_LINK}\"  上面脚本中，每一次同步都会生成一个新目录${BACKUP_DIR}/${DATETIME}，并将软链接${BACKUP_DIR}/latest指向这个目录。下一次备份时，就将${BACKUP_DIR}/latest作为基准目录，生成新的备份目录。最后，再将软链接${BACKUP_DIR}/latest指向新的备份目录。\n七、配置项 -a、--archive参数表示存档模式，保存所有的元数据，比如修改时间（modification time）、权限、所有者等，并且软链接也会同步过去。\n--append参数指定文件接着上次中断的地方，继续传输。\n--append-verify参数跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。\n-b、--backup参数指定在删除或更新目标目录已经存在的文件时，将该文件更名后进行备份，默认行为是删除。更名规则是添加由--suffix参数指定的文件后缀名，默认是~。\n--backup-dir参数指定文件备份时存放的目录，比如--backup-dir=/path/to/backups。\n--bwlimit参数指定带宽限制，默认单位是 KB/s，比如--bwlimit=100。\n-c、--checksum参数改变rsync的校验方式。默认情况下，rsync 只检查文件的大小和最后修改日期是否发生变化，如果发生变化，就重新传输；使用这个参数以后，则通过判断文件内容的校验和，决定是否重新传输。\n--delete参数删除只存在于目标目录、不存在于源目标的文件，即保证目标目录是源目标的镜像。\n-e参数指定使用 SSH 协议传输数据。\n--exclude参数指定排除不进行同步的文件，比如--exclude=\"*.iso\"。\n--exclude-from参数指定一个本地文件，里面是需要排除的文件模式，每个模式一行。\n--existing、--ignore-non-existing参数表示不同步目标目录中不存在的文件和目录。\n-h参数表示以人类可读的格式输出。\n-h、--help参数返回帮助信息。\n-i参数表示输出源目录与目标目录之间文件差异的详细情况。\n--ignore-existing参数表示只要该文件在目标目录中已经存在，就跳过去，不再同步这些文件。\n--include参数指定同步时要包括的文件，一般与--exclude结合使用。\n--link-dest参数指定增量备份的基准目录。\n-m参数指定不同步空目录。\n--max-size参数设置传输的最大文件的大小限制，比如不超过200KB（--max-size='200k'）。\n--min-size参数设置传输的最小文件的大小限制，比如不小于10KB（--min-size=10k）。\n-n参数或--dry-run参数模拟将要执行的操作，而并不真的执行。配合-v参数使用，可以看到哪些内容会被同步过去。\n-P参数是--progress和--partial这两个参数的结合。\n--partial参数允许恢复中断的传输。不使用该参数时，rsync会删除传输到一半被打断的文件；使用该参数后，传输到一半的文件也会同步到目标目录，下次同步时再恢复中断的传输。一般需要与--append或--append-verify配合使用。\n--partial-dir参数指定将传输到一半的文件保存到一个临时目录，比如--partial-dir=.rsync-partial。一般需要与--append或--append-verify配合使用。\n--progress参数表示显示进展。\n-r参数表示递归，即包含子目录。\n--remove-source-files参数表示传输成功后，删除发送方的文件。\n--size-only参数表示只同步大小有变化的文件，不考虑文件修改时间的差异。\n--suffix参数指定文件名备份时，对文件名添加的后缀，默认是~。\n-u、--update参数表示同步时跳过目标目录中修改时间更新的文件，即不同步这些有更新的时间戳的文件。\n-v参数表示输出细节。-vv表示输出更详细的信息，-vvv表示输出最详细的信息。\n--version参数返回 rsync 的版本。\n-z参数指定同步时压缩数据。\n",
+  "wordCount" : "375",
+  "inLanguage": "zh",
+  "datePublished": "2022-01-28T15:28:34Z",
+  "dateModified": "2022-01-28T15:28:34Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/rsync%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      rsync工具使用
+    </h1>
+    <div class="post-meta"><span title='2022-01-28 15:28:34 +0000 UTC'>2022-01-28</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80%e7%ae%80%e4%bb%8b" aria-label="一、简介">一、简介</a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e5%ae%89%e8%a3%85" aria-label="二、安装">二、安装</a></li>
+                    <li>
+                        <a href="#%e4%b8%89%e5%9f%ba%e6%9c%ac%e7%94%a8%e6%b3%95" aria-label="三、基本用法">三、基本用法</a><ul>
+                            
+                    <li>
+                        <a href="#31--r-%e5%8f%82%e6%95%b0" aria-label="3.1 -r 参数">3.1 <code>-r</code> 参数</a></li>
+                    <li>
+                        <a href="#32--a-%e5%8f%82%e6%95%b0" aria-label="3.2 -a 参数">3.2 <code>-a</code> 参数</a></li>
+                    <li>
+                        <a href="#33--n-%e5%8f%82%e6%95%b0" aria-label="3.3 -n 参数">3.3 <code>-n</code> 参数</a></li>
+                    <li>
+                        <a href="#34---delete-%e5%8f%82%e6%95%b0" aria-label="3.4 --delete 参数">3.4 <code>--delete</code> 参数</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9b%9b%e6%8e%92%e9%99%a4%e6%96%87%e4%bb%b6" aria-label="四、排除文件">四、排除文件</a><ul>
+                            
+                    <li>
+                        <a href="#41---exclude-%e5%8f%82%e6%95%b0" aria-label="4.1 --exclude 参数">4.1 <code>--exclude</code> 参数</a></li>
+                    <li>
+                        <a href="#42---include-%e5%8f%82%e6%95%b0" aria-label="4.2 --include 参数">4.2 <code>--include</code> 参数</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e4%ba%94%e8%bf%9c%e7%a8%8b%e5%90%8c%e6%ad%a5" aria-label="五、远程同步">五、远程同步</a><ul>
+                            
+                    <li>
+                        <a href="#51-ssh-%e5%8d%8f%e8%ae%ae" aria-label="5.1 SSH 协议">5.1 SSH 协议</a></li>
+                    <li>
+                        <a href="#52-rsync-%e5%8d%8f%e8%ae%ae" aria-label="5.2 rsync 协议">5.2 rsync 协议</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%85%ad%e5%a2%9e%e9%87%8f%e5%a4%87%e4%bb%bd" aria-label="六、增量备份">六、增量备份</a></li>
+                    <li>
+                        <a href="#%e4%b8%83%e9%85%8d%e7%bd%ae%e9%a1%b9" aria-label="七、配置项">七、配置项</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一简介">一、简介<a hidden class="anchor" aria-hidden="true" href="#一简介">#</a></h2>
+<p>rsync 是一个常用的 Linux 应用程序，用于文件同步。</p>
+<p>它可以在本地计算机与远程计算机之间，或者两个本地目录之间同步文件（但不支持两台远程计算机之间的同步）。它也可以当作文件复制工具，替代<code>cp</code>和<code>mv</code>命令。</p>
+<p><img loading="lazy" src="/images/rsync%e5%b7%a5%e5%85%b7%e4%bd%bf%e7%94%a8/bg2020082602.jpg" alt=""  />
+</p>
+<p>它名称里面的<code>r</code>指的是 remote，rsync 其实就是&quot;远程同步&quot;（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输有变动的部分（默认规则是文件大小或修改时间有变动）。</p>
+<h2 id="二安装">二、安装<a hidden class="anchor" aria-hidden="true" href="#二安装">#</a></h2>
+<p>如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># Debian</span>
+</span></span><span style="display:flex;"><span>$ sudo apt-get install rsync
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Red Hat</span>
+</span></span><span style="display:flex;"><span>$ sudo yum install rsync
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Arch Linux</span>
+</span></span><span style="display:flex;"><span>$ sudo pacman -S rsync
+</span></span></code></pre></div></blockquote>
+<p>注意，传输的双方都必须安装 rsync。</p>
+<h2 id="三基本用法">三、基本用法<a hidden class="anchor" aria-hidden="true" href="#三基本用法">#</a></h2>
+<h3 id="31--r-参数">3.1 <code>-r</code> 参数<a hidden class="anchor" aria-hidden="true" href="#31--r-参数">#</a></h3>
+<p>本机使用 rsync 命令时，可以作为<code>cp</code>和<code>mv</code>命令的替代方法，将源目录同步到目标目录。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -r source destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>-r</code>表示递归，即包含子目录。注意，<code>-r</code>是必须的，否则 rsync 运行不会成功。<code>source</code>目录表示源目录，<code>destination</code>表示目标目录。</p>
+<p>如果有多个文件或目录需要同步，可以写成下面这样。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -r source1 source2 destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>source1</code>、<code>source2</code>都会被同步到<code>destination</code>目录。</p>
+<h3 id="32--a-参数">3.2 <code>-a</code> 参数<a hidden class="anchor" aria-hidden="true" href="#32--a-参数">#</a></h3>
+<p><code>-a</code>参数可以替代<code>-r</code>，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）。由于 rsync 默认使用文件大小和修改时间决定文件是否需要更新，所以<code>-a</code>比<code>-r</code>更有用。下面的用法才是常见的写法。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -a source destination
+</span></span></code></pre></div></blockquote>
+<p>目标目录<code>destination</code>如果不存在，rsync 会自动创建。执行上面的命令后，源目录<code>source</code>被完整地复制到了目标目录<code>destination</code>下面，即形成了<code>destination/source</code>的目录结构。</p>
+<p>如果只想同步源目录<code>source</code>里面的内容到目标目录<code>destination</code>，则需要在源目录后面加上斜杠。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -a source/ destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令执行后，<code>source</code>目录里面的内容，就都被复制到了<code>destination</code>目录里面，并不会在<code>destination</code>下面创建一个<code>source</code>子目录。</p>
+<h3 id="33--n-参数">3.3 <code>-n</code> 参数<a hidden class="anchor" aria-hidden="true" href="#33--n-参数">#</a></h3>
+<p>如果不确定 rsync 执行后会产生什么结果，可以先用<code>-n</code>或<code>--dry-run</code>参数模拟执行的结果。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -anv source/ destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>-n</code>参数模拟命令执行的结果，并不真的执行命令。<code>-v</code>参数则是将结果输出到终端，这样就可以看到哪些内容会被同步。</p>
+<h3 id="34---delete-参数">3.4 <code>--delete</code> 参数<a hidden class="anchor" aria-hidden="true" href="#34---delete-参数">#</a></h3>
+<p>默认情况下，rsync 只确保源目录的所有内容（明确排除的文件除外）都复制到目标目录。它不会使两个目录保持相同，并且不会删除文件。如果要使得目标目录成为源目录的镜像副本，则必须使用<code>--delete</code>参数，这将删除只存在于目标目录、不存在于源目录的文件。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --delete source/ destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>--delete</code>参数会使得<code>destination</code>成为<code>source</code>的一个镜像。</p>
+<h2 id="四排除文件">四、排除文件<a hidden class="anchor" aria-hidden="true" href="#四排除文件">#</a></h2>
+<h3 id="41---exclude-参数">4.1 <code>--exclude</code> 参数<a hidden class="anchor" aria-hidden="true" href="#41---exclude-参数">#</a></h3>
+<p>有时，我们希望同步时排除某些文件或目录，这时可以用<code>--exclude</code>参数指定排除模式。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --exclude<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;*.txt&#39;</span> source/ destination
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 或者</span>
+</span></span><span style="display:flex;"><span>$ rsync -av --exclude <span style="color:#e6db74">&#39;*.txt&#39;</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令排除了所有 TXT 文件。</p>
+<p>注意，rsync 会同步以&quot;点&quot;开头的隐藏文件，如果要排除隐藏文件，可以这样写<code>--exclude=&quot;.*&quot;</code>。</p>
+<p>如果要排除某个目录里面的所有文件，但不希望排除目录本身，可以写成下面这样。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --exclude <span style="color:#e6db74">&#39;dir1/*&#39;</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<p>多个排除模式，可以用多个<code>--exclude</code>参数。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --exclude <span style="color:#e6db74">&#39;file1.txt&#39;</span> --exclude <span style="color:#e6db74">&#39;dir1/*&#39;</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<p>多个排除模式也可以利用 Bash 的大扩号的扩展功能，只用一个<code>--exclude</code>参数。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --exclude<span style="color:#f92672">={</span><span style="color:#e6db74">&#39;file1.txt&#39;</span>,<span style="color:#e6db74">&#39;dir1/*&#39;</span><span style="color:#f92672">}</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<p>如果排除模式很多，可以将它们写入一个文件，每个模式一行，然后用<code>--exclude-from</code>参数指定这个文件。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --exclude-from<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;exclude-file.txt&#39;</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<h3 id="42---include-参数">4.2 <code>--include</code> 参数<a hidden class="anchor" aria-hidden="true" href="#42---include-参数">#</a></h3>
+<p><code>--include</code>参数用来指定必须同步的文件模式，往往与<code>--exclude</code>结合使用。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av --include<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*.txt&#34;</span> --exclude<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;*&#39;</span> source/ destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令指定同步时，排除所有文件，但是会包括 TXT 文件。</p>
+<h2 id="五远程同步">五、远程同步<a hidden class="anchor" aria-hidden="true" href="#五远程同步">#</a></h2>
+<h3 id="51-ssh-协议">5.1 SSH 协议<a hidden class="anchor" aria-hidden="true" href="#51-ssh-协议">#</a></h3>
+<p>rsync 除了支持本地两个目录之间的同步，也支持远程同步。它可以将本地内容，同步到远程服务器。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av source/ username@remote_host:destination
+</span></span></code></pre></div></blockquote>
+<p>也可以将远程内容同步到本地。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av username@remote_host:source/ destination
+</span></span></code></pre></div></blockquote>
+<p>rsync 默认使用 SSH 进行远程登录和数据传输。</p>
+<p>由于早期 rsync 不使用 SSH 协议，需要用<code>-e</code>参数指定协议，后来才改的。所以，下面<code>-e ssh</code>可以省略。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av -e ssh source/ user@remote_host:/destination
+</span></span></code></pre></div></blockquote>
+<p>但是，如果 ssh 命令有附加的参数，则必须使用<code>-e</code>参数指定所要执行的 SSH 命令。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av -e <span style="color:#e6db74">&#39;ssh -p 2234&#39;</span> source/ user@remote_host:/destination
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>-e</code>参数指定 SSH 使用2234端口。</p>
+<h3 id="52-rsync-协议">5.2 rsync 协议<a hidden class="anchor" aria-hidden="true" href="#52-rsync-协议">#</a></h3>
+<p>除了使用 SSH，如果另一台服务器安装并运行了 rsync 守护程序，则也可以用<code>rsync://</code>协议（默认端口873）进行传输。具体写法是服务器与目标目录之间使用双冒号分隔<code>::</code>。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av source/ 192.168.122.32::module/destination
+</span></span></code></pre></div></blockquote>
+<p>注意，上面地址中的<code>module</code>并不是实际路径名，而是 rsync 守护程序指定的一个资源名，由管理员分配。</p>
+<p>如果想知道 rsync 守护程序分配的所有 module 列表，可以执行下面命令。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync rsync://192.168.122.32
+</span></span></code></pre></div></blockquote>
+<p>rsync 协议除了使用双冒号，也可以直接用<code>rsync://</code>协议指定地址。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -av source/ rsync://192.168.122.32/module/destination
+</span></span></code></pre></div></blockquote>
+<h2 id="六增量备份">六、增量备份<a hidden class="anchor" aria-hidden="true" href="#六增量备份">#</a></h2>
+<p>rsync 的最大特点就是它可以完成增量备份，也就是默认只复制有变动的文件。</p>
+<p>除了源目录与目标目录直接比较，rsync 还支持使用基准目录，即将源目录与基准目录之间变动的部分，同步到目标目录。</p>
+<p>具体做法是，第一次同步是全量备份，所有文件在基准目录里面同步一份。以后每一次同步都是增量备份，只同步源目录与基准目录之间有变动的部分，将这部分保存在一个新的目标目录。这个新的目标目录之中，也是包含所有文件，但实际上，只有那些变动过的文件是存在于该目录，其他没有变动的文件都是指向基准目录文件的硬链接。</p>
+<p><code>--link-dest</code>参数用来指定同步时的基准目录。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rsync -a --delete --link-dest /compare/path /source/path /target/path
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>--link-dest</code>参数指定基准目录<code>/compare/path</code>，然后源目录<code>/source/path</code>跟基准目录进行比较，找出变动的文件，将它们拷贝到目标目录<code>/target/path</code>。那些没变动的文件则会生成硬链接。这个命令的第一次备份时是全量备份，后面就都是增量备份了。</p>
+<p>下面是一个脚本示例，备份用户的主目录。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># A script to perform incremental backups using rsync</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>set -o errexit
+</span></span><span style="display:flex;"><span>set -o nounset
+</span></span><span style="display:flex;"><span>set -o pipefail
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>readonly SOURCE_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>readonly BACKUP_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/mnt/data/backups&#34;</span>
+</span></span><span style="display:flex;"><span>readonly DATETIME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>date <span style="color:#e6db74">&#39;+%Y-%m-%d_%H:%M:%S&#39;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>readonly BACKUP_PATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BACKUP_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>DATETIME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>readonly LATEST_LINK<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BACKUP_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/latest&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mkdir -p <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BACKUP_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rsync -av --delete <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SOURCE_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --link-dest <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LATEST_LINK<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --exclude<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;.cache&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BACKUP_PATH<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rm -rf <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LATEST_LINK<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>ln -s <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BACKUP_PATH<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LATEST_LINK<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div></blockquote>
+<p>上面脚本中，每一次同步都会生成一个新目录<code>${BACKUP_DIR}/${DATETIME}</code>，并将软链接<code>${BACKUP_DIR}/latest</code>指向这个目录。下一次备份时，就将<code>${BACKUP_DIR}/latest</code>作为基准目录，生成新的备份目录。最后，再将软链接<code>${BACKUP_DIR}/latest</code>指向新的备份目录。</p>
+<h2 id="七配置项">七、配置项<a hidden class="anchor" aria-hidden="true" href="#七配置项">#</a></h2>
+<p><code>-a</code>、<code>--archive</code>参数表示存档模式，保存所有的元数据，比如修改时间（modification time）、权限、所有者等，并且软链接也会同步过去。</p>
+<p><code>--append</code>参数指定文件接着上次中断的地方，继续传输。</p>
+<p><code>--append-verify</code>参数跟<code>--append</code>参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。</p>
+<p><code>-b</code>、<code>--backup</code>参数指定在删除或更新目标目录已经存在的文件时，将该文件更名后进行备份，默认行为是删除。更名规则是添加由<code>--suffix</code>参数指定的文件后缀名，默认是<code>~</code>。</p>
+<p><code>--backup-dir</code>参数指定文件备份时存放的目录，比如<code>--backup-dir=/path/to/backups</code>。</p>
+<p><code>--bwlimit</code>参数指定带宽限制，默认单位是 KB/s，比如<code>--bwlimit=100</code>。</p>
+<p><code>-c</code>、<code>--checksum</code>参数改变<code>rsync</code>的校验方式。默认情况下，rsync 只检查文件的大小和最后修改日期是否发生变化，如果发生变化，就重新传输；使用这个参数以后，则通过判断文件内容的校验和，决定是否重新传输。</p>
+<p><code>--delete</code>参数删除只存在于目标目录、不存在于源目标的文件，即保证目标目录是源目标的镜像。</p>
+<p><code>-e</code>参数指定使用 SSH 协议传输数据。</p>
+<p><code>--exclude</code>参数指定排除不进行同步的文件，比如<code>--exclude=&quot;*.iso&quot;</code>。</p>
+<p><code>--exclude-from</code>参数指定一个本地文件，里面是需要排除的文件模式，每个模式一行。</p>
+<p><code>--existing</code>、<code>--ignore-non-existing</code>参数表示不同步目标目录中不存在的文件和目录。</p>
+<p><code>-h</code>参数表示以人类可读的格式输出。</p>
+<p><code>-h</code>、<code>--help</code>参数返回帮助信息。</p>
+<p><code>-i</code>参数表示输出源目录与目标目录之间文件差异的详细情况。</p>
+<p><code>--ignore-existing</code>参数表示只要该文件在目标目录中已经存在，就跳过去，不再同步这些文件。</p>
+<p><code>--include</code>参数指定同步时要包括的文件，一般与<code>--exclude</code>结合使用。</p>
+<p><code>--link-dest</code>参数指定增量备份的基准目录。</p>
+<p><code>-m</code>参数指定不同步空目录。</p>
+<p><code>--max-size</code>参数设置传输的最大文件的大小限制，比如不超过200KB（<code>--max-size='200k'</code>）。</p>
+<p><code>--min-size</code>参数设置传输的最小文件的大小限制，比如不小于10KB（<code>--min-size=10k</code>）。</p>
+<p><code>-n</code>参数或<code>--dry-run</code>参数模拟将要执行的操作，而并不真的执行。配合<code>-v</code>参数使用，可以看到哪些内容会被同步过去。</p>
+<p><code>-P</code>参数是<code>--progress</code>和<code>--partial</code>这两个参数的结合。</p>
+<p><code>--partial</code>参数允许恢复中断的传输。不使用该参数时，<code>rsync</code>会删除传输到一半被打断的文件；使用该参数后，传输到一半的文件也会同步到目标目录，下次同步时再恢复中断的传输。一般需要与<code>--append</code>或<code>--append-verify</code>配合使用。</p>
+<p><code>--partial-dir</code>参数指定将传输到一半的文件保存到一个临时目录，比如<code>--partial-dir=.rsync-partial</code>。一般需要与<code>--append</code>或<code>--append-verify</code>配合使用。</p>
+<p><code>--progress</code>参数表示显示进展。</p>
+<p><code>-r</code>参数表示递归，即包含子目录。</p>
+<p><code>--remove-source-files</code>参数表示传输成功后，删除发送方的文件。</p>
+<p><code>--size-only</code>参数表示只同步大小有变化的文件，不考虑文件修改时间的差异。</p>
+<p><code>--suffix</code>参数指定文件名备份时，对文件名添加的后缀，默认是<code>~</code>。</p>
+<p><code>-u</code>、<code>--update</code>参数表示同步时跳过目标目录中修改时间更新的文件，即不同步这些有更新的时间戳的文件。</p>
+<p><code>-v</code>参数表示输出细节。<code>-vv</code>表示输出更详细的信息，<code>-vvv</code>表示输出最详细的信息。</p>
+<p><code>--version</code>参数返回 rsync 的版本。</p>
+<p><code>-z</code>参数指定同步时压缩数据。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/rsync/">rsync</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos6-yum%E6%BA%90%E9%85%8D%E7%BD%AE/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Centos6 yum源配置</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%BE%AA%E7%8E%AF/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java循环</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

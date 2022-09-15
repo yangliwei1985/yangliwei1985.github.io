@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS7搭建Rocketmq4.6三主集群 | ylw&#39;s blog</title>
+<meta name="keywords" content="rocketMQ" />
+<meta name="description" content="一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS7搭建Rocketmq4.6三主集群" />
+<meta property="og:description" content="一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-31T17:51:01&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-31T17:51:01&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS7搭建Rocketmq4.6三主集群"/>
+<meta name="twitter:description" content="一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS7搭建Rocketmq4.6三主集群",
+      "item": "https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS7搭建Rocketmq4.6三主集群",
+  "name": "CentOS7搭建Rocketmq4.6三主集群",
+  "description": "一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker.",
+  "keywords": [
+    "rocketMQ"
+  ],
+  "articleBody": "一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker.numanode1 │ ├── mqbroker.numanode2 │ ├── mqbroker.numanode3 │ ├── mqnamesrv │ ├── mqnamesrv.cmd │ ├── mqshutdown │ ├── mqshutdown.cmd │ ├── os.sh │ ├── play.cmd │ ├── play.sh │ ├── runbroker.cmd │ ├── runbroker.sh │ ├── runserver.cmd │ ├── runserver.sh │ ├── setcache.sh │ ├── startfsrv.sh │ ├── tools.cmd │ └── tools.sh ├── conf │ ├── 2m-2s-async │ │ ├── broker-a-s.properties │ │ ├── broker-a.properties │ │ ├── broker-b-s.properties │ │ └── broker-b.properties │ ├── 2m-2s-sync │ │ ├── broker-a-s.properties │ │ ├── broker-a.properties │ │ ├── broker-b-s.properties │ │ └── broker-b.properties │ ├── 2m-noslave │ │ ├── broker-a.properties │ │ ├── broker-b.properties │ │ └── broker-trace.properties │ ├── broker.conf │ ├── dledger │ │ ├── broker-n0.conf │ │ ├── broker-n1.conf │ │ └── broker-n2.conf │ ├── logback_broker.xml │ ├── logback_namesrv.xml │ ├── logback_tools.xml │ ├── plain_acl.yml │ └── tools.yml └── lib  ├── commons-beanutils-1.9.2.jar  ├── commons-cli-1.2.jar  ├── commons-codec-1.9.jar  ├── commons-collections-3.2.2.jar  ├── commons-digester-1.8.1.jar  ├── commons-lang3-3.4.jar  ├── commons-logging-1.2.jar  ├── commons-validator-1.6.jar  ├── dledger-0.1.jar  ├── fastjson-1.2.61.jar  ├── guava-19.0.jar  ├── javassist-3.20.0-GA.jar  ├── jcommander-1.72.jar  ├── jna-4.2.2.jar  ├── logback-classic-1.0.13.jar  ├── logback-core-1.0.13.jar  ├── netty-all-4.0.42.Final.jar  ├── netty-tcnative-boringssl-static-1.1.33.Fork26.jar  ├── openmessaging-api-0.3.1-alpha.jar  ├── rocketmq-acl-4.6.0.jar  ├── rocketmq-broker-4.6.0.jar  ├── rocketmq-client-4.6.0.jar  ├── rocketmq-common-4.6.0.jar  ├── rocketmq-example-4.6.0.jar  ├── rocketmq-filter-4.6.0.jar  ├── rocketmq-logging-4.6.0.jar  ├── rocketmq-namesrv-4.6.0.jar  ├── rocketmq-openmessaging-4.6.0.jar  ├── rocketmq-remoting-4.6.0.jar  ├── rocketmq-srvutil-4.6.0.jar  ├── rocketmq-store-4.6.0.jar  ├── rocketmq-tools-4.6.0.jar  ├── slf4j-api-1.7.7.jar  └── snakeyaml-1.19.jar  9 directories, 89 files 二、集群配置  注意：需要关闭防火墙和selinux\n    服务器 ip 安装的服务 配置文件     node1 10.3.55.134 Broker，NameServer /data/rocketmq/conf/2m-noslave/broker-a.properties   node2 10.3.55.135 Broker，NameServer /data/rocketmq/conf/2m-noslave/broker-b.properties   node3 10.3.55.136 Broker，NameServer /data/rocketmq/conf/2m-noslave/broker-c.properties    由于是三主配置，所以配置文件修改如下：\nNode1：\nbrokerIP1=10.3.55.134 brokerIP2=10.3.55.134 brokerClusterName=rocketmq-cluster brokerName=broker-a brokerId=0 namesrvAddr=10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876 defaultTopicQueueNums=4 deleteWhen=04 fileReservedTime=120 brokerRole=ASYNC_MASTER flushDiskType=ASYNC_FLUSH listenPort=10911 storePathRootDir=/data/rocketmq/store-a messageDelayLevel=1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h mapedFileSizeCommitLog=1073741824 mapedFileSizeConsumeQueue=300000 diskMaxUsedSpaceRatio=88 Node2：\nbrokerIP1=10.3.55.135 brokerIP2=10.3.55.135 brokerClusterName=rocketmq-cluster brokerName=broker-b brokerId=1 namesrvAddr=10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876 defaultTopicQueueNums=4 deleteWhen=04 fileReservedTime=120 brokerRole=ASYNC_MASTER flushDiskType=ASYNC_FLUSH listenPort=10911 storePathRootDir=/data/rocketmq/store-b messageDelayLevel=1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h mapedFileSizeCommitLog=1073741824 mapedFileSizeConsumeQueue=300000 diskMaxUsedSpaceRatio=88 Node3:\nbrokerIP1=10.3.55.136 brokerIP2=10.3.55.136 brokerClusterName=rocketmq-cluster brokerName=broker-c brokerId=2 namesrvAddr=10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876 defaultTopicQueueNums=4 deleteWhen=04 fileReservedTime=120 brokerRole=ASYNC_MASTER flushDiskType=ASYNC_FLUSH listenPort=10911 storePathRootDir=/data/rocketmq/store-c messageDelayLevel=1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h mapedFileSizeCommitLog=1073741824 mapedFileSizeConsumeQueue=300000 diskMaxUsedSpaceRatio=88 参数说明：\n   参数名 默认值 说明     listenPort 10911 接受客户端连接的监听端口   namesrvAddr null nameServer 地址   brokerIP1 网卡的 InetAddress 当前 broker 监听的 IP   brokerIP2 跟 brokerIP1 一样 存在主从 broker 时，如果在 broker 主节点上配置了 brokerIP2 属性，broker 从节点会连接主节点配置的 brokerIP2 进行同步   brokerName null broker 的名称   brokerClusterName DefaultCluster 本 broker 所属的 Cluser 名称   brokerId 0 broker id, 0 表示 master, 其他的正整数表示 slave   storePathCommitLog $HOME/store/commitlog/ 存储 commit log 的路径   storePathConsumerQueue $HOME/store/consumequeue/ 存储 consume queue 的路径   mappedFileSizeCommitLog 1024 * 1024 * 1024(1G) commit log 的映射文件大小   deleteWhen 04 在每天的什么时间删除已经超过文件保留时间的 commit log   fileReservedTime 72 以小时计算的文件保留时间   brokerRole ASYNC_MASTER SYNC_MASTER/ASYNC_MASTER/SLAVE   flushDiskType ASYNC_FLUSH SYNC_FLUSH/ASYNC_FLUSH SYNC_FLUSH 模式下的 broker 保证在收到确认生产者之前将消息刷盘。ASYNC_FLUSH 模式下的 broker 则利用刷盘一组消息的模式，可以取得更好的性能。   enableDLegerCommitLog true 是否启动 DLedger   dLegerGroup RaftNode00 DLedger Raft Group的名字，建议和 brokerName 保持一致   dLegerPeers n0-127.0.0.1:40911;n1-127.0.0.1:40912;n2-127.0.0.1:40913 DLedger Group 内各节点的端口信息，同一个 Group 内的各个节点配置必须要保证一致   dLegerSelfId n0 节点 id, 必须属于 dLegerPeers 中的一个；同 Group 内各个节点要唯一   sendMessageThreadPoolNums 16 发送线程个数，建议配置成 Cpu 核数    三、集群启动 # node1 nohup sh bin/mqnamesrv  nohubNameserv \u0026 nohup sh bin/mqbroker  nohubBroker -c conf/2m-noslave/broker-a.properties \u0026  # node2 nohup sh bin/mqnamesrv  nohubNameserv \u0026 nohup sh bin/mqbroker  nohubBroker -c conf/2m-noslave/broker-b.properties \u0026  # node3 nohup sh bin/mqnamesrv  nohubNameserv \u0026 nohup sh bin/mqbroker  nohubBroker -c conf/2m-noslave/broker-c.properties \u0026 四、查看集群状态 [root@localhost rocketmq]# sh bin/mqadmin clusterList -n 127.0.0.1:9876 RocketMQLog:WARN No appenders could be found for logger (io.netty.util.internal.PlatformDependent0). RocketMQLog:WARN Please initialize the logger system properly. #Cluster Name #Broker Name #BID #Addr #Version #InTPS(LOAD) #OutTPS(LOAD) #PCWait(ms) #Hour #SPACE rocketmq-cluster broker-a 0 10.3.55.134:10911 V4_6_0 0.00(0,0ms) 0.00(0,0ms) 0 457977.21 -1.0000 rocketmq-cluster broker-b 0 10.3.55.135:10911 V4_6_0 0.00(0,0ms) 0.00(0,0ms) 0 457977.21 -1.0000 rocketmq-cluster broker-c 0 10.3.55.136:10911 V4_6_0 0.00(0,0ms) 0.00(0,0ms) 0 457977.21 -1.0000 如果执行上面的命令出现以下错误\nRocketMQLog:WARN No appenders could be found for logger (io.netty.util.internal.PlatformDependent0). RocketMQLog:WARN Please initialize the logger system properly. org.apache.rocketmq.tools.command.SubCommandException: ClusterListSubCommand command failed \tat org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.execute(ClusterListSubCommand.java:93) \tat org.apache.rocketmq.tools.command.MQAdminStartup.main0(MQAdminStartup.java:139) \tat org.apache.rocketmq.tools.command.MQAdminStartup.main(MQAdminStartup.java:90) Caused by: org.apache.rocketmq.acl.common.AclException: [10015:signature-failed] unable to calculate a request signature. error=[10015:signature-failed] unable to calculate a request signature. error=Algorithm HmacSHA1 not available \tat org.apache.rocketmq.acl.common.AclSigner.signAndBase64Encode(AclSigner.java:84) \tat org.apache.rocketmq.acl.common.AclSigner.calSignature(AclSigner.java:73) \tat org.apache.rocketmq.acl.common.AclSigner.calSignature(AclSigner.java:68) \tat org.apache.rocketmq.acl.common.AclUtils.calSignature(AclUtils.java:69) \tat org.apache.rocketmq.acl.common.AclClientRPCHook.doBeforeRequest(AclClientRPCHook.java:44) \tat org.apache.rocketmq.remoting.netty.NettyRemotingAbstract.doBeforeRpcHooks(NettyRemotingAbstract.java:172) \tat org.apache.rocketmq.remoting.netty.NettyRemotingClient.invokeSync(NettyRemotingClient.java:368) \tat org.apache.rocketmq.client.impl.MQClientAPIImpl.getBrokerClusterInfo(MQClientAPIImpl.java:1337) \tat org.apache.rocketmq.tools.admin.DefaultMQAdminExtImpl.examineBrokerClusterInfo(DefaultMQAdminExtImpl.java:306) \tat org.apache.rocketmq.tools.admin.DefaultMQAdminExt.examineBrokerClusterInfo(DefaultMQAdminExt.java:251) \tat org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.printClusterBaseInfo(ClusterListSubCommand.java:172) \tat org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.execute(ClusterListSubCommand.java:88) \t... 2 more Caused by: org.apache.rocketmq.acl.common.AclException: [10015:signature-failed] unable to calculate a request signature. error=Algorithm HmacSHA1 not available \tat org.apache.rocketmq.acl.common.AclSigner.sign(AclSigner.java:63) \tat org.apache.rocketmq.acl.common.AclSigner.signAndBase64Encode(AclSigner.java:79) \t... 13 more Caused by: java.security.NoSuchAlgorithmException: Algorithm HmacSHA1 not available \tat javax.crypto.Mac.getInstance(Mac.java:181) \tat org.apache.rocketmq.acl.common.AclSigner.sign(AclSigner.java:57) \t... 14 more 解决方案：\n确认自己的$JAVA_HOME/lib/ext目录下存在sunjce_provider.jar文件\n打开/data/rocketmq/bin/tools.sh\n#=========================================================================================== # JVM Configuration #=========================================================================================== JAVA_OPT=\"${JAVA_OPT}-server -Xms1g -Xmx1g -Xmn256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m\" #JAVA_OPT=\"${JAVA_OPT} -Djava.ext.dirs=${BASE_DIR}/lib:${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext\" # 修改为以下内容 JAVA_OPT=\"${JAVA_OPT}-Djava.ext.dirs=${BASE_DIR}/lib:${JAVA_HOME}/jre/lib/ext:/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.262.b10-1.el7.x86_64/jre/lib/ext\" JAVA_OPT=\"${JAVA_OPT}-cp ${CLASSPATH}\" 启动内存不够 修改 bin/runbroker.sh 和 bin/runserver.sh 中的\nJAVA_OPT=\"${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g 将参数调低 （可以改为别的值）\nJAVA_OPT=\"${JAVA_OPT} -server -Xms512m -Xmx512m -Xmn256m\" ",
+  "wordCount" : "798",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-31T17:51:01+08:00",
+  "dateModified": "2022-03-31T17:51:01+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS7搭建Rocketmq4.6三主集群
+    </h1>
+    <div class="post-meta"><span title='2022-03-31 17:51:01 +0800 CST'>2022-03-31</span>&nbsp;·&nbsp;4 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80%e4%b8%8b%e8%bd%bd" aria-label="一、下载">一、下载</a></li>
+                    <li>
+                        <a href="#%e4%ba%8c%e9%9b%86%e7%be%a4%e9%85%8d%e7%bd%ae" aria-label="二、集群配置">二、集群配置</a></li>
+                    <li>
+                        <a href="#%e4%b8%89%e9%9b%86%e7%be%a4%e5%90%af%e5%8a%a8" aria-label="三、集群启动">三、集群启动</a></li>
+                    <li>
+                        <a href="#%e5%9b%9b%e6%9f%a5%e7%9c%8b%e9%9b%86%e7%be%a4%e7%8a%b6%e6%80%81" aria-label="四、查看集群状态">四、查看集群状态</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%90%af%e5%8a%a8%e5%86%85%e5%ad%98%e4%b8%8d%e5%a4%9f" aria-label="启动内存不够">启动内存不够</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一下载">一、下载<a hidden class="anchor" aria-hidden="true" href="#一下载">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip
+</span></span><span style="display:flex;"><span>unzip rocketmq-all-4.6.0-bin-release.zip
+</span></span><span style="display:flex;"><span>mv rocketmq-all-4.6.0-bin-release.zip  /data/rocketmq
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># tree rocketmq</span>
+</span></span><span style="display:flex;"><span>rocketmq-all-4.6.0-bin-release
+</span></span><span style="display:flex;"><span>├── LICENSE
+</span></span><span style="display:flex;"><span>├── NOTICE
+</span></span><span style="display:flex;"><span>├── README.md
+</span></span><span style="display:flex;"><span>├── benchmark
+</span></span><span style="display:flex;"><span>│   ├── consumer.sh
+</span></span><span style="display:flex;"><span>│   ├── producer.sh
+</span></span><span style="display:flex;"><span>│   ├── runclass.sh
+</span></span><span style="display:flex;"><span>│   └── tproducer.sh
+</span></span><span style="display:flex;"><span>├── bin
+</span></span><span style="display:flex;"><span>│   ├── README.md
+</span></span><span style="display:flex;"><span>│   ├── cachedog.sh
+</span></span><span style="display:flex;"><span>│   ├── cleancache.sh
+</span></span><span style="display:flex;"><span>│   ├── cleancache.v1.sh
+</span></span><span style="display:flex;"><span>│   ├── dledger
+</span></span><span style="display:flex;"><span>│   │   └── fast-try.sh
+</span></span><span style="display:flex;"><span>│   ├── mqadmin
+</span></span><span style="display:flex;"><span>│   ├── mqadmin.cmd
+</span></span><span style="display:flex;"><span>│   ├── mqbroker
+</span></span><span style="display:flex;"><span>│   ├── mqbroker.cmd
+</span></span><span style="display:flex;"><span>│   ├── mqbroker.numanode0
+</span></span><span style="display:flex;"><span>│   ├── mqbroker.numanode1
+</span></span><span style="display:flex;"><span>│   ├── mqbroker.numanode2
+</span></span><span style="display:flex;"><span>│   ├── mqbroker.numanode3
+</span></span><span style="display:flex;"><span>│   ├── mqnamesrv
+</span></span><span style="display:flex;"><span>│   ├── mqnamesrv.cmd
+</span></span><span style="display:flex;"><span>│   ├── mqshutdown
+</span></span><span style="display:flex;"><span>│   ├── mqshutdown.cmd
+</span></span><span style="display:flex;"><span>│   ├── os.sh
+</span></span><span style="display:flex;"><span>│   ├── play.cmd
+</span></span><span style="display:flex;"><span>│   ├── play.sh
+</span></span><span style="display:flex;"><span>│   ├── runbroker.cmd
+</span></span><span style="display:flex;"><span>│   ├── runbroker.sh
+</span></span><span style="display:flex;"><span>│   ├── runserver.cmd
+</span></span><span style="display:flex;"><span>│   ├── runserver.sh
+</span></span><span style="display:flex;"><span>│   ├── setcache.sh
+</span></span><span style="display:flex;"><span>│   ├── startfsrv.sh
+</span></span><span style="display:flex;"><span>│   ├── tools.cmd
+</span></span><span style="display:flex;"><span>│   └── tools.sh
+</span></span><span style="display:flex;"><span>├── conf
+</span></span><span style="display:flex;"><span>│   ├── 2m-2s-async
+</span></span><span style="display:flex;"><span>│   │   ├── broker-a-s.properties
+</span></span><span style="display:flex;"><span>│   │   ├── broker-a.properties
+</span></span><span style="display:flex;"><span>│   │   ├── broker-b-s.properties
+</span></span><span style="display:flex;"><span>│   │   └── broker-b.properties
+</span></span><span style="display:flex;"><span>│   ├── 2m-2s-sync
+</span></span><span style="display:flex;"><span>│   │   ├── broker-a-s.properties
+</span></span><span style="display:flex;"><span>│   │   ├── broker-a.properties
+</span></span><span style="display:flex;"><span>│   │   ├── broker-b-s.properties
+</span></span><span style="display:flex;"><span>│   │   └── broker-b.properties
+</span></span><span style="display:flex;"><span>│   ├── 2m-noslave
+</span></span><span style="display:flex;"><span>│   │   ├── broker-a.properties
+</span></span><span style="display:flex;"><span>│   │   ├── broker-b.properties
+</span></span><span style="display:flex;"><span>│   │   └── broker-trace.properties
+</span></span><span style="display:flex;"><span>│   ├── broker.conf
+</span></span><span style="display:flex;"><span>│   ├── dledger
+</span></span><span style="display:flex;"><span>│   │   ├── broker-n0.conf
+</span></span><span style="display:flex;"><span>│   │   ├── broker-n1.conf
+</span></span><span style="display:flex;"><span>│   │   └── broker-n2.conf
+</span></span><span style="display:flex;"><span>│   ├── logback_broker.xml
+</span></span><span style="display:flex;"><span>│   ├── logback_namesrv.xml
+</span></span><span style="display:flex;"><span>│   ├── logback_tools.xml
+</span></span><span style="display:flex;"><span>│   ├── plain_acl.yml
+</span></span><span style="display:flex;"><span>│   └── tools.yml
+</span></span><span style="display:flex;"><span>└── lib
+</span></span><span style="display:flex;"><span>    ├── commons-beanutils-1.9.2.jar
+</span></span><span style="display:flex;"><span>    ├── commons-cli-1.2.jar
+</span></span><span style="display:flex;"><span>    ├── commons-codec-1.9.jar
+</span></span><span style="display:flex;"><span>    ├── commons-collections-3.2.2.jar
+</span></span><span style="display:flex;"><span>    ├── commons-digester-1.8.1.jar
+</span></span><span style="display:flex;"><span>    ├── commons-lang3-3.4.jar
+</span></span><span style="display:flex;"><span>    ├── commons-logging-1.2.jar
+</span></span><span style="display:flex;"><span>    ├── commons-validator-1.6.jar
+</span></span><span style="display:flex;"><span>    ├── dledger-0.1.jar
+</span></span><span style="display:flex;"><span>    ├── fastjson-1.2.61.jar
+</span></span><span style="display:flex;"><span>    ├── guava-19.0.jar
+</span></span><span style="display:flex;"><span>    ├── javassist-3.20.0-GA.jar
+</span></span><span style="display:flex;"><span>    ├── jcommander-1.72.jar
+</span></span><span style="display:flex;"><span>    ├── jna-4.2.2.jar
+</span></span><span style="display:flex;"><span>    ├── logback-classic-1.0.13.jar
+</span></span><span style="display:flex;"><span>    ├── logback-core-1.0.13.jar
+</span></span><span style="display:flex;"><span>    ├── netty-all-4.0.42.Final.jar
+</span></span><span style="display:flex;"><span>    ├── netty-tcnative-boringssl-static-1.1.33.Fork26.jar
+</span></span><span style="display:flex;"><span>    ├── openmessaging-api-0.3.1-alpha.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-acl-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-broker-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-client-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-common-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-example-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-filter-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-logging-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-namesrv-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-openmessaging-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-remoting-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-srvutil-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-store-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── rocketmq-tools-4.6.0.jar
+</span></span><span style="display:flex;"><span>    ├── slf4j-api-1.7.7.jar
+</span></span><span style="display:flex;"><span>    └── snakeyaml-1.19.jar
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">9</span> directories, <span style="color:#ae81ff">89</span> files
+</span></span></code></pre></div><h2 id="二集群配置">二、集群配置<a hidden class="anchor" aria-hidden="true" href="#二集群配置">#</a></h2>
+<blockquote>
+<p>注意：需要关闭防火墙和selinux</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>服务器</th>
+<th>ip</th>
+<th>安装的服务</th>
+<th>配置文件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>10.3.55.134</td>
+<td>Broker，NameServer</td>
+<td>/data/rocketmq/conf/2m-noslave/broker-a.properties</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>10.3.55.135</td>
+<td>Broker，NameServer</td>
+<td>/data/rocketmq/conf/2m-noslave/broker-b.properties</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>10.3.55.136</td>
+<td>Broker，NameServer</td>
+<td>/data/rocketmq/conf/2m-noslave/broker-c.properties</td>
+</tr>
+</tbody>
+</table>
+<p>由于是三主配置，所以配置文件修改如下：</p>
+<p>Node1：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>brokerIP1<span style="color:#f92672">=</span>10.3.55.134
+</span></span><span style="display:flex;"><span>brokerIP2<span style="color:#f92672">=</span>10.3.55.134
+</span></span><span style="display:flex;"><span>brokerClusterName<span style="color:#f92672">=</span>rocketmq-cluster
+</span></span><span style="display:flex;"><span>brokerName<span style="color:#f92672">=</span>broker-a
+</span></span><span style="display:flex;"><span>brokerId<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>namesrvAddr<span style="color:#f92672">=</span>10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876
+</span></span><span style="display:flex;"><span>defaultTopicQueueNums<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>deleteWhen<span style="color:#f92672">=</span><span style="color:#ae81ff">04</span>
+</span></span><span style="display:flex;"><span>fileReservedTime<span style="color:#f92672">=</span><span style="color:#ae81ff">120</span>
+</span></span><span style="display:flex;"><span>brokerRole<span style="color:#f92672">=</span>ASYNC_MASTER
+</span></span><span style="display:flex;"><span>flushDiskType<span style="color:#f92672">=</span>ASYNC_FLUSH
+</span></span><span style="display:flex;"><span>listenPort<span style="color:#f92672">=</span><span style="color:#ae81ff">10911</span>
+</span></span><span style="display:flex;"><span>storePathRootDir<span style="color:#f92672">=</span>/data/rocketmq/store-a
+</span></span><span style="display:flex;"><span>messageDelayLevel<span style="color:#f92672">=</span>1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+</span></span><span style="display:flex;"><span>mapedFileSizeCommitLog<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>mapedFileSizeConsumeQueue<span style="color:#f92672">=</span><span style="color:#ae81ff">300000</span>
+</span></span><span style="display:flex;"><span>diskMaxUsedSpaceRatio<span style="color:#f92672">=</span><span style="color:#ae81ff">88</span>
+</span></span></code></pre></div><p>Node2：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>brokerIP1<span style="color:#f92672">=</span>10.3.55.135
+</span></span><span style="display:flex;"><span>brokerIP2<span style="color:#f92672">=</span>10.3.55.135
+</span></span><span style="display:flex;"><span>brokerClusterName<span style="color:#f92672">=</span>rocketmq-cluster
+</span></span><span style="display:flex;"><span>brokerName<span style="color:#f92672">=</span>broker-b
+</span></span><span style="display:flex;"><span>brokerId<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>namesrvAddr<span style="color:#f92672">=</span>10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876
+</span></span><span style="display:flex;"><span>defaultTopicQueueNums<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>deleteWhen<span style="color:#f92672">=</span><span style="color:#ae81ff">04</span>
+</span></span><span style="display:flex;"><span>fileReservedTime<span style="color:#f92672">=</span><span style="color:#ae81ff">120</span>
+</span></span><span style="display:flex;"><span>brokerRole<span style="color:#f92672">=</span>ASYNC_MASTER
+</span></span><span style="display:flex;"><span>flushDiskType<span style="color:#f92672">=</span>ASYNC_FLUSH
+</span></span><span style="display:flex;"><span>listenPort<span style="color:#f92672">=</span><span style="color:#ae81ff">10911</span>
+</span></span><span style="display:flex;"><span>storePathRootDir<span style="color:#f92672">=</span>/data/rocketmq/store-b
+</span></span><span style="display:flex;"><span>messageDelayLevel<span style="color:#f92672">=</span>1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+</span></span><span style="display:flex;"><span>mapedFileSizeCommitLog<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>mapedFileSizeConsumeQueue<span style="color:#f92672">=</span><span style="color:#ae81ff">300000</span>
+</span></span><span style="display:flex;"><span>diskMaxUsedSpaceRatio<span style="color:#f92672">=</span><span style="color:#ae81ff">88</span>
+</span></span></code></pre></div><p>Node3:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>brokerIP1<span style="color:#f92672">=</span>10.3.55.136
+</span></span><span style="display:flex;"><span>brokerIP2<span style="color:#f92672">=</span>10.3.55.136
+</span></span><span style="display:flex;"><span>brokerClusterName<span style="color:#f92672">=</span>rocketmq-cluster
+</span></span><span style="display:flex;"><span>brokerName<span style="color:#f92672">=</span>broker-c
+</span></span><span style="display:flex;"><span>brokerId<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>namesrvAddr<span style="color:#f92672">=</span>10.3.55.134:9876;10.3.55.135:9876;10.3.55.136:9876
+</span></span><span style="display:flex;"><span>defaultTopicQueueNums<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>deleteWhen<span style="color:#f92672">=</span><span style="color:#ae81ff">04</span>
+</span></span><span style="display:flex;"><span>fileReservedTime<span style="color:#f92672">=</span><span style="color:#ae81ff">120</span>
+</span></span><span style="display:flex;"><span>brokerRole<span style="color:#f92672">=</span>ASYNC_MASTER
+</span></span><span style="display:flex;"><span>flushDiskType<span style="color:#f92672">=</span>ASYNC_FLUSH
+</span></span><span style="display:flex;"><span>listenPort<span style="color:#f92672">=</span><span style="color:#ae81ff">10911</span>
+</span></span><span style="display:flex;"><span>storePathRootDir<span style="color:#f92672">=</span>/data/rocketmq/store-c
+</span></span><span style="display:flex;"><span>messageDelayLevel<span style="color:#f92672">=</span>1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+</span></span><span style="display:flex;"><span>mapedFileSizeCommitLog<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>mapedFileSizeConsumeQueue<span style="color:#f92672">=</span><span style="color:#ae81ff">300000</span>
+</span></span><span style="display:flex;"><span>diskMaxUsedSpaceRatio<span style="color:#f92672">=</span><span style="color:#ae81ff">88</span>
+</span></span></code></pre></div><p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>参数名</strong></th>
+<th><strong>默认值</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>listenPort</td>
+<td>10911</td>
+<td>接受客户端连接的监听端口</td>
+</tr>
+<tr>
+<td>namesrvAddr</td>
+<td>null</td>
+<td>nameServer 地址</td>
+</tr>
+<tr>
+<td>brokerIP1</td>
+<td>网卡的 InetAddress</td>
+<td>当前 broker 监听的 IP</td>
+</tr>
+<tr>
+<td>brokerIP2</td>
+<td>跟 brokerIP1 一样</td>
+<td>存在主从 broker 时，如果在 broker 主节点上配置了 brokerIP2 属性，broker 从节点会连接主节点配置的 brokerIP2 进行同步</td>
+</tr>
+<tr>
+<td>brokerName</td>
+<td>null</td>
+<td>broker 的名称</td>
+</tr>
+<tr>
+<td>brokerClusterName</td>
+<td>DefaultCluster</td>
+<td>本 broker 所属的 Cluser 名称</td>
+</tr>
+<tr>
+<td>brokerId</td>
+<td>0</td>
+<td>broker id, 0 表示 master, 其他的正整数表示 slave</td>
+</tr>
+<tr>
+<td>storePathCommitLog</td>
+<td>$HOME/store/commitlog/</td>
+<td>存储 commit log 的路径</td>
+</tr>
+<tr>
+<td>storePathConsumerQueue</td>
+<td>$HOME/store/consumequeue/</td>
+<td>存储 consume queue 的路径</td>
+</tr>
+<tr>
+<td>mappedFileSizeCommitLog</td>
+<td>1024 * 1024 * 1024(1G)</td>
+<td>commit log 的映射文件大小</td>
+</tr>
+<tr>
+<td>deleteWhen</td>
+<td>04</td>
+<td>在每天的什么时间删除已经超过文件保留时间的 commit log</td>
+</tr>
+<tr>
+<td>fileReservedTime</td>
+<td>72</td>
+<td>以小时计算的文件保留时间</td>
+</tr>
+<tr>
+<td>brokerRole</td>
+<td>ASYNC_MASTER</td>
+<td>SYNC_MASTER/ASYNC_MASTER/SLAVE</td>
+</tr>
+<tr>
+<td>flushDiskType</td>
+<td>ASYNC_FLUSH</td>
+<td>SYNC_FLUSH/ASYNC_FLUSH SYNC_FLUSH 模式下的 broker 保证在收到确认生产者之前将消息刷盘。ASYNC_FLUSH 模式下的 broker 则利用刷盘一组消息的模式，可以取得更好的性能。</td>
+</tr>
+<tr>
+<td>enableDLegerCommitLog</td>
+<td>true</td>
+<td>是否启动 DLedger</td>
+</tr>
+<tr>
+<td>dLegerGroup</td>
+<td>RaftNode00</td>
+<td>DLedger Raft Group的名字，建议和 brokerName 保持一致</td>
+</tr>
+<tr>
+<td>dLegerPeers</td>
+<td>n0-127.0.0.1:40911;n1-127.0.0.1:40912;n2-127.0.0.1:40913</td>
+<td>DLedger Group 内各节点的端口信息，同一个 Group 内的各个节点配置必须要保证一致</td>
+</tr>
+<tr>
+<td>dLegerSelfId</td>
+<td>n0</td>
+<td>节点 id, 必须属于 dLegerPeers 中的一个；同 Group 内各个节点要唯一</td>
+</tr>
+<tr>
+<td>sendMessageThreadPoolNums</td>
+<td>16</td>
+<td>发送线程个数，建议配置成 Cpu 核数</td>
+</tr>
+</tbody>
+</table>
+<h2 id="三集群启动">三、集群启动<a hidden class="anchor" aria-hidden="true" href="#三集群启动">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># node1</span>
+</span></span><span style="display:flex;"><span>nohup sh bin/mqnamesrv &gt; nohubNameserv &amp;
+</span></span><span style="display:flex;"><span>nohup sh bin/mqbroker  &gt; nohubBroker -c conf/2m-noslave/broker-a.properties &amp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># node2</span>
+</span></span><span style="display:flex;"><span>nohup sh bin/mqnamesrv &gt; nohubNameserv &amp;
+</span></span><span style="display:flex;"><span>nohup sh bin/mqbroker  &gt; nohubBroker -c conf/2m-noslave/broker-b.properties &amp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># node3</span>
+</span></span><span style="display:flex;"><span>nohup sh bin/mqnamesrv &gt; nohubNameserv &amp;
+</span></span><span style="display:flex;"><span>nohup sh bin/mqbroker  &gt; nohubBroker -c conf/2m-noslave/broker-c.properties &amp;
+</span></span></code></pre></div><h2 id="四查看集群状态">四、查看集群状态<a hidden class="anchor" aria-hidden="true" href="#四查看集群状态">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost rocketmq<span style="color:#f92672">]</span><span style="color:#75715e"># sh bin/mqadmin clusterList -n 127.0.0.1:9876</span>
+</span></span><span style="display:flex;"><span>RocketMQLog:WARN No appenders could be found <span style="color:#66d9ef">for</span> logger <span style="color:#f92672">(</span>io.netty.util.internal.PlatformDependent0<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>RocketMQLog:WARN Please initialize the logger system properly.
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Cluster Name     #Broker Name            #BID  #Addr                  #Version                #InTPS(LOAD)       #OutTPS(LOAD) #PCWait(ms) #Hour #SPACE</span>
+</span></span><span style="display:flex;"><span>rocketmq-cluster  broker-a                <span style="color:#ae81ff">0</span>     10.3.55.134:10911      V4_6_0                   0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>         0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>          <span style="color:#ae81ff">0</span> 457977.21 -1.0000
+</span></span><span style="display:flex;"><span>rocketmq-cluster  broker-b                <span style="color:#ae81ff">0</span>     10.3.55.135:10911      V4_6_0                   0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>         0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>          <span style="color:#ae81ff">0</span> 457977.21 -1.0000
+</span></span><span style="display:flex;"><span>rocketmq-cluster  broker-c                <span style="color:#ae81ff">0</span>     10.3.55.136:10911      V4_6_0                   0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>         0.00<span style="color:#f92672">(</span>0,0ms<span style="color:#f92672">)</span>          <span style="color:#ae81ff">0</span> 457977.21 -1.0000
+</span></span></code></pre></div><p>如果执行上面的命令出现以下错误</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>RocketMQLog:WARN No appenders could be found <span style="color:#66d9ef">for</span> logger <span style="color:#f92672">(</span>io.netty.util.internal.PlatformDependent0<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>RocketMQLog:WARN Please initialize the logger system properly.
+</span></span><span style="display:flex;"><span>org.apache.rocketmq.tools.command.SubCommandException: ClusterListSubCommand command failed
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.execute<span style="color:#f92672">(</span>ClusterListSubCommand.java:93<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.command.MQAdminStartup.main0<span style="color:#f92672">(</span>MQAdminStartup.java:139<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.command.MQAdminStartup.main<span style="color:#f92672">(</span>MQAdminStartup.java:90<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Caused by: org.apache.rocketmq.acl.common.AclException: <span style="color:#f92672">[</span>10015:signature-failed<span style="color:#f92672">]</span> unable to calculate a request signature. error<span style="color:#f92672">=[</span>10015:signature-failed<span style="color:#f92672">]</span> unable to calculate a request signature. error<span style="color:#f92672">=</span>Algorithm HmacSHA1 not available
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.signAndBase64Encode<span style="color:#f92672">(</span>AclSigner.java:84<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.calSignature<span style="color:#f92672">(</span>AclSigner.java:73<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.calSignature<span style="color:#f92672">(</span>AclSigner.java:68<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclUtils.calSignature<span style="color:#f92672">(</span>AclUtils.java:69<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclClientRPCHook.doBeforeRequest<span style="color:#f92672">(</span>AclClientRPCHook.java:44<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.remoting.netty.NettyRemotingAbstract.doBeforeRpcHooks<span style="color:#f92672">(</span>NettyRemotingAbstract.java:172<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.remoting.netty.NettyRemotingClient.invokeSync<span style="color:#f92672">(</span>NettyRemotingClient.java:368<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.client.impl.MQClientAPIImpl.getBrokerClusterInfo<span style="color:#f92672">(</span>MQClientAPIImpl.java:1337<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.admin.DefaultMQAdminExtImpl.examineBrokerClusterInfo<span style="color:#f92672">(</span>DefaultMQAdminExtImpl.java:306<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.admin.DefaultMQAdminExt.examineBrokerClusterInfo<span style="color:#f92672">(</span>DefaultMQAdminExt.java:251<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.printClusterBaseInfo<span style="color:#f92672">(</span>ClusterListSubCommand.java:172<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.tools.command.cluster.ClusterListSubCommand.execute<span style="color:#f92672">(</span>ClusterListSubCommand.java:88<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	... <span style="color:#ae81ff">2</span> more
+</span></span><span style="display:flex;"><span>Caused by: org.apache.rocketmq.acl.common.AclException: <span style="color:#f92672">[</span>10015:signature-failed<span style="color:#f92672">]</span> unable to calculate a request signature. error<span style="color:#f92672">=</span>Algorithm HmacSHA1 not available
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.sign<span style="color:#f92672">(</span>AclSigner.java:63<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.signAndBase64Encode<span style="color:#f92672">(</span>AclSigner.java:79<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	... <span style="color:#ae81ff">13</span> more
+</span></span><span style="display:flex;"><span>Caused by: java.security.NoSuchAlgorithmException: Algorithm HmacSHA1 not available
+</span></span><span style="display:flex;"><span>	at javax.crypto.Mac.getInstance<span style="color:#f92672">(</span>Mac.java:181<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	at org.apache.rocketmq.acl.common.AclSigner.sign<span style="color:#f92672">(</span>AclSigner.java:57<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	... <span style="color:#ae81ff">14</span> more
+</span></span></code></pre></div><p>解决方案：</p>
+<p>确认自己的$JAVA_HOME/lib/ext目录下存在<code>sunjce_provider.jar</code>文件</p>
+<p>打开/data/rocketmq/bin/tools.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#===========================================================================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># JVM Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#===========================================================================================</span>
+</span></span><span style="display:flex;"><span>JAVA_OPT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>JAVA_OPT<span style="color:#e6db74">}</span><span style="color:#e6db74"> -server -Xms1g -Xmx1g -Xmn256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#JAVA_OPT=&#34;${JAVA_OPT} -Djava.ext.dirs=${BASE_DIR}/lib:${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改为以下内容</span>
+</span></span><span style="display:flex;"><span>JAVA_OPT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>JAVA_OPT<span style="color:#e6db74">}</span><span style="color:#e6db74"> -Djava.ext.dirs=</span><span style="color:#e6db74">${</span>BASE_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/lib:</span><span style="color:#e6db74">${</span>JAVA_HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/jre/lib/ext:/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.262.b10-1.el7.x86_64/jre/lib/ext&#34;</span>
+</span></span><span style="display:flex;"><span>JAVA_OPT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>JAVA_OPT<span style="color:#e6db74">}</span><span style="color:#e6db74"> -cp </span><span style="color:#e6db74">${</span>CLASSPATH<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><h3 id="启动内存不够">启动内存不够<a hidden class="anchor" aria-hidden="true" href="#启动内存不够">#</a></h3>
+<p>修改 <code>bin/runbroker.sh</code> 和 <code>bin/runserver.sh</code> 中的</p>
+<pre tabindex="0"><code>JAVA_OPT=&#34;${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g
+</code></pre><p>将参数调低 （可以改为别的值）</p>
+<pre tabindex="0"><code>JAVA_OPT=&#34;${JAVA_OPT} -server -Xms512m -Xmx512m -Xmn256m&#34;
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/rocketmq/">rocketMQ</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/docker-swarm%E9%9B%86%E7%BE%A4%E5%90%AF%E5%8A%A8%E6%97%B6%E6%89%BE%E4%B8%8D%E5%88%B0%E9%95%9C%E5%83%8F%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Docker Swarm集群启动时找不到镜像的问题解决</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8E%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81%E7%9A%84mongodb3.4%E4%B8%89%E8%8A%82%E7%82%B9%E5%89%AF%E6%9C%AC%E9%9B%86%E9%9B%86%E7%BE%A4/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CentOS7搭建基于用户认证的MongoDB3.4三节点副本集集群</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

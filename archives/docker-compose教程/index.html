@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Docker Compose教程 | ylw&#39;s blog</title>
+<meta name="keywords" content="docker-compose" />
+<meta name="description" content="1.Compose介绍 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。
+Compose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。
+2.Compose和Docker兼容性    compose文件格式版本 docker版本     3.4 17.09.0&#43;   3.3 17.06.0&#43;   3.2 17.04.0&#43;   3.1 1.13.1&#43;   3.0 1.13.0&#43;   2.3 17.06.0&#43;   2.2 1.13.0&#43;   2.1 1.12.0&#43;   2.0 1.10.0&#43;   1.0 1.9.1.&#43;    Docker版本变化说明：
+Docker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。
+Docker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。
+3.安装docker Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。
+卸载老旧的版本（若未安装过可省略此步）：
+$ sudo apt-get remove docker docker-engine docker.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/docker-compose%E6%95%99%E7%A8%8B/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Docker Compose教程" />
+<meta property="og:description" content="1.Compose介绍 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。
+Compose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。
+2.Compose和Docker兼容性    compose文件格式版本 docker版本     3.4 17.09.0&#43;   3.3 17.06.0&#43;   3.2 17.04.0&#43;   3.1 1.13.1&#43;   3.0 1.13.0&#43;   2.3 17.06.0&#43;   2.2 1.13.0&#43;   2.1 1.12.0&#43;   2.0 1.10.0&#43;   1.0 1.9.1.&#43;    Docker版本变化说明：
+Docker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。
+Docker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。
+3.安装docker Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。
+卸载老旧的版本（若未安装过可省略此步）：
+$ sudo apt-get remove docker docker-engine docker." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/docker-compose%E6%95%99%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-25T17:37:50&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-25T17:37:50&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker Compose教程"/>
+<meta name="twitter:description" content="1.Compose介绍 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。
+Compose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。
+2.Compose和Docker兼容性    compose文件格式版本 docker版本     3.4 17.09.0&#43;   3.3 17.06.0&#43;   3.2 17.04.0&#43;   3.1 1.13.1&#43;   3.0 1.13.0&#43;   2.3 17.06.0&#43;   2.2 1.13.0&#43;   2.1 1.12.0&#43;   2.0 1.10.0&#43;   1.0 1.9.1.&#43;    Docker版本变化说明：
+Docker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。
+Docker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。
+3.安装docker Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。
+卸载老旧的版本（若未安装过可省略此步）：
+$ sudo apt-get remove docker docker-engine docker."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Docker Compose教程",
+      "item": "https://iblog.zone/archives/docker-compose%E6%95%99%E7%A8%8B/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker Compose教程",
+  "name": "Docker Compose教程",
+  "description": "1.Compose介绍 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。\nCompose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。\n2.Compose和Docker兼容性    compose文件格式版本 docker版本     3.4 17.09.0+   3.3 17.06.0+   3.2 17.04.0+   3.1 1.13.1+   3.0 1.13.0+   2.3 17.06.0+   2.2 1.13.0+   2.1 1.12.0+   2.0 1.10.0+   1.0 1.9.1.+    Docker版本变化说明：\nDocker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。\nDocker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。\n3.安装docker Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。\n卸载老旧的版本（若未安装过可省略此步）：\n$ sudo apt-get remove docker docker-engine docker.",
+  "keywords": [
+    "docker-compose"
+  ],
+  "articleBody": "1.Compose介绍 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。\nCompose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。\n2.Compose和Docker兼容性    compose文件格式版本 docker版本     3.4 17.09.0+   3.3 17.06.0+   3.2 17.04.0+   3.1 1.13.1+   3.0 1.13.0+   2.3 17.06.0+   2.2 1.13.0+   2.1 1.12.0+   2.0 1.10.0+   1.0 1.9.1.+    Docker版本变化说明：\nDocker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。\nDocker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。\n3.安装docker Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。\n卸载老旧的版本（若未安装过可省略此步）：\n$ sudo apt-get remove docker docker-engine docker.io 安装最新的docker：\n$ curl -fsSL get.docker.com -o get-docker.sh $ sudo sh get-docker.sh shell会提示你输入sudo的密码，然后开始执行最新的docker过程\n或者\n$ curl -sSL https://get.docker.com/ | sh 确认Docker成功最新的docker：\n$ sudo docker run hello-world 4.安装docker-compose 两种最新的docker安装方式\n1.从github上下载docker-compose二进制文件安装  下载最新版的docker-compose文件  sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 若是github访问太慢，可以用daocloud下载\nsudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose  添加可执行权限  sudo chmod +x /usr/local/bin/docker-compose  测试安装结果  $ docker-compose --version  docker-compose version 1.16.1, build 1719ceb 2.pip安装 sudo pip install docker-compose  5.docker-compose文件结构和示例 docker-compose文件结构 docker-compose.yml:\nversion: \"3\" services: redis: image: redis:alpine ports: - \"6379\" networks: - frontend deploy: replicas: 2 update_config: parallelism: 2 delay: 10s restart_policy: condition: on-failure db: image: postgres:9.4 volumes: - db-data:/var/lib/postgresql/data networks: - backend deploy: placement: constraints: [node.role == manager] vote: image: dockersamples/examplevotingapp_vote:before ports: - 5000:80 networks: - frontend depends_on: - redis deploy: replicas: 2 update_config: parallelism: 2 restart_policy: condition: on-failure result: image: dockersamples/examplevotingapp_result:before ports: - 5001:80 networks: - backend depends_on: - db deploy: replicas: 1 update_config: parallelism: 2 delay: 10s restart_policy: condition: on-failure worker: image: dockersamples/examplevotingapp_worker networks: - frontend - backend deploy: mode: replicated replicas: 1 labels: [APP=VOTING] restart_policy: condition: on-failure delay: 10s max_attempts: 3 window: 120s placement: constraints: [node.role == manager] visualizer: image: dockersamples/visualizer:stable ports: - \"8080:8080\" stop_grace_period: 1m30s volumes: - \"/var/run/docker.sock:/var/run/docker.sock\" deploy: placement: constraints: [node.role == manager] networks: frontend: backend: volumes: db-data: docker-compose使用示例 通过docker-compose构建一个在docker中运行的基于python flask框架的web应用。\n **注意：**确保你已经安装了Docker Engine和Docker Compose。 您不需要安装Python或Redis，因为这两个都是由Docker镜像提供的。\n Step 1: 定义python应用\n 1 .创建工程目录  $ mkdir compose_test $ cd compose_test $ mkdir src # 源码文件夹 $ mkdir docker # docker配置文件夹 目录结构如下：\n└── compose_test  ├── docker  │ └── docker-compose.yml  ├── Dockerfile  └── src  ├── app.py  └── requirements.txt  2 .在compose_test/src/目录下创建python flask应用 compose_test/src/app.py文件。  from flask import Flask from redis import Redis  app = Flask(__name__) redis = Redis(host='redis', port=6379)  @app.route('/') def hello():  count = redis.incr('hits')  return 'Hello World! I have been seen {}times.\\n'.format(count)  if __name__ == \"__main__\":  app.run(host=\"0.0.0.0\", debug=True)  3 .创建python 需求文件 compose_test/src/requirements.txt  flask redis Step 2: 创建容器的Dockerfile文件\n一个容器一个Dockerfile文件，在compose_test/目录中创建Dockerfile文件：\nFROM python:3.7  COPY src/ /opt/src WORKDIR /opt/src  RUN pip install -r requirements.txt CMD [\"python\", \"app.py\"] Dockerfile文件告诉docker了如下信息：\n从Python 3.7的镜像开始构建一个容器镜像。\n复制src（即compose_test/src）目录到容器中的/opt/src目录。\n将容器的工作目录设置为/opt/src（通过docker exec -it your_docker_container_id bash 进入容器后的默认目录）。\n安装Python依赖关系。\n将容器的默认命令设置为python app.py。\nStep 3: 定义docker-compose脚本\n在compose_test/docker/目录下创建docker-compose.yml文件，并在里面定义服务，内容如下：\nversion: '3' services: web: build: ../ ports: - \"5000:5000\" redis: image: redis:3.0.7 这个compose文件定义了两个服务，即定义了web和redis两个容器。\nweb容器：\n 使用当前docker-compose.yml文件所在目录的上级目录（compose_test/Dockerfile）中的Dockerfile构建映像。 将容器上的暴露端口5000映射到主机上的端口5000。 我们使用Flask Web服务器的默认端口5000。  redis容器：\n redis服务使用从Docker Hub提取的官方redis镜像3.0.7版本。  Step 4: 使用Compose构建并运行您的应用程序\n在compose_test/docker/目录下执行docker-compose.yml文件：\n$ docker-compose up # 若是要后台运行： $ docker-compose up -d # 若不使用默认的docker-compose.yml 文件名： $ docker-compose -f server.yml up -d 然后在浏览器中输入http://0.0.0.0:5000/查看运行的应用程序。\nStep 5: 编辑compose文件以添加文件绑定挂载\n上面的代码是在构建时静态复制到容器中的，即通过Dockerfile文件中的COPY src /opt/src命令实现物理主机中的源码复制到容器中，这样在后续物理主机src目录中代码的更改不会反应到容器中。\n可以通过volumes 关键字实现物理主机目录挂载到容器中的功能（同时删除Dockerfile中的COPY指令，不需要创建镜像时将代码打包进镜像，而是通过volums动态挂载，容器和物理host共享数据卷）：\nversion: '3' services: web: build: ../ ports: - \"5000:5000\" volumes: - ../src:/opt/src redis: image: \"redis:3.0.7\" 通过volumes（卷）将主机上的项目目录（compose_test/src）挂载到容器中的/opt/src目录，允许您即时修改代码，而无需重新构建镜像。\nStep 6: 重新构建和运行应用程序\n使用更新的compose文件构建应用程序，然后运行它。\n$ docker-compose up -d 6.compose常用服务配置参考 Compose文件是一个定义服务，网络和卷的YAML文件。 Compose文件的默认文件名为docker-compose.yml。\n 提示：您可以对此文件使用.yml或.yaml扩展名。 他们都工作。\n 与docker运行一样，默认情况下，Dockerfile中指定的选项（例如，CMD，EXPOSE，VOLUME，ENV）都被遵守，你不需要在docker-compose.yml中再次指定它们。\n同时你可以使用类似Bash的$ {VARIABLE} 语法在配置值中使用环境变量，有关详细信息，请参阅变量替换。\n本节包含版本3中服务定义支持的所有配置选项。\nbuild build 可以指定包含构建上下文的路径：\nversion: '2' services: webapp: build: ./dir 或者，作为一个对象，该对象具有上下文路径和指定的Dockerfile文件以及args参数值：\nversion: '2' services: webapp: build: context: ./dir dockerfile: Dockerfile-alternate args: buildno: 1 webapp服务将会通过./dir目录下的Dockerfile-alternate文件构建容器镜像。\n如果你同时指定image和build，则compose会通过build指定的目录构建容器镜像，而构建的镜像名为image中指定的镜像名和标签。\nbuild: ./dir image: webapp:tag 这将由./dir构建的名为webapp和标记为tag的镜像。\ncontext\n包含Dockerfile文件的目录路径，或者是git仓库的URL。\n当提供的值是相对路径时，它被解释为相对于当前compose文件的位置。 该目录也是发送到Docker守护程序构建镜像的上下文。\ndockerfile\n备用Docker文件。Compose将使用备用文件来构建。 还必须指定构建路径。\nargs\n添加构建镜像的参数，环境变量只能在构建过程中访问。\n首先，在Dockerfile中指定要使用的参数：\nARG buildno ARG password RUN echo \"Build number: $buildno\" RUN script-requiring-password.sh \"$password\" 然后在args键下指定参数。 你可以传递映射或列表：\nbuild: context: . args: buildno: 1 password: secret build: context: . args: - buildno=1 - password=secret  ** 注意：YAML布尔值（true，false，yes，no，on，off）必须用引号括起来，以便解析器将它们解释为字符串。\n image 指定启动容器的镜像，可以是镜像仓库/标签或者镜像id（或者id的前一部分）\nimage: redis image: ubuntu:14.04 image: tutum/influxdb image: example-registry.com:4000/postgresql image: a4bc65fd 如果镜像不存在，Compose将尝试从官方镜像仓库将其pull下来，如果你还指定了build，在这种情况下，它将使用指定的build选项构建它，并使用image指定的名字和标记对其进行标记。\ncontainer_name 指定一个自定义容器名称，而不是生成的默认名称。\ncontainer_name: my-web-container 由于Docker容器名称必须是唯一的，因此如果指定了自定义名称，则无法将服务扩展到多个容器。\nvolumes 卷挂载路径设置。可以设置宿主机路径 （HOST:CONTAINER） 或加上访问模式 （HOST:CONTAINER:ro）,挂载数据卷的默认权限是读写（rw），可以通过ro指定为只读。\n你可以在主机上挂载相对路径，该路径将相对于当前正在使用的Compose配置文件的目录进行扩展。 相对路径应始终以 . 或者 .. 开始。\nvolumes: # 只需指定一个路径，让引擎创建一个卷 - /var/lib/mysql # 指定绝对路径映射 - /opt/data:/var/lib/mysql # 相对于当前compose文件的相对路径 - ./cache:/tmp/cache # 用户家目录相对路径 - ~/configs:/etc/configs/:ro # 命名卷 - datavolume:/var/lib/mysql 但是，如果要跨多个服务并重用挂载卷，请在顶级volumes关键字中命名挂在卷，但是并不强制，如下的示例亦有重用挂载卷的功能，但是不提倡。\nversion: \"3\" services: web1: build: ./web/ volumes: - ../code:/opt/web/code web2: build: ./web/ volumes: - ../code:/opt/web/code  ** 注意：通过顶级volumes定义一个挂载卷，并从每个服务的卷列表中引用它， 这会替换早期版本的Compose文件格式中volumes_from。\n version: \"3\" services: db: image: db volumes: - data-volume:/var/lib/db backup: image: backup-service volumes: - data-volume:/var/lib/backup/data volumes: data-volume: command 覆盖容器启动后默认执行的命令。\ncommand: bundle exec thin -p 3000 该命令也可以是一个类似于dockerfile的列表：\ncommand: [\"bundle\", \"exec\", \"thin\", \"-p\", \"3000\"] links 链接到另一个服务中的容器。 请指定服务名称和链接别名（SERVICE：ALIAS），或者仅指定服务名称。\nweb: links: - db - db:database - redis 在当前的web服务的容器中可以通过链接的db服务的别名database访问db容器中的数据库应用，如果没有指定别名，则可直接使用服务名访问。\n链接不需要启用服务进行通信 - 默认情况下，任何服务都可以以该服务的名称到达任何其他服务。 （实际是通过设置/etc/hosts的域名解析，从而实现容器间的通信。故可以像在应用中使用localhost一样使用服务的别名链接其他容器的服务，前提是多个服务容器在一个网络中可路由联通）\nlinks也可以起到和depends_on相似的功能，即定义服务之间的依赖关系，从而确定服务启动的顺序。\nexternal_links 链接到docker-compose.yml 外部的容器，甚至并非 Compose 管理的容器。参数格式跟 links 类似。\nexternal_links: - redis_1 - project_db_1:mysql - project_db_1:postgresql expose 暴露端口，但不映射到宿主机，只被连接的服务访问。\n仅可以指定内部端口为参数\nexpose: - \"3000\" - \"8000\" ports 暴露端口信息。\n常用的简单格式：使用宿主：容器 （HOST:CONTAINER）格式或者仅仅指定容器的端口（宿主将会随机选择端口）都可以。\n ** 注意：当使用 HOST:CONTAINER 格式来映射端口时，如果你使用的容器端口小于 60 你可能会得到错误得结果，因为 YAML 将会解析 xx:yy 这种数字格式为 60 进制。所以建议采用字符串格式。\n 简单的短格式：\nports: - \"3000\" - \"3000-3005\" - \"8000:8000\" - \"9090-9091:8080-8081\" - \"49100:22\" - \"127.0.0.1:8001:8001\" - \"127.0.0.1:5000-5010:5000-5010\" - \"6060:6060/udp\" 在v3.2中ports的长格式的语法允许配置不能用短格式表示的附加字段。\n长格式：\nports: - target: 80 published: 8080 protocol: tcp mode: host target：容器内的端口\npublished：物理主机的端口\nprotocol：端口协议（tcp或udp）\nmode：host 和ingress 两总模式，host用于在每个节点上发布主机端口，ingress 用于被负载平衡的swarm模式端口。\nrestart no是默认的重启策略，在任何情况下都不会重启容器。 指定为always时，容器总是重新启动。 如果退出代码指示出现故障错误，则on-failure将重新启动容器。\nrestart: \"no\" restart: always restart: on-failure restart: unless-stopped environment 添加环境变量。 你可以使用数组或字典两种形式。 任何布尔值; true，false，yes，no需要用引号括起来，以确保它们不被YML解析器转换为True或False。\n只给定名称的变量会自动获取它在 Compose 主机上的值，可以用来防止泄露不必要的数据。\nenvironment: RACK_ENV: development SHOW: 'true' SESSION_SECRET: environment: - RACK_ENV=development - SHOW=true - SESSION_SECRET  ** 注意：如果你的服务指定了build选项，那么在构建过程中通过environment定义的环境变量将不会起作用。 将使用build的args子选项来定义构建时的环境变量。\n pid 将PID模式设置为主机PID模式。 这就打开了容器与主机操作系统之间的共享PID地址空间。 使用此标志启动的容器将能够访问和操作裸机的命名空间中的其他容器，反之亦然。即打开该选项的容器可以相互通过进程 ID 来访问和操作。\npid: \"host\" dns 配置 DNS 服务器。可以是一个值，也可以是一个列表。\ndns: 8.8.8.8 dns: - 8.8.8.8 - 9.9.9.9 ",
+  "wordCount" : "776",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-25T17:37:50+08:00",
+  "dateModified": "2022-04-25T17:37:50+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/docker-compose%E6%95%99%E7%A8%8B/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Docker Compose教程
+    </h1>
+    <div class="post-meta"><span title='2022-04-25 17:37:50 +0800 CST'>2022-04-25</span>&nbsp;·&nbsp;4 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1compose%e4%bb%8b%e7%bb%8d" aria-label="1.Compose介绍">1.Compose介绍</a></li>
+                    <li>
+                        <a href="#2compose%e5%92%8cdocker%e5%85%bc%e5%ae%b9%e6%80%a7" aria-label="2.Compose和Docker兼容性">2.Compose和Docker兼容性</a></li>
+                    <li>
+                        <a href="#3%e5%ae%89%e8%a3%85docker" aria-label="3.安装docker">3.安装docker</a></li>
+                    <li>
+                        <a href="#4%e5%ae%89%e8%a3%85docker-compose" aria-label="4.安装docker-compose">4.安装docker-compose</a><ul>
+                            
+                    <li>
+                        <a href="#1%e4%bb%8egithub%e4%b8%8a%e4%b8%8b%e8%bd%bddocker-compose%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6%e5%ae%89%e8%a3%85" aria-label="1.从github上下载docker-compose二进制文件安装">1.从github上下载docker-compose二进制文件安装</a></li>
+                    <li>
+                        <a href="#2pip%e5%ae%89%e8%a3%85" aria-label="2.pip安装">2.pip安装</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#5docker-compose%e6%96%87%e4%bb%b6%e7%bb%93%e6%9e%84%e5%92%8c%e7%a4%ba%e4%be%8b" aria-label="5.docker-compose文件结构和示例">5.docker-compose文件结构和示例</a><ul>
+                            
+                    <li>
+                        <a href="#docker-compose%e6%96%87%e4%bb%b6%e7%bb%93%e6%9e%84" aria-label="docker-compose文件结构">docker-compose文件结构</a></li>
+                    <li>
+                        <a href="#docker-compose%e4%bd%bf%e7%94%a8%e7%a4%ba%e4%be%8b" aria-label="docker-compose使用示例">docker-compose使用示例</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#6compose%e5%b8%b8%e7%94%a8%e6%9c%8d%e5%8a%a1%e9%85%8d%e7%bd%ae%e5%8f%82%e8%80%83" aria-label="6.compose常用服务配置参考">6.compose常用服务配置参考</a><ul>
+                            
+                    <li>
+                        <a href="#build" aria-label="build">build</a></li>
+                    <li>
+                        <a href="#image" aria-label="image">image</a></li>
+                    <li>
+                        <a href="#container_name" aria-label="container_name">container_name</a></li>
+                    <li>
+                        <a href="#volumes" aria-label="volumes">volumes</a></li>
+                    <li>
+                        <a href="#command" aria-label="command">command</a></li>
+                    <li>
+                        <a href="#links" aria-label="links">links</a></li>
+                    <li>
+                        <a href="#external_links" aria-label="external_links">external_links</a></li>
+                    <li>
+                        <a href="#expose" aria-label="expose">expose</a></li>
+                    <li>
+                        <a href="#ports" aria-label="ports">ports</a></li>
+                    <li>
+                        <a href="#restart" aria-label="restart">restart</a></li>
+                    <li>
+                        <a href="#environment" aria-label="environment">environment</a></li>
+                    <li>
+                        <a href="#pid" aria-label="pid">pid</a></li>
+                    <li>
+                        <a href="#dns" aria-label="dns">dns</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1compose介绍">1.Compose介绍<a hidden class="anchor" aria-hidden="true" href="#1compose介绍">#</a></h2>
+<p>Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。<br>
+Compose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。</p>
+<h2 id="2compose和docker兼容性">2.Compose和Docker兼容性<a hidden class="anchor" aria-hidden="true" href="#2compose和docker兼容性">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>compose文件格式版本</th>
+<th>docker版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.4</td>
+<td>17.09.0+</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>17.06.0+</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>17.04.0+</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>1.13.1+</td>
+</tr>
+<tr>
+<td>3.0</td>
+<td>1.13.0+</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>17.06.0+</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>1.13.0+</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>1.12.0+</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>1.10.0+</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>1.9.1.+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Docker版本变化说明</strong>：</p>
+<p>Docker从1.13.x版本开始，版本分为企业版EE和社区版CE，版本号也改为按照时间线来发布，比如17.03就是2017年3月。</p>
+<p>Docker的linux发行版的软件仓库从以前的https://apt.dockerproject.org和https://yum.dockerproject.org变更为目前的https://download.docker.com, 软件包名字改为docker-ce和docker-ee。</p>
+<h2 id="3安装docker">3.安装docker<a hidden class="anchor" aria-hidden="true" href="#3安装docker">#</a></h2>
+<p>Docker的社区版（Docker Community Edition）叫做docker-ce。老版本的Docker包叫做docker或者docker-engine，如果安装了老版本的docker得先卸载然后再安装新版本的docker。docker的发展非常迅速，apt源的更新往往比较滞后。所以docker官网推荐的安装方式都是下载docker安装脚本安装。<br>
+卸载老旧的版本（若未安装过可省略此步）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt-get remove docker docker-engine docker.io
+</span></span></code></pre></div><p>安装最新的docker：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -fsSL get.docker.com -o get-docker.sh
+</span></span><span style="display:flex;"><span>$ sudo sh get-docker.sh
+</span></span></code></pre></div><p>shell会提示你输入sudo的密码，然后开始执行最新的docker过程<br>
+或者</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -sSL https://get.docker.com/ | sh 
+</span></span></code></pre></div><p>确认Docker成功最新的docker：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo docker run hello-world
+</span></span></code></pre></div><h2 id="4安装docker-compose">4.安装docker-compose<a hidden class="anchor" aria-hidden="true" href="#4安装docker-compose">#</a></h2>
+<p>两种最新的docker安装方式</p>
+<h3 id="1从github上下载docker-compose二进制文件安装">1.从github上下载docker-compose二进制文件安装<a hidden class="anchor" aria-hidden="true" href="#1从github上下载docker-compose二进制文件安装">#</a></h3>
+<ul>
+<li>下载最新版的docker-compose文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-<span style="color:#e6db74">`</span>uname -s<span style="color:#e6db74">`</span>-<span style="color:#e6db74">`</span>uname -m<span style="color:#e6db74">`</span> -o /usr/local/bin/docker-compose
+</span></span></code></pre></div><p>若是github访问太慢，可以用daocloud下载</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.1/docker-compose-<span style="color:#e6db74">`</span>uname -s<span style="color:#e6db74">`</span>-<span style="color:#e6db74">`</span>uname -m<span style="color:#e6db74">`</span> -o /usr/local/bin/docker-compose
+</span></span></code></pre></div><ul>
+<li>添加可执行权限</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo chmod +x /usr/local/bin/docker-compose
+</span></span></code></pre></div><ul>
+<li>测试安装结果</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose --version
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>docker-compose version 1.16.1, build 1719ceb
+</span></span></code></pre></div><h3 id="2pip安装">2.pip安装<a hidden class="anchor" aria-hidden="true" href="#2pip安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo pip install docker-compose
+</span></span></code></pre></div><hr>
+<h2 id="5docker-compose文件结构和示例">5.docker-compose文件结构和示例<a hidden class="anchor" aria-hidden="true" href="#5docker-compose文件结构和示例">#</a></h2>
+<h3 id="docker-compose文件结构">docker-compose文件结构<a hidden class="anchor" aria-hidden="true" href="#docker-compose文件结构">#</a></h3>
+<p>docker-compose.yml:</p>
+<pre tabindex="0"><code>version: &#34;3&#34;
+services:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - &#34;6379&#34;
+    networks:
+      - frontend
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres:9.4
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  vote:
+    image: dockersamples/examplevotingapp_vote:before
+    ports:
+      - 5000:80
+    networks:
+      - frontend
+    depends_on:
+      - redis
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+
+  result:
+    image: dockersamples/examplevotingapp_result:before
+    ports:
+      - 5001:80
+    networks:
+      - backend
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - frontend
+      - backend
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &#34;8080:8080&#34;
+    stop_grace_period: 1m30s
+    volumes:
+      - &#34;/var/run/docker.sock:/var/run/docker.sock&#34;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:
+</code></pre><h3 id="docker-compose使用示例">docker-compose使用示例<a hidden class="anchor" aria-hidden="true" href="#docker-compose使用示例">#</a></h3>
+<p>通过docker-compose构建一个在docker中运行的基于python flask框架的web应用。</p>
+<blockquote>
+<p>**注意：**确保你已经安装了Docker Engine和Docker Compose。 您不需要安装Python或Redis，因为这两个都是由Docker镜像提供的。</p>
+</blockquote>
+<p><strong>Step 1: 定义python应用</strong></p>
+<ul>
+<li>1 .创建工程目录</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mkdir compose_test
+</span></span><span style="display:flex;"><span>$ cd compose_test
+</span></span><span style="display:flex;"><span>$ mkdir src      <span style="color:#75715e"># 源码文件夹</span>
+</span></span><span style="display:flex;"><span>$ mkdir docker  <span style="color:#75715e"># docker配置文件夹</span>
+</span></span></code></pre></div><p>目录结构如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>└── compose_test
+</span></span><span style="display:flex;"><span>    ├── docker
+</span></span><span style="display:flex;"><span>    │   └── docker-compose.yml
+</span></span><span style="display:flex;"><span>    ├── Dockerfile
+</span></span><span style="display:flex;"><span>    └── src
+</span></span><span style="display:flex;"><span>        ├── app.py
+</span></span><span style="display:flex;"><span>        └── requirements.txt
+</span></span></code></pre></div><ul>
+<li>2 .在compose_test/src/目录下创建python flask应用 compose_test/src/app.py文件。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> redis <span style="color:#f92672">import</span> Redis
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>redis <span style="color:#f92672">=</span> Redis(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;redis&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">6379</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app</span><span style="color:#f92672">.</span>route(<span style="color:#e6db74">&#39;/&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hello</span>():
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">=</span> redis<span style="color:#f92672">.</span>incr(<span style="color:#e6db74">&#39;hits&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Hello World! I have been seen </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> times.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(count)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.0.0.0&#34;</span>, debug<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><ul>
+<li>3 .创建python 需求文件 compose_test/src/requirements.txt</li>
+</ul>
+<pre tabindex="0"><code>flask
+redis
+</code></pre><p><strong>Step 2: 创建容器的Dockerfile文件</strong></p>
+<p>一个容器一个Dockerfile文件，在compose_test/目录中创建Dockerfile文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>FROM python:3.7
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>COPY src/ /opt/src
+</span></span><span style="display:flex;"><span>WORKDIR /opt/src
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN pip install -r requirements.txt
+</span></span><span style="display:flex;"><span>CMD <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;app.py&#34;</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Dockerfile文件告诉docker了如下信息：</p>
+<p>从Python 3.7的镜像开始构建一个容器镜像。</p>
+<p>复制src（即compose_test/src）目录到容器中的/opt/src目录。</p>
+<p>将容器的工作目录设置为/opt/src（通过docker exec -it your_docker_container_id bash 进入容器后的默认目录）。<br>
+安装Python依赖关系。<br>
+将容器的默认命令设置为python app.py。</p>
+<p><strong>Step 3: 定义docker-compose脚本</strong></p>
+<p>在compose_test/docker/目录下创建docker-compose.yml文件，并在里面定义服务，内容如下：</p>
+<pre tabindex="0"><code>version: &#39;3&#39;
+services:
+  web:
+    build: ../
+    ports:
+     - &#34;5000:5000&#34;
+  redis:
+    image: redis:3.0.7
+</code></pre><p>这个compose文件定义了两个服务，即定义了web和redis两个容器。<br>
+<strong>web容器：</strong></p>
+<ul>
+<li>使用当前docker-compose.yml文件所在目录的上级目录（compose_test/Dockerfile）中的Dockerfile构建映像。</li>
+<li>将容器上的暴露端口5000映射到主机上的端口5000。 我们使用Flask Web服务器的默认端口5000。</li>
+</ul>
+<p><strong>redis容器：</strong></p>
+<ul>
+<li>redis服务使用从Docker Hub提取的官方redis镜像3.0.7版本。</li>
+</ul>
+<p><strong>Step 4: 使用Compose构建并运行您的应用程序</strong></p>
+<p>在compose_test/docker/目录下执行docker-compose.yml文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose up
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 若是要后台运行： $ docker-compose up -d</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 若不使用默认的docker-compose.yml 文件名：</span>
+</span></span><span style="display:flex;"><span>$ docker-compose -f server.yml up -d 
+</span></span></code></pre></div><p>然后在浏览器中输入<a href="http://0.0.0.0:5000/">http://0.0.0.0:5000/</a>查看运行的应用程序。</p>
+<p><strong>Step 5: 编辑compose文件以添加文件绑定挂载</strong></p>
+<p>上面的代码是在构建时静态复制到容器中的，即通过Dockerfile文件中的COPY src /opt/src命令实现物理主机中的源码复制到容器中，这样在后续物理主机src目录中代码的更改不会反应到容器中。<br>
+可以通过volumes 关键字实现物理主机目录挂载到容器中的功能（同时删除Dockerfile中的COPY指令，不需要创建镜像时将代码打包进镜像，而是通过volums动态挂载，容器和物理host共享数据卷）：</p>
+<pre tabindex="0"><code>version: &#39;3&#39;
+services:
+  web:
+    build: ../
+    ports:
+     - &#34;5000:5000&#34;
+    volumes:
+     - ../src:/opt/src
+  redis:
+    image: &#34;redis:3.0.7&#34;
+</code></pre><p>通过volumes（卷）将主机上的项目目录（compose_test/src）挂载到容器中的/opt/src目录，允许您即时修改代码，而无需重新构建镜像。</p>
+<p><strong>Step 6: 重新构建和运行应用程序</strong></p>
+<p>使用更新的compose文件构建应用程序，然后运行它。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose up -d
+</span></span></code></pre></div><h2 id="6compose常用服务配置参考">6.compose常用服务配置参考<a hidden class="anchor" aria-hidden="true" href="#6compose常用服务配置参考">#</a></h2>
+<p>Compose文件是一个定义服务，网络和卷的YAML文件。 Compose文件的默认文件名为docker-compose.yml。</p>
+<blockquote>
+<p>提示：您可以对此文件使用.yml或.yaml扩展名。 他们都工作。</p>
+</blockquote>
+<p>与docker运行一样，默认情况下，Dockerfile中指定的选项（例如，CMD，EXPOSE，VOLUME，ENV）都被遵守，你不需要在docker-compose.yml中再次指定它们。</p>
+<p>同时你可以使用类似Bash的$ {VARIABLE} 语法在配置值中使用环境变量，有关详细信息，请参阅<a href="https://docs.docker.com/compose/compose-file/#variable-substitution" title="变量替换">变量替换</a>。</p>
+<p>本节包含版本3中服务定义支持的所有配置选项。</p>
+<h3 id="build">build<a hidden class="anchor" aria-hidden="true" href="#build">#</a></h3>
+<p>build 可以指定包含构建上下文的路径：</p>
+<pre tabindex="0"><code>version: &#39;2&#39;
+services:
+  webapp:
+    build: ./dir
+</code></pre><p>或者，作为一个对象，该对象具有上下文路径和指定的Dockerfile文件以及args参数值：</p>
+<pre tabindex="0"><code>version: &#39;2&#39;
+services:
+  webapp:
+    build:
+      context: ./dir
+      dockerfile: Dockerfile-alternate
+      args:
+        buildno: 1
+</code></pre><p>webapp服务将会通过./dir目录下的Dockerfile-alternate文件构建容器镜像。<br>
+如果你同时指定image和build，则compose会通过build指定的目录构建容器镜像，而构建的镜像名为image中指定的镜像名和标签。</p>
+<pre tabindex="0"><code>build: ./dir
+image: webapp:tag
+</code></pre><p>这将由./dir构建的名为webapp和标记为tag的镜像。</p>
+<p>context</p>
+<p>包含Dockerfile文件的目录路径，或者是git仓库的URL。<br>
+当提供的值是相对路径时，它被解释为相对于当前compose文件的位置。 该目录也是发送到Docker守护程序构建镜像的上下文。</p>
+<p>dockerfile</p>
+<p>备用Docker文件。Compose将使用备用文件来构建。 还必须指定构建路径。</p>
+<p>args</p>
+<p>添加构建镜像的参数，环境变量只能在构建过程中访问。<br>
+首先，在Dockerfile中指定要使用的参数：</p>
+<pre tabindex="0"><code>ARG buildno
+ARG password
+
+RUN echo &#34;Build number: $buildno&#34;
+RUN script-requiring-password.sh &#34;$password&#34;
+</code></pre><p>然后在args键下指定参数。 你可以传递映射或列表：</p>
+<pre tabindex="0"><code>build:
+  context: .
+  args:
+    buildno: 1
+    password: secret
+
+build:
+  context: .
+  args:
+    - buildno=1
+    - password=secret
+</code></pre><blockquote>
+<p>** 注意：YAML布尔值（true，false，yes，no，on，off）必须用引号括起来，以便解析器将它们解释为字符串。</p>
+</blockquote>
+<h3 id="image">image<a hidden class="anchor" aria-hidden="true" href="#image">#</a></h3>
+<p>指定启动容器的镜像，可以是镜像仓库/标签或者镜像id（或者id的前一部分）</p>
+<pre tabindex="0"><code>image: redis
+image: ubuntu:14.04
+image: tutum/influxdb
+image: example-registry.com:4000/postgresql
+image: a4bc65fd
+</code></pre><p>如果镜像不存在，Compose将尝试从官方镜像仓库将其pull下来，如果你还指定了build，在这种情况下，它将使用指定的build选项构建它，并使用image指定的名字和标记对其进行标记。</p>
+<h3 id="container_name">container_name<a hidden class="anchor" aria-hidden="true" href="#container_name">#</a></h3>
+<p>指定一个自定义容器名称，而不是生成的默认名称。</p>
+<pre tabindex="0"><code>container_name: my-web-container
+</code></pre><p>由于Docker容器名称必须是唯一的，因此如果指定了自定义名称，则无法将服务扩展到多个容器。</p>
+<h3 id="volumes">volumes<a hidden class="anchor" aria-hidden="true" href="#volumes">#</a></h3>
+<p>卷挂载路径设置。可以设置宿主机路径 （HOST:CONTAINER） 或加上访问模式 （HOST:CONTAINER:ro）,挂载数据卷的默认权限是读写（rw），可以通过ro指定为只读。<br>
+你可以在主机上挂载相对路径，该路径将相对于当前正在使用的Compose配置文件的目录进行扩展。 相对路径应始终以 . 或者 .. 开始。</p>
+<pre tabindex="0"><code>volumes:
+  # 只需指定一个路径，让引擎创建一个卷
+  - /var/lib/mysql
+
+  # 指定绝对路径映射
+  - /opt/data:/var/lib/mysql
+
+  # 相对于当前compose文件的相对路径
+  - ./cache:/tmp/cache
+
+  # 用户家目录相对路径
+  - ~/configs:/etc/configs/:ro
+
+  # 命名卷
+  - datavolume:/var/lib/mysql
+</code></pre><p>但是，如果要跨多个服务并重用挂载卷，请在顶级volumes关键字中命名挂在卷，但是并不强制，如下的示例亦有重用挂载卷的功能，但是不提倡。</p>
+<pre tabindex="0"><code>version: &#34;3&#34;
+
+services:
+  web1:
+    build: ./web/
+    volumes:
+      - ../code:/opt/web/code
+  web2:
+    build: ./web/
+    volumes:
+      - ../code:/opt/web/code
+</code></pre><blockquote>
+<p>** 注意：通过顶级volumes定义一个挂载卷，并从每个服务的卷列表中引用它， 这会替换早期版本的Compose文件格式中volumes_from。</p>
+</blockquote>
+<pre tabindex="0"><code>version: &#34;3&#34;
+
+services:
+  db:
+    image: db
+    volumes:
+      - data-volume:/var/lib/db
+  backup:
+    image: backup-service
+    volumes:
+      - data-volume:/var/lib/backup/data
+
+volumes:
+  data-volume:
+</code></pre><h3 id="command">command<a hidden class="anchor" aria-hidden="true" href="#command">#</a></h3>
+<p>覆盖容器启动后默认执行的命令。</p>
+<pre tabindex="0"><code>command: bundle exec thin -p 3000
+</code></pre><p>该命令也可以是一个类似于dockerfile的列表：</p>
+<pre tabindex="0"><code>command: [&#34;bundle&#34;, &#34;exec&#34;, &#34;thin&#34;, &#34;-p&#34;, &#34;3000&#34;]
+</code></pre><h3 id="links">links<a hidden class="anchor" aria-hidden="true" href="#links">#</a></h3>
+<p>链接到另一个服务中的容器。 请指定服务名称和链接别名（SERVICE：ALIAS），或者仅指定服务名称。</p>
+<pre tabindex="0"><code>web:
+  links:
+   - db
+   - db:database
+   - redis
+</code></pre><p>在当前的web服务的容器中可以通过链接的db服务的别名database访问db容器中的数据库应用，如果没有指定别名，则可直接使用服务名访问。</p>
+<p>链接不需要启用服务进行通信 - 默认情况下，任何服务都可以以该服务的名称到达任何其他服务。 （实际是通过设置/etc/hosts的域名解析，从而实现容器间的通信。故可以像在应用中使用localhost一样使用服务的别名链接其他容器的服务，前提是多个服务容器在一个网络中可路由联通）</p>
+<p>links也可以起到和depends_on相似的功能，即定义服务之间的依赖关系，从而确定服务启动的顺序。</p>
+<h3 id="external_links">external_links<a hidden class="anchor" aria-hidden="true" href="#external_links">#</a></h3>
+<p>链接到docker-compose.yml 外部的容器，甚至并非 Compose 管理的容器。参数格式跟 links 类似。</p>
+<pre tabindex="0"><code>external_links:
+ - redis_1
+ - project_db_1:mysql
+ - project_db_1:postgresql
+</code></pre><h3 id="expose">expose<a hidden class="anchor" aria-hidden="true" href="#expose">#</a></h3>
+<p>暴露端口，但不映射到宿主机，只被连接的服务访问。<br>
+仅可以指定内部端口为参数</p>
+<pre tabindex="0"><code>expose:
+ - &#34;3000&#34;
+ - &#34;8000&#34;
+</code></pre><h3 id="ports">ports<a hidden class="anchor" aria-hidden="true" href="#ports">#</a></h3>
+<p>暴露端口信息。<br>
+常用的简单格式：使用宿主：容器 （HOST:CONTAINER）格式或者仅仅指定容器的端口（宿主将会随机选择端口）都可以。</p>
+<blockquote>
+<p>** 注意：当使用 HOST:CONTAINER 格式来映射端口时，如果你使用的容器端口小于 60 你可能会得到错误得结果，因为 YAML 将会解析 xx:yy 这种数字格式为 60 进制。所以建议采用字符串格式。</p>
+</blockquote>
+<p>简单的短格式：</p>
+<pre tabindex="0"><code>ports:
+ - &#34;3000&#34;
+ - &#34;3000-3005&#34;
+ - &#34;8000:8000&#34;
+ - &#34;9090-9091:8080-8081&#34;
+ - &#34;49100:22&#34;
+ - &#34;127.0.0.1:8001:8001&#34;
+ - &#34;127.0.0.1:5000-5010:5000-5010&#34;
+ - &#34;6060:6060/udp&#34;
+</code></pre><p>在v3.2中ports的长格式的语法允许配置不能用短格式表示的附加字段。<br>
+长格式：</p>
+<pre tabindex="0"><code>ports:
+  - target: 80
+    published: 8080
+    protocol: tcp
+    mode: host
+</code></pre><p>target：容器内的端口<br>
+published：物理主机的端口<br>
+protocol：端口协议（tcp或udp）<br>
+mode：host 和ingress 两总模式，host用于在每个节点上发布主机端口，ingress 用于被负载平衡的swarm模式端口。</p>
+<h3 id="restart">restart<a hidden class="anchor" aria-hidden="true" href="#restart">#</a></h3>
+<p>no是默认的重启策略，在任何情况下都不会重启容器。 指定为always时，容器总是重新启动。 如果退出代码指示出现故障错误，则on-failure将重新启动容器。</p>
+<pre tabindex="0"><code>restart: &#34;no&#34;
+restart: always
+restart: on-failure
+restart: unless-stopped
+</code></pre><h3 id="environment">environment<a hidden class="anchor" aria-hidden="true" href="#environment">#</a></h3>
+<p>添加环境变量。 你可以使用数组或字典两种形式。 任何布尔值; true，false，yes，no需要用引号括起来，以确保它们不被YML解析器转换为True或False。<br>
+只给定名称的变量会自动获取它在 Compose 主机上的值，可以用来防止泄露不必要的数据。</p>
+<pre tabindex="0"><code>environment:
+  RACK_ENV: development
+  SHOW: &#39;true&#39;
+  SESSION_SECRET:
+
+environment:
+  - RACK_ENV=development
+  - SHOW=true
+  - SESSION_SECRET
+</code></pre><blockquote>
+<p>** 注意：如果你的服务指定了build选项，那么在构建过程中通过environment定义的环境变量将不会起作用。 将使用build的args子选项来定义构建时的环境变量。</p>
+</blockquote>
+<h3 id="pid">pid<a hidden class="anchor" aria-hidden="true" href="#pid">#</a></h3>
+<p>将PID模式设置为主机PID模式。 这就打开了容器与主机操作系统之间的共享PID地址空间。 使用此标志启动的容器将能够访问和操作裸机的命名空间中的其他容器，反之亦然。即打开该选项的容器可以相互通过进程 ID 来访问和操作。</p>
+<pre tabindex="0"><code>pid: &#34;host&#34;
+</code></pre><h3 id="dns">dns<a hidden class="anchor" aria-hidden="true" href="#dns">#</a></h3>
+<p>配置 DNS 服务器。可以是一个值，也可以是一个列表。</p>
+<pre tabindex="0"><code>dns: 8.8.8.8
+dns:
+  - 8.8.8.8
+  - 9.9.9.9
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/docker-compose/">docker-compose</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/nginx-stream%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Nginx Stream日志设置</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java基础加强03</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

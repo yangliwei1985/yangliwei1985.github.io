@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>用yum安装的nginx，报unknown directive “stream” | ylw&#39;s blog</title>
+<meta name="keywords" content="错误排查" />
+<meta name="description" content="用yum安装的nginx，报unknown directive “stream”
+解决方法：yum install nginx-mod-stream -y
+[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置
+[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入
+[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... ">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="用yum安装的nginx，报unknown directive “stream”" />
+<meta property="og:description" content="用yum安装的nginx，报unknown directive “stream”
+解决方法：yum install nginx-mod-stream -y
+[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置
+[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入
+[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-16T16:18:46&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-16T16:18:46&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="用yum安装的nginx，报unknown directive “stream”"/>
+<meta name="twitter:description" content="用yum安装的nginx，报unknown directive “stream”
+解决方法：yum install nginx-mod-stream -y
+[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置
+[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入
+[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... "/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "用yum安装的nginx，报unknown directive “stream”",
+      "item": "https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "用yum安装的nginx，报unknown directive “stream”",
+  "name": "用yum安装的nginx，报unknown directive “stream”",
+  "description": "用yum安装的nginx，报unknown directive “stream”\n解决方法：yum install nginx-mod-stream -y\n[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置\n[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入\n[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... ",
+  "keywords": [
+    "错误排查"
+  ],
+  "articleBody": "用yum安装的nginx，报unknown directive “stream”\n解决方法：yum install nginx-mod-stream -y\n[root@localhost modules]# yum install nginx-mod-stream -y  已安装:  nginx-mod-stream.x86_64 1:1.20.1-2.el7 安装位置\n[root@localhost ~]# ll /usr/lib64/nginx/modules 总用量 176 -rwxr-xr-x 1 root root 179864 6月 2 08:24 ngx_stream_module.so nginx配置文件引入\n[root@localhost ~]# cat /etc/nginx/nginx.conf # 加载stream模块 load_module /usr/lib64/nginx/modules/ngx_stream_module.so; user nginx; worker_processes auto; ... ",
+  "wordCount" : "46",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-16T16:18:46Z",
+  "dateModified": "2022-03-16T16:18:46Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/%E7%94%A8yum%E5%AE%89%E8%A3%85%E7%9A%84nginx%E6%8A%A5unknown-directive-stream/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      用yum安装的nginx，报unknown directive “stream”
+    </h1>
+    <div class="post-meta"><span title='2022-03-16 16:18:46 +0000 UTC'>2022-03-16</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p>用yum安装的nginx，报unknown directive “stream”</p>
+<p>解决方法：yum install nginx-mod-stream -y</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost modules<span style="color:#f92672">]</span><span style="color:#75715e"># yum install nginx-mod-stream -y</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>已安装:
+</span></span><span style="display:flex;"><span>  nginx-mod-stream.x86_64 1:1.20.1-2.el7                                                                                 
+</span></span></code></pre></div><p>安装位置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># ll /usr/lib64/nginx/modules</span>
+</span></span><span style="display:flex;"><span>总用量 <span style="color:#ae81ff">176</span>
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">179864</span> 6月   <span style="color:#ae81ff">2</span> 08:24 ngx_stream_module.so
+</span></span></code></pre></div><p>nginx配置文件引入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/nginx/nginx.conf</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 加载stream模块</span>
+</span></span><span style="display:flex;"><span>load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
+</span></span><span style="display:flex;"><span>user  nginx;
+</span></span><span style="display:flex;"><span>worker_processes  auto;
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E9%94%99%E8%AF%AF%E6%8E%92%E6%9F%A5/">错误排查</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B01/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java网络编程01</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java多线程02</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

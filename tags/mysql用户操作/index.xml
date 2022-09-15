@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>mysql用户操作 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</link>
+    <description>Recent content in mysql用户操作 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 25 Mar 2022 17:05:07 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mysql用户操作</title>
+      <link>https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Fri, 25 Mar 2022 17:05:07 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</guid>
+      <description>Mysql 5.6 -- 创建用户 CREATE USER &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39; IDENTIFIED BY &amp;#39;qweasd11&amp;#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&amp;#39;qweasd11&amp;#39;) where user=&amp;#39;joker&amp;#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39; IDENTIFIED BY &amp;#39;qweasd11&amp;#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &amp;#39;joker&amp;#39;@&amp;#39;%&amp;#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.</description>
+    </item>
+    
+  </channel>
+</rss>

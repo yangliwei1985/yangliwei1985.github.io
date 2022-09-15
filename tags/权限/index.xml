@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>权限 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E6%9D%83%E9%99%90/</link>
+    <description>Recent content in 权限 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 12 Apr 2022 10:26:52 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/%E6%9D%83%E9%99%90/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL权限级别介绍</title>
+      <link>https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Tue, 12 Apr 2022 10:26:52 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/mysql%E6%9D%83%E9%99%90%E7%BA%A7%E5%88%AB%E4%BB%8B%E7%BB%8D/</guid>
+      <description>MySQL权限级别 全局性的管理权限，作用于整个MySQL实例级别 数据库级别的权限，作用于某个指定的数据库上或者所有的数据库上 数据库对象级别的权限，作用于指定的数据库对象上(表、视图等)或 者所有的数据库对象上 权限存储在mysql库的user, db, tables_priv, columns_priv, and procs_priv这几个系统表中，待MySQL实例启动后就加载到内存中  MySQL权限级别介绍 对比root用户在几个权限系统表中的数据
+mysql&amp;gt; select * from user where user=‘root’ and host=‘localhost’; ##都是’Y’ mysql&amp;gt; select * from db where user=‘root’ and host=‘localhost’; ##无记录 mysql&amp;gt; select * from tables_priv where host=‘localhost’ and user=‘root’; ##无记录 mysql&amp;gt; select * from columns_priv where user=‘root’ and host=‘localhost’; ##无记录 mysql&amp;gt; select * from procs_priv where user=‘root’ and host=‘localhost’; ##无记录 MySQL权限详解   All/All Privileges权限代表全局或者全数据库对象级别的所有权限</description>
+    </item>
+    
+  </channel>
+</rss>

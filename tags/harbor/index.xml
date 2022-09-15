@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>harbor on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/harbor/</link>
+    <description>Recent content in harbor on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 18 Feb 2022 18:15:43 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/harbor/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>生产环境搭建高可用Harbor</title>
+      <link>https://iblog.zone/archives/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8harbor/</link>
+      <pubDate>Fri, 18 Feb 2022 18:15:43 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8harbor/</guid>
+      <description>前言 因资源成本问题，本Harbor高可用架构为最小开销方案，如果资源充足，可以将PG、Redis全部使用使用云厂商集群模式。
+同时为了配置简单，并没有使用keepalived与heartbeat等高可用开源组件。
+准备工作    阿里云SLB 阿里云ECS 共享存储 Redis     最小实例SLB 2c4g 2台 阿里云NFS 阿里云Redis    操作系统为Ubuntu18.04，在2台ECS上搭建主从PG，如果不想用阿里云redis，也可以使用ECS搭建Redis。
+安装Harbor，用于导出基础harbor数据，恢复到PG集群中.   安装docker-compose
+curl -L &amp;#34;https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)&amp;#34; -o /usr/local/bin/docker-compose sudo chmod +x /usr/local/bin/docker-compose sudo add-apt-repository &amp;#34;deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs)stable&amp;#34; # 添加国内阿里云 curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add - #更新 sudo apt-get update [[查看docker]]版本 apt-cache madison docker-ce #安装最新版 sudo apt-get install -y docker-ce [[安装5]]:19.</description>
+    </item>
+    
+  </channel>
+</rss>

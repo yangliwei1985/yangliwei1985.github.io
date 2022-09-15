@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>学生管理系统 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</link>
+    <description>Recent content in 学生管理系统 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 21 Feb 2022 16:57:09 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java ArrayList集合&amp;学生管理系统</title>
+      <link>https://iblog.zone/archives/java-arraylist%E9%9B%86%E5%90%88%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Mon, 21 Feb 2022 16:57:09 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-arraylist%E9%9B%86%E5%90%88%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</guid>
+      <description>1.ArrayList 集合和数组的区别 :
+​	共同点：都是存储数据的容器
+​	不同点：数组的容量是固定的，集合的容量是可变的
+1.1 -ArrayList的构造方法和添加方法    public ArrayList() 创建一个空的集合对象     public boolean add(E e) 将指定的元素追加到此集合的末尾   public void add(int index,E element) 在此集合中的指定位置插入指定的元素    ArrayList&amp;lt;E&amp;gt; ：
+​	可调整大小的数组实现
+​	&amp;lt;E&amp;gt; : 是一种特殊的数据类型，泛型。
+怎么用呢 ?
+​	在出现E的地方我们使用引用数据类型替换即可
+​	举例：ArrayList&amp;lt;String&amp;gt;, ArrayList&amp;lt;Student&amp;gt;
+1.2ArrayList类常用方法【应用】 **成员方法 : **
+   public boolean remove(Object o) 删除指定的元素，返回删除是否成功     public E remove(int index) 删除指定索引处的元素，返回被删除的元素   public E set(int index,E element) 修改指定索引处的元素，返回被修改的元素   public E get(int index) 返回指定索引处的元素   public int size() 返回集合中的元素的个数    示例代码 :</description>
+    </item>
+    
+  </channel>
+</rss>

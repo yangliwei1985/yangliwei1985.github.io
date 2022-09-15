@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>问题处理 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/</link>
+    <description>Recent content in 问题处理 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 20 Jan 2022 16:30:33 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 连接数据库报错</title>
+      <link>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</link>
+      <pubDate>Thu, 20 Jan 2022 16:30:33 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences-tls12-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%A5%E9%94%99/</guid>
+      <description>由于oracle jdk1.8_301扫描出漏洞，故升级jdk到openjdk 1.8.0_312，升级后出现兼容性问题，访问数据库出现以下错误
+The server selected protocol version TLS10 is not accepted by client preferences [TLS12] 查询后为新版的 JDK 不推荐使用旧的 TLSV1.0 的协议，所以默认删除 TLS10 的支持导致，可按照下面方法修复
+cd /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-1.el7_9.x86_64/jre  cd lib/security/  vim java.security  # 698行，将 TLSv1, TLSv1.1, 3DES_EDE_CBC 删除，删除后为以下内容 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \  DH keySize &amp;lt; 1024, EC keySize &amp;lt; 224, anon, NULL, \  include jdk.disabled.namedCurves 再次访问，问题解决</description>
+    </item>
+    
+    <item>
+      <title>Linux iowait高问题排查及处理</title>
+      <link>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</link>
+      <pubDate>Fri, 07 Jan 2022 14:11:47 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/linux-iowait%E9%AB%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%8F%8A%E5%A4%84%E7%90%86/</guid>
+      <description>一、问题排查 由于资源问题，我们很多服务都共用一台机器，某天突发发现vpn登录不正常，连接后闪断频繁，登录机器查看，iowait特别高
+通过iotop命令查看发现是mysql进程占用高，造成系统卡顿
+二、问题处理 进入mysql，使用show full processlist 可以看到所有链接的情况，但是大多链接的 state 其实是 Sleep 的，这种的其实是空闲状态，没有太多查看价值
+我们要观察的是有问题的，所以可以进行过滤：
+-- 查询非 Sleep 状态的链接，按消耗时间倒序展示，自己加条件过滤 select id, db, user, host, command, time, state, info from information_schema.processlist where command != &amp;#39;Sleep&amp;#39; order by time desc; 这样就过滤出来哪些是正在干活的，然后按照消耗时间倒叙展示，排在最前面的，极大可能就是有问题的链接了，然后查看 info 一列，就能看到具体执行的什么 SQL 语句了，针对分析
+展示列解释：
+ id - 线程ID，可以用：kill id; 杀死一个线程，很有用 db - 数据库 user - 用户 host - 连库的主机IP command - 当前执行的命令，比如最常见的：Sleep，Query，Connect 等 time - 消耗时间，单位秒，很有用 state - 执行状态，比如：Sending data，Sorting for group，Creating tmp table，Locked等等，很有用，其他状态可以看看本文最后的参考文章 info - 执行的SQL语句，很有用  kill 使用 上面提到的 线程ID 是可以通过 kill 杀死的；所以上面基本上可以把有问题的执行语句找出来，然后就可以 kill 掉了，那么一个一个来 kill 么？</description>
+    </item>
+    
+  </channel>
+</rss>

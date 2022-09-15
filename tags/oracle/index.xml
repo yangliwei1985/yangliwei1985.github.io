@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>oracle on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/oracle/</link>
+    <description>Recent content in oracle on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 15 Feb 2022 17:44:41 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/oracle/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS8安装oracle客户端</title>
+      <link>https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/</link>
+      <pubDate>Tue, 15 Feb 2022 17:44:41 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos8%E5%AE%89%E8%A3%85oracle%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid>
+      <description>1、进入oracle官网 https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+下载：
+oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 依次安装：
+rpm -ivh oracle-instantclient-basic-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-sqlplus-21.3.0.0.0-1.el8.x86_64.rpm rpm -ivh oracle-instantclient-devel-21.3.0.0.0-1.el8.x86_64.rpm 安装的文件默认放在两个位置： 头文件：/usr/include/oracle/21/client64 下，如果在使用时报错找不到头文件，记得看路径是否是这个。 包文件：/usr/lib/oracle/21/client64下，包含{bin、lib}两个文件夹；
+2、创建监听文件，并添加内容
+cd /usr/lib/oracle/21/client64/lib/network/admin
+vi tnsnames.ora
+ORCL =  (DESCRIPTION =  (ADDRESS = (PROTOCOL = TCP)(HOST = 192.169.1.109)(PORT = 1521))  (CONNECT_DATA =  (SERVER = DEDICATED)  (SERVICE_NAME = orcl)  )  ) Note:host是远程数据库的ip地址，service_name为远程数据库的sid
+配置环境变量 vi /etc/profile，添加
+#配置ORACLE环境变量 vi /etc/profile export ORACLE_BASE=/usr/lib/oracle/21 export ORACLE_VERSION=21 export ORACLE_HOME=/usr/lib/oracle/21/client64 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH export SQLPATH=$ORACLE_HOME/lib/network/admin export TNS_ADMIN=$ORACLE_HOME/lib/network/admin export NLS_LANG=AMERICAN_AMERICA.</description>
+    </item>
+    
+  </channel>
+</rss>

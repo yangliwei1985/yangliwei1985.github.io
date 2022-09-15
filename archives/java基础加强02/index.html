@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java基础加强02 | ylw&#39;s blog</title>
+<meta name="keywords" content="基础加强" />
+<meta name="description" content="1.xml 1.1概述【理解】   万维网联盟(W3C)
+万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，
+  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、
+  可扩展标记语言XML（标准通用标记语言下的一个子集）
+  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等
+    xml概述
+XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的
+  作用
+ 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势
+ 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成
+&lt;student&gt;   标签必须成对出现
+&lt;student&gt; &lt;/student&gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记
+&lt;address/&gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来
+&lt;student id=&#34;1&#34;&gt; &lt;/student&gt;   标签需要正确的嵌套">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java基础加强02" />
+<meta property="og:description" content="1.xml 1.1概述【理解】   万维网联盟(W3C)
+万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，
+  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、
+  可扩展标记语言XML（标准通用标记语言下的一个子集）
+  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等
+    xml概述
+XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的
+  作用
+ 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势
+ 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成
+&lt;student&gt;   标签必须成对出现
+&lt;student&gt; &lt;/student&gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记
+&lt;address/&gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来
+&lt;student id=&#34;1&#34;&gt; &lt;/student&gt;   标签需要正确的嵌套" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-24T15:49:35&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-24T15:49:35&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java基础加强02"/>
+<meta name="twitter:description" content="1.xml 1.1概述【理解】   万维网联盟(W3C)
+万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，
+  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、
+  可扩展标记语言XML（标准通用标记语言下的一个子集）
+  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等
+    xml概述
+XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的
+  作用
+ 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势
+ 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成
+&lt;student&gt;   标签必须成对出现
+&lt;student&gt; &lt;/student&gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记
+&lt;address/&gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来
+&lt;student id=&#34;1&#34;&gt; &lt;/student&gt;   标签需要正确的嵌套"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java基础加强02",
+      "item": "https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java基础加强02",
+  "name": "Java基础加强02",
+  "description": "1.xml 1.1概述【理解】   万维网联盟(W3C)\n万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，\n  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、\n  可扩展标记语言XML（标准通用标记语言下的一个子集）\n  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等\n    xml概述\nXML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的\n  作用\n 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势\n 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成\n\u0026lt;student\u0026gt;   标签必须成对出现\n\u0026lt;student\u0026gt; \u0026lt;/student\u0026gt; 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记\n\u0026lt;address/\u0026gt;   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来\n\u0026lt;student id=\u0026#34;1\u0026#34;\u0026gt; \u0026lt;/student\u0026gt;   标签需要正确的嵌套",
+  "keywords": [
+    "基础加强"
+  ],
+  "articleBody": "1.xml 1.1概述【理解】   万维网联盟(W3C)\n万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。 建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。 是Web技术领域最具权威和影响力的国际中立性技术标准机构。 到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，\n  如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、\n  可扩展标记语言XML（标准通用标记语言下的一个子集）\n  以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等\n    xml概述\nXML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言 标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素) 可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的\n  作用\n 用于进行存储数据和传输数据 作为软件的配置文件    作为配置文件的优势\n 可读性好 可维护性高    1.2标签的规则【应用】   标签由一对尖括号和合法标识符组成\nstudent   标签必须成对出现\nstudent student 前边的是开始标签，后边的是结束标签   特殊的标签可以不成对,但是必须有结束标记\naddress/   标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来\nstudent id=\"1\" student   标签需要正确的嵌套\n这是正确的: student id=\"1\" name张三name student 这是错误的: student id=\"1\"name张三studentname   1.3语法规则【应用】   语法规则\n  XML文件的后缀名为：xml\n  文档声明必须是第一行第一列\nversion：该属性是必须存在的 encoding：该属性不是必须的\n​\t打开当前xml文件的时候应该是使用什么字符编码表(一般取值都是UTF-8)\nstandalone: 该属性不是必须的，描述XML文件是否依赖其他的xml文件，取值为yes/no\n  必须存在一个根标签，有且只能有一个\n  XML文件中可以定义注释信息\n  XML文件中可以存在以下特殊字符\n\u0026lt;  小于 \u0026gt;  大于 \u0026amp; \u0026 和号 \u0026apos; ' 单引号 \u0026quot; \" 引号   XML文件中可以存在CDATA区\n    示例代码\n         id=\"1\"  张三  23  学生\u0026lt; \u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;\u0026gt;的信息    ]]]        id=\"2\"  李四  24       1.4xml解析【应用】   概述\nxml解析就是从xml中获取到数据\n  常见的解析思想\nDOM(Document Object Model)文档对象模型:就是把文档的各个组成部分看做成对应的对象。 会把xml文件全部加载到内存,在内存中形成一个树形结构,再获取对应的值\n  常见的解析工具\n JAXP: SUN公司提供的一套XML的解析的API JDOM: 开源组织提供了一套XML的解析的API-jdom DOM4J: 开源组织提供了一套XML的解析的API-dom4j,全称：Dom For Java pull: 主要应用在Android手机端解析XML    解析的准备工作\n  我们可以通过网站：https://dom4j.github.io/ 去下载dom4j\n今天的资料中已经提供,我们不用再单独下载了,直接使用即可\n  将提供好的dom4j-1.6.1.zip解压,找到里面的dom4j-1.6.1.jar\n  在idea中当前模块下新建一个libs文件夹,将jar包复制到文件夹中\n  选中jar包 - 右键 - 选择add as library即可\n    需求\n 解析提供好的xml文件 将解析到的数据封装到学生对象中 并将学生对象存储到ArrayList集合中 遍历集合    代码实现\nxml version=\"1.0\" encoding=\"UTF-8\" ? 注释的内容-- 本xml文件用来描述多个学生信息-- students   第一个学生信息--  student id=\"1\"  name张三name  age23age  student   第二个学生信息--  student id=\"2\"  name李四name  age24age  student  students  // 上边是已经准备好的student.xml文件 public class Student {  private String id;  private String name;  private int age;   public Student() {  }   public Student(String id, String name, int age) {  this.id = id;  this.name = name;  this.age = age;  }   public String getId() {  return id;  }   public void setId(String id) {  this.id = id;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"id='\" + id + '\\'' +  \", name='\" + name + '\\'' +  \", age=\" + age +  '}';  } }  /** * 利用dom4j解析xml文件 */ public class XmlParse {  public static void main(String[] args) throws DocumentException {  //1.获取一个解析器对象  SAXReader saxReader = new SAXReader();  //2.利用解析器把xml文件加载到内存中,并返回一个文档对象  Document document = saxReader.read(new File(\"myxml\\\\xml\\\\student.xml\"));  //3.获取到根标签  Element rootElement = document.getRootElement();  //4.通过根标签来获取student标签  //elements():可以获取调用者所有的子标签.会把这些子标签放到一个集合中返回.  //elements(\"标签名\"):可以获取调用者所有的指定的子标签,会把这些子标签放到一个集合中并返回  //List list = rootElement.elements();  ListElement studentElements = rootElement.elements(\"student\");  //System.out.println(list.size());   //用来装学生对象  ArrayListStudent list = new ArrayList();   //5.遍历集合,得到每一个student标签  for (Element element : studentElements) {  //element依次表示每一个student标签   //获取id这个属性  Attribute attribute = element.attribute(\"id\");  //获取id的属性值  String id = attribute.getValue();   //获取name标签  //element(\"标签名\"):获取调用者指定的子标签  Element nameElement = element.element(\"name\");  //获取这个标签的标签体内容  String name = nameElement.getText();   //获取age标签  Element ageElement = element.element(\"age\");  //获取age标签的标签体内容  String age = ageElement.getText();  // System.out.println(id); // System.out.println(name); // System.out.println(age);   Student s = new Student(id,name,Integer.parseInt(age));  list.add(s);  }  //遍历操作  for (Student student : list) {  System.out.println(student);  }  } }   1.5DTD约束【理解】   什么是约束\n用来限定xml文件中可使用的标签以及属性\n  约束的分类\n DTD schema    编写DTD约束\n  步骤\n  创建一个文件，这个文件的后缀名为.dtd\n  看xml文件中使用了哪些元素\n 可以定义元素   判断元素是简单元素还是复杂元素\n简单元素：没有子元素。 复杂元素：有子元素的元素；\n    代码实现\nELEMENT persons (person) ELEMENT person (name,age) ELEMENT name (#PCDATA) ELEMENT age (#PCDATA)     引入DTD约束\n  引入DTD约束的三种方法\n  引入本地dtd\n  在xml文件内部引入\n  引入网络dtd\n    代码实现\n  引入本地DTD约束\n// 这是persondtd.dtd文件中的内容,已经提前写好      // 在person1.xml文件中引入persondtd.dtd约束        张三  23       在xml文件内部引入\n         ]      张三  23       引入网络dtd\n       张三  23           DTD语法\n  定义元素\n定义一个元素的格式为：简单元素：\n​\tEMPTY: 表示标签体为空\n​\tANY: 表示标签体可以为空也可以不为空\n​\tPCDATA: 表示该元素的内容部分为字符串\n复杂元素： ​\t直接写子元素名称. 多个子元素可以使用”,“或者”|“隔开； ​\t“,“表示定义子元素的顺序 ; “|”: 表示子元素只能出现任意一个 ​\t“?“零次或一次, “+“一次或多次, “*“零次或多次;如果不写则表示出现一次\n  定义属性\n格式\n定义一个属性的格式为：属性的类型： ​\tCDATA类型：普通的字符串\n属性的约束:\n​\t// #REQUIRED： 必须的 ​\t// #IMPLIED： 属性不是必需的 ​\t// #FIXED value：属性值是固定的\n  代码实现\nELEMENT persons (person+) ELEMENT person (name,age) ELEMENT name (#PCDATA) ELEMENT age (#PCDATA) ATTLIST person id CDATA #REQUIRED  xml version=\"1.0\" encoding=\"UTF-8\" ? DOCTYPE persons SYSTEM 'persondtd.dtd'  persons  person id=\"001\"  name张三name  age23age  person   person id = \"002\"  name张三name  age23age  person  persons ​```     1.6schema约束【理解】   schema和dtd的区别\n  schema约束文件也是一个xml文件，符合xml的语法，这个文件的后缀名.xsd\n  一个xml中可以引用多个schema约束文件，多个schema使用名称空间区分（名称空间类似于java包名）\n  dtd里面元素类型的取值比较单一常见的是PCDATA类型，但是在schema里面可以支持很多个数据类型\n  schema 语法更加的复杂\n    编写schema约束\n  步骤\n1，创建一个文件，这个文件的后缀名为.xsd。 2，定义文档声明 3，schema文件的根标签为：  4，在中定义属性： ​\txmlns=http://www.w3.org/2001/XMLSchema 5，在中定义属性 ： ​\ttargetNamespace =唯一的url地址，指定当前这个schema文件的名称空间。 6，在中定义属性 ： ​\telementFormDefault=“qualified“，表示当前schema文件是一个质量良好的文件。 7，通过element定义元素 8，判断当前元素是简单元素还是复杂元素\n  代码实现\nxml version=\"1.0\" encoding=\"UTF-8\" ? schema  xmlns=\"http://www.w3.org/2001/XMLSchema\"  targetNamespace=\"http://www.itheima.cn/javase\"  elementFormDefault=\"qualified\"    定义persons复杂元素--  element name=\"persons\"  complexType  sequence  定义person复杂元素--  element name = \"person\"  complexType  sequence  定义name和age简单元素--  element name = \"name\" type = \"string\"element  element name = \"age\" type = \"string\"element  sequence   complexType  element  sequence  complexType   element  schema     引入schema约束\n  步骤\n1，在根标签上定义属性xmlns=“http://www.w3.org/2001/XMLSchema-instance\" 2，通过xmlns引入约束文件的名称空间 3，给某一个xmlns属性添加一个标识，用于区分不同的名称空间 ​\t格式为: xmlns:标识=“名称空间地址” ,标识可以是任意的，但是一般取值都是xsi 4，通过xsi:schemaLocation指定名称空间所对应的约束文件路径 ​\t格式为：xsi:schemaLocation = “名称空间url 文件路径“\n  代码实现\nxml version=\"1.0\" encoding=\"UTF-8\" ?  persons  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns=\"http://www.itheima.cn/javase\"  xsi:schemaLocation=\"http://www.itheima.cn/javase person.xsd\"   person  name张三name  age23age  person  persons ​```     schema约束定义属性\n  代码示例\nxml version=\"1.0\" encoding=\"UTF-8\" ? schema  xmlns=\"http://www.w3.org/2001/XMLSchema\"  targetNamespace=\"http://www.itheima.cn/javase\"  elementFormDefault=\"qualified\"    定义persons复杂元素--  element name=\"persons\"  complexType  sequence  定义person复杂元素--  element name = \"person\"  complexType  sequence  定义name和age简单元素--  element name = \"name\" type = \"string\"element  element name = \"age\" type = \"string\"element  sequence   定义属性，required( 必须的)/optional( 可选的)--  attribute name=\"id\" type=\"string\" use=\"required\"attribute  complexType   element  sequence  complexType  element  schema  xml version=\"1.0\" encoding=\"UTF-8\" ? persons  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns=\"http://www.itheima.cn/javase\"  xsi:schemaLocation=\"http://www.itheima.cn/javase person.xsd\"   person id=\"001\"  name张三name  age23age  person  persons ​```     1.7服务器改进【应用】   准备xml文件\n  在当前模块下的webapp目录下新建一个文件夹，名字叫WEB-INF\n  新建一个xml文件，名字叫web.xml\n  将资料中的web.xml文件中引入约束的代码复制到新建的web.xml文件中\n  将要解析的数据配置到xml文件中\n    需求\n把uri和servlet信息放到一个concurrentHashMap集合当中 当浏览器请求一个动态资源时，我们会获取uri对应的servlet来处理当前业务\n  实现步骤\n 导入dom4j的jar包 定义一个XmlParseServletConfig类实现ParseServletConfig接口 在parse方法里面就可以解析xml文件了    代码实现\n// web.xml配置文件中配置的信息 xml version=\"1.0\" encoding=\"UTF-8\" ? web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"  version=\"2.5\"   在以后需要配置servlet的时候，就直接在这里配置就可以了--  servlet  servlet-nameLoginServletservlet-name  servlet-classcom.itheima.myservlet.LoginServletservlet-class  servlet   servlet-mapping  servlet-nameLoginServletservlet-name  url-pattern/servlet/loginservleturl-pattern  servlet-mapping  web-app  // 定义一个XmlParseServletConfig类实现ParseServletConfig接口 public class XMLParseServletConfig implements ParseServletConfig {  //定义web.xml文件的路径  private static final String WEB_XML_PATH = \"http-dynamic-server/webapp/WEB-INF/web.xml\";  \t//在parse方法里面就可以解析xml文件了  @Override  public void parse() {  try {  //1.创建一个解析器对象(注意:如果解析器对象等不能使用,请检查一下jar包是否导入)  SAXReader saxReader = new SAXReader();   //2.利用解析器把xml文件读取到内存中  Document document = saxReader.read(new File(WEB_XML_PATH));   //3.获取根节点元素对象  Element rootElement = document.getRootElement();   //创建一个Map集合，用来存储servlet的配置信息  HashMapString,String servletInfoHashMap = new HashMap();   //4.获取根元素对象下所有的servlet元素的对象  ListElement servletInfos = rootElement.elements(\"servlet\");   //5.遍历集合，依次获取到每一个servlet标签对象  for (Element servletInfo : servletInfos) {  //servletInfo依次表示每一个servlet标签对象   //获取到servlet下的servlet-name元素对象，并且获取标签体内容  String servletName = servletInfo.element(\"servlet-name\").getText();  //获取到servlet下的servlet-class元素对象，并且获取标签体内容  String servletClass = servletInfo.element(\"servlet-class\").getText();   servletInfoHashMap.put(servletName,servletClass);  }   //--------------------servlet-mapping--------------------------------------  //获取到所有的servlet-mapping标签  ListElement servletMappingInfos = rootElement.elements(\"servlet-mapping\");  //遍历集合依次得到每一个servlet-mapping标签  for (Element servletMappingInfo : servletMappingInfos) {  //servletMappingInfo依次表示每一个servlet-mapping标签   //获取servlet-mapping标签标签中的servlet-name标签的标签体内容  String servletName = servletMappingInfo.element(\"servlet-name\").getText();   //获取servlet-mapping标签标签中的url-pattern标签的标签体内容  String urlPattern = servletMappingInfo.element(\"url-pattern\").getText();   //通过servletName来获取到servlet的全类名  String servletClassName = servletInfoHashMap.get(servletName);   //通过反射来创建这个servlet对象  Class clazz = Class.forName(servletClassName);   //获取该类所实现的所有的接口信息,得到的是一个数组  Class[] interfaces = clazz.getInterfaces();   //定义一个boolean类型的变量  boolean flag = false;  //遍历数组  for (Class clazzInfo : interfaces) {  //判断当前所遍历的接口的字节码对象是否和HttpServlet的字节码文件对象相同  if(clazzInfo == HttpServlet.class){   //如果相同,就需要更改flag值.结束循环  flag = true;  break;  }  }   if(flag){  //true就表示当前的类已经实现了HttpServlet接口  HttpServlet httpServlet = (HttpServlet) clazz.newInstance();  //4.将uri和httpServlet添加到map集合中  ServletConcurrentHashMap.map.put(urlPattern,httpServlet);  }else{  //false就表示当前的类还没有实现HttpServlet接口  throw new NotImplementsHttpServletException(clazz.getName() + \"Not Implements HttpServlet\");  }  }  } catch (NotImplementsHttpServletException e) {  e.printStackTrace();  }catch (Exception e) {  e.printStackTrace();  }  } }  public class LoaderResourceRunnable implements Runnable {  @Override  public void run() { // //执行parse方法 // ParseServletConfig parseServletConfig = new PropertiesParseServletConfig(); // parseServletConfig.parse();   ParseServletConfig parseServletConfig = new XMLParseServletConfig();  parseServletConfig.parse();   } }   2.枚举 2.1概述【理解】 为了间接的表示一些固定的值，Java就给我们提供了枚举 是指将变量的值一一列出来,变量的值只限于列举出来的值的范围内\n2.2定义格式【应用】   格式\npublic enum s { \t枚举项1,枚举项2,枚举项3; } 注意: 定义枚举类要用关键字enum   示例代码\n// 定义一个枚举类，用来表示春，夏，秋，冬这四个固定值 public enum Season {  SPRING,SUMMER,AUTUMN,WINTER; }   2.3枚举的特点【理解】   特点\n  所有枚举类都是Enum的子类\n  我们可以通过\"枚举类名.枚举项名称\"去访问指定的枚举项\n  每一个枚举项其实就是该枚举的一个对象\n  枚举也是一个类，也可以去定义成员变量\n  枚举类的第一行上必须是枚举项，最后一个枚举项后的分号是可以省略的，但是如果枚举类有其他的东西，这个分号就不能省略。建议不要省略\n  枚举类可以有构造器，但必须是private的，它默认的也是private的。\n枚举项的用法比较特殊：枚举(””);\n  枚举类也可以有抽象方法，但是枚举项必须重写该方法\n    示例代码\npublic enum Season {   SPRING(\"春\"){   //如果枚举类中有抽象方法  //那么在枚举项中必须要全部重写  @Override  public void show() {  System.out.println(this.name);  }   },   SUMMER(\"夏\"){  @Override  public void show() {  System.out.println(this.name);  }  },   AUTUMN(\"秋\"){  @Override  public void show() {  System.out.println(this.name);  }  },   WINTER(\"冬\"){  @Override  public void show() {  System.out.println(this.name);  }  };   public String name;   //空参构造  //private Season(){}   //有参构造  private Season(String name){  this.name = name;  }   //抽象方法  public abstract void show(); }  public class EnumDemo {  public static void main(String[] args) {  /* 1.所有枚举类都是Enum的子类 2.我们可以通过\"枚举类名.枚举项名称\"去访问指定的枚举项 3.每一个枚举项其实就是该枚举的一个对象 4.枚举也是一个类，也可以去定义成员变量 5.枚举类的第一行上必须是枚举项，最后一个枚举项后的分号是可以省略的， 但是如果枚举类有其他的东西，这个分号就不能省略。建议不要省略 6.枚举类可以有构造器，但必须是private的，它默认的也是private的。 枚举项的用法比较特殊：枚举(\"\"); 7.枚举类也可以有抽象方法，但是枚举项必须重写该方法 */   //第二个特点的演示  //我们可以通过\"枚举类名.枚举项名称\"去访问指定的枚举项  System.out.println(Season.SPRING);  System.out.println(Season.SUMMER);  System.out.println(Season.AUTUMN);  System.out.println(Season.WINTER);   //第三个特点的演示  //每一个枚举项其实就是该枚举的一个对象  Season spring = Season.SPRING;  } }   2.4枚举的方法【应用】   方法介绍\n   方法名 说明     String name() 获取枚举项的名称   int ordinal() 返回枚举项在枚举类中的索引值   int compareTo(E o) 比较两个枚举项，返回的是索引值的差值   String toString() 返回枚举常量的名称   static  T valueOf(Class type,String name) 获取指定枚举类中的指定名称的枚举值   values() 获得所有的枚举项      示例代码\npublic enum Season {  SPRING,SUMMER,AUTUMN,WINTER; }  public class EnumDemo {  public static void main(String[] args) { // String name() 获取枚举项的名称  String name = Season.SPRING.name();  System.out.println(name);  System.out.println(\"-----------------------------\");  // int ordinal() 返回枚举项在枚举类中的索引值  int index1 = Season.SPRING.ordinal();  int index2 = Season.SUMMER.ordinal();  int index3 = Season.AUTUMN.ordinal();  int index4 = Season.WINTER.ordinal();  System.out.println(index1);  System.out.println(index2);  System.out.println(index3);  System.out.println(index4);  System.out.println(\"-----------------------------\");  // int compareTo(E o) 比较两个枚举项，返回的是索引值的差值  int result = Season.SPRING.compareTo(Season.WINTER);  System.out.println(result);//-3  System.out.println(\"-----------------------------\");  // String toString() 返回枚举常量的名称  String s = Season.SPRING.toString();  System.out.println(s);  System.out.println(\"-----------------------------\");  // static  T valueOf(Class type,String name) // 获取指定枚举类中的指定名称的枚举值  Season spring = Enum.valueOf(Season.class, \"SPRING\");  System.out.println(spring);  System.out.println(Season.SPRING == spring);  System.out.println(\"-----------------------------\");  // values() 获得所有的枚举项  Season[] values = Season.values();  for (Season value : values) {  System.out.println(value);  }  } }   3.注解 3.1概述【理解】   概述\n对我们的程序进行标注和解释\n  注解和注释的区别\n 注释: 给程序员看的 注解: 给编译器看的    使用注解进行配置配置的优势\n代码更加简洁,方便\n  3.2自定义注解【理解】   格式\npublic @interface 注解名称 {\n​\tpublic 属性类型 属性名() default 默认值 ;\n}\n  属性类型\n 基本数据类型 String Class 注解 枚举 以上类型的一维数组    代码演示\npublic @interface Anno2 { }  public enum Season {  SPRING,SUMMER,AUTUMN,WINTER; }  public @interface Anno1 {   //定义一个基本类型的属性  int a () default 23;   //定义一个String类型的属性  public String name() default \"itheima\";   //定义一个Class类型的属性  public Class clazz() default Anno2.class;   //定义一个注解类型的属性  public Anno2 anno() default @Anno2;   //定义一个枚举类型的属性  public Season season() default Season.SPRING;   //以上类型的一维数组  //int数组  public int[] arr() default {1,2,3,4,5};   //枚举数组  public Season[] seasons() default {Season.SPRING,Season.SUMMER};   //value。后期我们在使用注解的时候，如果我们只需要给注解的value属性赋值。  //那么value就可以省略  public String value();  }  //在使用注解的时候如果注解里面的属性没有指定默认值。 //那么我们就需要手动给出注解属性的设置值。 //@Anno1(name = \"itheima\") @Anno1(\"abc\") public class AnnoDemo { }   注意\n如果只有一个属性需要赋值，并且属性的名称是value，则value可以省略，直接定义值即可\n  自定义注解案例\n  需求\n自定义一个注解@Test,用于指定类的方法上,如果某一个类的方法上使用了该注解,就执行该方法\n  实现步骤\n 自定义一个注解Test,并在类中的某几个方法上加上注解 在测试类中,获取注解所在的类的Class对象 获取类中所有的方法对象 遍历每一个方法对象,判断是否有对应的注解    代码实现\n//表示Test这个注解的存活时间 @Retention(value = RetentionPolicy.RUNTIME) public @interface Test { }  public class UseTest {   //没有使用Test注解  public void show(){  System.out.println(\"UseTest....show....\");  }   //使用Test注解  @Test  public void method(){  System.out.println(\"UseTest....method....\");  }   //没有使用Test注解  @Test  public void function(){  System.out.println(\"UseTest....function....\");  } }  public class AnnoDemo {  public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {  //1.通过反射获取UseTest类的字节码文件对象  Class clazz = Class.forName(\"com.itheima.myanno3.UseTest\");   //创建对象  UseTest useTest = (UseTest) clazz.newInstance();   //2.通过反射获取这个类里面所有的方法对象  Method[] methods = clazz.getDeclaredMethods();   //3.遍历数组，得到每一个方法对象  for (Method method : methods) {  //method依次表示每一个方法对象。  //isAnnotationPresent(ClassannotationClass)  //判断当前方法上是否有指定的注解。  //参数：注解的字节码文件对象  //返回值：布尔结果。 true 存在 false 不存在  if(method.isAnnotationPresent(Test.class)){  method.invoke(useTest);  }  }  } }     3.3元注解【理解】   概述\n元注解就是描述注解的注解\n  元注解介绍\n   元注解名 说明     @Target 指定了注解能在哪里使用   @Retention 可以理解为保留时间(生命周期)   @Inherited 表示修饰的自定义注解可以被子类继承   @Documented 表示该自定义注解，会出现在API文档里面。      示例代码\n@Target({ElementType.FIELD,ElementType.TYPE,ElementType.METHOD}) //指定注解使用的位置（成员变量，类，方法） @Retention(RetentionPolicy.RUNTIME) //指定该注解的存活时间 //@Inherited //指定该注解可以被继承 public @interface Anno { }  @Anno public class Person { }  public class Student extends Person {  public void show(){  System.out.println(\"student.......show..........\");  } }  public class StudentDemo {  public static void main(String[] args) throws ClassNotFoundException {  //获取到Student类的字节码文件对象  Class clazz = Class.forName(\"com.itheima.myanno4.Student\");   //获取注解。  boolean result = clazz.isAnnotationPresent(Anno.class);  System.out.println(result);  } }   3.4改写服务器【理解】   需求\n目前项目中Servlet和url对应关系,是配置在xml文件中的,将其改为在Servlet类上通过注解配置实现\n  实现步骤\n 定义一个注解(@WebServlet),注解内有一个属性urlPatterns 在servlet类上去使用该注解,来指定当前Servlet的访问路径 创建一个注解解析类(AnnoParseServletConfig),该类实现ParseServletConfig接口 实现parse方法    代码实现\n@Target(ElementType.TYPE) //指定该注解可以使用在类上 @Retention(RetentionPolicy.RUNTIME)//指定该注解的存活时间 --- 为运行期 public @interface WebServlet {   //让用户去指定某一个Servlet在进行访问的时候所对应的请求uri  public String urlPatterns(); }  // 这里只给出了LoginServlet的配置,其他Servlet同理 @WebServlet(urlPatterns = \"/servlet/loginservlet\") public class LoginServlet implements HttpServlet{  @Override  public void service(HttpRequest httpRequest, HttpResponse httpResponse) {  //处理  System.out.println(\"LoginServlet处理了登录请求\");   //响应  httpResponse.setContentTpye(\"text/html;charset=UTF-8\");  httpResponse.write(\"登录成功\");  } }  public class AnnoParseServletConfig implements ParseServletConfig {   //定义一个servlet路径所对应的常量  public static final String SERVLET_PATH = \"http-dynamic-server\\\\src\\\\com\\\\itheima\\\\myservlet\";   //定义包名  public static final String SERVLET_PACKAGE_NAME = \"com.itheima.myservlet.\";   @Override  public void parse() {  //获取类名 // 1.获得servlet所在文件夹的路径，并封装成File对象  File file = new File(SERVLET_PATH); // 2.调用listFiles方法，获取文件夹下所有的File对象  File[] servletFiles = file.listFiles(); // 3.遍历数组，获取每一个File对象  for (File servletFile : servletFiles) { // 4.获取File对象的名字（后缀名）  String servletFileName = servletFile.getName().replace(\".java\", \"\"); // 5.根据包名 + 类名 得到每一个类的全类名  String servletFullName = SERVLET_PACKAGE_NAME + servletFileName;  try { // 6.通过全类名获取字节码文件对象  Class servletClazz = Class.forName(servletFullName);  // 7.判断该类是否有WebServlet注解  if(servletClazz.isAnnotationPresent(WebServlet.class)){  // 8.判断该Servlet类是否实现HttpServlet接口  //获取该类所实现的所有的接口信息,得到的是一个数组  Class[] interfaces = servletClazz.getInterfaces();   //定义一个boolean类型的变量  boolean flag = false;  //遍历数组  for (Class clazzInfo : interfaces) {  //判断当前所遍历的接口的字节码对象是否和HttpServlet的字节码文件对象相同  if(clazzInfo == HttpServlet.class){  //如果相同,就需要更改flag值.结束循环  flag = true;  break;  }  }   if(flag){  // 9.如果满足，则获取注解中的urlPattrens的值，  WebServlet annotation = (WebServlet) servletClazz.getAnnotation(WebServlet.class);  String uri = annotation.urlPatterns();   // 10.创建当前Servlet类对象存入值位置  HttpServlet httpServlet = (HttpServlet) servletClazz.newInstance();  // 11.存入集合的键位置  ServletConcurrentHashMap.map.put(uri,httpServlet);  //  }else{  // 12.如果不满足，抛出异常  //false就表示当前的类还没有实现HttpServlet接口  throw new NotImplementsHttpServletException(servletClazz.getName() + \"Not Implements HttpServlet\");  }  }  } catch (NotImplementsHttpServletException e) {  e.printStackTrace();  } catch (Exception e) {  e.printStackTrace();  }  }   }  }  public class LoaderResourceRunnable implements Runnable {  @Override  public void run() { // //执行parse方法 // ParseServletConfig parseServletConfig = new PropertiesParseServletConfig(); // parseServletConfig.parse();  // ParseServletConfig parseServletConfig = new XMLParseServletConfig(); // parseServletConfig.parse();   ParseServletConfig parseServletConfig = new AnnoParseServletConfig();  parseServletConfig.parse();   } }   ",
+  "wordCount" : "1791",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-24T15:49:35+08:00",
+  "dateModified": "2022-04-24T15:49:35+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java基础加强02
+    </h1>
+    <div class="post-meta"><span title='2022-04-24 15:49:35 +0800 CST'>2022-04-24</span>&nbsp;·&nbsp;9 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1xml" aria-label="1.xml">1.xml</a><ul>
+                            
+                    <li>
+                        <a href="#11%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="1.1概述【理解】">1.1概述【理解】</a></li>
+                    <li>
+                        <a href="#12%e6%a0%87%e7%ad%be%e7%9a%84%e8%a7%84%e5%88%99%e5%ba%94%e7%94%a8" aria-label="1.2标签的规则【应用】">1.2标签的规则【应用】</a></li>
+                    <li>
+                        <a href="#13%e8%af%ad%e6%b3%95%e8%a7%84%e5%88%99%e5%ba%94%e7%94%a8" aria-label="1.3语法规则【应用】">1.3语法规则【应用】</a></li>
+                    <li>
+                        <a href="#14xml%e8%a7%a3%e6%9e%90%e5%ba%94%e7%94%a8" aria-label="1.4xml解析【应用】">1.4xml解析【应用】</a></li>
+                    <li>
+                        <a href="#15dtd%e7%ba%a6%e6%9d%9f%e7%90%86%e8%a7%a3" aria-label="1.5DTD约束【理解】">1.5DTD约束【理解】</a></li>
+                    <li>
+                        <a href="#16schema%e7%ba%a6%e6%9d%9f%e7%90%86%e8%a7%a3" aria-label="1.6schema约束【理解】">1.6schema约束【理解】</a></li>
+                    <li>
+                        <a href="#17%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%94%b9%e8%bf%9b%e5%ba%94%e7%94%a8" aria-label="1.7服务器改进【应用】">1.7服务器改进【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2%e6%9e%9a%e4%b8%be" aria-label="2.枚举">2.枚举</a><ul>
+                            
+                    <li>
+                        <a href="#21%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="2.1概述【理解】">2.1概述【理解】</a></li>
+                    <li>
+                        <a href="#22%e5%ae%9a%e4%b9%89%e6%a0%bc%e5%bc%8f%e5%ba%94%e7%94%a8" aria-label="2.2定义格式【应用】">2.2定义格式【应用】</a></li>
+                    <li>
+                        <a href="#23%e6%9e%9a%e4%b8%be%e7%9a%84%e7%89%b9%e7%82%b9%e7%90%86%e8%a7%a3" aria-label="2.3枚举的特点【理解】">2.3枚举的特点【理解】</a></li>
+                    <li>
+                        <a href="#24%e6%9e%9a%e4%b8%be%e7%9a%84%e6%96%b9%e6%b3%95%e5%ba%94%e7%94%a8" aria-label="2.4枚举的方法【应用】">2.4枚举的方法【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e6%b3%a8%e8%a7%a3" aria-label="3.注解">3.注解</a><ul>
+                            
+                    <li>
+                        <a href="#31%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="3.1概述【理解】">3.1概述【理解】</a></li>
+                    <li>
+                        <a href="#32%e8%87%aa%e5%ae%9a%e4%b9%89%e6%b3%a8%e8%a7%a3%e7%90%86%e8%a7%a3" aria-label="3.2自定义注解【理解】">3.2自定义注解【理解】</a></li>
+                    <li>
+                        <a href="#33%e5%85%83%e6%b3%a8%e8%a7%a3%e7%90%86%e8%a7%a3" aria-label="3.3元注解【理解】">3.3元注解【理解】</a></li>
+                    <li>
+                        <a href="#34%e6%94%b9%e5%86%99%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%90%86%e8%a7%a3" aria-label="3.4改写服务器【理解】">3.4改写服务器【理解】</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1xml">1.xml<a hidden class="anchor" aria-hidden="true" href="#1xml">#</a></h2>
+<h3 id="11概述理解">1.1概述【理解】<a hidden class="anchor" aria-hidden="true" href="#11概述理解">#</a></h3>
+<ul>
+<li>
+<p>万维网联盟(W3C)</p>
+<p>万维网联盟(W3C)创建于1994年，又称W3C理事会。1994年10月在麻省理工学院计算机科学实验室成立。
+建立者： Tim Berners-Lee (蒂姆·伯纳斯·李)。
+是Web技术领域最具权威和影响力的国际中立性技术标准机构。
+到目前为止，W3C已发布了200多项影响深远的Web技术标准及实施指南，</p>
+<ul>
+<li>
+<p>如广为业界采用的超文本标记语言HTML（标准通用标记语言下的一个应用）、</p>
+</li>
+<li>
+<p>可扩展标记语言XML（标准通用标记语言下的一个子集）</p>
+</li>
+<li>
+<p>以及帮助残障人士有效获得Web信息的无障碍指南（WCAG）等</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/01_w3c%e6%a6%82%e8%bf%b0.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>xml概述</p>
+<p>XML的全称为(EXtensible Markup Language)，是一种可扩展的标记语言
+标记语言: 通过标签来描述数据的一门语言(标签有时我们也将其称之为元素)
+可扩展：标签的名字是可以自定义的,XML文件是由很多标签组成的,而标签名是可以自定义的</p>
+</li>
+<li>
+<p>作用</p>
+<ul>
+<li>用于进行存储数据和传输数据</li>
+<li>作为软件的配置文件</li>
+</ul>
+</li>
+<li>
+<p>作为配置文件的优势</p>
+<ul>
+<li>可读性好</li>
+<li>可维护性高</li>
+</ul>
+</li>
+</ul>
+<h3 id="12标签的规则应用">1.2标签的规则【应用】<a hidden class="anchor" aria-hidden="true" href="#12标签的规则应用">#</a></h3>
+<ul>
+<li>
+<p>标签由一对尖括号和合法标识符组成</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>student<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>标签必须成对出现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>student<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>前边的是开始标签<span style="color:#960050;background-color:#1e0010">，</span>后边的是结束标签
+</span></span></code></pre></div></li>
+<li>
+<p>特殊的标签可以不成对,但是必须有结束标记</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>address<span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>标签中可以定义属性,属性和标签名空格隔开,属性值必须用引号引起来</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>student id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>标签需要正确的嵌套</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>这是正确的: <span style="color:#f92672">&lt;</span>student id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>这是错误的: <span style="color:#f92672">&lt;</span>student id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="13语法规则应用">1.3语法规则【应用】<a hidden class="anchor" aria-hidden="true" href="#13语法规则应用">#</a></h3>
+<ul>
+<li>
+<p>语法规则</p>
+<ul>
+<li>
+<p>XML文件的后缀名为：xml</p>
+</li>
+<li>
+<p>文档声明必须是第一行第一列</p>
+<p>&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; standalone=&ldquo;yes”?&gt;
+version：该属性是必须存在的
+encoding：该属性不是必须的</p>
+<p>​	打开当前xml文件的时候应该是使用什么字符编码表(一般取值都是UTF-8)</p>
+<p>standalone: 该属性不是必须的，描述XML文件是否依赖其他的xml文件，取值为yes/no</p>
+</li>
+<li>
+<p>必须存在一个根标签，有且只能有一个</p>
+</li>
+<li>
+<p>XML文件中可以定义注释信息</p>
+</li>
+<li>
+<p>XML文件中可以存在以下特殊字符</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&amp;</span>lt<span style="color:#f92672">;</span> <span style="color:#f92672">&lt;</span> 小于
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span>gt<span style="color:#f92672">;</span> <span style="color:#f92672">&gt;</span> 大于
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span>amp<span style="color:#f92672">;</span> <span style="color:#f92672">&amp;</span> 和号
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span>apos<span style="color:#f92672">;</span> <span style="color:#960050;background-color:#1e0010">&#39;</span> 单引号
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span>quot<span style="color:#f92672">;</span> <span style="color:#960050;background-color:#1e0010">&#34;</span> 引号
+</span></span></code></pre></div></li>
+<li>
+<p>XML文件中可以存在CDATA区</p>
+<p>&lt;![CDATA[ …内容… ]]&gt;</p>
+</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--注释的内容--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--本xml文件用来描述多个学生信息--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;students&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--第一个学生信息--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;student</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;name&gt;</span>张三<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;age&gt;</span>23<span style="color:#f92672">&lt;/age&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;info&gt;</span>学生&amp;lt; &amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;的信息<span style="color:#f92672">&lt;/info&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;message&gt;</span> <span style="color:#75715e">&lt;![CDATA[内容 &lt;&lt;&lt;&lt;&lt;&lt; &gt;&gt;&gt;&gt;&gt;&gt; ]]]&gt;</span><span style="color:#f92672">&lt;/message&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/student&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--第二个学生信息--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;student</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;2&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;name&gt;</span>李四<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;age&gt;</span>24<span style="color:#f92672">&lt;/age&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/student&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/students&gt;</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="14xml解析应用">1.4xml解析【应用】<a hidden class="anchor" aria-hidden="true" href="#14xml解析应用">#</a></h3>
+<ul>
+<li>
+<p>概述</p>
+<p>xml解析就是从xml中获取到数据</p>
+</li>
+<li>
+<p>常见的解析思想</p>
+<p>DOM(Document Object Model)文档对象模型:就是把文档的各个组成部分看做成对应的对象。
+会把xml文件全部加载到内存,在内存中形成一个树形结构,再获取对应的值</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/02_dom%e8%a7%a3%e6%9e%90%e6%a6%82%e8%bf%b0.png" alt=""  />
+</p>
+</li>
+<li>
+<p>常见的解析工具</p>
+<ul>
+<li>JAXP: SUN公司提供的一套XML的解析的API</li>
+<li>JDOM: 开源组织提供了一套XML的解析的API-jdom</li>
+<li>DOM4J: 开源组织提供了一套XML的解析的API-dom4j,全称：Dom For Java</li>
+<li>pull: 主要应用在Android手机端解析XML</li>
+</ul>
+</li>
+<li>
+<p>解析的准备工作</p>
+<ol>
+<li>
+<p>我们可以通过网站：https://dom4j.github.io/ 去下载dom4j</p>
+<p>今天的资料中已经提供,我们不用再单独下载了,直接使用即可</p>
+</li>
+<li>
+<p>将提供好的dom4j-1.6.1.zip解压,找到里面的dom4j-1.6.1.jar</p>
+</li>
+<li>
+<p>在idea中当前模块下新建一个libs文件夹,将jar包复制到文件夹中</p>
+</li>
+<li>
+<p>选中jar包 -&gt; 右键 -&gt; 选择add as library即可</p>
+</li>
+</ol>
+</li>
+<li>
+<p>需求</p>
+<ul>
+<li>解析提供好的xml文件</li>
+<li>将解析到的数据封装到学生对象中</li>
+<li>并将学生对象存储到ArrayList集合中</li>
+<li>遍历集合</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!--</span>注释的内容<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!--</span>本xml文件用来描述多个学生信息<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>students<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;!--</span>第一个学生信息<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>student id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>23<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;!--</span>第二个学生信息<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>student id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>李四<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>24<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>student<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>students<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 上边是已经准备好的student.xml文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">,</span> String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getId</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;id=&#39;&#34;</span> <span style="color:#f92672">+</span> id <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 利用dom4j解析xml文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">XmlParse</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> DocumentException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.获取一个解析器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        SAXReader saxReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SAXReader<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.利用解析器把xml文件加载到内存中,并返回一个文档对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Document document <span style="color:#f92672">=</span> saxReader<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;myxml\\xml\\student.xml&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.获取到根标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Element rootElement <span style="color:#f92672">=</span> document<span style="color:#f92672">.</span><span style="color:#a6e22e">getRootElement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//4.通过根标签来获取student标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//elements():可以获取调用者所有的子标签.会把这些子标签放到一个集合中返回.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//elements(&#34;标签名&#34;):可以获取调用者所有的指定的子标签,会把这些子标签放到一个集合中并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//List list = rootElement.elements();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        List<span style="color:#f92672">&lt;</span>Element<span style="color:#f92672">&gt;</span> studentElements <span style="color:#f92672">=</span> rootElement<span style="color:#f92672">.</span><span style="color:#a6e22e">elements</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;student&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//System.out.println(list.size());
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//用来装学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ArrayList<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//5.遍历集合,得到每一个student标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Element element <span style="color:#f92672">:</span> studentElements<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//element依次表示每一个student标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取id这个属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Attribute attribute <span style="color:#f92672">=</span> element<span style="color:#f92672">.</span><span style="color:#a6e22e">attribute</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取id的属性值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String id <span style="color:#f92672">=</span> attribute<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取name标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//element(&#34;标签名&#34;):获取调用者指定的子标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Element nameElement <span style="color:#f92672">=</span> element<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取这个标签的标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String name <span style="color:#f92672">=</span> nameElement<span style="color:#f92672">.</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取age标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Element ageElement <span style="color:#f92672">=</span> element<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;age&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取age标签的标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String age <span style="color:#f92672">=</span> ageElement<span style="color:#f92672">.</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(id);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(name);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            System.out.println(age);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>            Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span>id<span style="color:#f92672">,</span>name<span style="color:#f92672">,</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>age<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>            list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student student <span style="color:#f92672">:</span> list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>student<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="15dtd约束理解">1.5DTD约束【理解】<a hidden class="anchor" aria-hidden="true" href="#15dtd约束理解">#</a></h3>
+<ul>
+<li>
+<p>什么是约束</p>
+<p>用来限定xml文件中可使用的标签以及属性</p>
+</li>
+<li>
+<p>约束的分类</p>
+<ul>
+<li>DTD</li>
+<li>schema</li>
+</ul>
+</li>
+<li>
+<p>编写DTD约束</p>
+<ul>
+<li>
+<p>步骤</p>
+<ol>
+<li>
+<p>创建一个文件，这个文件的后缀名为.dtd</p>
+</li>
+<li>
+<p>看xml文件中使用了哪些元素</p>
+<!ELEMENT> 可以定义元素
+</li>
+<li>
+<p>判断元素是简单元素还是复杂元素</p>
+<p>简单元素：没有子元素。
+复杂元素：有子元素的元素；</p>
+</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">persons</span> <span style="color:#f92672">(</span>person<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">person</span> <span style="color:#f92672">(</span>name<span style="color:#f92672">,</span>age<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">name</span> <span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">#</span>PCDATA<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">age</span> <span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">#</span>PCDATA<span style="color:#f92672">)&gt;</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>引入DTD约束</p>
+<ul>
+<li>
+<p>引入DTD约束的三种方法</p>
+<ul>
+<li>
+<p>引入本地dtd</p>
+<!DOCTYPE 根元素名称 SYSTEM ‘DTD文件的路径'>
+</li>
+<li>
+<p>在xml文件内部引入</p>
+<!DOCTYPE 根元素名称 [ dtd文件内容 ]>
+</li>
+<li>
+<p>引入网络dtd</p>
+<!DOCTYPE 根元素的名称 PUBLIC "DTD文件名称" "DTD文档的URL">
+</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<ul>
+<li>
+<p>引入本地DTD约束</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>// 这是persondtd.dtd文件中的内容,已经提前写好
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!ELEMENT persons (person)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!ELEMENT person (name,age)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!ELEMENT name (#PCDATA)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!ELEMENT age (#PCDATA)&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// 在person1.xml文件中引入persondtd.dtd约束
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!DOCTYPE persons SYSTEM &#39;persondtd.dtd&#39;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;persons&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;person&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;name&gt;</span>张三<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;age&gt;</span>23<span style="color:#f92672">&lt;/age&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/person&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/persons&gt;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>在xml文件内部引入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!DOCTYPE persons [
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;!ELEMENT persons (person)&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!ELEMENT person (name,age)&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!ELEMENT name (#PCDATA)&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!ELEMENT age (#PCDATA)&gt;</span>
+</span></span><span style="display:flex;"><span>        ]&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;persons&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;person&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;name&gt;</span>张三<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;age&gt;</span>23<span style="color:#f92672">&lt;/age&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/person&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/persons&gt;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>引入网络dtd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!DOCTYPE persons PUBLIC &#34;dtd文件的名称&#34; &#34;dtd文档的URL&#34;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;persons&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;person&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;name&gt;</span>张三<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;age&gt;</span>23<span style="color:#f92672">&lt;/age&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/person&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/persons&gt;</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>DTD语法</p>
+<ul>
+<li>
+<p>定义元素</p>
+<p>定义一个元素的格式为：&lt;!ELEMENT 元素名 元素类型&gt;
+简单元素：</p>
+<p>​	EMPTY: 表示标签体为空</p>
+<p>​	ANY: 表示标签体可以为空也可以不为空</p>
+<p>​	PCDATA: 表示该元素的内容部分为字符串</p>
+<p>复杂元素：
+​	直接写子元素名称. 多个子元素可以使用&rdquo;,&ldquo;或者&rdquo;|&ldquo;隔开；
+​	&ldquo;,&ldquo;表示定义子元素的顺序 ; &ldquo;|&rdquo;: 表示子元素只能出现任意一个
+​	&ldquo;?&ldquo;零次或一次, &ldquo;+&ldquo;一次或多次, &ldquo;*&ldquo;零次或多次;如果不写则表示出现一次</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/03_DTD%e8%af%ad%e6%b3%95%e5%ae%9a%e4%b9%89%e5%85%83%e7%b4%a0.png" alt=""  />
+</p>
+</li>
+<li>
+<p>定义属性</p>
+<p>格式</p>
+<p>定义一个属性的格式为：&lt;!ATTLIST 元素名称 属性名称 属性的类型 属性的约束&gt;
+属性的类型：
+​	CDATA类型：普通的字符串</p>
+<p>属性的约束:</p>
+<p>​	// #REQUIRED： 必须的
+​	// #IMPLIED： 属性不是必需的
+​	// #FIXED value：属性值是固定的</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">persons</span> <span style="color:#f92672">(</span>person<span style="color:#f92672">+)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">person</span> <span style="color:#f92672">(</span>name<span style="color:#f92672">,</span>age<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">name</span> <span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">#</span>PCDATA<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ELEMENT <span style="color:#a6e22e">age</span> <span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">#</span>PCDATA<span style="color:#f92672">)&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>ATTLIST person id CDATA <span style="color:#960050;background-color:#1e0010">#</span>REQUIRED<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span>DOCTYPE persons SYSTEM <span style="color:#960050;background-color:#1e0010">&#39;</span>persondtd<span style="color:#f92672">.</span><span style="color:#a6e22e">dtd</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>persons<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>person id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;001&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>23<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>person<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>person id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;002&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>23<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>person<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>persons<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">​```</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="16schema约束理解">1.6schema约束【理解】<a hidden class="anchor" aria-hidden="true" href="#16schema约束理解">#</a></h3>
+<ul>
+<li>
+<p>schema和dtd的区别</p>
+<ol>
+<li>
+<p>schema约束文件也是一个xml文件，符合xml的语法，这个文件的后缀名.xsd</p>
+</li>
+<li>
+<p>一个xml中可以引用多个schema约束文件，多个schema使用名称空间区分（名称空间类似于java包名）</p>
+</li>
+<li>
+<p>dtd里面元素类型的取值比较单一常见的是PCDATA类型，但是在schema里面可以支持很多个数据类型</p>
+</li>
+<li>
+<p>schema 语法更加的复杂</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/04_schema%e7%ba%a6%e6%9d%9f%e4%bb%8b%e7%bb%8d.png" alt=""  />
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>编写schema约束</p>
+<ul>
+<li>
+<p>步骤</p>
+<p>1，创建一个文件，这个文件的后缀名为.xsd。
+2，定义文档声明
+3，schema文件的根标签为： &lt;schema&gt;
+4，在&lt;schema&gt;中定义属性：
+​	xmlns=http://www.w3.org/2001/XMLSchema
+5，在&lt;schema&gt;中定义属性 ：
+​	targetNamespace =唯一的url地址，指定当前这个schema文件的名称空间。
+6，在&lt;schema&gt;中定义属性 ：
+​	elementFormDefault=&ldquo;qualified“，表示当前schema文件是一个质量良好的文件。
+7，通过element定义元素
+8，判断当前元素是简单元素还是复杂元素</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/05_schema%e7%ba%a6%e6%9d%9f%e7%bc%96%e5%86%99.png" alt=""  />
+</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>schema
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema&#34;</span>
+</span></span><span style="display:flex;"><span>    targetNamespace<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase&#34;</span>
+</span></span><span style="display:flex;"><span>    elementFormDefault<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;qualified&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;!--</span>定义persons复杂元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>element name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;persons&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;!--</span>定义person复杂元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;person&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;!--</span>定义name和age简单元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;name&#34;</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;string&#34;</span><span style="color:#f92672">&gt;&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;age&#34;</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;string&#34;</span><span style="color:#f92672">&gt;&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;/</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;/</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>schema<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>引入schema约束</p>
+<ul>
+<li>
+<p>步骤</p>
+<p>1，在根标签上定义属性xmlns=&ldquo;<a href="http://www.w3.org/2001/XMLSchema-instance%22">http://www.w3.org/2001/XMLSchema-instance&quot;</a>
+2，通过xmlns引入约束文件的名称空间
+3，给某一个xmlns属性添加一个标识，用于区分不同的名称空间
+​	格式为: xmlns:标识=“名称空间地址” ,标识可以是任意的，但是一般取值都是xsi
+4，通过xsi:schemaLocation指定名称空间所对应的约束文件路径
+​	格式为：xsi:schemaLocation = &ldquo;名称空间url 文件路径“</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>persons
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">:</span>xsi<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase&#34;</span>
+</span></span><span style="display:flex;"><span>    xsi<span style="color:#f92672">:</span>schemaLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase person.xsd&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>person<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>23<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>person<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>persons<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">​```</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>schema约束定义属性</p>
+<ul>
+<li>
+<p>代码示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>schema
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema&#34;</span>
+</span></span><span style="display:flex;"><span>    targetNamespace<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase&#34;</span>
+</span></span><span style="display:flex;"><span>    elementFormDefault<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;qualified&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;!--</span>定义persons复杂元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>element name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;persons&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;!--</span>定义person复杂元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;person&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;!--</span>定义name和age简单元素<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;name&#34;</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;string&#34;</span><span style="color:#f92672">&gt;&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;</span>element name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;age&#34;</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;string&#34;</span><span style="color:#f92672">&gt;&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;/</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;!--</span>定义属性<span style="color:#960050;background-color:#1e0010">，</span>required<span style="color:#f92672">(</span> 必须的<span style="color:#f92672">)/</span>optional<span style="color:#f92672">(</span> 可选的<span style="color:#f92672">)--&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;</span>attribute name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;id&#34;</span> type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;string&#34;</span> use<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;required&#34;</span><span style="color:#f92672">&gt;&lt;/</span>attribute<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;/</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/</span>sequence<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>complexType<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>element<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>schema<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>persons
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">:</span>xsi<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>    xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase&#34;</span>
+</span></span><span style="display:flex;"><span>    xsi<span style="color:#f92672">:</span>schemaLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.itheima.cn/javase person.xsd&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>person id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;001&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>张三<span style="color:#f92672">&lt;/</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>age<span style="color:#f92672">&gt;</span>23<span style="color:#f92672">&lt;/</span>age<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>person<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>persons<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">​```</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="17服务器改进应用">1.7服务器改进【应用】<a hidden class="anchor" aria-hidden="true" href="#17服务器改进应用">#</a></h3>
+<ul>
+<li>
+<p>准备xml文件</p>
+<ol>
+<li>
+<p>在当前模块下的webapp目录下新建一个文件夹，名字叫WEB-INF</p>
+</li>
+<li>
+<p>新建一个xml文件，名字叫web.xml</p>
+</li>
+<li>
+<p>将资料中的web.xml文件中引入约束的代码复制到新建的web.xml文件中</p>
+</li>
+<li>
+<p>将要解析的数据配置到xml文件中</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba02/06_%e9%85%8d%e7%bd%ae%e8%a6%81%e8%a7%a3%e6%9e%90%e7%9a%84Servlet%e6%95%b0%e6%8d%ae.png" alt=""  />
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>需求</p>
+<p>把uri和servlet信息放到一个concurrentHashMap集合当中
+当浏览器请求一个动态资源时，我们会获取uri对应的servlet来处理当前业务</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>导入dom4j的jar包</li>
+<li>定义一个XmlParseServletConfig类实现ParseServletConfig接口</li>
+<li>在parse方法里面就可以解析xml文件了</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// web.xml配置文件中配置的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&lt;?</span>xml version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span> encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span> <span style="color:#f92672">?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span>web<span style="color:#f92672">-</span>app xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://java.sun.com/xml/ns/javaee&#34;</span>
+</span></span><span style="display:flex;"><span>         xmlns<span style="color:#f92672">:</span>xsi<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         xsi<span style="color:#f92672">:</span>schemaLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&#34;</span>
+</span></span><span style="display:flex;"><span>         version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2.5&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;!--</span>在以后需要配置servlet的时候<span style="color:#960050;background-color:#1e0010">，</span>就直接在这里配置就可以了<span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>servlet<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>servlet<span style="color:#f92672">-</span>name<span style="color:#f92672">&gt;</span>LoginServlet<span style="color:#f92672">&lt;/</span>servlet<span style="color:#f92672">-</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>servlet<span style="color:#f92672">-</span>class<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">itheima</span><span style="color:#f92672">.</span><span style="color:#a6e22e">myservlet</span><span style="color:#f92672">.</span><span style="color:#a6e22e">LoginServlet</span><span style="color:#f92672">&lt;/</span>servlet<span style="color:#f92672">-</span>class<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>servlet<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span>servlet<span style="color:#f92672">-</span>mapping<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>servlet<span style="color:#f92672">-</span>name<span style="color:#f92672">&gt;</span>LoginServlet<span style="color:#f92672">&lt;/</span>servlet<span style="color:#f92672">-</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>url<span style="color:#f92672">-</span>pattern<span style="color:#f92672">&gt;/</span>servlet<span style="color:#f92672">/</span>loginservlet<span style="color:#f92672">&lt;/</span>url<span style="color:#f92672">-</span>pattern<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>servlet<span style="color:#f92672">-</span>mapping<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span>web<span style="color:#f92672">-</span>app<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 定义一个XmlParseServletConfig类实现ParseServletConfig接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">XMLParseServletConfig</span> <span style="color:#66d9ef">implements</span> ParseServletConfig <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义web.xml文件的路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String WEB_XML_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http-dynamic-server/webapp/WEB-INF/web.xml&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//在parse方法里面就可以解析xml文件了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">parse</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//1.创建一个解析器对象(注意:如果解析器对象等不能使用,请检查一下jar包是否导入)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            SAXReader saxReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SAXReader<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//2.利用解析器把xml文件读取到内存中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Document document <span style="color:#f92672">=</span> saxReader<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span>WEB_XML_PATH<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//3.获取根节点元素对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Element rootElement <span style="color:#f92672">=</span> document<span style="color:#f92672">.</span><span style="color:#a6e22e">getRootElement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//创建一个Map集合，用来存储servlet的配置信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            HashMap<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span>String<span style="color:#f92672">&gt;</span> servletInfoHashMap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//4.获取根元素对象下所有的servlet元素的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            List<span style="color:#f92672">&lt;</span>Element<span style="color:#f92672">&gt;</span> servletInfos <span style="color:#f92672">=</span> rootElement<span style="color:#f92672">.</span><span style="color:#a6e22e">elements</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;servlet&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//5.遍历集合，依次获取到每一个servlet标签对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Element servletInfo <span style="color:#f92672">:</span> servletInfos<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//servletInfo依次表示每一个servlet标签对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取到servlet下的servlet-name元素对象，并且获取标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String servletName <span style="color:#f92672">=</span> servletInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;servlet-name&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取到servlet下的servlet-class元素对象，并且获取标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String servletClass <span style="color:#f92672">=</span> servletInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;servlet-class&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                servletInfoHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>servletName<span style="color:#f92672">,</span>servletClass<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//--------------------servlet-mapping--------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//获取到所有的servlet-mapping标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            List<span style="color:#f92672">&lt;</span>Element<span style="color:#f92672">&gt;</span> servletMappingInfos <span style="color:#f92672">=</span> rootElement<span style="color:#f92672">.</span><span style="color:#a6e22e">elements</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;servlet-mapping&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//遍历集合依次得到每一个servlet-mapping标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Element servletMappingInfo <span style="color:#f92672">:</span> servletMappingInfos<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//servletMappingInfo依次表示每一个servlet-mapping标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取servlet-mapping标签标签中的servlet-name标签的标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String servletName <span style="color:#f92672">=</span> servletMappingInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;servlet-name&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取servlet-mapping标签标签中的url-pattern标签的标签体内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String urlPattern <span style="color:#f92672">=</span> servletMappingInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">element</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;url-pattern&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//通过servletName来获取到servlet的全类名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String servletClassName <span style="color:#f92672">=</span> servletInfoHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>servletName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//通过反射来创建这个servlet对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Class clazz <span style="color:#f92672">=</span> Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span>servletClassName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取该类所实现的所有的接口信息,得到的是一个数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Class<span style="color:#f92672">[]</span> interfaces <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getInterfaces</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//定义一个boolean类型的变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">boolean</span> flag <span style="color:#f92672">=</span>  <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//遍历数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Class clazzInfo <span style="color:#f92672">:</span> interfaces<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//判断当前所遍历的接口的字节码对象是否和HttpServlet的字节码文件对象相同
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>clazzInfo <span style="color:#f92672">==</span> HttpServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//如果相同,就需要更改flag值.结束循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        flag <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>flag<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//true就表示当前的类已经实现了HttpServlet接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    HttpServlet httpServlet <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HttpServlet<span style="color:#f92672">)</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//4.将uri和httpServlet添加到map集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    ServletConcurrentHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>urlPattern<span style="color:#f92672">,</span>httpServlet<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//false就表示当前的类还没有实现HttpServlet接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementsHttpServletException<span style="color:#f92672">(</span>clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;Not Implements HttpServlet&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NotImplementsHttpServletException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span><span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoaderResourceRunnable</span> <span style="color:#66d9ef">implements</span>  Runnable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        //执行parse方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        ParseServletConfig parseServletConfig = new PropertiesParseServletConfig();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        parseServletConfig.parse();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        ParseServletConfig parseServletConfig <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> XMLParseServletConfig<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        parseServletConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="2枚举">2.枚举<a hidden class="anchor" aria-hidden="true" href="#2枚举">#</a></h2>
+<h3 id="21概述理解">2.1概述【理解】<a hidden class="anchor" aria-hidden="true" href="#21概述理解">#</a></h3>
+<p>为了间接的表示一些固定的值，Java就给我们提供了枚举
+是指将变量的值一一列出来,变量的值只限于列举出来的值的范围内</p>
+<h3 id="22定义格式应用">2.2定义格式【应用】<a hidden class="anchor" aria-hidden="true" href="#22定义格式应用">#</a></h3>
+<ul>
+<li>
+<p>格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> s <span style="color:#f92672">{</span>   
+</span></span><span style="display:flex;"><span>	枚举项1<span style="color:#f92672">,</span>枚举项2<span style="color:#f92672">,</span>枚举项3<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>注意: 定义枚举类要用关键字enum
+</span></span></code></pre></div></li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 定义一个枚举类，用来表示春，夏，秋，冬这四个固定值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Season <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    SPRING<span style="color:#f92672">,</span>SUMMER<span style="color:#f92672">,</span>AUTUMN<span style="color:#f92672">,</span>WINTER<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="23枚举的特点理解">2.3枚举的特点【理解】<a hidden class="anchor" aria-hidden="true" href="#23枚举的特点理解">#</a></h3>
+<ul>
+<li>
+<p>特点</p>
+<ul>
+<li>
+<p>所有枚举类都是Enum的子类</p>
+</li>
+<li>
+<p>我们可以通过&quot;枚举类名.枚举项名称&quot;去访问指定的枚举项</p>
+</li>
+<li>
+<p>每一个枚举项其实就是该枚举的一个对象</p>
+</li>
+<li>
+<p>枚举也是一个类，也可以去定义成员变量</p>
+</li>
+<li>
+<p>枚举类的第一行上必须是枚举项，最后一个枚举项后的分号是可以省略的，但是如果枚举类有其他的东西，这个分号就不能省略。建议不要省略</p>
+</li>
+<li>
+<p>枚举类可以有构造器，但必须是private的，它默认的也是private的。</p>
+<p>枚举项的用法比较特殊：枚举(&rdquo;&rdquo;);</p>
+</li>
+<li>
+<p>枚举类也可以有抽象方法，但是枚举项必须重写该方法</p>
+</li>
+</ul>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Season <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SPRING<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;春&#34;</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//如果枚举类中有抽象方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//那么在枚举项中必须要全部重写
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">},</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SUMMER<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;夏&#34;</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">},</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    AUTUMN<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;秋&#34;</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">},</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    WINTER<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;冬&#34;</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//空参构造
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//private Season(){}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//有参构造
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">Season</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//抽象方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EnumDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        1.所有枚举类都是Enum的子类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        2.我们可以通过&#34;枚举类名.枚举项名称&#34;去访问指定的枚举项
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        3.每一个枚举项其实就是该枚举的一个对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        4.枚举也是一个类，也可以去定义成员变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        5.枚举类的第一行上必须是枚举项，最后一个枚举项后的分号是可以省略的，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          但是如果枚举类有其他的东西，这个分号就不能省略。建议不要省略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        6.枚举类可以有构造器，但必须是private的，它默认的也是private的。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          枚举项的用法比较特殊：枚举(&#34;&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        7.枚举类也可以有抽象方法，但是枚举项必须重写该方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//第二个特点的演示
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//我们可以通过&#34;枚举类名.枚举项名称&#34;去访问指定的枚举项
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SUMMER</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">AUTUMN</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">WINTER</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//第三个特点的演示
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//每一个枚举项其实就是该枚举的一个对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Season spring <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24枚举的方法应用">2.4枚举的方法【应用】<a hidden class="anchor" aria-hidden="true" href="#24枚举的方法应用">#</a></h3>
+<ul>
+<li>
+<p>方法介绍</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String name()</td>
+<td>获取枚举项的名称</td>
+</tr>
+<tr>
+<td>int ordinal()</td>
+<td>返回枚举项在枚举类中的索引值</td>
+</tr>
+<tr>
+<td>int compareTo(E  o)</td>
+<td>比较两个枚举项，返回的是索引值的差值</td>
+</tr>
+<tr>
+<td>String toString()</td>
+<td>返回枚举常量的名称</td>
+</tr>
+<tr>
+<td>static &lt;T&gt; T  valueOf(Class&lt;T&gt; type,String  name)</td>
+<td>获取指定枚举类中的指定名称的枚举值</td>
+</tr>
+<tr>
+<td>values()</td>
+<td>获得所有的枚举项</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Season <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    SPRING<span style="color:#f92672">,</span>SUMMER<span style="color:#f92672">,</span>AUTUMN<span style="color:#f92672">,</span>WINTER<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EnumDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        String name() 获取枚举项的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String name <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        int ordinal() 返回枚举项在枚举类中的索引值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> index1 <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ordinal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> index2 <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SUMMER</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ordinal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> index3 <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">AUTUMN</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ordinal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> index4 <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">WINTER</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ordinal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>index4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        int compareTo(E o) 比较两个枚举项，返回的是索引值的差值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">.</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">WINTER</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span><span style="color:#75715e">//-3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        String toString()   返回枚举常量的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String s <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        static &lt;T&gt; T valueOf(Class&lt;T&gt; type,String name)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        获取指定枚举类中的指定名称的枚举值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Season spring <span style="color:#f92672">=</span> Enum<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;SPRING&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>spring<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span> <span style="color:#f92672">==</span> spring<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        values()       获得所有的枚举项
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Season<span style="color:#f92672">[]</span> values <span style="color:#f92672">=</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">values</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Season value <span style="color:#f92672">:</span> values<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>value<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="3注解">3.注解<a hidden class="anchor" aria-hidden="true" href="#3注解">#</a></h2>
+<h3 id="31概述理解">3.1概述【理解】<a hidden class="anchor" aria-hidden="true" href="#31概述理解">#</a></h3>
+<ul>
+<li>
+<p>概述</p>
+<p>对我们的程序进行标注和解释</p>
+</li>
+<li>
+<p>注解和注释的区别</p>
+<ul>
+<li>注释: 给程序员看的</li>
+<li>注解: 给编译器看的</li>
+</ul>
+</li>
+<li>
+<p>使用注解进行配置配置的优势</p>
+<p>代码更加简洁,方便</p>
+</li>
+</ul>
+<h3 id="32自定义注解理解">3.2自定义注解【理解】<a hidden class="anchor" aria-hidden="true" href="#32自定义注解理解">#</a></h3>
+<ul>
+<li>
+<p>格式</p>
+<p>public @interface 注解名称 {</p>
+<p>​	public 属性类型 属性名() default 默认值 ;</p>
+<p>}</p>
+</li>
+<li>
+<p>属性类型</p>
+<ul>
+<li>基本数据类型</li>
+<li>String</li>
+<li>Class</li>
+<li>注解</li>
+<li>枚举</li>
+<li>以上类型的一维数组</li>
+</ul>
+</li>
+<li>
+<p>代码演示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Anno2 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Season <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    SPRING<span style="color:#f92672">,</span>SUMMER<span style="color:#f92672">,</span>AUTUMN<span style="color:#f92672">,</span>WINTER<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Anno1 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个基本类型的属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> 23<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个String类型的属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">name</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> <span style="color:#e6db74">&#34;itheima&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个Class类型的属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Class <span style="color:#a6e22e">clazz</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> Anno2<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个注解类型的属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Anno2 <span style="color:#a6e22e">anno</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">@Anno2</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个枚举类型的属性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Season <span style="color:#a6e22e">season</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//以上类型的一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//int数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">arr</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> <span style="color:#f92672">{</span>1<span style="color:#f92672">,</span>2<span style="color:#f92672">,</span>3<span style="color:#f92672">,</span>4<span style="color:#f92672">,</span>5<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//枚举数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Season<span style="color:#f92672">[]</span> <span style="color:#a6e22e">seasons</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> <span style="color:#f92672">{</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING</span><span style="color:#f92672">,</span>Season<span style="color:#f92672">.</span><span style="color:#a6e22e">SUMMER</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//value。后期我们在使用注解的时候，如果我们只需要给注解的value属性赋值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//那么value就可以省略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">value</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//在使用注解的时候如果注解里面的属性没有指定默认值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//那么我们就需要手动给出注解属性的设置值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//@Anno1(name = &#34;itheima&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Anno1</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnnoDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>注意</p>
+<p>如果只有一个属性需要赋值，并且属性的名称是value，则value可以省略，直接定义值即可</p>
+</li>
+<li>
+<p>自定义注解案例</p>
+<ul>
+<li>
+<p>需求</p>
+<p>自定义一个注解@Test,用于指定类的方法上,如果某一个类的方法上使用了该注解,就执行该方法</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>自定义一个注解Test,并在类中的某几个方法上加上注解</li>
+<li>在测试类中,获取注解所在的类的Class对象</li>
+<li>获取类中所有的方法对象</li>
+<li>遍历每一个方法对象,判断是否有对应的注解</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//表示Test这个注解的存活时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Test <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UseTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//没有使用Test注解
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UseTest....show....&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//使用Test注解
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UseTest....method....&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//没有使用Test注解
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">function</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UseTest....function....&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnnoDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> ClassNotFoundException<span style="color:#f92672">,</span> IllegalAccessException<span style="color:#f92672">,</span> InstantiationException<span style="color:#f92672">,</span> InvocationTargetException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.通过反射获取UseTest类的字节码文件对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class clazz <span style="color:#f92672">=</span> Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;com.itheima.myanno3.UseTest&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        UseTest useTest <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>UseTest<span style="color:#f92672">)</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.通过反射获取这个类里面所有的方法对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Method<span style="color:#f92672">[]</span> methods <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredMethods</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.遍历数组，得到每一个方法对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Method method <span style="color:#f92672">:</span> methods<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//method依次表示每一个方法对象。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//判断当前方法上是否有指定的注解。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//参数：注解的字节码文件对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//返回值：布尔结果。  true 存在  false 不存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>method<span style="color:#f92672">.</span><span style="color:#a6e22e">isAnnotationPresent</span><span style="color:#f92672">(</span>Test<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)){</span>
+</span></span><span style="display:flex;"><span>                method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>useTest<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h3 id="33元注解理解">3.3元注解【理解】<a hidden class="anchor" aria-hidden="true" href="#33元注解理解">#</a></h3>
+<ul>
+<li>
+<p>概述</p>
+<p>元注解就是描述注解的注解</p>
+</li>
+<li>
+<p>元注解介绍</p>
+<table>
+<thead>
+<tr>
+<th>元注解名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Target</td>
+<td>指定了注解能在哪里使用</td>
+</tr>
+<tr>
+<td>@Retention</td>
+<td>可以理解为保留时间(生命周期)</td>
+</tr>
+<tr>
+<td>@Inherited</td>
+<td>表示修饰的自定义注解可以被子类继承</td>
+</tr>
+<tr>
+<td>@Documented</td>
+<td>表示该自定义注解，会出现在API文档里面。</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>示例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Target</span><span style="color:#f92672">({</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">FIELD</span><span style="color:#f92672">,</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">,</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">METHOD</span><span style="color:#f92672">})</span>  <span style="color:#75715e">//指定注解使用的位置（成员变量，类，方法）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span> <span style="color:#75715e">//指定该注解的存活时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//@Inherited //指定该注解可以被继承
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Anno <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Anno</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">extends</span> Person <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;student.......show..........&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取到Student类的字节码文件对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class clazz <span style="color:#f92672">=</span> Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;com.itheima.myanno4.Student&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取注解。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> result <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">isAnnotationPresent</span><span style="color:#f92672">(</span>Anno<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="34改写服务器理解">3.4改写服务器【理解】<a hidden class="anchor" aria-hidden="true" href="#34改写服务器理解">#</a></h3>
+<ul>
+<li>
+<p>需求</p>
+<p>目前项目中Servlet和url对应关系,是配置在xml文件中的,将其改为在Servlet类上通过注解配置实现</p>
+</li>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>定义一个注解(@WebServlet),注解内有一个属性urlPatterns</li>
+<li>在servlet类上去使用该注解,来指定当前Servlet的访问路径</li>
+<li>创建一个注解解析类(AnnoParseServletConfig),该类实现ParseServletConfig接口</li>
+<li>实现parse方法</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Target</span><span style="color:#f92672">(</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span> <span style="color:#75715e">//指定该注解可以使用在类上
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span><span style="color:#75715e">//指定该注解的存活时间 --- 为运行期
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> WebServlet <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//让用户去指定某一个Servlet在进行访问的时候所对应的请求uri
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">urlPatterns</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 这里只给出了LoginServlet的配置,其他Servlet同理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@WebServlet</span><span style="color:#f92672">(</span>urlPatterns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/servlet/loginservlet&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoginServlet</span> <span style="color:#66d9ef">implements</span> HttpServlet<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">service</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">//处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;LoginServlet处理了登录请求&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">//响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">setContentTpye</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;text/html;charset=UTF-8&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;登录成功&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnnoParseServletConfig</span> <span style="color:#66d9ef">implements</span> ParseServletConfig <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义一个servlet路径所对应的常量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVLET_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http-dynamic-server\\src\\com\\itheima\\myservlet&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//定义包名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVLET_PACKAGE_NAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.itheima.myservlet.&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">parse</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取类名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//  1.获得servlet所在文件夹的路径，并封装成File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File file <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span>SERVLET_PATH<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  2.调用listFiles方法，获取文件夹下所有的File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        File<span style="color:#f92672">[]</span> servletFiles <span style="color:#f92672">=</span> file<span style="color:#f92672">.</span><span style="color:#a6e22e">listFiles</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  3.遍历数组，获取每一个File对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>File servletFile <span style="color:#f92672">:</span> servletFiles<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  4.获取File对象的名字（后缀名）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String servletFileName <span style="color:#f92672">=</span> servletFile<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">().</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;.java&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  5.根据包名 + 类名 得到每一个类的全类名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>           String servletFullName <span style="color:#f92672">=</span> SERVLET_PACKAGE_NAME <span style="color:#f92672">+</span> servletFileName<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  6.通过全类名获取字节码文件对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Class servletClazz <span style="color:#f92672">=</span> Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span>servletFullName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//  7.判断该类是否有WebServlet注解
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>servletClazz<span style="color:#f92672">.</span><span style="color:#a6e22e">isAnnotationPresent</span><span style="color:#f92672">(</span>WebServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)){</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//  8.判断该Servlet类是否实现HttpServlet接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">//获取该类所实现的所有的接口信息,得到的是一个数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    Class<span style="color:#f92672">[]</span> interfaces <span style="color:#f92672">=</span> servletClazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getInterfaces</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//定义一个boolean类型的变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">boolean</span> flag <span style="color:#f92672">=</span>  <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//遍历数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Class clazzInfo <span style="color:#f92672">:</span> interfaces<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//判断当前所遍历的接口的字节码对象是否和HttpServlet的字节码文件对象相同
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>clazzInfo <span style="color:#f92672">==</span> HttpServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">//如果相同,就需要更改flag值.结束循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            flag <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>flag<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//  9.如果满足，则获取注解中的urlPattrens的值，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        WebServlet annotation <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>WebServlet<span style="color:#f92672">)</span> servletClazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getAnnotation</span><span style="color:#f92672">(</span>WebServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        String uri <span style="color:#f92672">=</span> annotation<span style="color:#f92672">.</span><span style="color:#a6e22e">urlPatterns</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//  10.创建当前Servlet类对象存入值位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        HttpServlet httpServlet <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HttpServlet<span style="color:#f92672">)</span> servletClazz<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//  11.存入集合的键位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        ServletConcurrentHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>uri<span style="color:#f92672">,</span>httpServlet<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//  12.如果不满足，抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#75715e">//false就表示当前的类还没有实现HttpServlet接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementsHttpServletException<span style="color:#f92672">(</span>servletClazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;Not Implements HttpServlet&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NotImplementsHttpServletException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoaderResourceRunnable</span> <span style="color:#66d9ef">implements</span>  Runnable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        //执行parse方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        ParseServletConfig parseServletConfig = new PropertiesParseServletConfig();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        parseServletConfig.parse();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        ParseServletConfig parseServletConfig = new XMLParseServletConfig();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        parseServletConfig.parse();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        ParseServletConfig parseServletConfig <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AnnoParseServletConfig<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        parseServletConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA/">基础加强</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java基础加强03</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA01/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java基础加强01</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

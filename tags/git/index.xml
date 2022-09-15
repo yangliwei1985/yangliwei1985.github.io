@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>git on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/git/</link>
+    <description>Recent content in git on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 11 Feb 2022 11:50:49 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>常用 Git 命令清单</title>
+      <link>https://iblog.zone/archives/%E5%B8%B8%E7%94%A8-git-%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</link>
+      <pubDate>Fri, 11 Feb 2022 11:50:49 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%B8%B8%E7%94%A8-git-%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</guid>
+      <description>仓库 # 在当前目录新建一个Git代码库 $ git init  # 新建一个目录，将其初始化为Git代码库 $ git init [project-name]  # 下载一个项目和它的整个代码历史 $ git clone [url] 配置 # 显示当前的Git配置 $ git config --list  # 编辑Git配置文件 $ git config -e [--global]  # 设置提交代码时的用户信息 $ git config [--global] user.name &amp;#34;[name]&amp;#34; $ git config [--global] user.email &amp;#34;[email address]&amp;#34; 增加/删除文件 # 添加指定文件到暂存区 $ git add [file1] [file2] ...  # 添加指定目录到暂存区，包括子目录 $ git add [dir]  # 添加当前目录的所有文件到暂存区 $ git add .</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>consul on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/consul/</link>
+    <description>Recent content in consul on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 19 Apr 2022 15:12:42 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/consul/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker安装Consul1.9.3</title>
+      <link>https://iblog.zone/archives/docker%E5%AE%89%E8%A3%85consul1.9.3/</link>
+      <pubDate>Tue, 19 Apr 2022 15:12:42 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/docker%E5%AE%89%E8%A3%85consul1.9.3/</guid>
+      <description>拉取Consul镜像 $ docker pull consul # 默认拉取latest $ docker pull consul:1.9.3 # 拉取指定版本 安装并运行 docker run -d -p 8500:8500 --restart=always --name=consul consul:1.9.3 agent -server -bootstrap -ui -node=1 -client=&amp;#39;0.0.0.0&amp;#39;  agent: 表示启动 Agent 进程。 server：表示启动 Consul Server 模式 client：表示启动 Consul Cilent 模式。 bootstrap：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上讲 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志。 ui：表示启动 Web UI 管理器，默认开放端口 8500，所以上面使用 Docker 命令把 8500 端口对外开放。 node：节点的名称，集群中必须是唯一的，默认是该节点的主机名。 client：consul服务侦听地址，这个地址提供HTTP、DNS、RPC等服务，默认是127.0.0.1所以不对外提供服务，如果你要对外提供服务改成0.0.0.0 join：表示加入到某一个集群中去。 如：-json=192.168.0.11  </description>
+    </item>
+    
+    <item>
+      <title>CentOS搭建Consul集群</title>
+      <link>https://iblog.zone/archives/centos%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Thu, 07 Apr 2022 17:29:12 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</guid>
+      <description>一、什么是consul 1、Consul 是 HashiCorp 公司推出的开源软件，用于实现分布式系统的服务发现与配置。
+Consul 是分布式的、高可用的、 可横向扩展的
+2、官方网站:
+https://www.consul.io/ 3、Consul 集群间使用了 Gossip 协议通信和 raft 一致性算法
+二、下载consul软件 1，下载地址:
+https://www.consul.io/downloads 选择64位linux版本下载
+2,把consul的安装文件解压:
+[root@localhost consul]# cd /usr/local/source/consul [root@localhost consul]# ls consul_1.8.4_linux_amd64.zip [root@localhost consul]# unzip consul_1.8.4_linux_amd64.zip Archive: consul_1.8.4_linux_amd64.zip  inflating: consul [root@localhost consul]# ls consul consul_1.8.4_linux_amd64.zip 3,复制到到各服务器的/usr/local/soft目录下
+三、在第一台consul服务器上运行: 1,生成数据目录:
+[root@consul1 /]# mkdir /data/ [root@consul1 /]# mkdir /data/consul/ [root@consul1 /]# mkdir /data/consul/data [root@consul1 /]# chmod 777 /data/consul/data 2,运行consul
+-server:以server身份启动
+-bootstrap-expect=2:集群要求的最少server数量
+-bind:监听的ip
+-client:客户端ip,0.0.0.0表示不限制客户端ip
+-data-dir:指定存放数据的目录
+-node:指定节点id,注意：同一集群内节点id不允许重复</description>
+    </item>
+    
+    <item>
+      <title>使用Helm部署Consul集群</title>
+      <link>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Fri, 04 Mar 2022 17:27:05 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E4%BD%BF%E7%94%A8helm%E9%83%A8%E7%BD%B2consul%E9%9B%86%E7%BE%A4/</guid>
+      <description>Helm 介绍 helm 是 kubernetes 的包管理器。它相当于 CentOS 的 yum ，Ubuntu 的 apt 。
+在 helm 中有三大概念：
+ Chart：Helm使用的包格式称为 chart。 chart 就是一个描述 Kubernetes 相关资源的文件集合。单个 chart 可以用来部署一些简单的， 类似于 memcache pod，或者某些复杂的 HTTP 服务器以及 web 全栈应用、数据库、缓存等 Repo：chart 的存放仓库，社区的 Helm chart 仓库位于 Artifact Hub，也可以创建运行自己的私有 chart 仓库 Release：运行在 Kubernetes 集群中的 chart 的实例。一个 chart 通常可以在同一个集群中安装多次，而每一次安装都会创建一个新的 release  总结：Helm 安装 charts 到 Kubernetes 集群中，每次安装都会创建一个新的 release 。你可以在 Helm 的 chart repositories 中寻找新的 chart 。
+准备阶段 拥有一个 Kubernetes 集群，如下：
+具体配置：</description>
+    </item>
+    
+    <item>
+      <title>k8s搭建consul集群</title>
+      <link>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Tue, 14 Dec 2021 14:44:57 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/</guid>
+      <description>部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &amp;#34;TCP&amp;#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &amp;#34;UDP&amp;#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>GVM升级后启动异常处理 | ylw&#39;s blog</title>
+<meta name="keywords" content="openvas, kali, gvm" />
+<meta name="description" content="1. Kali升级 apt-get update  apt-get dist-upgrade 2. 升级完成后，启动GVM（OpenVas）发现打不开 oot@Fkali:~# gvm-start [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  Job for gvmd.service failed because a timeout was exceeded. See &#34;systemctl status gvmd.service&#34; and &#34;journalctl -xe&#34; for details. 3. 按照要求检测原因 oot@Fkali:~# systemctl status gvmd.service ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/gvm%E5%8D%87%E7%BA%A7%E5%90%8E%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="GVM升级后启动异常处理" />
+<meta property="og:description" content="1. Kali升级 apt-get update  apt-get dist-upgrade 2. 升级完成后，启动GVM（OpenVas）发现打不开 oot@Fkali:~# gvm-start [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  Job for gvmd.service failed because a timeout was exceeded. See &#34;systemctl status gvmd.service&#34; and &#34;journalctl -xe&#34; for details. 3. 按照要求检测原因 oot@Fkali:~# systemctl status gvmd.service ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/gvm%E5%8D%87%E7%BA%A7%E5%90%8E%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-13T18:10:06&#43;08:00" />
+<meta property="article:modified_time" content="2022-05-13T18:10:06&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GVM升级后启动异常处理"/>
+<meta name="twitter:description" content="1. Kali升级 apt-get update  apt-get dist-upgrade 2. 升级完成后，启动GVM（OpenVas）发现打不开 oot@Fkali:~# gvm-start [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  Job for gvmd.service failed because a timeout was exceeded. See &#34;systemctl status gvmd.service&#34; and &#34;journalctl -xe&#34; for details. 3. 按照要求检测原因 oot@Fkali:~# systemctl status gvmd.service ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "GVM升级后启动异常处理",
+      "item": "https://iblog.zone/archives/gvm%E5%8D%87%E7%BA%A7%E5%90%8E%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GVM升级后启动异常处理",
+  "name": "GVM升级后启动异常处理",
+  "description": "1. Kali升级 apt-get update  apt-get dist-upgrade 2. 升级完成后，启动GVM（OpenVas）发现打不开 oot@Fkali:~# gvm-start [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  Job for gvmd.service failed because a timeout was exceeded. See \u0026#34;systemctl status gvmd.service\u0026#34; and \u0026#34;journalctl -xe\u0026#34; for details. 3. 按照要求检测原因 oot@Fkali:~# systemctl status gvmd.service ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd.",
+  "keywords": [
+    "openvas", "kali", "gvm"
+  ],
+  "articleBody": "1. Kali升级 apt-get update  apt-get dist-upgrade 2. 升级完成后，启动GVM（OpenVas）发现打不开 oot@Fkali:~# gvm-start [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  Job for gvmd.service failed because a timeout was exceeded. See \"systemctl status gvmd.service\" and \"journalctl -xe\" for details. 3. 按照要求检测原因 oot@Fkali:~# systemctl status gvmd.service ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd.service; disabled; vendor preset: disabled)  Active: activating (start) since Thu 2021-08-05 16:42:08 HKT; 31s ago  Docs: man:gvmd(8)  Process: 10055 ExecStart=/usr/sbin/gvmd --osp-vt-update=/run/ospd/ospd.sock (code=exited, status=0/SUCCESS)  Tasks: 0 (limit: 12492)  Memory: 4.0K  CPU: 14ms  CGroup: /system.slice/gvmd.service  Aug 05 16:42:08 Fkali systemd[1]: Starting Greenbone Vulnerability Manager daemon (gvmd)... Aug 05 16:42:08 Fkali systemd[1]: gvmd.service: Can't open PID file /run/gvm/gvmd.pid (yet?) after start: Operation not permitted 4. 查看PID文件 查看PID文件，发现没有上面的路径：  root@Fkali:~# cd /run/gvm/ root@Fkali:/run/gvm# ls 5. 重新检测安装 oot@Fkali:/run/gvm# sudo gvm-check-setup shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory gvm-check-setup 21.4.1  Test completeness and readiness of GVM-21.4.1 chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory Step 1: Checking OpenVAS (Scanner)...  OK: OpenVAS Scanner is present in version 21.4.1.  OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem. Checking permissions of /var/lib/openvas/gnupg/*  OK: _gvm owns all files in /var/lib/openvas/gnupg  OK: redis-server is present.  OK: scanner (db_address setting) is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock  OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.  OK: redis-server configuration is OK and redis-server is running.  OK: _gvm owns all files in /var/lib/openvas/plugins  OK: NVT collection in /var/lib/openvas/plugins contains 58045 NVTs. Checking that the obsolete redis database has been removed  OK: No old Redis DB  OK: ospd-OpenVAS is present in version 21.4.1. Step 2: Checking GVMD Manager ...  OK: GVM Manager (gvmd) is present in version 21.4.2. Step 3: Checking Certificates ...  OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.  OK: Your GVM certificate infrastructure passed validation. Step 4: Checking data ...  OK: SCAP data found in /var/lib/gvm/scap-data.  OK: CERT data found in /var/lib/gvm/cert-data. Step 5: Checking Postgresql DB and user ...  OK: Postgresql version and default port are OK.  gvmd | _gvm | UTF8 | en_HK.UTF-8 | en_HK.UTF-8 | Database is wrong version.  ERROR: Database is wrong version. You have installed a new gvmd version  FIX: Run 'sudo runuser -u _gvm -- gvmd --migrate'   ERROR: Your GVM-21.4.1 installation is not yet complete!  Please follow the instructions marked with FIX above and run this script again. 6. 执行兼容处理后，再次检测安装 root@Fkali:/run/gvm# sudo gvm-check-setup shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory gvm-check-setup 21.4.1  Test completeness and readiness of GVM-21.4.1 chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory Step 1: Checking OpenVAS (Scanner)...  OK: OpenVAS Scanner is present in version 21.4.1.  OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem. Checking permissions of /var/lib/openvas/gnupg/*  OK: _gvm owns all files in /var/lib/openvas/gnupg  OK: redis-server is present.  OK: scanner (db_address setting) is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock  OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.  OK: redis-server configuration is OK and redis-server is running.  OK: _gvm owns all files in /var/lib/openvas/plugins  OK: NVT collection in /var/lib/openvas/plugins contains 58045 NVTs. Checking that the obsolete redis database has been removed  OK: No old Redis DB  OK: ospd-OpenVAS is present in version 21.4.1. Step 2: Checking GVMD Manager ...  OK: GVM Manager (gvmd) is present in version 21.4.2. Step 3: Checking Certificates ...  OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.  OK: Your GVM certificate infrastructure passed validation. Step 4: Checking data ...  OK: SCAP data found in /var/lib/gvm/scap-data.  OK: CERT data found in /var/lib/gvm/cert-data. Step 5: Checking Postgresql DB and user ...  OK: Postgresql version and default port are OK.  gvmd | _gvm | UTF8 | en_HK.UTF-8 | en_HK.UTF-8 |  OK: At least one user exists. Step 6: Checking Greenbone Security Assistant (GSA) ... Oops, secure memory pool already initialized  ERROR: Greenbone Security Assistant too old or too new: 21.4.1~dev1  FIX: Please install Greenbone Security Assistant = 21.04.   ERROR: Your GVM-21.4.1 installation is not yet complete!  Please follow the instructions marked with FIX above and run this script again. 7. 查找安装路径，修改配置文件 root@Fkali:/run/gvm# whereis gvm-check-setup  root@Fkali:/run/gvm# sed -i\"\" 's/GSA_MAJOR=\"21.04\"/GSA_MAJOR=\"21.4\"/g' $^Cusr/bin/gvm-check-setup 8. 重新安装 root@Fkali:/run/gvm# gvm-setup shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory Creating openvas-scanner's certificate files sh: 0: getcwd() failed: No such file or directory  [] Creating database shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory createuser: error: creation of new role failed: ERROR: role \"_gvm\" already exists could not identify current directory: No such file or directory createdb: error: database creation failed: ERROR: database \"gvmd\" already exists shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory could not identify current directory: No such file or directory psql: fatal: could not find own program executable shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory could not identify current directory: No such file or directory psql: fatal: could not find own program executable shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory could not identify current directory: No such file or directory psql: fatal: could not find own program executable shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory could not identify current directory: No such file or directory psql: fatal: could not find own program executable [] Migrating database [] Checking for admin user shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory could not identify current directory: No such file or directory could not identify current directory: No such file or directory psql: fatal: could not find own program executable [*] Define Feed Import Owner shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory [] Updating OpenVAS feeds [*] Updating: NVT sh: 0: getcwd() failed: No such file or directory sh: 0: getcwd() failed: No such file or directory rsync: [Receiver] getcwd(): No such file or directory (2) rsync error: errors selecting input/output files, dirs (code 3) at util.c(1088) [Receiver=3.2.3] [] Uploading plugins in Redis [*] Updating: GVMD Data sh: 0: getcwd() failed: No such file or directory rsync: [Receiver] getcwd(): No such file or directory (2) rsync error: errors selecting input/output files, dirs (code 3) at util.c(1088) [Receiver=3.2.3] [*] Updating: Scap Data sh: 0: getcwd() failed: No such file or directory rsync: [Receiver] getcwd(): No such file or directory (2) rsync error: errors selecting input/output files, dirs (code 3) at util.c(1088) [Receiver=3.2.3] [*] Updating: Cert Data sh: 0: getcwd() failed: No such file or directory rsync: [Receiver] getcwd(): No such file or directory (2) rsync error: errors selecting input/output files, dirs (code 3) at util.c(1088) [Receiver=3.2.3] [*] Checking Default scanner 08b69003-5fc2-4037-a479-93b440211c73 OpenVAS /var/run/ospd/ospd.sock 0 OpenVAS Default  [+] Done 9. 再次检测安装 root@Fkali:/run/gvm# sudo gvm-check-setup shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory gvm-check-setup 21.4.1  Test completeness and readiness of GVM-21.4.1 chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory Step 1: Checking OpenVAS (Scanner)...  OK: OpenVAS Scanner is present in version 21.4.1.  OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem. Checking permissions of /var/lib/openvas/gnupg/*  OK: _gvm owns all files in /var/lib/openvas/gnupg  OK: redis-server is present.  OK: scanner (db_address setting) is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock  OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.  OK: redis-server configuration is OK and redis-server is running.  OK: _gvm owns all files in /var/lib/openvas/plugins  OK: NVT collection in /var/lib/openvas/plugins contains 58045 NVTs. Checking that the obsolete redis database has been removed  OK: No old Redis DB  OK: ospd-OpenVAS is present in version 21.4.1. Step 2: Checking GVMD Manager ...  OK: GVM Manager (gvmd) is present in version 21.4.2. Step 3: Checking Certificates ...  OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.  OK: Your GVM certificate infrastructure passed validation. Step 4: Checking data ...  OK: SCAP data found in /var/lib/gvm/scap-data.  OK: CERT data found in /var/lib/gvm/cert-data. Step 5: Checking Postgresql DB and user ...  OK: Postgresql version and default port are OK.  gvmd | _gvm | UTF8 | en_HK.UTF-8 | en_HK.UTF-8 |  OK: At least one user exists. Step 6: Checking Greenbone Security Assistant (GSA) ... Oops, secure memory pool already initialized  OK: Greenbone Security Assistant is present in version 21.4.1~dev1. Step 7: Checking if GVM services are up and running ...  OK: ospd-openvas service is active.  Starting gvmd service  Waiting for gvmd service  OK: gvmd service is active.  Starting greenbone-security-assistant service  Waiting for greenbone-security-assistant service  OK: greenbone-security-assistant service is active. Step 8: Checking few other requirements...  OK: nmap is present in version 21.4.1~dev1.  OK: ssh-keygen found, LSC credential generation for GNU/Linux targets is likely to work.  WARNING: Could not find makensis binary, LSC credential package generation for Microsoft Windows targets will not work.  SUGGEST: Install nsis.  OK: xsltproc found.  WARNING: Your password policy is empty.  SUGGEST: Edit the /etc/gvm/pwpolicy.conf file to set a password policy.  It seems like your GVM-21.4.1 installation is OK. 10. 启动成功 root@Fkali:/run/gvm# gvm-start shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory [*] Please wait for the GVM / OpenVAS services to start. [*] [*] You might need to refresh your browser once it opens. [*] [*] Web UI (Greenbone Security Assistant): https://127.0.0.1:9392  ● greenbone-security-assistant.service - Greenbone Security Assistant (gsad)  Loaded: loaded (/lib/systemd/system/greenbone-security-assistant.service; disabled; vendor preset: disabled)  Active: active (running) since Thu 2021-08-05 17:30:51 HKT; 7ms ago  Docs: man:gsad(8)  https://www.greenbone.net  Process: 12680 ExecStart=/usr/sbin/gsad --listen=127.0.0.1 --port=9392 (code=exited, status=0/SUCCESS)  Main PID: 12681 (gsad)  Tasks: 3 (limit: 12492)  Memory: 2.1M  CPU: 10ms  CGroup: /system.slice/greenbone-security-assistant.service  ├─12681 /usr/sbin/gsad --listen=127.0.0.1 --port=9392  └─12682 /usr/sbin/gsad --listen=127.0.0.1 --port=9392  Aug 05 17:30:51 Fkali systemd[1]: Starting Greenbone Security Assistant (gsad)... Aug 05 17:30:51 Fkali gsad[12680]: Oops, secure memory pool already initialized Aug 05 17:30:51 Fkali systemd[1]: Started Greenbone Security Assistant (gsad).  ● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)  Loaded: loaded (/lib/systemd/system/gvmd.service; disabled; vendor preset: disabled)  Active: active (running) since Thu 2021-08-05 17:30:46 HKT; 5s ago  Docs: man:gvmd(8)  Process: 12653 ExecStart=/usr/sbin/gvmd --osp-vt-update=/run/ospd/ospd.sock (code=exited, status=0/SUCCESS)  Main PID: 12655 (gvmd)  Tasks: 1 (limit: 12492)  Memory: 73.2M  CPU: 296ms  CGroup: /system.slice/gvmd.service  └─12655 gvmd: Waiting for incoming connections  Aug 05 17:30:45 Fkali systemd[1]: Starting Greenbone Vulnerability Manager daemon (gvmd)... Aug 05 17:30:45 Fkali systemd[1]: gvmd.service: Can't open PID file /run/gvm/gvmd.pid (yet?) after start: Operation not permitted Aug 05 17:30:46 Fkali systemd[1]: Started Greenbone Vulnerability Manager daemon (gvmd).  ● ospd-openvas.service - OpenVAS Wrapper of the Greenbone Vulnerability Management (ospd-openvas)  Loaded: loaded (/lib/systemd/system/ospd-openvas.service; disabled; vendor preset: disabled)  Active: active (running) since Thu 2021-08-05 17:30:45 HKT; 5s ago  Docs: man:ospd-openvas(8)  man:openvas(8)  Process: 12645 ExecStart=/usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas (code=exited, status=0/SUCCESS)  Main PID: 12647 (ospd-openvas)  Tasks: 4 (limit: 12492)  Memory: 20.2M  CPU: 194ms  CGroup: /system.slice/ospd-openvas.service  ├─12647 /usr/bin/python3 /usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas  └─12649 /usr/bin/python3 /usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas  Aug 05 17:30:45 Fkali systemd[1]: Starting OpenVAS Wrapper of the Greenbone Vulnerability Management (ospd-openvas)... Aug 05 17:30:45 Fkali systemd[1]: Started OpenVAS Wrapper of the Greenbone Vulnerability Management (ospd-openvas).  [*] Opening Web UI (https://127.0.0.1:9392) in: 5... 4... 3... 2... 1...   root@Fkali:~/Desktop# ospd-openvas ",
+  "wordCount" : "1926",
+  "inLanguage": "zh",
+  "datePublished": "2022-05-13T18:10:06+08:00",
+  "dateModified": "2022-05-13T18:10:06+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/gvm%E5%8D%87%E7%BA%A7%E5%90%8E%E5%90%AF%E5%8A%A8%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      GVM升级后启动异常处理
+    </h1>
+    <div class="post-meta"><span title='2022-05-13 18:10:06 +0800 CST'>2022-05-13</span>&nbsp;·&nbsp;10 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1-kali%e5%8d%87%e7%ba%a7" aria-label="1. Kali升级">1. Kali升级</a></li>
+                    <li>
+                        <a href="#2-%e5%8d%87%e7%ba%a7%e5%ae%8c%e6%88%90%e5%90%8e%e5%90%af%e5%8a%a8gvmopenvas%e5%8f%91%e7%8e%b0%e6%89%93%e4%b8%8d%e5%bc%80" aria-label="2. 升级完成后，启动GVM（OpenVas）发现打不开">2. 升级完成后，启动GVM（OpenVas）发现打不开</a></li>
+                    <li>
+                        <a href="#3-%e6%8c%89%e7%85%a7%e8%a6%81%e6%b1%82%e6%a3%80%e6%b5%8b%e5%8e%9f%e5%9b%a0" aria-label="3. 按照要求检测原因">3. 按照要求检测原因</a></li>
+                    <li>
+                        <a href="#4-%e6%9f%a5%e7%9c%8bpid%e6%96%87%e4%bb%b6" aria-label="4. 查看PID文件">4. 查看PID文件</a></li>
+                    <li>
+                        <a href="#5-%e9%87%8d%e6%96%b0%e6%a3%80%e6%b5%8b%e5%ae%89%e8%a3%85" aria-label="5. 重新检测安装">5. 重新检测安装</a></li>
+                    <li>
+                        <a href="#6-%e6%89%a7%e8%a1%8c%e5%85%bc%e5%ae%b9%e5%a4%84%e7%90%86%e5%90%8e%e5%86%8d%e6%ac%a1%e6%a3%80%e6%b5%8b%e5%ae%89%e8%a3%85" aria-label="6. 执行兼容处理后，再次检测安装">6. 执行兼容处理后，再次检测安装</a></li>
+                    <li>
+                        <a href="#7-%e6%9f%a5%e6%89%be%e5%ae%89%e8%a3%85%e8%b7%af%e5%be%84%e4%bf%ae%e6%94%b9%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="7. 查找安装路径，修改配置文件">7. 查找安装路径，修改配置文件</a></li>
+                    <li>
+                        <a href="#8-%e9%87%8d%e6%96%b0%e5%ae%89%e8%a3%85" aria-label="8. 重新安装">8. 重新安装</a></li>
+                    <li>
+                        <a href="#9-%e5%86%8d%e6%ac%a1%e6%a3%80%e6%b5%8b%e5%ae%89%e8%a3%85" aria-label="9. 再次检测安装">9. 再次检测安装</a></li>
+                    <li>
+                        <a href="#10-%e5%90%af%e5%8a%a8%e6%88%90%e5%8a%9f" aria-label="10. 启动成功">10. 启动成功</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h3 id="1-kali升级">1. Kali升级<a hidden class="anchor" aria-hidden="true" href="#1-kali升级">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>apt-get dist-upgrade
+</span></span></code></pre></div><h3 id="2-升级完成后启动gvmopenvas发现打不开">2. 升级完成后，启动GVM（OpenVas）发现打不开<a hidden class="anchor" aria-hidden="true" href="#2-升级完成后启动gvmopenvas发现打不开">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>oot@Fkali:~# gvm-start
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Please wait <span style="color:#66d9ef">for</span> the GVM / OpenVAS services to start.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> You might need to refresh your browser once it opens.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>  Web UI <span style="color:#f92672">(</span>Greenbone Security Assistant<span style="color:#f92672">)</span>: https://127.0.0.1:9392
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Job <span style="color:#66d9ef">for</span> gvmd.service failed because a timeout was exceeded.
+</span></span><span style="display:flex;"><span>See <span style="color:#e6db74">&#34;systemctl status gvmd.service&#34;</span> and <span style="color:#e6db74">&#34;journalctl -xe&#34;</span> <span style="color:#66d9ef">for</span> details.
+</span></span></code></pre></div><h3 id="3-按照要求检测原因">3. 按照要求检测原因<a hidden class="anchor" aria-hidden="true" href="#3-按照要求检测原因">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>oot@Fkali:~# systemctl status gvmd.service
+</span></span><span style="display:flex;"><span>● gvmd.service - Greenbone Vulnerability Manager daemon <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/gvmd.service; disabled; vendor preset: disabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Active: activating <span style="color:#f92672">(</span>start<span style="color:#f92672">)</span> since Thu 2021-08-05 16:42:08 HKT; 31s ago
+</span></span><span style="display:flex;"><span>       Docs: man:gvmd<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">10055</span> ExecStart<span style="color:#f92672">=</span>/usr/sbin/gvmd --osp-vt-update<span style="color:#f92672">=</span>/run/ospd/ospd.sock <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Tasks: <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>limit: 12492<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Memory: 4.0K
+</span></span><span style="display:flex;"><span>        CPU: 14ms
+</span></span><span style="display:flex;"><span>     CGroup: /system.slice/gvmd.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 16:42:08 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting Greenbone Vulnerability Manager daemon <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>...
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 16:42:08 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: gvmd.service: Can<span style="color:#960050;background-color:#1e0010">&#39;</span>t open PID file /run/gvm/gvmd.pid <span style="color:#f92672">(</span>yet?<span style="color:#f92672">)</span> after start: Operation not permitted
+</span></span></code></pre></div><h3 id="4-查看pid文件">4. 查看PID文件<a hidden class="anchor" aria-hidden="true" href="#4-查看pid文件">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>查看PID文件，发现没有上面的路径：
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@Fkali:~# cd /run/gvm/
+</span></span><span style="display:flex;"><span>root@Fkali:/run/gvm# ls
+</span></span></code></pre></div><h3 id="5-重新检测安装">5. 重新检测安装<a hidden class="anchor" aria-hidden="true" href="#5-重新检测安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>oot@Fkali:/run/gvm# sudo gvm-check-setup
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>gvm-check-setup 21.4.1
+</span></span><span style="display:flex;"><span>  Test completeness and readiness of GVM-21.4.1
+</span></span><span style="display:flex;"><span>chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>Step 1: Checking OpenVAS <span style="color:#f92672">(</span>Scanner<span style="color:#f92672">)</span>... 
+</span></span><span style="display:flex;"><span>        OK: OpenVAS Scanner is present in version 21.4.1.
+</span></span><span style="display:flex;"><span>        OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem.
+</span></span><span style="display:flex;"><span>Checking permissions of /var/lib/openvas/gnupg/*
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/gnupg
+</span></span><span style="display:flex;"><span>        OK: redis-server is present.
+</span></span><span style="display:flex;"><span>        OK: scanner <span style="color:#f92672">(</span>db_address setting<span style="color:#f92672">)</span> is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock
+</span></span><span style="display:flex;"><span>        OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.                                                                                                            
+</span></span><span style="display:flex;"><span>        OK: redis-server configuration is OK and redis-server is running.                                                                                                                                         
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/plugins                                                                                                                                                       
+</span></span><span style="display:flex;"><span>        OK: NVT collection in /var/lib/openvas/plugins contains <span style="color:#ae81ff">58045</span> NVTs.                                                                                                                                       
+</span></span><span style="display:flex;"><span>Checking that the obsolete redis database has been removed                                                                                                                                                        
+</span></span><span style="display:flex;"><span>        OK: No old Redis DB                                                                                                                                                                                       
+</span></span><span style="display:flex;"><span>        OK: ospd-OpenVAS is present in version 21.4.1.                                                                                                                                                            
+</span></span><span style="display:flex;"><span>Step 2: Checking GVMD Manager ...                                                                                                                                                                                 
+</span></span><span style="display:flex;"><span>        OK: GVM Manager <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span> is present in version 21.4.2.                                                                                                                                                      
+</span></span><span style="display:flex;"><span>Step 3: Checking Certificates ... 
+</span></span><span style="display:flex;"><span>        OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.
+</span></span><span style="display:flex;"><span>        OK: Your GVM certificate infrastructure passed validation.
+</span></span><span style="display:flex;"><span>Step 4: Checking data ... 
+</span></span><span style="display:flex;"><span>        OK: SCAP data found in /var/lib/gvm/scap-data.
+</span></span><span style="display:flex;"><span>        OK: CERT data found in /var/lib/gvm/cert-data.
+</span></span><span style="display:flex;"><span>Step 5: Checking Postgresql DB and user ... 
+</span></span><span style="display:flex;"><span>        OK: Postgresql version and default port are OK.
+</span></span><span style="display:flex;"><span> gvmd      | _gvm     | UTF8     | en_HK.UTF-8 | en_HK.UTF-8 | 
+</span></span><span style="display:flex;"><span>Database is wrong version.
+</span></span><span style="display:flex;"><span>        ERROR: Database is wrong version. You have installed a new gvmd version
+</span></span><span style="display:flex;"><span>        FIX: Run <span style="color:#e6db74">&#39;sudo runuser -u _gvm -- gvmd --migrate&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> ERROR: Your GVM-21.4.1 installation is not yet complete!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Please follow the instructions marked with FIX above and run this
+</span></span><span style="display:flex;"><span>script again.
+</span></span></code></pre></div><h3 id="6-执行兼容处理后再次检测安装">6. 执行兼容处理后，再次检测安装<a hidden class="anchor" aria-hidden="true" href="#6-执行兼容处理后再次检测安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@Fkali:/run/gvm# sudo gvm-check-setup
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>gvm-check-setup 21.4.1
+</span></span><span style="display:flex;"><span>  Test completeness and readiness of GVM-21.4.1
+</span></span><span style="display:flex;"><span>chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>Step 1: Checking OpenVAS <span style="color:#f92672">(</span>Scanner<span style="color:#f92672">)</span>... 
+</span></span><span style="display:flex;"><span>        OK: OpenVAS Scanner is present in version 21.4.1.
+</span></span><span style="display:flex;"><span>        OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem.
+</span></span><span style="display:flex;"><span>Checking permissions of /var/lib/openvas/gnupg/*
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/gnupg
+</span></span><span style="display:flex;"><span>        OK: redis-server is present.
+</span></span><span style="display:flex;"><span>        OK: scanner <span style="color:#f92672">(</span>db_address setting<span style="color:#f92672">)</span> is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock
+</span></span><span style="display:flex;"><span>        OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.
+</span></span><span style="display:flex;"><span>        OK: redis-server configuration is OK and redis-server is running.
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/plugins
+</span></span><span style="display:flex;"><span>        OK: NVT collection in /var/lib/openvas/plugins contains <span style="color:#ae81ff">58045</span> NVTs.
+</span></span><span style="display:flex;"><span>Checking that the obsolete redis database has been removed
+</span></span><span style="display:flex;"><span>        OK: No old Redis DB
+</span></span><span style="display:flex;"><span>        OK: ospd-OpenVAS is present in version 21.4.1.
+</span></span><span style="display:flex;"><span>Step 2: Checking GVMD Manager ... 
+</span></span><span style="display:flex;"><span>        OK: GVM Manager <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span> is present in version 21.4.2.
+</span></span><span style="display:flex;"><span>Step 3: Checking Certificates ... 
+</span></span><span style="display:flex;"><span>        OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.
+</span></span><span style="display:flex;"><span>        OK: Your GVM certificate infrastructure passed validation.
+</span></span><span style="display:flex;"><span>Step 4: Checking data ... 
+</span></span><span style="display:flex;"><span>        OK: SCAP data found in /var/lib/gvm/scap-data.
+</span></span><span style="display:flex;"><span>        OK: CERT data found in /var/lib/gvm/cert-data.
+</span></span><span style="display:flex;"><span>Step 5: Checking Postgresql DB and user ... 
+</span></span><span style="display:flex;"><span>        OK: Postgresql version and default port are OK.
+</span></span><span style="display:flex;"><span> gvmd      | _gvm     | UTF8     | en_HK.UTF-8 | en_HK.UTF-8 | 
+</span></span><span style="display:flex;"><span>        OK: At least one user exists.
+</span></span><span style="display:flex;"><span>Step 6: Checking Greenbone Security Assistant <span style="color:#f92672">(</span>GSA<span style="color:#f92672">)</span> ... 
+</span></span><span style="display:flex;"><span>Oops, secure memory pool already initialized
+</span></span><span style="display:flex;"><span>        ERROR: Greenbone Security Assistant too old or too new: 21.4.1~dev1
+</span></span><span style="display:flex;"><span>        FIX: Please install Greenbone Security Assistant &gt;<span style="color:#f92672">=</span> 21.04.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> ERROR: Your GVM-21.4.1 installation is not yet complete!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Please follow the instructions marked with FIX above and run this
+</span></span><span style="display:flex;"><span>script again.
+</span></span></code></pre></div><h3 id="7-查找安装路径修改配置文件">7. 查找安装路径，修改配置文件<a hidden class="anchor" aria-hidden="true" href="#7-查找安装路径修改配置文件">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@Fkali:/run/gvm# whereis gvm-check-setup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@Fkali:/run/gvm# sed -i<span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#39;s/GSA_MAJOR=&#34;21.04&#34;/GSA_MAJOR=&#34;21.4&#34;/g&#39;</span> $^Cusr/bin/gvm-check-setup
+</span></span></code></pre></div><h3 id="8-重新安装">8. 重新安装<a hidden class="anchor" aria-hidden="true" href="#8-重新安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@Fkali:/run/gvm# gvm-setup
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>Creating openvas-scanner<span style="color:#960050;background-color:#1e0010">&#39;</span>s certificate files
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;<span style="color:#f92672">]</span> Creating database
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>createuser: error: creation of new role failed: ERROR:  role <span style="color:#e6db74">&#34;_gvm&#34;</span> already exists
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>createdb: error: database creation failed: ERROR:  database <span style="color:#e6db74">&#34;gvmd&#34;</span> already exists
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>psql: fatal: could not find own program executable
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>psql: fatal: could not find own program executable
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>psql: fatal: could not find own program executable
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>psql: fatal: could not find own program executable
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;<span style="color:#f92672">]</span> Migrating database
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;<span style="color:#f92672">]</span> Checking <span style="color:#66d9ef">for</span> admin user
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>could not identify current directory: No such file or directory
+</span></span><span style="display:flex;"><span>psql: fatal: could not find own program executable
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Define Feed Import Owner
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;<span style="color:#f92672">]</span> Updating OpenVAS feeds
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Updating: NVT
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>rsync: <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">]</span> getcwd<span style="color:#f92672">()</span>: No such file or directory <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>rsync error: errors selecting input/output files, dirs <span style="color:#f92672">(</span>code 3<span style="color:#f92672">)</span> at util.c<span style="color:#f92672">(</span>1088<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">=</span>3.2.3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;<span style="color:#f92672">]</span> Uploading plugins in Redis
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Updating: GVMD Data
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>rsync: <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">]</span> getcwd<span style="color:#f92672">()</span>: No such file or directory <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>rsync error: errors selecting input/output files, dirs <span style="color:#f92672">(</span>code 3<span style="color:#f92672">)</span> at util.c<span style="color:#f92672">(</span>1088<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">=</span>3.2.3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Updating: Scap Data
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>rsync: <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">]</span> getcwd<span style="color:#f92672">()</span>: No such file or directory <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>rsync error: errors selecting input/output files, dirs <span style="color:#f92672">(</span>code 3<span style="color:#f92672">)</span> at util.c<span style="color:#f92672">(</span>1088<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">=</span>3.2.3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Updating: Cert Data
+</span></span><span style="display:flex;"><span>sh: 0: getcwd<span style="color:#f92672">()</span> failed: No such file or directory
+</span></span><span style="display:flex;"><span>rsync: <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">]</span> getcwd<span style="color:#f92672">()</span>: No such file or directory <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>rsync error: errors selecting input/output files, dirs <span style="color:#f92672">(</span>code 3<span style="color:#f92672">)</span> at util.c<span style="color:#f92672">(</span>1088<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>Receiver<span style="color:#f92672">=</span>3.2.3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Checking Default scanner
+</span></span><span style="display:flex;"><span>08b69003-5fc2-4037-a479-93b440211c73  OpenVAS  /var/run/ospd/ospd.sock  <span style="color:#ae81ff">0</span>  OpenVAS Default
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Done
+</span></span></code></pre></div><h3 id="9-再次检测安装">9. 再次检测安装<a hidden class="anchor" aria-hidden="true" href="#9-再次检测安装">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@Fkali:/run/gvm# sudo gvm-check-setup
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>gvm-check-setup 21.4.1
+</span></span><span style="display:flex;"><span>  Test completeness and readiness of GVM-21.4.1
+</span></span><span style="display:flex;"><span>chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span>Step 1: Checking OpenVAS <span style="color:#f92672">(</span>Scanner<span style="color:#f92672">)</span>... 
+</span></span><span style="display:flex;"><span>        OK: OpenVAS Scanner is present in version 21.4.1.
+</span></span><span style="display:flex;"><span>        OK: Server CA Certificate is present as /var/lib/gvm/CA/servercert.pem.
+</span></span><span style="display:flex;"><span>Checking permissions of /var/lib/openvas/gnupg/*
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/gnupg
+</span></span><span style="display:flex;"><span>        OK: redis-server is present.
+</span></span><span style="display:flex;"><span>        OK: scanner <span style="color:#f92672">(</span>db_address setting<span style="color:#f92672">)</span> is configured properly using the redis-server socket: /var/run/redis-openvas/redis-server.sock
+</span></span><span style="display:flex;"><span>        OK: redis-server is running and listening on socket: /var/run/redis-openvas/redis-server.sock.
+</span></span><span style="display:flex;"><span>        OK: redis-server configuration is OK and redis-server is running.
+</span></span><span style="display:flex;"><span>        OK: _gvm owns all files in /var/lib/openvas/plugins
+</span></span><span style="display:flex;"><span>        OK: NVT collection in /var/lib/openvas/plugins contains <span style="color:#ae81ff">58045</span> NVTs.
+</span></span><span style="display:flex;"><span>Checking that the obsolete redis database has been removed
+</span></span><span style="display:flex;"><span>        OK: No old Redis DB
+</span></span><span style="display:flex;"><span>        OK: ospd-OpenVAS is present in version 21.4.1.
+</span></span><span style="display:flex;"><span>Step 2: Checking GVMD Manager ... 
+</span></span><span style="display:flex;"><span>        OK: GVM Manager <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span> is present in version 21.4.2.
+</span></span><span style="display:flex;"><span>Step 3: Checking Certificates ... 
+</span></span><span style="display:flex;"><span>        OK: GVM client certificate is valid and present as /var/lib/gvm/CA/clientcert.pem.
+</span></span><span style="display:flex;"><span>        OK: Your GVM certificate infrastructure passed validation.
+</span></span><span style="display:flex;"><span>Step 4: Checking data ... 
+</span></span><span style="display:flex;"><span>        OK: SCAP data found in /var/lib/gvm/scap-data.
+</span></span><span style="display:flex;"><span>        OK: CERT data found in /var/lib/gvm/cert-data.
+</span></span><span style="display:flex;"><span>Step 5: Checking Postgresql DB and user ... 
+</span></span><span style="display:flex;"><span>        OK: Postgresql version and default port are OK.
+</span></span><span style="display:flex;"><span> gvmd      | _gvm     | UTF8     | en_HK.UTF-8 | en_HK.UTF-8 | 
+</span></span><span style="display:flex;"><span>        OK: At least one user exists.
+</span></span><span style="display:flex;"><span>Step 6: Checking Greenbone Security Assistant <span style="color:#f92672">(</span>GSA<span style="color:#f92672">)</span> ... 
+</span></span><span style="display:flex;"><span>Oops, secure memory pool already initialized
+</span></span><span style="display:flex;"><span>        OK: Greenbone Security Assistant is present in version 21.4.1~dev1.
+</span></span><span style="display:flex;"><span>Step 7: Checking <span style="color:#66d9ef">if</span> GVM services are up and running ... 
+</span></span><span style="display:flex;"><span>        OK: ospd-openvas service is active.
+</span></span><span style="display:flex;"><span>        Starting gvmd service
+</span></span><span style="display:flex;"><span>        Waiting <span style="color:#66d9ef">for</span> gvmd service
+</span></span><span style="display:flex;"><span>        OK: gvmd service is active.
+</span></span><span style="display:flex;"><span>        Starting greenbone-security-assistant service
+</span></span><span style="display:flex;"><span>        Waiting <span style="color:#66d9ef">for</span> greenbone-security-assistant service
+</span></span><span style="display:flex;"><span>        OK: greenbone-security-assistant service is active.
+</span></span><span style="display:flex;"><span>Step 8: Checking few other requirements...
+</span></span><span style="display:flex;"><span>        OK: nmap is present in version 21.4.1~dev1.
+</span></span><span style="display:flex;"><span>        OK: ssh-keygen found, LSC credential generation <span style="color:#66d9ef">for</span> GNU/Linux targets is likely to work.
+</span></span><span style="display:flex;"><span>        WARNING: Could not find makensis binary, LSC credential package generation <span style="color:#66d9ef">for</span> Microsoft Windows targets will not work.
+</span></span><span style="display:flex;"><span>        SUGGEST: Install nsis.
+</span></span><span style="display:flex;"><span>        OK: xsltproc found.
+</span></span><span style="display:flex;"><span>        WARNING: Your password policy is empty.
+</span></span><span style="display:flex;"><span>        SUGGEST: Edit the /etc/gvm/pwpolicy.conf file to set a password policy.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>It seems like your GVM-21.4.1 installation is OK.
+</span></span></code></pre></div><h3 id="10-启动成功">10. 启动成功<a hidden class="anchor" aria-hidden="true" href="#10-启动成功">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@Fkali:/run/gvm# gvm-start
+</span></span><span style="display:flex;"><span>shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Please wait <span style="color:#66d9ef">for</span> the GVM / OpenVAS services to start.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> You might need to refresh your browser once it opens.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>  Web UI <span style="color:#f92672">(</span>Greenbone Security Assistant<span style="color:#f92672">)</span>: https://127.0.0.1:9392
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>● greenbone-security-assistant.service - Greenbone Security Assistant <span style="color:#f92672">(</span>gsad<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/greenbone-security-assistant.service; disabled; vendor preset: disabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Active: active <span style="color:#f92672">(</span>running<span style="color:#f92672">)</span> since Thu 2021-08-05 17:30:51 HKT; 7ms ago
+</span></span><span style="display:flex;"><span>       Docs: man:gsad<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             https://www.greenbone.net
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">12680</span> ExecStart<span style="color:#f92672">=</span>/usr/sbin/gsad --listen<span style="color:#f92672">=</span>127.0.0.1 --port<span style="color:#f92672">=</span><span style="color:#ae81ff">9392</span> <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Main PID: <span style="color:#ae81ff">12681</span> <span style="color:#f92672">(</span>gsad<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Tasks: <span style="color:#ae81ff">3</span> <span style="color:#f92672">(</span>limit: 12492<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Memory: 2.1M
+</span></span><span style="display:flex;"><span>        CPU: 10ms
+</span></span><span style="display:flex;"><span>     CGroup: /system.slice/greenbone-security-assistant.service
+</span></span><span style="display:flex;"><span>             ├─12681 /usr/sbin/gsad --listen<span style="color:#f92672">=</span>127.0.0.1 --port<span style="color:#f92672">=</span><span style="color:#ae81ff">9392</span>
+</span></span><span style="display:flex;"><span>             └─12682 /usr/sbin/gsad --listen<span style="color:#f92672">=</span>127.0.0.1 --port<span style="color:#f92672">=</span><span style="color:#ae81ff">9392</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:51 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting Greenbone Security Assistant <span style="color:#f92672">(</span>gsad<span style="color:#f92672">)</span>...
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:51 Fkali gsad<span style="color:#f92672">[</span>12680<span style="color:#f92672">]</span>: Oops, secure memory pool already initialized
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:51 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Started Greenbone Security Assistant <span style="color:#f92672">(</span>gsad<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>● gvmd.service - Greenbone Vulnerability Manager daemon <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/gvmd.service; disabled; vendor preset: disabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Active: active <span style="color:#f92672">(</span>running<span style="color:#f92672">)</span> since Thu 2021-08-05 17:30:46 HKT; 5s ago
+</span></span><span style="display:flex;"><span>       Docs: man:gvmd<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">12653</span> ExecStart<span style="color:#f92672">=</span>/usr/sbin/gvmd --osp-vt-update<span style="color:#f92672">=</span>/run/ospd/ospd.sock <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Main PID: <span style="color:#ae81ff">12655</span> <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Tasks: <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>limit: 12492<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Memory: 73.2M
+</span></span><span style="display:flex;"><span>        CPU: 296ms
+</span></span><span style="display:flex;"><span>     CGroup: /system.slice/gvmd.service
+</span></span><span style="display:flex;"><span>             └─12655 gvmd: Waiting <span style="color:#66d9ef">for</span> incoming connections
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:45 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting Greenbone Vulnerability Manager daemon <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>...
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:45 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: gvmd.service: Can<span style="color:#960050;background-color:#1e0010">&#39;</span>t open PID file /run/gvm/gvmd.pid <span style="color:#f92672">(</span>yet?<span style="color:#f92672">)</span> after start: Operation not permitted
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:46 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Started Greenbone Vulnerability Manager daemon <span style="color:#f92672">(</span>gvmd<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>● ospd-openvas.service - OpenVAS Wrapper of the Greenbone Vulnerability Management <span style="color:#f92672">(</span>ospd-openvas<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/ospd-openvas.service; disabled; vendor preset: disabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Active: active <span style="color:#f92672">(</span>running<span style="color:#f92672">)</span> since Thu 2021-08-05 17:30:45 HKT; 5s ago
+</span></span><span style="display:flex;"><span>       Docs: man:ospd-openvas<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             man:openvas<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">12645</span> ExecStart<span style="color:#f92672">=</span>/usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Main PID: <span style="color:#ae81ff">12647</span> <span style="color:#f92672">(</span>ospd-openvas<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Tasks: <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>limit: 12492<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Memory: 20.2M
+</span></span><span style="display:flex;"><span>        CPU: 194ms
+</span></span><span style="display:flex;"><span>     CGroup: /system.slice/ospd-openvas.service
+</span></span><span style="display:flex;"><span>             ├─12647 /usr/bin/python3 /usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas
+</span></span><span style="display:flex;"><span>             └─12649 /usr/bin/python3 /usr/bin/ospd-openvas --unix-socket /run/ospd/ospd.sock --pid-file /run/ospd/ospd-openvas.pid --log-file /var/log/gvm/ospd-openvas.log --lock-file-dir /var/lib/openvas
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:45 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting OpenVAS Wrapper of the Greenbone Vulnerability Management <span style="color:#f92672">(</span>ospd-openvas<span style="color:#f92672">)</span>...
+</span></span><span style="display:flex;"><span>Aug <span style="color:#ae81ff">05</span> 17:30:45 Fkali systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Started OpenVAS Wrapper of the Greenbone Vulnerability Management <span style="color:#f92672">(</span>ospd-openvas<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Opening Web UI <span style="color:#f92672">(</span>https://127.0.0.1:9392<span style="color:#f92672">)</span> in: 5... 4... 3... 2... 1... 
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@Fkali:~/Desktop# ospd-openvas
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/openvas/">openvas</a></li>
+      <li><a href="https://iblog.zone/tags/kali/">kali</a></li>
+      <li><a href="https://iblog.zone/tags/gvm/">gvm</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E6%B2%A1%E6%9C%89%E6%AD%A3%E5%B8%B8%E6%89%A7%E8%A1%8C/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Linux计划任务没有正常执行</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%B8%85%E7%90%86/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Docker容器日志查看与清理</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

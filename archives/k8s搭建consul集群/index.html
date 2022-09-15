@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>k8s搭建consul集群 | ylw&#39;s blog</title>
+<meta name="keywords" content="consul" />
+<meta name="description" content="部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &#34;TCP&#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &#34;UDP&#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &#34;TCP&#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &#34;UDP&#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="k8s搭建consul集群" />
+<meta property="og:description" content="部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &#34;TCP&#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &#34;UDP&#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &#34;TCP&#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &#34;UDP&#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-14T14:44:57&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-14T14:44:57&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="k8s搭建consul集群"/>
+<meta name="twitter:description" content="部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: &#34;TCP&#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: &#34;UDP&#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: &#34;TCP&#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: &#34;UDP&#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "k8s搭建consul集群",
+      "item": "https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "k8s搭建consul集群",
+  "name": "k8s搭建consul集群",
+  "description": "部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: \u0026#34;TCP\u0026#34;  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: \u0026#34;UDP\u0026#34;  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: \u0026#34;TCP\u0026#34;  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: \u0026#34;UDP\u0026#34;  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.",
+  "keywords": [
+    "consul"
+  ],
+  "articleBody": " 部署一个Service  vim consul-server-service.yaml apiVersion: v1 kind: Service metadata:  name: consul-server  labels:  name: consul-server spec:  selector:  name: consul-server  ports:  - name: http  port: 8500  targetPort: 8500  - name: https  port: 8443  targetPort: 8443  - name: rpc  port: 8400  targetPort: 8400  - name: serf-lan-tcp  protocol: \"TCP\"  port: 8301  targetPort: 8301  - name: serf-lan-udp  protocol: \"UDP\"  port: 8301  targetPort: 8301  - name: serf-wan-tcp  protocol: \"TCP\"  port: 8302  targetPort: 8302  - name: serf-wan-udp  protocol: \"UDP\"  port: 8302  targetPort: 8302  - name: server  port: 8300  targetPort: 8300  - name: consul-dns  port: 8600  targetPort: 8600 kubect create -f consul-server-service.yaml 用于通过dns查找agent pod\n2.以StatefulSet方式部署3个有状态的Consul Server\nvim consul-server.yaml apiVersion: apps/v1 kind: StatefulSet metadata:  name: consul-server  labels:  name: consul-server spec:  serviceName: consul-server  selector:  matchLabels:  name: consul-server  replicas: 3  template:  metadata:  labels:  name: consul-server  spec:  terminationGracePeriodSeconds: 10  containers:  - name: consul  image: consul:latest  imagePullPolicy: IfNotPresent  args:  - \"agent\"  - \"-server\"  - \"-bootstrap-expect=3\"  - \"-ui\"  - \"-data-dir=/consul/data\"  - \"-bind=0.0.0.0\"  - \"-client=0.0.0.0\"  - \"-advertise=$(POD_IP)\"  - \"-retry-join=consul-server-0.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-retry-join=consul-server-1.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-retry-join=consul-server-2.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-domain=cluster.local\"  - \"-disable-host-node-id\"  env:  - name: POD_IP  valueFrom:  fieldRef:  fieldPath: status.podIP  - name: NAMESPACE  valueFrom:  fieldRef:  fieldPath: metadata.namespace  ports:  - containerPort: 8500  name: http  - containerPort: 8400  name: rpc  - containerPort: 8443  name: https-port  - containerPort: 8301  name: serf-lan  - containerPort: 8302  name: serf-wan  - containerPort: 8600  name: consul-dns  - containerPort: 8300  name: server kubect create -f consul-server.yaml 3个consul server正常运行\n3.对外NodePort方式对外暴露服务端口\nvim consul-server-http.yaml apiVersion: v1 kind: Service metadata:  name: consul-server-http spec:  selector:  name: consul-server  type: NodePort  ports:  - protocol: TCP  port: 8500  targetPort: 8500  nodePort: 30098  name: consul-server-tcp kubectl create -f consul-server-http.yaml 对外暴露节点端口是30098\n通过控制台访问\nconsul-server-0是leader节点，共有3个Server节点\n4.以daemonSet方式在工作节点上部署client\nvim consul-client.yaml apiVersion: apps/v1 kind: DaemonSet metadata:  name: consul-client  labels:  name: consul-client spec:  selector:  matchLabels:  name: consul-client  template:  metadata:  labels:  name: consul-client  spec:  containers:  - name: consul  image: consul:latest  imagePullPolicy: IfNotPresent  args:  - \"agent\"  - \"-data-dir=/consul/data\"  - \"-bind=0.0.0.0\"  - \"-client=0.0.0.0\"  - \"-advertise=$(POD_IP)\"  - \"-retry-join=consul-server-0.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-retry-join=consul-server-1.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-retry-join=consul-server-2.consul-server.$(NAMESPACE).svc.cluster.local\"  - \"-domain=cluster.local\"  - \"-disable-host-node-id\"  env:  - name: POD_IP  valueFrom:  fieldRef:  fieldPath: status.podIP  - name: NAMESPACE  valueFrom:  fieldRef:  fieldPath: metadata.namespace  lifecycle:  postStart:  exec:  command:  - /bin/sh  - -c  - consul reload  preStop:  exec:  command:  - /bin/sh  - -c  - consul leave  volumeMounts:  - name: consul-data-dir  mountPath: /consul/data  ports:  - containerPort: 8500  hostPort: 8500  name: http  - containerPort: 8400  name: rpc  - containerPort: 8443  name: https  - containerPort: 8301  name: serf-lan  - containerPort: 8302  name: serf-wan  - containerPort: 8600  name: consul  - containerPort: 8300  name: server  volumes:  - name: consul-data-dir  hostPath:  path: /Users/xuan/desktop/consul/data  type: DirectoryOrCreate kubectl create -f consul-client.yaml 创建client\n通过控制台可以看到有两个client加入了集群\n",
+  "wordCount" : "401",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-14T14:44:57Z",
+  "dateModified": "2021-12-14T14:44:57Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/k8s%E6%90%AD%E5%BB%BAconsul%E9%9B%86%E7%BE%A4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      k8s搭建consul集群
+    </h1>
+    <div class="post-meta"><span title='2021-12-14 14:44:57 +0000 UTC'>2021-12-14</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><ol>
+<li>部署一个Service</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim consul-server-service.yaml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8443</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8443</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">rpc</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8400</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8400</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-lan-tcp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#e6db74">&#34;TCP&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-lan-udp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#e6db74">&#34;UDP&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-wan-tcp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#e6db74">&#34;TCP&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-wan-udp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#e6db74">&#34;UDP&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">server</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8300</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8300</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-dns</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8600</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8600</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubect create -f consul-server-service.yaml
+</span></span></code></pre></div><p>用于通过dns查找agent pod</p>
+<p>2.以StatefulSet方式部署3个有状态的Consul Server</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim consul-server.yaml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StatefulSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">terminationGracePeriodSeconds</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">image</span>: <span style="color:#ae81ff">consul:latest</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">IfNotPresent</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">args</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;agent&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-server&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-bootstrap-expect=3&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-ui&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-data-dir=/consul/data&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-bind=0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-client=0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-advertise=$(POD_IP)&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-0.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-1.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-2.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-domain=cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-disable-host-node-id&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">POD_IP</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">valueFrom</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">fieldRef</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">fieldPath</span>: <span style="color:#ae81ff">status.podIP</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">NAMESPACE</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">valueFrom</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">fieldRef</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">fieldPath</span>: <span style="color:#ae81ff">metadata.namespace</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8400</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">rpc</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8443</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https-port</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-lan</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-wan</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8600</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-dns</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8300</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">server</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubect create -f   consul-server.yaml
+</span></span></code></pre></div><p><img loading="lazy" src="/images/k8s%e6%90%ad%e5%bb%baconsul%e9%9b%86%e7%be%a4/20200928172942697.png" alt=""  />
+</p>
+<p>3个consul server正常运行</p>
+<p>3.对外NodePort方式对外暴露服务端口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim consul-server-http.yaml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server-http</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">NodePort</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">nodePort</span>: <span style="color:#ae81ff">30098</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-server-tcp</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl create -f consul-server-http.yaml 
+</span></span></code></pre></div><p>对外暴露节点端口是30098</p>
+<p>通过控制台访问</p>
+<p><img loading="lazy" src="/images/k8s%e6%90%ad%e5%bb%baconsul%e9%9b%86%e7%be%a4/2020092817320598.png" alt=""  />
+</p>
+<p>consul-server-0是leader节点，共有3个Server节点</p>
+<p>4.以daemonSet方式在工作节点上部署client</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim consul-client.yaml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">DaemonSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-client</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-client</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-client</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-client</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">image</span>: <span style="color:#ae81ff">consul:latest</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">IfNotPresent</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">args</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;agent&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-data-dir=/consul/data&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-bind=0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-client=0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-advertise=$(POD_IP)&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-0.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-1.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-retry-join=consul-server-2.consul-server.$(NAMESPACE).svc.cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-domain=cluster.local&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;-disable-host-node-id&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">POD_IP</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">valueFrom</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">fieldRef</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">fieldPath</span>: <span style="color:#ae81ff">status.podIP</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">NAMESPACE</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">valueFrom</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">fieldRef</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">fieldPath</span>: <span style="color:#ae81ff">metadata.namespace</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">lifecycle</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">postStart</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">exec</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">command</span>:
+</span></span><span style="display:flex;"><span>                  - <span style="color:#ae81ff">/bin/sh</span>
+</span></span><span style="display:flex;"><span>                  - -<span style="color:#ae81ff">c</span>
+</span></span><span style="display:flex;"><span>                  - <span style="color:#ae81ff">consul reload</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">preStop</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">exec</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">command</span>:
+</span></span><span style="display:flex;"><span>                  - <span style="color:#ae81ff">/bin/sh</span>
+</span></span><span style="display:flex;"><span>                  - -<span style="color:#ae81ff">c</span>
+</span></span><span style="display:flex;"><span>                  - <span style="color:#ae81ff">consul leave</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-data-dir</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/consul/data</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">hostPort</span>: <span style="color:#ae81ff">8500</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8400</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">rpc</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8443</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8301</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-lan</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8302</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">serf-wan</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8600</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8300</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">server</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">consul-data-dir</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">hostPath</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/Users/xuan/desktop/consul/data</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">type</span>: <span style="color:#ae81ff">DirectoryOrCreate</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl create -f consul-client.yaml
+</span></span></code></pre></div><p>创建client</p>
+<p><img loading="lazy" src="/images/k8s%e6%90%ad%e5%bb%baconsul%e9%9b%86%e7%be%a4/20200928173322653.png" alt=""  />
+</p>
+<p>通过控制台可以看到有两个client加入了集群</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/consul/">consul</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/kubernetes1.16%E5%AE%89%E8%A3%85kubadm%E6%96%B9%E5%BC%8F/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Kubernetes1.16安装[kubadm方式]</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Docker 常用命令大全</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

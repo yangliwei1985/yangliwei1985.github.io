@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>基础语法 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
+    <description>Recent content in 基础语法 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 07 Feb 2022 14:44:39 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java Debug&amp;进制&amp;二维数组</title>
+      <link>https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Mon, 07 Feb 2022 14:44:39 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java-debug%E8%BF%9B%E5%88%B6%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84/</guid>
+      <description>1.Debug模式 1.1 什么是Debug模式 是供程序员使用的程序调试工具，它可以用于查看程序的执行流程，也可以用于追踪程序执行过程来调试程序。
+1.2 Debug介绍与操作流程   如何加断点
+ 选择要设置断点的代码行，在行号的区域后面单击鼠标左键即可    如何运行加了断点的程序
+ 在代码区域右键Debug执行    看哪里
+  看Debugger窗口
+  看Console窗口
+    点哪里
+ 点Step Into (F7)这个箭头，也可以直接按F7    如何删除断点
+  选择要删除的断点，单击鼠标左键即可
+  如果是多个断点，可以每一个再点击一次。也可以一次性全部删除
+    2. 进制的介绍与书写格式 2.1 进制的介绍与书写格式 代码 :
+public class Demo1 {  /* 十进制：Java中，数值默认都是10进制，不需要加任何修饰。 二进制：数值前面以0b开头，b大小写都可以。 八进制：数值前面以0开头。 十六进制：数值前面以0x开头，x大小写都可以。 注意: 书写的时候, 虽然加入了进制的标识, 但打印在控制台展示的都是十进制数据. */  public static void main(String[] args) {  System.</description>
+    </item>
+    
+    <item>
+      <title>Java方法</title>
+      <link>https://iblog.zone/archives/java%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Mon, 07 Feb 2022 14:35:54 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%96%B9%E6%B3%95/</guid>
+      <description>1. 方法概述 1.1 方法的概念 ​	方法（method）是将具有独立功能的代码块组织成为一个整体，使其具有特殊功能的代码集
+ 注意：  方法必须先创建才可以使用，该过程成为方法定义 方法创建后并不是直接可以运行的，需要手动使用后，才执行，该过程成为方法调用    2. 方法的定义和调用 2.1 无参数方法定义和调用   定义格式：
+public static void 方法名 ( ) { 	// 方法体; }   范例：
+public static void method ( ) { 	// 方法体; }   调用格式：
+方法名();   范例：
+method();   注意：
+​	方法必须先定义，后调用，否则程序将报错
+  2.2 方法的调用过程  总结：每个方法在被调用执行的时候，都会进入栈内存，并且拥有自己独立的内存空间，方法内部代码调用完毕之后，会从栈内存中弹栈消失。  2.3 方法练习-奇偶数判断  需求：判断一个数是奇数还是偶数 代码：  public class Demo1Method {  /* 带参数方法的定义格式: public static void 方法名 ( 参数 ) { … … } public static void 方法名 ( 数据类型 变量名 ) { … … } 带参数方法的调用格式: 方法名 ( 参数 ) ; 方法名 ( 变量名/常量值 ) ; tips: 参数可以是一个, 也可以是多个.</description>
+    </item>
+    
+    <item>
+      <title>Java数组</title>
+      <link>https://iblog.zone/archives/java%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Mon, 07 Feb 2022 14:25:44 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E6%95%B0%E7%BB%84/</guid>
+      <description>1.数组 1.1 数组介绍 ​	数组就是存储数据长度固定的容器，存储多个数据的数据类型要一致。
+1.2 数组的定义格式 1.2.1 第一种格式 ​	数据类型[] 数组名
+​	示例：
+int[] arr; double[] arr; char[] arr; 1.2.2 第二种格式 ​	数据类型 数组名[]
+​	示例：
+int arr[]; double arr[]; char arr[]; 1.3 数组的动态初始化 1.3.1 什么是动态初始化 ​	数组动态初始化就是只给定数组的长度，由系统给出默认初始化值
+1.3.2 动态初始化格式 数据类型[] 数组名 = new 数据类型[数组长度]; int[] arr = new int[3]; 1.3.3 动态初始化格式详解  等号左边：  int:数组的数据类型 []:代表这是一个数组 arr:代表数组的名称   等号右边：  new:为数组开辟内存空间 int:数组的数据类型 []:代表这是一个数组 5:代表数组的长度    代码 :</description>
+    </item>
+    
+    <item>
+      <title>Java循环</title>
+      <link>https://iblog.zone/archives/java%E5%BE%AA%E7%8E%AF/</link>
+      <pubDate>Fri, 28 Jan 2022 14:21:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E5%BE%AA%E7%8E%AF/</guid>
+      <description>1. switch语句 1.1 分支语句switch语句   格式
+switch (表达式) { 	case 1: 	语句体1; 	break; 	case 2: 	语句体2; 	break; 	... 	default: 	语句体n+1; 	break; }   执行流程：
+ 首先计算出表达式的值 其次，和case依次比较，一旦有对应的值，就会执行相应的语句，在执行的过程中，遇到break就会结 束。 最后，如果所有的case都和表达式的值不匹配，就会执行default语句体部分，然后程序结束掉。    1.2 switch案例-减肥计划  需求：键盘录入星期数，显示今天的减肥活动  周一：跑步 周二：游泳 周三：慢走 周四：动感单车 周五：拳击 周六：爬山 周日：好好吃一顿  示例代码：  public static void main(String[] args){ 	// 1. 键盘录入星期数据，使用变量接收 	Scanner sc = new Scanner(System.</description>
+    </item>
+    
+    <item>
+      <title>Java运算符</title>
+      <link>https://iblog.zone/archives/java%E8%BF%90%E7%AE%97%E7%AC%A6/</link>
+      <pubDate>Thu, 27 Jan 2022 16:46:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E8%BF%90%E7%AE%97%E7%AC%A6/</guid>
+      <description>1 类型转换 在Java中，一些数据类型之间是可以相互转换的。分为两种情况：自动类型转换和强制类型转换。
+1.1 隐式转换(理解) ​	把一个表示数据范围小的数值或者变量赋值给另一个表示数据范围大的变量。这种转换方式是自动的，直接书写即可。例如：
+double num = 10; // 将int类型的10直接赋值给double类型 System.out.println(num); // 输出10.0 ​	类型从小到大关系图：
+说明：
+ 整数默认是int类型，byte、short和char类型数据参与运算均会自动转换为int类型。  byte b1 = 10; byte b2 = 20; byte b3 = b1 + b2; // 第三行代码会报错，b1和b2会自动转换为int类型，计算结果为int，int赋值给byte需要强制类型转换。 // 修改为: int num = b1 + b2; // 或者： byte b3 = (byte) (b1 + b2); boolean类型不能与其他基本数据类型相互转换。  1.2 强制转换(理解) ​	把一个表示数据范围大的数值或者变量赋值给另一个表示数据范围小的变量。
+​	强制类型转换格式：目标数据类型 变量名 = (目标数据类型)值或者变量;
+​	例如：
+double num1 = 5.</description>
+    </item>
+    
+    <item>
+      <title>Java环境搭建及入门</title>
+      <link>https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Wed, 26 Jan 2022 18:19:37 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/java%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%85%A5%E9%97%A8/</guid>
+      <description>1. Java概述 1.1 Java语言背景介绍（了解） 语言：人与人交流沟通的表达方式
+计算机语言：人与计算机之间进行信息交流沟通的一种特殊语言
+Java语言是美国Sun公司（Stanford University Network）在1995年推出的计算机语言
+Java之父：詹姆斯·高斯林（James Gosling）
+2009年，Sun公司被甲骨文公司收购，所以我们现在访问oracle官网即可：https://www.oracle.com
+java语言的三个版本：
+​	JavaSE: Java 语言的（标准版），用于桌面应用的开发，是其他两个版本的基础
+​	JavaME: Java 语言的（小型版），用于嵌入式消费类电子设备
+​	JavaEE: Java 语言的（企业版），用于 Web 方向的网站开发
+1.2 Java语言跨平台原理（理解） Java程序并非是直接运行的，Java编译器将Java源程序编译成与平台无关的字节码文件(class文件)，然后由Java虚拟机（JVM）对字节码文件解释执行。所以在不同的操作系统下，只需安装不同的Java虚拟机即可实现java程序的跨平台。
+1.3 JRE和JDK（记忆） JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+总结：我们只需安装JDK即可，它包含了java的运行环境和虚拟机。
+1.4 JDK的下载和安装（应用） 1.4.1 下载 通过官方网站获取JDK
+http://www.oracle.com
+注意：针对不同的操作系统，需要下载对应版本的JDK。
+1.4.2 安装 傻瓜式安装，下一步即可。但默认的安装路径是在C:\Program Files下，为方便统一管理建议修改安装路径，将与开发相关的软件都安装到一个目录下，例如：E:\develop。
+注意：安装路径不要包含中文或者空格等特殊字符（使用纯英文目录）。
+1.4.3 JDK的安装目录介绍    目录名称 说明     bin 该路径下存放了JDK的各种工具命令。javac和java就放在这个目录。   conf 该路径下存放了JDK的相关配置文件。   include 该路径下存放了一些平台特定的头文件。   jmods 该路径下存放了JDK的各种模块。   legal 该路径下存放了JDK各模块的授权文档。   lib 该路径下存放了JDK工具的一些补充JAR包。    2.</description>
+    </item>
+    
+  </channel>
+</rss>

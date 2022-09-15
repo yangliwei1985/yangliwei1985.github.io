@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>问题排查 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</link>
+    <description>Recent content in 问题排查 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 20 Apr 2022 17:55:51 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker容器中安装curl、telnet、vim基础工具</title>
+      <link>https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E4%B8%AD%E5%AE%89%E8%A3%85curltelnetvim%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Wed, 20 Apr 2022 17:55:51 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/docker%E5%AE%B9%E5%99%A8%E4%B8%AD%E5%AE%89%E8%A3%85curltelnetvim%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/</guid>
+      <description>#因在容器中排查故障需要，需要安装基础工具
+# 查看系统版本： cat /etc/os-release
+Debian基础镜像
+#先添加163源 tee /etc/apt/sources.list &amp;lt;&amp;lt; EOF deb http://mirrors.163.com/debian/ jessie main non-ffree contrib deb http://mirrirs.163.com/debian/ jessie-updates main non-free contrib EOF  #安装 curl telnet apt-get update &amp;amp;&amp;amp; apt-get install -y curl telnet vim Alpine基础镜像
+#先添加阿里源 cat &amp;gt; /etc/apk/repositories &amp;lt;&amp;lt; EOF http://mirrors.aliyun.com/alpine/v3.12/main/ http://mirrors.aliyun.com/alpine/v3.12/community EOF  #安装 curl scp telnet vim apk update &amp;amp;&amp;amp; apk add curl openssh-client busybox-extras vim </description>
+    </item>
+    
+  </channel>
+</rss>

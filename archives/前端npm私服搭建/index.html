@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>前端npm私服搭建 | ylw&#39;s blog</title>
+<meta name="keywords" content="npm, cnpm" />
+<meta name="description" content="前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。
+cnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/
+2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: &#39;127.0.0.1&#39;,  // 数据库配置  database: {  db: &#39;cnpmjs&#39;, // 数据库  username: &#39;root&#39;, // 数据库用户名  password: &#39;&#39;, // 数据库密码  dialect: &#39;mysql&#39;, // 数据库类型 &#39;mysql&#39;, &#39;sqlite&#39;, &#39;postgres&#39;, &#39;mariadb&#39;  host: &#39;&#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: &#39;yanghui3021@163.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="前端npm私服搭建" />
+<meta property="og:description" content="前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。
+cnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/
+2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: &#39;127.0.0.1&#39;,  // 数据库配置  database: {  db: &#39;cnpmjs&#39;, // 数据库  username: &#39;root&#39;, // 数据库用户名  password: &#39;&#39;, // 数据库密码  dialect: &#39;mysql&#39;, // 数据库类型 &#39;mysql&#39;, &#39;sqlite&#39;, &#39;postgres&#39;, &#39;mariadb&#39;  host: &#39;&#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: &#39;yanghui3021@163." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-08T18:08:30&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-08T18:08:30&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="前端npm私服搭建"/>
+<meta name="twitter:description" content="前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。
+cnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/
+2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: &#39;127.0.0.1&#39;,  // 数据库配置  database: {  db: &#39;cnpmjs&#39;, // 数据库  username: &#39;root&#39;, // 数据库用户名  password: &#39;&#39;, // 数据库密码  dialect: &#39;mysql&#39;, // 数据库类型 &#39;mysql&#39;, &#39;sqlite&#39;, &#39;postgres&#39;, &#39;mariadb&#39;  host: &#39;&#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: &#39;yanghui3021@163."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "前端npm私服搭建",
+      "item": "https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "前端npm私服搭建",
+  "name": "前端npm私服搭建",
+  "description": "前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。\ncnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/\n2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: \u0026#39;127.0.0.1\u0026#39;,  // 数据库配置  database: {  db: \u0026#39;cnpmjs\u0026#39;, // 数据库  username: \u0026#39;root\u0026#39;, // 数据库用户名  password: \u0026#39;\u0026#39;, // 数据库密码  dialect: \u0026#39;mysql\u0026#39;, // 数据库类型 \u0026#39;mysql\u0026#39;, \u0026#39;sqlite\u0026#39;, \u0026#39;postgres\u0026#39;, \u0026#39;mariadb\u0026#39;  host: \u0026#39;\u0026#39;, // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: \u0026#39;yanghui3021@163.",
+  "keywords": [
+    "npm", "cnpm"
+  ],
+  "articleBody": "前言 在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。\ncnpm私服搭建流程 1. 安装node,新的node版本会自带npm 官网地址：nodejs.org/zh-cn/\n2. 拉取代码，对应公司需求做相应更改 git clone https://github.com/cnpm/cnpmjs.org.git 3. 修改配置文件 ./config/index.js  // 仓库站点访问端口  registryPort: 7001,  // 页面访问端口  webPort: 7002,  // 外网可以访问的话则注释，否则只能内网访问  bindingHost: '127.0.0.1',  // 数据库配置  database: {  db: 'cnpmjs', // 数据库  username: 'root', // 数据库用户名  password: '', // 数据库密码  dialect: 'mysql', // 数据库类型 'mysql', 'sqlite', 'postgres', 'mariadb'  host: '', // 数据库服务地址  port: 3306 // 端口  }  // 用户配置 key 为用户名和密码，value为邮箱  admins: {  harlie: 'yanghui3021@163.com',  fengmk2: 'fengmk2@gmail.com',  admin: 'admin@cnpmjs.org',  dead_horse: 'dead_horse@qq.com',  },   // true为只有管理员可以发布，false是任何人发布都必须带有私有标识  enablePrivate: false,   //私有标识前缀  scopes: [ '@harlie','@cnpm', '@cnpmtest' ],   //同步模块上游registry地址  sourceNpmRegistry: 'https://registry.npm.taobao.org',   // 同步模式 'none' 不进行同步 , 'all' 定时同步所有源 registry 的模块, 'exist' 只同步已经存在于数据库的模块  syncModel: 'exist',   // 同步间隔时间  syncInterval: '10m', 4. 数据库创建 （MySQL）  create database cnpmjs; // 创建数据库  use cnpmjs;  source cnpmjs.org/docs/db.sql; // 拉取项目的 docs/db.sql 5. 命令启动执行 （到这里私有库的搭建已经完成，是不是并不复杂）  node dispatch.js 启动成功后就可以通过 http://x.x.x.x:7002 查看网址页面。\n私有库使用 1. 使用nrm镜像源管理工具添加源  npm install nrm -g  nrm add cnpmorg http://42.192.37.59:7001 // 添加源  nrm use cnpmorg // 使用cnpmorg源，名字自己定义  nrm ls 2. 内部源使用  ···NPM···  npm config set registry http://x.x.x.x:7001   ···CNPM···  cnpm config set registry http://x.x.x.x:7001   ···YARN···  yarn config set registry http://x.x.x.x:7001 3. 本地项目包发布  npm login 如下图所示则登陆成功   npm publish 包发布   npm view @harlie/cnpm-test  可以看到所发布的包的详情，通过网址页面搜索cnpm-test ,可以在页面查看相应版本信息。\n",
+  "wordCount" : "180",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-08T18:08:30+08:00",
+  "dateModified": "2022-04-08T18:08:30+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/%E5%89%8D%E7%AB%AFnpm%E7%A7%81%E6%9C%8D%E6%90%AD%E5%BB%BA/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      前端npm私服搭建
+    </h1>
+    <div class="post-meta"><span title='2022-04-08 18:08:30 +0800 CST'>2022-04-08</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%89%8d%e8%a8%80" aria-label="前言">前言</a></li>
+                    <li>
+                        <a href="#cnpm%e7%a7%81%e6%9c%8d%e6%90%ad%e5%bb%ba%e6%b5%81%e7%a8%8b" aria-label="cnpm私服搭建流程">cnpm私服搭建流程</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e5%ae%89%e8%a3%85node%e6%96%b0%e7%9a%84node%e7%89%88%e6%9c%ac%e4%bc%9a%e8%87%aa%e5%b8%a6npm" aria-label="1. 安装node,新的node版本会自带npm">1. 安装node,新的node版本会自带npm</a></li>
+                    <li>
+                        <a href="#2-%e6%8b%89%e5%8f%96%e4%bb%a3%e7%a0%81%e5%af%b9%e5%ba%94%e5%85%ac%e5%8f%b8%e9%9c%80%e6%b1%82%e5%81%9a%e7%9b%b8%e5%ba%94%e6%9b%b4%e6%94%b9" aria-label="2. 拉取代码，对应公司需求做相应更改">2. 拉取代码，对应公司需求做相应更改</a></li>
+                    <li>
+                        <a href="#3-%e4%bf%ae%e6%94%b9%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6-configindexjs" aria-label="3. 修改配置文件 ./config/index.js">3. 修改配置文件 ./config/index.js</a></li>
+                    <li>
+                        <a href="#4-%e6%95%b0%e6%8d%ae%e5%ba%93%e5%88%9b%e5%bb%ba-mysql" aria-label="4. 数据库创建 （MySQL）">4. 数据库创建 （MySQL）</a></li>
+                    <li>
+                        <a href="#5-%e5%91%bd%e4%bb%a4%e5%90%af%e5%8a%a8%e6%89%a7%e8%a1%8c-%e5%88%b0%e8%bf%99%e9%87%8c%e7%a7%81%e6%9c%89%e5%ba%93%e7%9a%84%e6%90%ad%e5%bb%ba%e5%b7%b2%e7%bb%8f%e5%ae%8c%e6%88%90%e6%98%af%e4%b8%8d%e6%98%af%e5%b9%b6%e4%b8%8d%e5%a4%8d%e6%9d%82" aria-label="5. 命令启动执行 （到这里私有库的搭建已经完成，是不是并不复杂）">5. 命令启动执行 （到这里私有库的搭建已经完成，是不是并不复杂）</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e7%a7%81%e6%9c%89%e5%ba%93%e4%bd%bf%e7%94%a8" aria-label="私有库使用">私有库使用</a><ul>
+                            
+                    <li>
+                        <a href="#1--%e4%bd%bf%e7%94%a8nrm%e9%95%9c%e5%83%8f%e6%ba%90%e7%ae%a1%e7%90%86%e5%b7%a5%e5%85%b7%e6%b7%bb%e5%8a%a0%e6%ba%90" aria-label="1.  使用nrm镜像源管理工具添加源">1.  使用nrm镜像源管理工具添加源</a></li>
+                    <li>
+                        <a href="#2-%e5%86%85%e9%83%a8%e6%ba%90%e4%bd%bf%e7%94%a8" aria-label="2. 内部源使用">2. 内部源使用</a></li>
+                    <li>
+                        <a href="#3--%e6%9c%ac%e5%9c%b0%e9%a1%b9%e7%9b%ae%e5%8c%85%e5%8f%91%e5%b8%83" aria-label="3.  本地项目包发布">3.  本地项目包发布</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="前言">前言<a hidden class="anchor" aria-hidden="true" href="#前言">#</a></h2>
+<p>在工作中，公司有很多内部的包并不希望发布到npm官网仓库，因为可能涉及到一些私有代码不能暴露。对于前端来讲，这时就可以选择在公司内网搭建npm私有仓库。当前比较主流的几种解决方案：verdaccio、nexus、cnpm。大家可以按照自己的需求选择。本文中采用的是cnpm私服搭建。</p>
+<h2 id="cnpm私服搭建流程">cnpm私服搭建流程<a hidden class="anchor" aria-hidden="true" href="#cnpm私服搭建流程">#</a></h2>
+<h3 id="1-安装node新的node版本会自带npm">1. 安装node,新的node版本会自带npm<a hidden class="anchor" aria-hidden="true" href="#1-安装node新的node版本会自带npm">#</a></h3>
+<p>官网地址：<a href="https://link.juejin.cn?target=https%3A%2F%2Fnodejs.org%2Fzh-cn%2F">nodejs.org/zh-cn/</a></p>
+<h3 id="2-拉取代码对应公司需求做相应更改">2. 拉取代码，对应公司需求做相应更改<a hidden class="anchor" aria-hidden="true" href="#2-拉取代码对应公司需求做相应更改">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://github.com/cnpm/cnpmjs.org.git
+</span></span></code></pre></div><h3 id="3-修改配置文件-configindexjs">3. 修改配置文件 ./config/index.js<a hidden class="anchor" aria-hidden="true" href="#3-修改配置文件-configindexjs">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#75715e">// 仓库站点访问端口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">registryPort</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">7001</span>,   
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 页面访问端口      
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">webPort</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">7002</span>,             
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 外网可以访问的话则注释，否则只能内网访问
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">bindingHost</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;127.0.0.1&#39;</span>,      
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 数据库配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;cnpmjs&#39;</span>,        <span style="color:#75715e">// 数据库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">username</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;root&#39;</span>,    <span style="color:#75715e">// 数据库用户名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>,        <span style="color:#75715e">// 数据库密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dialect</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mysql&#39;</span>,    <span style="color:#75715e">// 数据库类型 &#39;mysql&#39;, &#39;sqlite&#39;, &#39;postgres&#39;, &#39;mariadb&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">host</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>,            <span style="color:#75715e">// 数据库服务地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">port</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3306</span>           <span style="color:#75715e">// 端口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用户配置 key 为用户名和密码，value为邮箱
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">admins</span><span style="color:#f92672">:</span> {  
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">harlie</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;yanghui3021@163.com&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fengmk2</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;fengmk2@gmail.com&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">admin</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;admin@cnpmjs.org&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dead_horse</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;dead_horse@qq.com&#39;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// true为只有管理员可以发布，false是任何人发布都必须带有私有标识
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">enablePrivate</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>, 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//私有标识前缀
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">scopes</span><span style="color:#f92672">:</span> [ <span style="color:#e6db74">&#39;@harlie&#39;</span>,<span style="color:#e6db74">&#39;@cnpm&#39;</span>, <span style="color:#e6db74">&#39;@cnpmtest&#39;</span> ],
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//同步模块上游registry地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">sourceNpmRegistry</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;https://registry.npm.taobao.org&#39;</span>,
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 同步模式  &#39;none&#39; 不进行同步 , &#39;all&#39; 定时同步所有源 registry 的模块, &#39;exist&#39; 只同步已经存在于数据库的模块
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">syncModel</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;exist&#39;</span>, 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 同步间隔时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">syncInterval</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;10m&#39;</span>,
+</span></span></code></pre></div><h3 id="4-数据库创建-mysql">4. 数据库创建 （MySQL）<a hidden class="anchor" aria-hidden="true" href="#4-数据库创建-mysql">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>    <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">database</span> cnpmjs;   <span style="color:#f92672">//</span> <span style="color:#960050;background-color:#1e0010">创建数据库</span>
+</span></span><span style="display:flex;"><span>    use cnpmjs;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">source</span> cnpmjs.org<span style="color:#f92672">/</span>docs<span style="color:#f92672">/</span>db.<span style="color:#66d9ef">sql</span>;   <span style="color:#f92672">//</span> <span style="color:#960050;background-color:#1e0010">拉取项目的</span> docs<span style="color:#f92672">/</span>db.<span style="color:#66d9ef">sql</span>
+</span></span></code></pre></div><h3 id="5-命令启动执行-到这里私有库的搭建已经完成是不是并不复杂">5. 命令启动执行 （到这里私有库的搭建已经完成，是不是并不复杂）<a hidden class="anchor" aria-hidden="true" href="#5-命令启动执行-到这里私有库的搭建已经完成是不是并不复杂">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>    node dispatch.js 
+</span></span></code></pre></div><p>启动成功后就可以通过 <a href="https://link.juejin.cn?target=http%3A%2F%2Fx.x.x.x%3A7002">http://x.x.x.x:7002</a> 查看网址页面。</p>
+<h2 id="私有库使用">私有库使用<a hidden class="anchor" aria-hidden="true" href="#私有库使用">#</a></h2>
+<h3 id="1--使用nrm镜像源管理工具添加源">1.  使用nrm镜像源管理工具添加源<a hidden class="anchor" aria-hidden="true" href="#1--使用nrm镜像源管理工具添加源">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>    npm install nrm -g
+</span></span><span style="display:flex;"><span>    nrm add cnpmorg http://42.192.37.59:7001  // 添加源
+</span></span><span style="display:flex;"><span>    nrm use cnpmorg  // 使用cnpmorg源，名字自己定义
+</span></span><span style="display:flex;"><span>    nrm ls
+</span></span></code></pre></div><h3 id="2-内部源使用">2. 内部源使用<a hidden class="anchor" aria-hidden="true" href="#2-内部源使用">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>    ···NPM···
+</span></span><span style="display:flex;"><span>    npm config set registry http://x.x.x.x:7001
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ···CNPM···
+</span></span><span style="display:flex;"><span>    cnpm config set registry http://x.x.x.x:7001
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ···YARN···
+</span></span><span style="display:flex;"><span>    yarn config set registry http://x.x.x.x:7001
+</span></span></code></pre></div><h3 id="3--本地项目包发布">3.  本地项目包发布<a hidden class="anchor" aria-hidden="true" href="#3--本地项目包发布">#</a></h3>
+<ul>
+<li>npm login  如下图所示则登陆成功</li>
+</ul>
+<p><img loading="lazy" src="/images/%e5%89%8d%e7%ab%afnpm%e7%a7%81%e6%9c%8d%e6%90%ad%e5%bb%ba/2ee38868ca4d4cac93f8627bd87e82cc_tplv-k3u1fbpfcp-zoom-in-crop-mark_1304_0_0_0.awebp" alt=""  />
+</p>
+<ul>
+<li>npm publish 包发布</li>
+</ul>
+<p><img loading="lazy" src="/images/%e5%89%8d%e7%ab%afnpm%e7%a7%81%e6%9c%8d%e6%90%ad%e5%bb%ba/d5d10fcbdb9f44109c8432711c18b001_tplv-k3u1fbpfcp-zoom-in-crop-mark_1304_0_0_0.awebp" alt=""  />
+</p>
+<ul>
+<li>npm view @harlie/cnpm-test</li>
+</ul>
+<p>可以看到所发布的包的详情，通过网址页面搜索cnpm-test ,可以在页面查看相应版本信息。</p>
+<p><img loading="lazy" src="/images/%e5%89%8d%e7%ab%afnpm%e7%a7%81%e6%9c%8d%e6%90%ad%e5%bb%ba/e68d797054b944949e843c4872ff8c7f_tplv-k3u1fbpfcp-zoom-in-crop-mark_1304_0_0_0.awebp" alt=""  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/npm/">npm</a></li>
+      <li><a href="https://iblog.zone/tags/cnpm/">cnpm</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/nginx%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E9%85%8D%E7%BD%AE/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Nginx常用操作及配置</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/maven%E7%A7%81%E6%9C%8Dnexus%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Maven私服Nexus的搭建与使用</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

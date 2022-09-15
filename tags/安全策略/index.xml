@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>安全策略 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5/</link>
+    <description>Recent content in 安全策略 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 10 Mar 2022 18:39:24 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>nginx解决内容安全策略CSP（Content-Security-Policy）配置方式</title>
+      <link>https://iblog.zone/archives/nginx%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5cspcontent-security-policy%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Thu, 10 Mar 2022 18:39:24 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/nginx%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5cspcontent-security-policy%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F/</guid>
+      <description>前端发布完页面后，无法正常显示，console控制台报
+在nginx配置文件中，增加header配置，有严格的顺序
+ add_header Content-Security-Policy &amp;#34;default-src &amp;#39;none&amp;#39; 域名 &amp;#39;unsafe-inline&amp;#39; &amp;#39;unsafe-eval&amp;#39; blob: data: ;&amp;#34;;  add_header X-Xss-Protection &amp;#34;1;mode=block&amp;#34;;  add_header X-Content-Type-Options nosniff; 执行结果，页面正常显示</description>
+    </item>
+    
+    <item>
+      <title>Content Security Policy 入门教程</title>
+      <link>https://iblog.zone/archives/content-security-policy-%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Thu, 10 Mar 2022 18:11:13 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/content-security-policy-%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/</guid>
+      <description>跨域脚本攻击 XSS 是最常见、危害最大的网页安全漏洞。
+为了防止它们，要采取很多编程措施，非常麻烦。很多人提出，能不能根本上解决问题，浏览器自动禁止外部注入恶意脚本？
+这就是&amp;quot;网页安全政策&amp;quot;（Content Security Policy，缩写 CSP）的来历。本文详细介绍如何使用 CSP 防止 XSS 攻击。
+一、简介 CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单。它的实现和执行全部由浏览器完成，开发者只需提供配置。
+CSP 大大增强了网页的安全性。攻击者即使发现了漏洞，也没法注入脚本，除非还控制了一台列入了白名单的可信主机。
+两种方法可以启用 CSP。一种是通过 HTTP 头信息的Content-Security-Policy的字段。
+ Content-Security-Policy: script-src &amp;#39;self&amp;#39;; object-src &amp;#39;none&amp;#39;; style-src cdn.example.org third-party.org; child-src https:  另一种是通过网页的&amp;lt;meta&amp;gt;标签。
+ &amp;lt;meta http-equiv=&amp;#34;Content-Security-Policy&amp;#34; content=&amp;#34;script-src &amp;#39;self&amp;#39;; object-src &amp;#39;none&amp;#39;; style-src cdn.example.org third-party.org; child-src https:&amp;#34;&amp;gt;  上面代码中，CSP 做了如下配置。
+  脚本：只信任当前域名 &amp;lt;object&amp;gt;标签：不信任任何URL，即不加载任何资源 样式表：只信任cdn.example.org和third-party.org 框架（frame）：必须使用HTTPS协议加载 其他资源：没有限制   启用后，不符合 CSP 的外部资源就会被阻止加载。
+Chrome 的报错信息。
+Firefox 的报错信息。
+二、限制选项 CSP 提供了很多限制选项，涉及安全的各个方面。
+2.1 资源加载限制 以下选项限制各类资源的加载。</description>
+    </item>
+    
+  </channel>
+</rss>

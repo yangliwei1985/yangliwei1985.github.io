@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>kernel on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/kernel/</link>
+    <description>Recent content in kernel on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 23 Dec 2021 11:38:27 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/kernel/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Centos7升级内核版本</title>
+      <link>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/</link>
+      <pubDate>Thu, 23 Dec 2021 11:38:27 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/</guid>
+      <description>小版本升级
+1. 查看当前和可升级版本
+[root@jksb_qz ~]# yum list kernel Loaded plugins: fastestmirror, langpacks Loading mirror speeds from cached hostfile  * base: mirrors.aliyun.com  * extras: mirrors.aliyun.com  * updates: mirrors.aliyun.com Installed Packages kernel.x86_64 3.10.0-693.el7 kernel.x86_64 3.10.0-1160.49.1.el7 2. 升级
+[root@jksb_qz ~]# yum update kernel -y  3. 重启并检查
+ [root@jksb_qz ~]# reboot    [root@jksb_qz ~]# uname -r  大版本升级
+1. 载入公钥
+[root@jksb_qz ~]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 2. 升级安装ELRepo
+[root@jksb_qz ~]# rpm -Uvh http://www.</description>
+    </item>
+    
+  </channel>
+</rss>

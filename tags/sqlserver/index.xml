@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>sqlserver on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/sqlserver/</link>
+    <description>Recent content in sqlserver on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 12 Apr 2022 16:54:24 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/sqlserver/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Microsoft SQL Server 2008 R2安装</title>
+      <link>https://iblog.zone/archives/microsoft-sql-server-2008-r2%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Tue, 12 Apr 2022 16:54:24 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/microsoft-sql-server-2008-r2%E5%AE%89%E8%A3%85/</guid>
+      <description>下载Microsoft SQL Server 2008 R2，打开安装文件夹，以管理员身份运行setup.exe。（百度网盘链接: https://pan.baidu.com/s/11b_YAsNm-zO_BDbX8QnpSA?pwd=arxn 提取码: arxn ）
+1、安装 弹出安装程序界面，选择安装，“全新安装或向现有安装添加功能”。
+进行检测，全部通过即可，一般都是全部通过的（只要不存在失败和警告，即不存在问题，可继续安装），有时可能需要重启计算机，按照要求操作即可。
+输入产品秘钥，此安装程序默认输入（软件自动默认输入），直接点击下一步。
+接受许可条款，点击下一步。
+安装支持文件。
+安装程序支持规则，通过即可点击下一步。
+2、设置角色 设置角色，选择默认的“SQL Server功能安装”，点击下一步。
+3、功能选择 选择功能，“全选”，安装目录可自定义（自定义安装在C/D盘），点击下一步。
+4、安装规则 安装规则，全部为“通过/跳过”就没问题（与前面类似，只要不出现警告和失败即不存在问题，可继续下面的安装），点击下一步。
+5、实例配置 实例配置，选择：默认实例，实例根目录安装位置可自定义的即可，点击下一步。
+磁盘空间需求，满足要求即可点击下一步。
+服务器配置，按照如图配置一样的账户名，点击下一步。（下图中启动类型，可根据需要设置成手动或者自动，对于本系统，全部设置成手动即可）。
+点击下三角，选择“***\SYSTEM”，***表示本机电脑账户名称，不同电脑账户名称不同。
+数据库引擎配置，选择“混合模式”，这里设置密码为xxxxxxx，指定SQL Server 管理员“添加当前用户”。
+Analysis Services 配置，添加当前用户，然后点击下一步。
+Reporting Services 配置，按照本机模式默认配置。
+错误报告，可不勾选发送错误报告，点击下一步。
+6、安装配置规则 安装配置规则，通过/跳过，没问题，点击下一步。
+开始安装，耐心等待即可。（根据电脑配置不同安装时间在20min-40min不等。）
+7、安装完成 安装完成，至此安装完毕。
+8、启动数据库 启动SQL Server 2008，选择开始菜单中的Microsoft SQL Server 2008下的“SQL Server Management Studio”（也可将该选项拖到桌面作为快捷方式，便于以后使用），启动SQL Server服务，如图所示：
+点击启动后看到如下界面：</description>
+    </item>
+    
+  </channel>
+</rss>

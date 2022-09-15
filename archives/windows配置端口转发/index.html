@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Windows配置端口转发 | ylw&#39;s blog</title>
+<meta name="keywords" content="portproxy" />
+<meta name="description" content="//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\&gt;netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\&gt;netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持TCP协议。 C:\&gt;netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\&gt;netsh interface portproxy /?">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Windows配置端口转发" />
+<meta property="og:description" content="//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\&gt;netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\&gt;netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持TCP协议。 C:\&gt;netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\&gt;netsh interface portproxy /?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-22T17:02:53&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-22T17:02:53&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Windows配置端口转发"/>
+<meta name="twitter:description" content="//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\&gt;netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\&gt;netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为&#34;*&#34;,使用的协议为tcp,当前仅支持TCP协议。 C:\&gt;netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\&gt;netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\&gt;netsh interface portproxy /?"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Windows配置端口转发",
+      "item": "https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Windows配置端口转发",
+  "name": "Windows配置端口转发",
+  "description": "//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\\\u0026gt;netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为\u0026#34;*\u0026#34;,使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\\\u0026gt;netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\\\u0026gt;netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为\u0026#34;*\u0026#34;,使用的协议为tcp,当前仅支持TCP协议。 C:\\\u0026gt;netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\\\u0026gt;netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\\\u0026gt;netsh interface portproxy /?",
+  "keywords": [
+    "portproxy"
+  ],
+  "articleBody": "//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。 C:\\netsh interface portproxy show all //因为没有配置过它，所以没有东西可以显示。  //添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为\"*\",使用的协议为tcp,当前仅支持传输控制协议 (TCP)。 C:\\netsh interface portproxy add v4tov4 listenport=10022 connectaddress=192.168.2.53 connectport=22 listenaddress=* protocol=tcp //添加完毕。  //显示所有。 C:\\netsh interface portproxy show all  侦听 ipv4: 连接到 ipv4:  地址 端口 地址 端口 --------------- ---------- --------------- ---------- * 10022 192.168.2.53 22  //删除配置: 本机的监听端口为10022,10022端口接受的连接地址为\"*\",使用的协议为tcp,当前仅支持TCP协议。 C:\\netsh interface portproxy delete v4tov4 listenport=10022 listenaddress=* protocol=tcp //删除完毕。  //显示所有。 C:\\netsh interface portproxy show all //因为所有的配置均已删除，所以没有东西可以显示。  //查看帮助信息。 C:\\netsh interface portproxy /? //略。  //查看帮助信息。 C:\\netsh interface /? //略。  //查看帮助信息。 C:\\netsh /? //略。 ",
+  "wordCount" : "82",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-22T17:02:53Z",
+  "dateModified": "2021-12-22T17:02:53Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/windows%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Windows配置端口转发
+    </h1>
+    <div class="post-meta"><span title='2021-12-22 17:02:53 +0000 UTC'>2021-12-22</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>//显示所有 portproxy 参数，包括 v4tov4、v4tov6、v6tov4 和 v6tov6 的端口/地址对。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy show all
+</span></span><span style="display:flex;"><span>//因为没有配置过它，所以没有东西可以显示。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//添加配置: 本机监听10022端口,当有socket连接到10022端口时,本机就连接到192.168.2.53的22端口,本机的10022端口可以接受的连接地址为<span style="color:#e6db74">&#34;*&#34;</span>,使用的协议为tcp,当前仅支持传输控制协议 <span style="color:#f92672">(</span>TCP<span style="color:#f92672">)</span>。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy add v4tov4 listenport<span style="color:#f92672">=</span><span style="color:#ae81ff">10022</span> connectaddress<span style="color:#f92672">=</span>192.168.2.53 connectport<span style="color:#f92672">=</span><span style="color:#ae81ff">22</span> listenaddress<span style="color:#f92672">=</span>* protocol<span style="color:#f92672">=</span>tcp
+</span></span><span style="display:flex;"><span>//添加完毕。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//显示所有。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy show all
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>侦听 ipv4:                 连接到 ipv4:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>地址            端口        地址            端口
+</span></span><span style="display:flex;"><span>--------------- ----------  --------------- ----------
+</span></span><span style="display:flex;"><span>*               <span style="color:#ae81ff">10022</span>       192.168.2.53    <span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//删除配置: 本机的监听端口为10022,10022端口接受的连接地址为<span style="color:#e6db74">&#34;*&#34;</span>,使用的协议为tcp,当前仅支持TCP协议。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy delete v4tov4 listenport<span style="color:#f92672">=</span><span style="color:#ae81ff">10022</span> listenaddress<span style="color:#f92672">=</span>* protocol<span style="color:#f92672">=</span>tcp
+</span></span><span style="display:flex;"><span>//删除完毕。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//显示所有。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy show all
+</span></span><span style="display:flex;"><span>//因为所有的配置均已删除，所以没有东西可以显示。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//查看帮助信息。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface portproxy /?
+</span></span><span style="display:flex;"><span>//略。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//查看帮助信息。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh interface /?
+</span></span><span style="display:flex;"><span>//略。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//查看帮助信息。
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>netsh /?
+</span></span><span style="display:flex;"><span>//略。
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/portproxy/">portproxy</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos7%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Centos7升级内核版本</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/%E9%85%8D%E7%BD%AEnginx%E8%AE%BF%E9%97%AE%E7%BD%91%E9%A1%B5%E9%9C%80%E8%A6%81%E5%AF%86%E7%A0%81/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>配置Nginx访问网页需要密码</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

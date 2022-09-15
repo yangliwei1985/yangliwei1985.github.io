@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>博客迁移 on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</link>
+    <description>Recent content in 博客迁移 on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 24 Mar 2022 17:19:31 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hexo迁移至hugo</title>
+      <link>https://iblog.zone/archives/hexo%E8%BF%81%E7%A7%BB%E8%87%B3hugo/</link>
+      <pubDate>Thu, 24 Mar 2022 17:19:31 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/hexo%E8%BF%81%E7%A7%BB%E8%87%B3hugo/</guid>
+      <description>今天正式把之前的博客文章迁移至hugo了，终于不用再忍受hexo缓慢的生成速度了，以下记录一下迁移过程
+一、hugo安装 brew install hugo 二、创建网站 hugo new site iblog 三、安装主题 git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1 cd themes/PaperMod git pull 四、配置config.yml（不使用config.toml） baseURL: &amp;#34;https://iblog.zone&amp;#34; title: ylw&amp;#39;s blog paginate: 10 theme: PaperMod defaultContentLanguage: zh  permalinks:  posts: /archives/:slug/  enableInlineShortcodes: true enableRobotsTXT: true buildDrafts: false buildFuture: false buildExpired: false enableEmoji: true  # googleAnalytics: UA-123-45  minify:  disableXML: true  minifyOutput: false  params:  env: production # to enable google analytics, opengraph, twitter-cards and schema.</description>
+    </item>
+    
+  </channel>
+</rss>

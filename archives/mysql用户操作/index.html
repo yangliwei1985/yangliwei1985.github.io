@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Mysql用户操作 | ylw&#39;s blog</title>
+<meta name="keywords" content="mysql用户操作" />
+<meta name="description" content="Mysql 5.6 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&#39;qweasd11&#39;) where user=&#39;joker&#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Mysql用户操作" />
+<meta property="og:description" content="Mysql 5.6 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&#39;qweasd11&#39;) where user=&#39;joker&#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-25T17:05:07&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-25T17:05:07&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mysql用户操作"/>
+<meta name="twitter:description" content="Mysql 5.6 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(&#39;qweasd11&#39;) where user=&#39;joker&#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER &#39;joker&#39;@&#39;%&#39; IDENTIFIED BY &#39;qweasd11&#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to &#39;joker&#39;@&#39;%&#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Mysql用户操作",
+      "item": "https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Mysql用户操作",
+  "name": "Mysql用户操作",
+  "description": "Mysql 5.6 -- 创建用户 CREATE USER \u0026#39;joker\u0026#39;@\u0026#39;%\u0026#39; IDENTIFIED BY \u0026#39;qweasd11\u0026#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to \u0026#39;joker\u0026#39;@\u0026#39;%\u0026#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password(\u0026#39;qweasd11\u0026#39;) where user=\u0026#39;joker\u0026#39;;  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER \u0026#39;joker\u0026#39;@\u0026#39;%\u0026#39; IDENTIFIED BY \u0026#39;qweasd11\u0026#39;;  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to \u0026#39;joker\u0026#39;@\u0026#39;%\u0026#39;; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.",
+  "keywords": [
+    "mysql用户操作"
+  ],
+  "articleBody": "Mysql 5.6 -- 创建用户 CREATE USER 'joker'@'%' IDENTIFIED BY 'qweasd11';  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to 'joker'@'%'; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set password=password('qweasd11') where user='joker';  -- 修改密码必须刷新才会起作用 flush privileges; Mysql 5.7 -- 创建用户 CREATE USER 'joker'@'%' IDENTIFIED BY 'qweasd11';  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to 'joker'@'%'; -- test为访问数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 修改用户的密码 update mysql.user set authentication_string=password('qweasd11') where user='joker';  -- 修改密码必须刷新才会起作用 flush privileges;  -- 删除用户权限 revoke all privileges on test.* from 'joker'@'%'; Mysql 8 -- 创建用户 create user 'joker11'@'localhost' identified by 'Password=qweasd11';  -- 授权用户访问的数据库以及权限 grant all privileges on test.* to 'joker11'@'localhost' with grant option; -- test为访问数据库 可以使用*表示所有的数据库 -- all privileges 表示可以对数据进行任意的操作, -- all privileges 可以替换为 select,delete,update,create,drop  -- 取消授权 revoke all privileges on test.* from 'joker11'@'localhost';  -- 查看用户授权信息 show grants for 'joker11'@'localhost';  -- 修改用户的密码 Alter user 'joker11'@'localhost' identified by '新密码';  -- 修改密码必须刷新才会起作用 flush privileges;  -- 删除用户 drop user 'joker11'@'localhost'; ",
+  "wordCount" : "159",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-25T17:05:07+08:00",
+  "dateModified": "2022-03-25T17:05:07+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Mysql用户操作
+    </h1>
+    <div class="post-meta"><span title='2022-03-25 17:05:07 +0800 CST'>2022-03-25</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#mysql-56" aria-label="Mysql 5.6">Mysql 5.6</a></li>
+                    <li>
+                        <a href="#mysql-57" aria-label="Mysql 5.7">Mysql 5.7</a></li>
+                    <li>
+                        <a href="#mysql-8" aria-label="Mysql 8">Mysql 8</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h3 id="mysql-56">Mysql 5.6<a hidden class="anchor" aria-hidden="true" href="#mysql-56">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;joker&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> <span style="color:#66d9ef">IDENTIFIED</span> <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;qweasd11&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 授权用户访问的数据库以及权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">grant</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> test.<span style="color:#f92672">*</span> <span style="color:#66d9ef">to</span> <span style="color:#e6db74">&#39;joker&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- test为访问数据库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 表示可以对数据进行任意的操作,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 可以替换为 select,delete,update,create,drop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户的密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">update</span> mysql.<span style="color:#66d9ef">user</span> <span style="color:#66d9ef">set</span> password<span style="color:#f92672">=</span><span style="color:#a6e22e">password</span>(<span style="color:#e6db74">&#39;qweasd11&#39;</span>) <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;joker&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改密码必须刷新才会起作用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">flush</span> <span style="color:#66d9ef">privileges</span>;
+</span></span></code></pre></div><h3 id="mysql-57">Mysql 5.7<a hidden class="anchor" aria-hidden="true" href="#mysql-57">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;joker&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> <span style="color:#66d9ef">IDENTIFIED</span> <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;qweasd11&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 授权用户访问的数据库以及权限 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">grant</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> test.<span style="color:#f92672">*</span> <span style="color:#66d9ef">to</span> <span style="color:#e6db74">&#39;joker&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- test为访问数据库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 表示可以对数据进行任意的操作,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 可以替换为 select,delete,update,create,drop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户的密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">update</span> mysql.<span style="color:#66d9ef">user</span> <span style="color:#66d9ef">set</span> authentication_string<span style="color:#f92672">=</span><span style="color:#a6e22e">password</span>(<span style="color:#e6db74">&#39;qweasd11&#39;</span>) <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">user</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;joker&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改密码必须刷新才会起作用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">flush</span> <span style="color:#66d9ef">privileges</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除用户权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> test.<span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;joker&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span></code></pre></div><h3 id="mysql-8">Mysql 8<a hidden class="anchor" aria-hidden="true" href="#mysql-8">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">identified</span> <span style="color:#66d9ef">by</span> <span style="color:#e6db74">&#39;Password=qweasd11&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 授权用户访问的数据库以及权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">grant</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> test.<span style="color:#f92672">*</span> <span style="color:#66d9ef">to</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">with</span> <span style="color:#66d9ef">grant</span> <span style="color:#66d9ef">option</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- test为访问数据库  可以使用*表示所有的数据库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 表示可以对数据进行任意的操作,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- all privileges 可以替换为 select,delete,update,create,drop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 取消授权
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> test.<span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看用户授权信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">show</span> grants <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户的密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">Alter</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span> <span style="color:#66d9ef">identified</span> <span style="color:#66d9ef">by</span> <span style="color:#e6db74">&#39;新密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改密码必须刷新才会起作用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">flush</span> <span style="color:#66d9ef">privileges</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">drop</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;joker11&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/mysql%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/">mysql用户操作</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/mysql%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8Dmysqldump%E6%96%B9%E5%BC%8F/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Mysql备份和恢复（mysqldump方式）</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/hexo%E8%BF%81%E7%A7%BB%E8%87%B3hugo/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Hexo迁移至hugo</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

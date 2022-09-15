@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>nginx php-fpm安装配置 | ylw&#39;s blog</title>
+<meta name="keywords" content="php, php-fpm" />
+<meta name="description" content="nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx
+本文以php-fpm为例介绍如何使nginx支持PHP
+一、编译安装php-fpm
+什么是PHP-FPM
+PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.
+PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。
+新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。
+安装前准备 centos下执行
+yum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c&#43;&#43; glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)
+wget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="nginx php-fpm安装配置" />
+<meta property="og:description" content="nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx
+本文以php-fpm为例介绍如何使nginx支持PHP
+一、编译安装php-fpm
+什么是PHP-FPM
+PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.
+PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。
+新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。
+安装前准备 centos下执行
+yum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c&#43;&#43; glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)
+wget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-29T15:38:23&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-29T15:38:23&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="nginx php-fpm安装配置"/>
+<meta name="twitter:description" content="nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx
+本文以php-fpm为例介绍如何使nginx支持PHP
+一、编译安装php-fpm
+什么是PHP-FPM
+PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.
+PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。
+新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。
+安装前准备 centos下执行
+yum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c&#43;&#43; glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)
+wget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "nginx php-fpm安装配置",
+      "item": "https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "nginx php-fpm安装配置",
+  "name": "nginx php-fpm安装配置",
+  "description": "nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。\nnginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx\n本文以php-fpm为例介绍如何使nginx支持PHP\n一、编译安装php-fpm\n什么是PHP-FPM\nPHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.\nPHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。\n新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。\n安装前准备 centos下执行\nyum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c++ glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \\ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \\ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \\ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \\ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)\nwget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5.",
+  "keywords": [
+    "php", "php-fpm"
+  ],
+  "articleBody": "nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。\nnginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx\n本文以php-fpm为例介绍如何使nginx支持PHP\n一、编译安装php-fpm\n什么是PHP-FPM\nPHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 http://php-fpm.org/download下载得到.\nPHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。\n新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。\n安装前准备 centos下执行\nyum -y install gcc automake autoconf libtool make yum -y install gcc gcc-c++ glibc yum -y install libmcrypt-devel mhash-devel libxslt-devel \\ libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \\ zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \\ ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \\ krb5 krb5-devel libidn libidn-devel openssl openssl-devel 新版php-fpm安装(推荐安装方式)\nwget http://cn2.php.net/distributions/php-5.4.7.tar.gz tar zvxf php-5.4.7.tar.gz cd php-5.4.7 ./configure --prefix=/usr/local/php --enable-fpm --with-mcrypt \\ --enable-mbstring --disable-pdo --with-curl --disable-debug --disable-rpath \\ --enable-inline-optimization --with-bz2 --with-zlib --enable-sockets \\ --enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex \\ --with-mhash --enable-zip --with-pcre-regex --with-mysql --with-mysqli \\ --with-gd --with-jpeg-dir make all install 安装后内容放在/usr/local/php目录下\n以上就完成了php-fpm的安装。\n下面是对php-fpm运行用户进行设置\ncd /usr/local/php cp etc/php-fpm.conf.default etc/php-fpm.conf vi etc/php-fpm.conf 修改\nuser = www-data group = www-data 如果www-data用户不存在，那么先添加www-data用户\ngroupadd www-data useradd -g www-data www-data 二、编译安装nginx\n然后按照http://www.nginx.cn/install 安装nginx\n三、修改nginx配置文件以支持php-fpm\nnginx安装完成后，修改nginx配置文件为,nginx.conf\n其中server段增加如下配置，注意标红内容配置，否则会出现No input file specified.错误\n# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000 # location ~ \\.php$ { root html; fastcgi_pass 127.0.0.1:9000; fastcgi_index index.php; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; include fastcgi_params; } 四、创建测试php文件\n创建php文件\n在/usr/local/nginx/html下创建index.php文件，输入如下内容\n五、启动服务\n启动php-fpm和nginx\n/usr/local/php/sbin/php-fpm #手动打补丁的启动方式/usr/local/php/sbin/php-fpm start sudo /usr/local/nginx/nginx php-fpm关闭重启见文章结尾\n六、浏览器访问\n访问http://你的服务器ip/index.php，皆可以见到php信息了。\n安装php-fpm时可能遇到的错误：\n php configure时出错  configure: error: XML configuration could not be found\napt-get install libxml2 libxml2-dev (ubuntu下) yum -y install libxml2 libxml2-devel（centos下)  Please reinstall the BZip2 distribution  wget http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz tar -zxvf bzip2-1.0.5.tar.gz cd bzip2-1.0.5 make make install  php的配置文件中有一行–with-mysql=/usr。  安装的时候提示：\nconfigure: error: Cannot find MySQL header files under yes. Note that the MySQL client library is not bundled anymore. 这是由于安装mysql时没有安装mysql头文件，或者是路径指定不正确,php找不到mysql的头文件引起的错误提示。\n解决方法。\n(1.) 查看你的系统有没有安装mysql header\nfind / -name mysql.h 如果有。请指定–with-mysql=/跟你的正常路径。\n如果没有。请看下一步。\n(2.)redhat安装\nrpm -ivh MySQL-devel-4.1.12-1.i386.rpm (3.)ubuntu安装\napt-get install libmysqlclient15-dev (4.)最后一步php的配置选项添加–with-mysql=/usr即可！\n4.No input file specified.\nlocation ~ \\.php$ { root html; fastcgi_pass 127.0.0.1:9000; fastcgi_index index.php; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; include fastcgi_params; }  如果php configure时缺库，可以先安装库(ubuntu下)  sudo apt-get install make bison flex gcc patch autoconf subversion locate sudo apt-get install libxml2-dev libbz2-dev libpcre3-dev libssl-dev zlib1g-dev libmcrypt-dev libmhash-dev libmhash2 libcurl4-openssl-dev libpq-dev libpq5 libsyck0-dev  mcrypt.h not found. Please reinstall libmcrypt  apt-get install libmcrypt-dev 或者\ncd /usr/local/src wget http://softlayer.dl.sourceforge.net/sourceforge/mcrypt/libmcrypt-2.5.8.tar.gz tar -zxvf libmcrypt-2.5.8.tar.gz cd /usr/local/src/libmcrypt-2.5.8 ./configure --prefix=/usr/local make make install  php-fpm 5.4.7 如何关闭 重启？  php 5.4.7 下的php-fpm 不再支持 php-fpm 以前具有的 /usr/local/php/sbin/php-fpm (start|stop|reload)等命令，需要使用信号控制：\nmaster进程可以理解以下信号\nINT, TERM 立刻终止 QUIT 平滑终止 USR1 重新打开日志文件 USR2 平滑重载所有worker进程并重新载入配置和二进制模块\n示例：\nphp-fpm 关闭：\nkill -INT `cat /usr/local/php/var/run/php-fpm.pid` php-fpm 重启：\nkill -USR2 `cat /usr/local/php/var/run/php-fpm.pid` 查看php-fpm进程数：\nps aux | grep -c php-fpm 8.命令行下执行php，提示找不到命令\n-bash: /usr/bin/php: No such file or directory vi /etc/profile 在文件底部增加一行配置\nexport PATH=/usr/local/php/bin:$PATH 保存退出\nsource /etc/profile ",
+  "wordCount" : "390",
+  "inLanguage": "zh",
+  "datePublished": "2021-12-29T15:38:23Z",
+  "dateModified": "2021-12-29T15:38:23Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/nginx-php-fpm%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      nginx php-fpm安装配置
+    </h1>
+    <div class="post-meta"><span title='2021-12-29 15:38:23 +0000 UTC'>2021-12-29</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p>nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。</p>
+<p>nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx</p>
+<p>本文以php-fpm为例介绍如何使nginx支持PHP</p>
+<p>一、编译安装php-fpm</p>
+<p><strong>什么是PHP-FPM</strong></p>
+<p>PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 <a href="http://php-fpm.org/download">http://php-fpm.org/download</a>下载得到.</p>
+<p>PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。</p>
+<p><strong>新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用</strong>。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以<a href="http://www.php.net/manual/en/configure.about.php">查看这里</a>。</p>
+<p>安装前准备
+centos下执行</p>
+<pre tabindex="0"><code>yum -y install gcc automake autoconf libtool make
+
+yum -y install gcc gcc-c++ glibc
+
+yum -y install libmcrypt-devel mhash-devel libxslt-devel \
+libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel \
+zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel \
+ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel \
+krb5 krb5-devel libidn libidn-devel openssl openssl-devel
+</code></pre><p><strong>新版php-fpm安装(推荐安装方式)</strong></p>
+<pre tabindex="0"><code>wget http://cn2.php.net/distributions/php-5.4.7.tar.gz
+tar zvxf php-5.4.7.tar.gz
+cd php-5.4.7
+./configure --prefix=/usr/local/php  --enable-fpm --with-mcrypt \
+--enable-mbstring --disable-pdo --with-curl --disable-debug  --disable-rpath \
+--enable-inline-optimization --with-bz2  --with-zlib --enable-sockets \
+--enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex \
+--with-mhash --enable-zip --with-pcre-regex --with-mysql --with-mysqli \
+--with-gd --with-jpeg-dir
+
+make all install
+</code></pre><p>安装后内容放在/usr/local/php目录下</p>
+<p><img loading="lazy" src="/images/nginx-php-fpm%e5%ae%89%e8%a3%85%e9%85%8d%e7%bd%ae/1.png" alt=""  />
+</p>
+<p>以上就完成了php-fpm的安装。</p>
+<p>下面是对php-fpm运行用户进行设置</p>
+<pre tabindex="0"><code>cd /usr/local/php
+cp etc/php-fpm.conf.default etc/php-fpm.conf
+vi etc/php-fpm.conf
+</code></pre><p>修改</p>
+<pre tabindex="0"><code>user = www-data  
+group = www-data
+</code></pre><p>如果www-data用户不存在，那么先添加www-data用户</p>
+<pre tabindex="0"><code>groupadd www-data  
+useradd -g www-data www-data
+</code></pre><p>二、编译安装nginx</p>
+<p>然后按照http://www.nginx.cn/install 安装nginx</p>
+<p>三、修改nginx配置文件以支持php-fpm</p>
+<p>nginx安装完成后，修改nginx配置文件为,<a href="http://www.nginx.cn/wp-content/uploads/2012/09/nginx.conf_.txt">nginx.conf</a></p>
+<p>其中server段增加如下配置，注意标红内容配置，否则会出现No input file specified.错误</p>
+<pre tabindex="0"><code># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000  
+#  
+location ~ \.php$ {  
+root html;  
+fastcgi_pass 127.0.0.1:9000;  
+fastcgi_index index.php;  
+fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+include fastcgi_params;  
+}
+</code></pre><p>四、创建测试php文件</p>
+<p>创建php文件</p>
+<p>在/usr/local/nginx/html下创建index.php文件，输入如下内容</p>
+<pre tabindex="0"><code>&lt;?php
+echo phpinfo();
+?&gt;
+</code></pre><p>五、启动服务</p>
+<p>启动php-fpm和nginx</p>
+<pre tabindex="0"><code>/usr/local/php/sbin/php-fpm
+#手动打补丁的启动方式/usr/local/php/sbin/php-fpm start
+
+sudo /usr/local/nginx/nginx
+</code></pre><p>php-fpm关闭重启见文章结尾</p>
+<p>六、浏览器访问</p>
+<p>访问<a href="http://xn--ip-0p3cl7jf7fo83a16x/index.php%EF%BC%8C%E7%9A%86%E5%8F%AF%E4%BB%A5%E8%A7%81%E5%88%B0php%E4%BF%A1%E6%81%AF%E4%BA%86%E3%80%82">http://你的服务器ip/index.php，皆可以见到php信息了。</a></p>
+<p><img loading="lazy" src="/images/nginx-php-fpm%e5%ae%89%e8%a3%85%e9%85%8d%e7%bd%ae/2.png" alt=""  />
+</p>
+<p><strong>安装php-fpm时可能遇到的错误：</strong></p>
+<ol>
+<li><strong>php configure时出错</strong></li>
+</ol>
+<p>configure: error: XML configuration could not be found</p>
+<pre tabindex="0"><code>apt-get install libxml2 libxml2-dev  (ubuntu下)
+yum -y install libxml2 libxml2-devel（centos下)
+</code></pre><ol>
+<li><strong>Please reinstall the BZip2 distribution</strong></li>
+</ol>
+<pre tabindex="0"><code>wget http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz
+tar -zxvf bzip2-1.0.5.tar.gz
+cd bzip2-1.0.5
+make
+make install
+</code></pre><ol>
+<li><strong>php的配置文件中有一行&ndash;with-mysql=/usr</strong>。</li>
+</ol>
+<p>安装的时候提示：</p>
+<pre tabindex="0"><code>configure: error: Cannot find MySQL header files under yes.  
+Note that the MySQL client library is not bundled anymore.
+</code></pre><p>这是由于安装mysql时没有安装mysql头文件，或者是路径指定不正确,php找不到mysql的头文件引起的错误提示。</p>
+<p>解决方法。</p>
+<p>(1.) 查看你的系统有没有安装mysql header</p>
+<pre tabindex="0"><code>find / -name mysql.h
+</code></pre><p>如果有。请指定&ndash;with-mysql=/跟你的正常路径。</p>
+<p>如果没有。请看下一步。</p>
+<p>(2.)redhat安装</p>
+<pre tabindex="0"><code>rpm -ivh MySQL-devel-4.1.12-1.i386.rpm
+</code></pre><p>(3.)ubuntu安装</p>
+<pre tabindex="0"><code>apt-get install libmysqlclient15-dev
+</code></pre><p>(4.)最后一步php的配置选项添加&ndash;with-mysql=/usr即可！</p>
+<p>4.<strong>No input file specified.</strong></p>
+<pre tabindex="0"><code>location ~ \.php$ {  
+root html;  
+fastcgi_pass 127.0.0.1:9000;  
+fastcgi_index index.php;  
+fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+include fastcgi_params;  
+}
+</code></pre><ol>
+<li><strong>如果php configure时缺库，可以先安装库(ubuntu下)</strong></li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install make bison flex gcc patch autoconf subversion locate  
+sudo apt-get install libxml2-dev libbz2-dev libpcre3-dev libssl-dev zlib1g-dev libmcrypt-dev libmhash-dev libmhash2 libcurl4-openssl-dev libpq-dev libpq5 libsyck0-dev
+</code></pre><ol>
+<li><strong>mcrypt.h not found. Please reinstall libmcrypt</strong></li>
+</ol>
+<pre tabindex="0"><code>apt-get install libmcrypt-dev
+</code></pre><p>或者</p>
+<pre tabindex="0"><code>cd /usr/local/src  
+wget http://softlayer.dl.sourceforge.net/sourceforge/mcrypt/libmcrypt-2.5.8.tar.gz  
+tar -zxvf libmcrypt-2.5.8.tar.gz  
+cd /usr/local/src/libmcrypt-2.5.8  
+./configure --prefix=/usr/local  
+make  
+make install
+</code></pre><ol>
+<li><strong>php-fpm 5.4.7 如何关闭 重启？</strong></li>
+</ol>
+<p>php 5.4.7 下的php-fpm 不再支持 php-fpm 以前具有的 /usr/local/php/sbin/php-fpm (start|stop|reload)等命令，需要使用信号控制：</p>
+<p>master进程可以理解以下信号</p>
+<p>INT, TERM 立刻终止 QUIT 平滑终止 USR1 重新打开日志文件 USR2 平滑重载所有worker进程并重新载入配置和二进制模块</p>
+<p>示例：</p>
+<p>php-fpm 关闭：</p>
+<pre tabindex="0"><code>kill -INT `cat /usr/local/php/var/run/php-fpm.pid`
+</code></pre><p>php-fpm 重启：</p>
+<pre tabindex="0"><code>kill -USR2 `cat /usr/local/php/var/run/php-fpm.pid`
+</code></pre><p>查看php-fpm进程数：</p>
+<pre tabindex="0"><code>ps aux | grep -c php-fpm
+</code></pre><p>8.命令行下执行php，提示找不到命令</p>
+<pre tabindex="0"><code>-bash: /usr/bin/php: No such file or directory
+
+vi /etc/profile
+</code></pre><p>在文件底部增加一行配置</p>
+<pre tabindex="0"><code>export PATH=/usr/local/php/bin:$PATH
+</code></pre><p>保存退出</p>
+<pre tabindex="0"><code>source /etc/profile
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/php/">php</a></li>
+      <li><a href="https://iblog.zone/tags/php-fpm/">php-fpm</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/%E8%B5%B0%E8%BF%9Bdocker%E7%9A%84%E4%B8%96%E7%95%8C/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>走进Docker的世界</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/centos7.9.2009-%E5%8D%B8%E8%BD%BD%E8%87%AA%E5%B8%A6%E7%9A%84python%E5%8F%8Ayum%E5%B9%B6%E9%87%8D%E8%A3%85/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CentOS7.9.2009 卸载自带的python及yum并重装</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CentOS7安装Redis4.0 | ylw&#39;s blog</title>
+<meta name="keywords" content="安装, redis4.0" />
+<meta name="description" content="一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c&#43;&#43; make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译&amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译&amp;安装 sudo make -j 16 &amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="CentOS7安装Redis4.0" />
+<meta property="og:description" content="一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c&#43;&#43; make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译&amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译&amp;安装 sudo make -j 16 &amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-29T18:07:53&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-29T18:07:53&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS7安装Redis4.0"/>
+<meta name="twitter:description" content="一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c&#43;&#43; make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译&amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译&amp;安装 sudo make -j 16 &amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "CentOS7安装Redis4.0",
+      "item": "https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CentOS7安装Redis4.0",
+  "name": "CentOS7安装Redis4.0",
+  "description": "一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c++ make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译\u0026amp;安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译\u0026amp;安装 sudo make -j 16 \u0026amp; make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1",
+  "keywords": [
+    "安装", "redis4.0"
+  ],
+  "articleBody": "一、Redis安装  安装基础依赖  #安装基础依赖包 sudo yum install -y gcc gcc-c++ make jemalloc-devel epel-release  下载Redis（ https://redis.io/download ）  #从官网获取最新版本的下载链接，然后通过wget命令下载 wget http://download.redis.io/releases/redis-4.0.2.tar.gz  解压到指定目录  #解压 sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/  编译\u0026安装  #进入目录 cd /usr/local/src/redis-4.0.2 #编译\u0026安装 sudo make -j 16 \u0026 make install 二、Redis启动与测试  启动redis-server  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动服务端 sudo ./redis-server  启动redis客户端测试  #进入src目录 cd /usr/local/src/redis-4.0.2/src #启动客户端 sudo ./redis-cli  设置：set key1 value1 获取：get key1\n 三、Redis配置 1、 配置本机外访问  修改配置：绑定本机IP\u0026关闭保护模式  #修改配置文件 sudo vi /usr/local/src/redis-4.0.2/redis.conf  #更换绑定 #将bind 127.0.0.1 更换为本机IP，例如：10.3.55.138 bind 10.3.55.138  #关闭保护模式 protected-mode no  # 设置密码 requirepass xxx  # 指定日志路径 logfile \"/var/log/redis.log\"  开放端口  #增加redis端口：6379 sudo firewall-cmd --add-port=6379/tcp --permanent #重新加载防火墙设置 sudo firewall-cmd --reload  Redis指定配置文件启动  #进入目录 cd /usr/local/src/redis-4.0.2 #指定配置文件启动 sudo ./src/redis-server redis.conf  Redis客户端连接指定Redis Server  #进入目录 cd /usr/redis/redis-4.0.2 #连接指定Redis Server sudo ./src/redis-cli -h 10.3.55.138 -a xxxx 2、配置Redis开机启动 将Redis配置成为系统服务，以支持开机启动\n 创建Redis服务  #创建服务文件 sudo vi /usr/lib/systemd/system/redis.service  #文件内容 [Unit] Description=Redis Server After=network.target  [Service] ExecStart=/usr/local/src/redis-4.0.2/src/redis-server /usr/local/src/redis-4.0.2/redis.conf --daemonize no ExecStop=/usr/local/src/redis-4.0.2/src/redis-cli -h 10.3.55.138 -p 6379 -a \"xxx\" shutdown Restart=always  [Install] WantedBy=multi-user.target  设置Redis服务开机启动\u0026开启服务  #设置Redis服务开机启动 sudo systemctl enable redis #启动Redis服务 sudo systemctl start redis ",
+  "wordCount" : "153",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-29T18:07:53+08:00",
+  "dateModified": "2022-03-29T18:07:53+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/centos7%E5%AE%89%E8%A3%85redis4.0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CentOS7安装Redis4.0
+    </h1>
+    <div class="post-meta"><span title='2022-03-29 18:07:53 +0800 CST'>2022-03-29</span>&nbsp;·&nbsp;1 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80redis%e5%ae%89%e8%a3%85" aria-label="一、Redis安装">一、Redis安装</a></li>
+                    <li>
+                        <a href="#%e4%ba%8credis%e5%90%af%e5%8a%a8%e4%b8%8e%e6%b5%8b%e8%af%95" aria-label="二、Redis启动与测试">二、Redis启动与测试</a></li>
+                    <li>
+                        <a href="#%e4%b8%89redis%e9%85%8d%e7%bd%ae" aria-label="三、Redis配置">三、Redis配置</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e9%85%8d%e7%bd%ae%e6%9c%ac%e6%9c%ba%e5%a4%96%e8%ae%bf%e9%97%ae" aria-label="1、 配置本机外访问">1、 配置本机外访问</a></li>
+                    <li>
+                        <a href="#2%e9%85%8d%e7%bd%aeredis%e5%bc%80%e6%9c%ba%e5%90%af%e5%8a%a8" aria-label="2、配置Redis开机启动">2、配置Redis开机启动</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一redis安装">一、Redis安装<a hidden class="anchor" aria-hidden="true" href="#一redis安装">#</a></h2>
+<ul>
+<li>安装基础依赖</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#安装基础依赖包</span>
+</span></span><span style="display:flex;"><span>sudo yum install -y gcc gcc-c++ make jemalloc-devel epel-release
+</span></span></code></pre></div><ul>
+<li>下载Redis（ <a href="https://redis.io/download">https://redis.io/download</a> ）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#从官网获取最新版本的下载链接，然后通过wget命令下载</span>
+</span></span><span style="display:flex;"><span>wget http://download.redis.io/releases/redis-4.0.2.tar.gz
+</span></span></code></pre></div><ul>
+<li>解压到指定目录</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#解压</span>
+</span></span><span style="display:flex;"><span>sudo tar -zvxf redis-4.0.2.tar.gz -C /usr/local/src/
+</span></span></code></pre></div><ul>
+<li>编译&amp;安装</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#进入目录</span>
+</span></span><span style="display:flex;"><span>cd /usr/local/src/redis-4.0.2
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#编译&amp;安装</span>
+</span></span><span style="display:flex;"><span>sudo make -j <span style="color:#ae81ff">16</span> &amp; make install
+</span></span></code></pre></div><h2 id="二redis启动与测试">二、Redis启动与测试<a hidden class="anchor" aria-hidden="true" href="#二redis启动与测试">#</a></h2>
+<ul>
+<li>启动redis-server</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#进入src目录</span>
+</span></span><span style="display:flex;"><span>cd /usr/local/src/redis-4.0.2/src
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#启动服务端</span>
+</span></span><span style="display:flex;"><span>sudo ./redis-server
+</span></span></code></pre></div><ul>
+<li>启动redis客户端测试</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#进入src目录</span>
+</span></span><span style="display:flex;"><span>cd /usr/local/src/redis-4.0.2/src
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#启动客户端</span>
+</span></span><span style="display:flex;"><span>sudo ./redis-cli
+</span></span></code></pre></div><blockquote>
+<p>设置：set key1 value1
+获取：get key1</p>
+</blockquote>
+<h2 id="三redis配置">三、Redis配置<a hidden class="anchor" aria-hidden="true" href="#三redis配置">#</a></h2>
+<h3 id="1-配置本机外访问">1、 配置本机外访问<a hidden class="anchor" aria-hidden="true" href="#1-配置本机外访问">#</a></h3>
+<ul>
+<li>修改配置：绑定本机IP&amp;关闭保护模式</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#修改配置文件</span>
+</span></span><span style="display:flex;"><span>sudo vi /usr/local/src/redis-4.0.2/redis.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#更换绑定</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#将bind 127.0.0.1 更换为本机IP，例如：10.3.55.138</span>
+</span></span><span style="display:flex;"><span>bind 10.3.55.138
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#关闭保护模式</span>
+</span></span><span style="display:flex;"><span>protected-mode no
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置密码</span>
+</span></span><span style="display:flex;"><span>requirepass xxx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定日志路径</span>
+</span></span><span style="display:flex;"><span>logfile <span style="color:#e6db74">&#34;/var/log/redis.log&#34;</span>
+</span></span></code></pre></div><ul>
+<li>开放端口</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#增加redis端口：6379</span>
+</span></span><span style="display:flex;"><span>sudo firewall-cmd --add-port<span style="color:#f92672">=</span>6379/tcp --permanent
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#重新加载防火墙设置</span>
+</span></span><span style="display:flex;"><span>sudo firewall-cmd --reload
+</span></span></code></pre></div><ul>
+<li>Redis指定配置文件启动</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#进入目录</span>
+</span></span><span style="display:flex;"><span>cd /usr/local/src/redis-4.0.2
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#指定配置文件启动</span>
+</span></span><span style="display:flex;"><span>sudo ./src/redis-server redis.conf
+</span></span></code></pre></div><ul>
+<li>Redis客户端连接指定Redis Server</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#进入目录</span>
+</span></span><span style="display:flex;"><span>cd /usr/redis/redis-4.0.2
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#连接指定Redis Server</span>
+</span></span><span style="display:flex;"><span>sudo ./src/redis-cli -h 10.3.55.138 -a xxxx
+</span></span></code></pre></div><h3 id="2配置redis开机启动">2、配置Redis开机启动<a hidden class="anchor" aria-hidden="true" href="#2配置redis开机启动">#</a></h3>
+<p>将Redis配置成为系统服务，以支持开机启动</p>
+<ul>
+<li>创建Redis服务</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#创建服务文件</span>
+</span></span><span style="display:flex;"><span>sudo vi /usr/lib/systemd/system/redis.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#文件内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Description<span style="color:#f92672">=</span>Redis Server
+</span></span><span style="display:flex;"><span>After<span style="color:#f92672">=</span>network.target
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>ExecStart<span style="color:#f92672">=</span>/usr/local/src/redis-4.0.2/src/redis-server /usr/local/src/redis-4.0.2/redis.conf --daemonize no
+</span></span><span style="display:flex;"><span>ExecStop<span style="color:#f92672">=</span>/usr/local/src/redis-4.0.2/src/redis-cli -h 10.3.55.138 -p <span style="color:#ae81ff">6379</span> -a <span style="color:#e6db74">&#34;xxx&#34;</span>  shutdown
+</span></span><span style="display:flex;"><span>Restart<span style="color:#f92672">=</span>always
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>WantedBy<span style="color:#f92672">=</span>multi-user.target
+</span></span></code></pre></div><ul>
+<li>设置Redis服务开机启动&amp;开启服务</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#设置Redis服务开机启动</span>
+</span></span><span style="display:flex;"><span>sudo systemctl enable redis
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#启动Redis服务</span>
+</span></span><span style="display:flex;"><span>sudo systemctl start redis
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%AE%89%E8%A3%85/">安装</a></li>
+      <li><a href="https://iblog.zone/tags/redis4.0/">redis4.0</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8E%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81%E7%9A%84mongodb3.4%E4%B8%89%E8%8A%82%E7%82%B9%E5%89%AF%E6%9C%AC%E9%9B%86%E9%9B%86%E7%BE%A4/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>CentOS7搭建基于用户认证的MongoDB3.4三节点副本集集群</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/centos7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85mysql5.6/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CentOS7编译安装MySQL5.6</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

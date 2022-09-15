@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java基础加强03 | ylw&#39;s blog</title>
+<meta name="keywords" content="基础加强" />
+<meta name="description" content="1.管理系统与服务器集成 1.1准备工作【应用】   需求
+对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能
+  准备工作
+  将资料中的黑马管理系统代码拷贝到当前模块下
+  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下
+    业务分析
+ 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构
+  1.2HttpRequest类代码实现【应用】   实现步骤
+ 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现
+// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map&lt;String,String&gt; paramterHashMap = new HashMap&lt;&gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java基础加强03" />
+<meta property="og:description" content="1.管理系统与服务器集成 1.1准备工作【应用】   需求
+对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能
+  准备工作
+  将资料中的黑马管理系统代码拷贝到当前模块下
+  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下
+    业务分析
+ 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构
+  1.2HttpRequest类代码实现【应用】   实现步骤
+ 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现
+// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map&lt;String,String&gt; paramterHashMap = new HashMap&lt;&gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-24T16:08:43&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-24T16:08:43&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java基础加强03"/>
+<meta name="twitter:description" content="1.管理系统与服务器集成 1.1准备工作【应用】   需求
+对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能
+  准备工作
+  将资料中的黑马管理系统代码拷贝到当前模块下
+  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下
+    业务分析
+ 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构
+  1.2HttpRequest类代码实现【应用】   实现步骤
+ 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现
+// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map&lt;String,String&gt; paramterHashMap = new HashMap&lt;&gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java基础加强03",
+      "item": "https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java基础加强03",
+  "name": "Java基础加强03",
+  "description": "1.管理系统与服务器集成 1.1准备工作【应用】   需求\n对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能\n  准备工作\n  将资料中的黑马管理系统代码拷贝到当前模块下\n  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下\n    业务分析\n 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构\n  1.2HttpRequest类代码实现【应用】   实现步骤\n 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现\n// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private Map\u0026lt;String,String\u0026gt; paramterHashMap = new HashMap\u0026lt;\u0026gt;();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey.",
+  "keywords": [
+    "基础加强"
+  ],
+  "articleBody": "1.管理系统与服务器集成 1.1准备工作【应用】   需求\n对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能\n  准备工作\n  将资料中的黑马管理系统代码拷贝到当前模块下\n  导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下\n    业务分析\n 解析URL封装到HttpReques对象 DynamicResourceProcess类（执行指定动态资源的service方法） 定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑    项目结构\n  1.2HttpRequest类代码实现【应用】   实现步骤\n 提供一个存储url中用户信息的map集合 提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值 提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中    代码实现\n// 此处只给出了新增的代码,其他代码同之前没有变化 public class HttpRequest {   //用来存储请求URL中问号后面的那些数据  //id=1 name=itheima  private MapString,String paramterHashMap = new HashMap();   //parse --- 获取请求数据 并解析  public void parse(){  try {  SocketChannel socketChannel = (SocketChannel) selectionKey.channel();  StringBuilder sb = new StringBuilder();  //创建一个缓冲区  ByteBuffer byteBuffer = ByteBuffer.allocate(1024);  int len;  //循环读取  while((len = socketChannel.read(byteBuffer))  0){  byteBuffer.flip();  sb.append(new String(byteBuffer.array(),0,len));  //System.out.println(new String(byteBuffer.array(),0,len));  byteBuffer.clear();  }  //System.out.println(sb);  parseHttpRequest(sb);   //解析请求参数，把请求参数存储到paramterHashMap集合  parseParamter();   } catch (IOException e) {  e.printStackTrace();  }  }   //解析请求参数，把请求参数存储到paramterHashMap集合  private void parseParamter(){  //获取请求的uri  String requestURI = this.requestURI;  //按照问号进行切割，然后再获取到第二部分  String[] uriInfoArr = requestURI.split(\"\\\\?\");  //判断数组的长度，如果长度为2，说明是存在请求参数。  if(uriInfoArr.length == 2){  //获取请求参数内容（问号后面的那些参数）  String paramterInfo = uriInfoArr[1];   //使用\u0026进行切割  String[] paramterInfoArr = paramterInfo.split(\"\u0026\");   //遍历数组  //id=1 name=itheima age =23  for (String paramter : paramterInfoArr) {  String[] paramterArr = paramter.split(\"=\");  //获取请求参数名称  String paramterName = paramterArr[0];  //获取请求参数的值  String paramterValue = paramterArr[1];  //添加到集合中  paramterHashMap.put(paramterName,paramterValue);  }  }  }   //id=1 name=itheima  //可以根据请求参数的名称来获取请求参数的值  public String getParamter(String name){  return paramterHashMap.get(name);  }  }   1.3DynamicResourceProcess类代码实现【应用】   实现步骤\n获取的uri是包含?后边的数据的,要进行切割,只要?号前边的内容\n  代码实现\n// 此处只给出了新增的代码,其他代码同之前没有变化 public class DynamicResourceProcess {   public void process(HttpRequest httpRequest,HttpResponse httpResponse){  //获取请求的uri  String requestURI = httpRequest.getRequestURI();  //对requestURI进行切割操作  String[] split = requestURI.split(\"\\\\?\");  //根据请求的uri到map集合中直接找到对应的servlet的对象  HttpServlet httpServlet = ServletConcurrentHashMap.map.get(split[0]);  System.out.println(httpServlet);  // ...  } }   1.4StudentServlet类代码实现【应用】   实现步骤\n 在service方法中获取请求参数中的数据 判断是要添加学生还是修改学生等 调用对应的方法,执行对应的操作    代码实现\n@WebServlet(urlPatterns = \"/servlet/studentservlet\") public class StudentServlet implements HttpServlet {   @Override  public void service(HttpRequest httpRequest, HttpResponse httpResponse) {  //获取method请求参数  String method = httpRequest.getParamter(\"method\");  System.out.println(method);  //判断  if (\"addStudent\".equals(method)) {  //添加学生  addStudent(httpRequest, httpResponse);  } else if (\"delStudent\".equals(method)) {  //删除学生  delStudent(httpRequest, httpResponse);  } else if (\"updateStudent\".equals(method)) {  //修改学生  updateStudent(httpRequest, httpResponse);  } else if (\"findStudent\".equals(method)) {  //查询学生  findStudent(httpRequest, httpResponse);  }  }   //查询学生  private void findStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }   //修改学生  private void updateStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }   //删除学生  private void delStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }   //添加学生  private void addStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  } }   1.5查询学生【应用】   实现步骤\n 创建StudentService对象 调用StudentService中的findAllStudent方法，完成学生数据的查询操作 遍历数组，拼接成一个字符串 将拼接的结果响应给浏览器    代码实现\n@WebServlet(urlPatterns = \"/servlet/studentservlet\") public class StudentServlet implements HttpServlet {  //1.创建StudentService对象  private StudentService studentService = new StudentService();   @Override  public void service(HttpRequest httpRequest, HttpResponse httpResponse) {  //获取method请求参数   String method = httpRequest.getParamter(\"method\");  System.out.println(method);  //判断  if (\"addStudent\".equals(method)) {  //添加学生  addStudent(httpRequest, httpResponse);  } else if (\"delStudent\".equals(method)) {  //删除学生  delStudent(httpRequest, httpResponse);  } else if (\"updateStudent\".equals(method)) {  //修改学生  updateStudent(httpRequest, httpResponse);  } else if (\"findStudent\".equals(method)) {  //查询学生  findStudent(httpRequest, httpResponse);  }  }   //查询学生  private void findStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  //2.调用StudentService中的findAllStudent方法，完成学生数据的查询操作  Student[] allStudent = studentService.findAllStudent();  //3.遍历数组，拼接成一个字符串  StringBuilder sb = new StringBuilder();  for (Student student : allStudent) {  sb.append(student.getId()).append(\", \").append(student.getName()).  append(\", \").append(student.getAge()).append(\", \").  append(student.getBirthday()).append(\"\n\");  }  String result = sb.toString();  //4.将拼接的结果响应给浏览器  //告诉浏览器响应的类型  httpResponse.setContentTpye(\"text/html;charset=UTF-8\");  if (result == null || \"\".equals(result)) {  httpResponse.write(\"暂无学生数据。。。。\");  } else {  httpResponse.write(result);  }  }  //修改学生  private void updateStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }   //删除学生  private void delStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }   //添加学生  private void addStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  } }   1.6添加学生【应用】   实现步骤\n 获取id的请求参数 判断id是否重复 如果重复。给浏览器响应，id已经重复 如果id不重复。添加学生。并给浏览器响应添加学生成功    代码实现\n@WebServlet(urlPatterns = \"/servlet/studentservlet\") public class StudentServlet implements HttpServlet {  //1.创建StudentService对象  private StudentService studentService = new StudentService();   @Override  public void service(HttpRequest httpRequest, HttpResponse httpResponse) {  //获取method请求参数   String method = httpRequest.getParamter(\"method\");  System.out.println(method);  //判断  if (\"addStudent\".equals(method)) {  //添加学生  addStudent(httpRequest, httpResponse);  } else if (\"delStudent\".equals(method)) {  //删除学生  delStudent(httpRequest, httpResponse);  } else if (\"updateStudent\".equals(method)) {  //修改学生  updateStudent(httpRequest, httpResponse);  } else if (\"findStudent\".equals(method)) {  //查询学生  findStudent(httpRequest, httpResponse);  }  }   //查询学生  private void findStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  //...  }  //修改学生  private void updateStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }  //删除学生  private void delStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  }  //添加学生  private void addStudent(HttpRequest httpRequest, HttpResponse httpResponse) {  //1.获取id的请求参数  String id = httpRequest.getParamter(\"id\");  //2.判断id是否重复  boolean exists = studentService.isExists(id);  httpResponse.setContentTpye(\"text/html;charset=UTF-8\");  if (exists) {  //3.如果重复。给浏览器响应，id已经重复  httpResponse.write(\"id已经存在，请重新输入。。。\");  } else {  //4.如果id不重复。添加学生。并给浏览器响应添加学生成功  String name = httpRequest.getParamter(\"name\");  String age = httpRequest.getParamter(\"age\");  String birthday = httpRequest.getParamter(\"birthday\");  //对数据进行处理  try {  int ageInt = Integer.parseInt(age);  SimpleDateFormat sdf = new SimpleDateFormat(\"yyyy-MM-dd\");  Date date = sdf.parse(birthday);  //创建一个学生对象  Student s = new Student();  s.setId(id);  s.setName(name);  s.setAge(age);  s.setBirthday(birthday);  //调用studentservice里面的方法  studentService.addStudent(s);  //给浏览器响应  httpResponse.write(\"学生数据添加成功....\");  } catch (ParseException e) {  httpResponse.write(\"日期格式不正确，正确的格式为:yyyy-MM-dd\");  e.printStackTrace();  } catch (NumberFormatException e) {  httpResponse.write(\"年龄只能为整数\");  e.printStackTrace();  }  //birthday yyyy-MM-dd  }  } }   2.单元测试 2.1概述【理解】 JUnit是一个 Java 编程语言的单元测试工具。JUnit 是一个非常重要的测试工具\n2.2特点【理解】  JUnit是一个开放源代码的测试工具。 提供注解来识别测试方法。 JUnit测试可以让你编写代码更快，并能提高质量。 JUnit优雅简洁。没那么复杂，花费时间较少。 JUnit在一个条中显示进度。如果运行良好则是绿色；如果运行失败，则变成红色。  2.3使用步骤【应用】   使用步骤\n 将junit的jar包导入到工程中 junit-4.9.jar 编写测试方法该测试方法必须是公共的无参数无返回值的非静态方法 在测试方法上使用@Test注解标注该方法是一个测试方法 选中测试方法右键通过junit运行该方法    代码示例\npublic class JunitDemo1 {  @Test  public void add() {  System.out.println(2 / 0);  int a = 10;  int b = 20;  int sum = a + b;  System.out.println(sum);  } }   2.4相关注解【应用】   注解说明\n   注解 含义     @Test 表示测试该方法   @Before 在测试的方法前运行   @After 在测试的方法后运行      代码示例\npublic class JunitDemo2 {  @Before  public void before() {  // 在执行测试代码之前执行，一般用于初始化操作  System.out.println(\"before\");  }  @Test  public void test() {  // 要执行的测试代码  System.out.println(\"test\");  }  @After  public void after() {  // 在执行测试代码之后执行，一般用于释放资源  System.out.println(\"after\");  } }   3.日志 3.1概述【理解】   概述\n程序中的日志可以用来记录程序在运行的时候点点滴滴。并可以进行永久存储。\n  日志与输出语句的区别\n    输出语句 日志技术     取消日志 需要修改代码，灵活性比较差 不需要修改代码，灵活性比较好   输出位置 只能是控制台 可以将日志信息写入到文件或者数据库中   多线程 和业务代码处于一个线程中 多线程方式记录日志，不影响业务代码的性能      3.2日志体系结构和Log4J【理解】   体系结构\n  Log4J\nLog4j是Apache的一个开源项目。\n通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件等位置。\n我们也可以控制每一条日志的输出格式。\n通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。\n最令人感兴趣的就是，这些可以通过一个配置文件来灵活地进行配置，而不需要修改应用的代码。\n  Apache基金会\nApache软件基金会（也就是Apache Software Foundation，简称为ASF），为支持开源软件项目而办的一个非盈利性组织。\n  3.3入门案例【应用】   使用步骤\n 导入log4j的相关jar包 编写log4j配置文件 在代码中获取日志的对象 按照级别设置记录日志信息    代码示例\n// log4j的配置文件,名字为log4j.properties, 放在src根目录下 log4j.rootLogger=debug,my,fileAppender  ### direct log messages to my ### log4j.appender.my=org.apache.log4j.ConsoleAppender log4j.appender.my.ImmediateFlush = true log4j.appender.my.Target=System.out log4j.appender.my.layout=org.apache.log4j.PatternLayout log4j.appender.my.layout.ConversionPattern=%d %t %5p %c{1}:%L - %m%n  # fileAppender��ʾ log4j.appender.fileAppender=org.apache.log4j.FileAppender log4j.appender.fileAppender.ImmediateFlush = true log4j.appender.fileAppender.Append=true log4j.appender.fileAppender.File=D:/log4j-log.log log4j.appender.fileAppender.layout=org.apache.log4j.PatternLayout log4j.appender.fileAppender.layout.ConversionPattern=%d %5p %c{1}:%L - %m%n  // 测试类 public class Log4JTest01 {   //使用log4j的api来获取日志的对象  //弊端：如果以后我们更换日志的实现类，那么下面的代码就需要跟着改  //不推荐使用  //private static final Logger LOGGER = Logger.getLogger(Log4JTest01.class);   //使用slf4j里面的api来获取日志的对象  //好处：如果以后我们更换日志的实现类，那么下面的代码不需要跟着修改  //推荐使用  private static final Logger LOGGER = LoggerFactory.getLogger(Log4JTest01.class);   public static void main(String[] args) {  //1.导入jar包  //2.编写配置文件  //3.在代码中获取日志的对象  //4.按照日志级别设置日志信息  LOGGER.debug(\"debug级别的日志\");  LOGGER.info(\"info级别的日志\");  LOGGER.warn(\"warn级别的日志\");  LOGGER.error(\"error级别的日志\");  } }   3.4配置文件详解【理解】   三个核心\n  Loggers(记录器) 日志的级别\nLoggers组件在此系统中常见的五个级别：DEBUG、INFO、WARN、ERROR 和 FATAL。\nDEBUG Log4j有一个规则：只输出级别不低于设定级别的日志信息。\n  Appenders(输出源) 日志要输出的地方\n把日志输出到不同的地方，如控制台（Console）、文件（Files）等。\n org.apache.log4j.ConsoleAppender（控制台） org.apache.log4j.FileAppender（文件）    Layouts(布局) 日志输出的格式\n可以根据自己的喜好规定日志输出的格式\n常用的布局管理器：\n​\torg.apache.log4j.PatternLayout（可以灵活地指定布局模式）\n​ org.apache.log4j.SimpleLayout（包含日志信息的级别和信息字符串）\n​\torg.apache.log4j.TTCCLayout（包含日志产生的时间、线程、类别等信息）\n    配置根Logger\n  格式\nlog4j.rootLogger=日志级别，appenderName1，appenderName2，…\n  日志级别\nOFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL或者自定义的级别。\n  appenderName1\n就是指定日志信息要输出到哪里。可以同时指定多个输出目的地，用逗号隔开。\n例如：log4j.rootLogger＝INFO，ca，fa\n    ConsoleAppender常用的选项\n  ImmediateFlush=true\n表示所有消息都会被立即输出，设为false则不输出，默认值是true。\n  Target=System.err\n默认值是System.out。\n    FileAppender常用的选项\n  ImmediateFlush=true\n表示所有消息都会被立即输出。设为false则不输出，默认值是true\n  Append=false\ntrue表示将消息添加到指定文件中，原来的消息不覆盖。\nfalse则将消息覆盖指定的文件内容，默认值是true。\n  File=D:/logs/logging.log4j\n指定消息输出到logging.log4j文件中\n    PatternLayout常用的选项\n  ConversionPattern=%m%n\n设定以怎样的格式显示消息\n    3.5在项目中的应用【应用】   步骤\n 导入相关的依赖 将资料中的properties配置文件复制到src目录下 在代码中获取日志的对象 按照级别设置记录日志信息    代码实现\n@WebServlet(urlPatterns = \"/servlet/loginservlet\") public class LoginServlet implements HttpServlet{   //获取日志的对象  private static final Logger LOGGER = LoggerFactory.getLogger(LoginServlet.class);   @Override  public void service(HttpRequest httpRequest, HttpResponse httpResponse) {  //处理  System.out.println(\"LoginServlet处理了登录请求\");   LOGGER.info(\"现在已经处理了登录请求，准备给浏览器响应\");   //响应  httpResponse.setContentTpye(\"text/html;charset=UTF-8\");  httpResponse.write(\"登录成功\");  } }   ",
+  "wordCount" : "927",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-24T16:08:43+08:00",
+  "dateModified": "2022-04-24T16:08:43+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA03/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java基础加强03
+    </h1>
+    <div class="post-meta"><span title='2022-04-24 16:08:43 +0800 CST'>2022-04-24</span>&nbsp;·&nbsp;5 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1%e7%ae%a1%e7%90%86%e7%b3%bb%e7%bb%9f%e4%b8%8e%e6%9c%8d%e5%8a%a1%e5%99%a8%e9%9b%86%e6%88%90" aria-label="1.管理系统与服务器集成">1.管理系统与服务器集成</a><ul>
+                            
+                    <li>
+                        <a href="#11%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c%e5%ba%94%e7%94%a8" aria-label="1.1准备工作【应用】">1.1准备工作【应用】</a></li>
+                    <li>
+                        <a href="#12httprequest%e7%b1%bb%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0%e5%ba%94%e7%94%a8" aria-label="1.2HttpRequest类代码实现【应用】">1.2HttpRequest类代码实现【应用】</a></li>
+                    <li>
+                        <a href="#13dynamicresourceprocess%e7%b1%bb%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0%e5%ba%94%e7%94%a8" aria-label="1.3DynamicResourceProcess类代码实现【应用】">1.3DynamicResourceProcess类代码实现【应用】</a></li>
+                    <li>
+                        <a href="#14studentservlet%e7%b1%bb%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0%e5%ba%94%e7%94%a8" aria-label="1.4StudentServlet类代码实现【应用】">1.4StudentServlet类代码实现【应用】</a></li>
+                    <li>
+                        <a href="#15%e6%9f%a5%e8%af%a2%e5%ad%a6%e7%94%9f%e5%ba%94%e7%94%a8" aria-label="1.5查询学生【应用】">1.5查询学生【应用】</a></li>
+                    <li>
+                        <a href="#16%e6%b7%bb%e5%8a%a0%e5%ad%a6%e7%94%9f%e5%ba%94%e7%94%a8" aria-label="1.6添加学生【应用】">1.6添加学生【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95" aria-label="2.单元测试">2.单元测试</a><ul>
+                            
+                    <li>
+                        <a href="#21%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="2.1概述【理解】">2.1概述【理解】</a></li>
+                    <li>
+                        <a href="#22%e7%89%b9%e7%82%b9%e7%90%86%e8%a7%a3" aria-label="2.2特点【理解】">2.2特点【理解】</a></li>
+                    <li>
+                        <a href="#23%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%aa%a4%e5%ba%94%e7%94%a8" aria-label="2.3使用步骤【应用】">2.3使用步骤【应用】</a></li>
+                    <li>
+                        <a href="#24%e7%9b%b8%e5%85%b3%e6%b3%a8%e8%a7%a3%e5%ba%94%e7%94%a8" aria-label="2.4相关注解【应用】">2.4相关注解【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e6%97%a5%e5%bf%97" aria-label="3.日志">3.日志</a><ul>
+                            
+                    <li>
+                        <a href="#31%e6%a6%82%e8%bf%b0%e7%90%86%e8%a7%a3" aria-label="3.1概述【理解】">3.1概述【理解】</a></li>
+                    <li>
+                        <a href="#32%e6%97%a5%e5%bf%97%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e5%92%8clog4j%e7%90%86%e8%a7%a3" aria-label="3.2日志体系结构和Log4J【理解】">3.2日志体系结构和Log4J【理解】</a></li>
+                    <li>
+                        <a href="#33%e5%85%a5%e9%97%a8%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="3.3入门案例【应用】">3.3入门案例【应用】</a></li>
+                    <li>
+                        <a href="#34%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6%e8%af%a6%e8%a7%a3%e7%90%86%e8%a7%a3" aria-label="3.4配置文件详解【理解】">3.4配置文件详解【理解】</a></li>
+                    <li>
+                        <a href="#35%e5%9c%a8%e9%a1%b9%e7%9b%ae%e4%b8%ad%e7%9a%84%e5%ba%94%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="3.5在项目中的应用【应用】">3.5在项目中的应用【应用】</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1管理系统与服务器集成">1.管理系统与服务器集成<a hidden class="anchor" aria-hidden="true" href="#1管理系统与服务器集成">#</a></h2>
+<h3 id="11准备工作应用">1.1准备工作【应用】<a hidden class="anchor" aria-hidden="true" href="#11准备工作应用">#</a></h3>
+<ul>
+<li>
+<p>需求</p>
+<p>对之前写过的黑马信息管理系统进行改进,实现可以通过浏览器进行访问的功能</p>
+</li>
+<li>
+<p>准备工作</p>
+<ul>
+<li>
+<p>将资料中的黑马管理系统代码拷贝到当前模块下</p>
+</li>
+<li>
+<p>导包的代码可能报错,因为之前的包路径可能和当前代码不一致,将导包的代码修改下</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/02_%e8%a6%81%e6%8b%b7%e8%b4%9d%e7%9a%84%e5%8c%85.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>业务分析</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/03_%e4%b8%9a%e5%8a%a1%e5%88%86%e6%9e%9002.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/01_%e4%b8%9a%e5%8a%a1%e5%88%86%e6%9e%90.png" alt=""  />
+</p>
+<ol>
+<li>解析URL封装到HttpReques对象</li>
+<li>DynamicResourceProcess类（执行指定动态资源的service方法）</li>
+<li>定义servlet类完成查询学生、添加学生、删除学生、修改学生的逻辑</li>
+</ol>
+</li>
+<li>
+<p>项目结构</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/04_%e5%8c%85%e7%bb%93%e6%9e%84.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/05_%e4%b8%89%e5%b1%82%e7%bb%93%e6%9e%84.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="12httprequest类代码实现应用">1.2HttpRequest类代码实现【应用】<a hidden class="anchor" aria-hidden="true" href="#12httprequest类代码实现应用">#</a></h3>
+<ul>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>提供一个存储url中用户信息的map集合</li>
+<li>提供一个getParamter方法,用于根据请求参数的名称获取请求参数的值</li>
+<li>提供一个parseParamter方法,用于解析请求参数把请求参数存储到map集合中</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 此处只给出了新增的代码,其他代码同之前没有变化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpRequest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//用来存储请求URL中问号后面的那些数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//id=1  name=itheima
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span>String<span style="color:#f92672">&gt;</span> paramterHashMap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//parse --- 获取请求数据 并解析
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">parse</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            SocketChannel socketChannel <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>SocketChannel<span style="color:#f92672">)</span> selectionKey<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            StringBuilder sb <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//创建一个缓冲区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            ByteBuffer byteBuffer <span style="color:#f92672">=</span> ByteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">allocate</span><span style="color:#f92672">(</span>1024<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> len<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//循环读取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">while</span><span style="color:#f92672">((</span>len <span style="color:#f92672">=</span> socketChannel<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>byteBuffer<span style="color:#f92672">))</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>                byteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">flip</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                sb<span style="color:#f92672">.</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span>byteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">array</span><span style="color:#f92672">(),</span>0<span style="color:#f92672">,</span>len<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//System.out.println(new String(byteBuffer.array(),0,len));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                byteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">clear</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//System.out.println(sb);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            parseHttpRequest<span style="color:#f92672">(</span>sb<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//解析请求参数，把请求参数存储到paramterHashMap集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            parseParamter<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//解析请求参数，把请求参数存储到paramterHashMap集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">parseParamter</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取请求的uri
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String requestURI <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">requestURI</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//按照问号进行切割，然后再获取到第二部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String<span style="color:#f92672">[]</span> uriInfoArr <span style="color:#f92672">=</span> requestURI<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;\\?&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//判断数组的长度，如果长度为2，说明是存在请求参数。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>uriInfoArr<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> 2<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//获取请求参数内容（问号后面的那些参数）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String paramterInfo <span style="color:#f92672">=</span> uriInfoArr<span style="color:#f92672">[</span>1<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//使用&amp;进行切割
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String<span style="color:#f92672">[]</span> paramterInfoArr <span style="color:#f92672">=</span> paramterInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;&amp;&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//遍历数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//id=1 name=itheima age =23
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>String paramter <span style="color:#f92672">:</span> paramterInfoArr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                String<span style="color:#f92672">[]</span> paramterArr <span style="color:#f92672">=</span> paramter<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;=&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取请求参数名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String paramterName <span style="color:#f92672">=</span> paramterArr<span style="color:#f92672">[</span>0<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//获取请求参数的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                String paramterValue <span style="color:#f92672">=</span> paramterArr<span style="color:#f92672">[</span>1<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//添加到集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                paramterHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>paramterName<span style="color:#f92672">,</span>paramterValue<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//id=1 name=itheima
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//可以根据请求参数的名称来获取请求参数的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> paramterHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="13dynamicresourceprocess类代码实现应用">1.3DynamicResourceProcess类代码实现【应用】<a hidden class="anchor" aria-hidden="true" href="#13dynamicresourceprocess类代码实现应用">#</a></h3>
+<ul>
+<li>
+<p>实现步骤</p>
+<p>获取的uri是包含?后边的数据的,要进行切割,只要?号前边的内容</p>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 此处只给出了新增的代码,其他代码同之前没有变化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DynamicResourceProcess</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">process</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span>HttpResponse httpResponse<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取请求的uri
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String requestURI <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//对requestURI进行切割操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> requestURI<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;\\?&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据请求的uri到map集合中直接找到对应的servlet的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        HttpServlet httpServlet <span style="color:#f92672">=</span> ServletConcurrentHashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>split<span style="color:#f92672">[</span>0<span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>httpServlet<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>  
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="14studentservlet类代码实现应用">1.4StudentServlet类代码实现【应用】<a hidden class="anchor" aria-hidden="true" href="#14studentservlet类代码实现应用">#</a></h3>
+<ul>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>在service方法中获取请求参数中的数据</li>
+<li>判断是要添加学生还是修改学生等</li>
+<li>调用对应的方法,执行对应的操作</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@WebServlet</span><span style="color:#f92672">(</span>urlPatterns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/servlet/studentservlet&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentServlet</span> <span style="color:#66d9ef">implements</span> HttpServlet <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">service</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取method请求参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String method <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>method<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//判断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;addStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            addStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;delStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            delStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;updateStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            updateStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;findStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            findStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">findStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="15查询学生应用">1.5查询学生【应用】<a hidden class="anchor" aria-hidden="true" href="#15查询学生应用">#</a></h3>
+<ul>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>创建StudentService对象</li>
+<li>调用StudentService中的findAllStudent方法，完成学生数据的查询操作</li>
+<li>遍历数组，拼接成一个字符串</li>
+<li>将拼接的结果响应给浏览器</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@WebServlet</span><span style="color:#f92672">(</span>urlPatterns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/servlet/studentservlet&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentServlet</span> <span style="color:#66d9ef">implements</span> HttpServlet <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//1.创建StudentService对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> StudentService studentService <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StudentService<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">service</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取method请求参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        String method <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>method<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//判断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;addStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            addStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;delStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            delStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;updateStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            updateStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;findStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            findStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">findStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.调用StudentService中的findAllStudent方法，完成学生数据的查询操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Student<span style="color:#f92672">[]</span> allStudent <span style="color:#f92672">=</span> studentService<span style="color:#f92672">.</span><span style="color:#a6e22e">findAllStudent</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//3.遍历数组，拼接成一个字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        StringBuilder sb <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student student <span style="color:#f92672">:</span> allStudent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            sb<span style="color:#f92672">.</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">getId</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;, &#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()).</span>
+</span></span><span style="display:flex;"><span>                    append<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;, &#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;, &#34;</span><span style="color:#f92672">).</span>
+</span></span><span style="display:flex;"><span>                    append<span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">getBirthday</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;&lt;br&gt;&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        String result <span style="color:#f92672">=</span> sb<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//4.将拼接的结果响应给浏览器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//告诉浏览器响应的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">setContentTpye</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;text/html;charset=UTF-8&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>result <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>result<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;暂无学生数据。。。。&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>  
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="16添加学生应用">1.6添加学生【应用】<a hidden class="anchor" aria-hidden="true" href="#16添加学生应用">#</a></h3>
+<ul>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>获取id的请求参数</li>
+<li>判断id是否重复</li>
+<li>如果重复。给浏览器响应，id已经重复</li>
+<li>如果id不重复。添加学生。并给浏览器响应添加学生成功</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@WebServlet</span><span style="color:#f92672">(</span>urlPatterns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/servlet/studentservlet&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentServlet</span> <span style="color:#66d9ef">implements</span> HttpServlet <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//1.创建StudentService对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> StudentService studentService <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StudentService<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">service</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取method请求参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        String method <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>method<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//判断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;addStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            addStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;delStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            delStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;updateStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            updateStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;findStudent&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            findStudent<span style="color:#f92672">(</span>httpRequest<span style="color:#f92672">,</span> httpResponse<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//查询学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">findStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//修改学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//删除学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//添加学生
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addStudent</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.获取id的请求参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String id <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//2.判断id是否重复
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> exists <span style="color:#f92672">=</span> studentService<span style="color:#f92672">.</span><span style="color:#a6e22e">isExists</span><span style="color:#f92672">(</span>id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">setContentTpye</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;text/html;charset=UTF-8&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>exists<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//3.如果重复。给浏览器响应，id已经重复
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id已经存在，请重新输入。。。&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//4.如果id不重复。添加学生。并给浏览器响应添加学生成功
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String name <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            String age <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;age&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            String birthday <span style="color:#f92672">=</span> httpRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">getParamter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;birthday&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//对数据进行处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> ageInt <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">parseInt</span><span style="color:#f92672">(</span>age<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                SimpleDateFormat sdf <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleDateFormat<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;yyyy-MM-dd&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                Date date <span style="color:#f92672">=</span> sdf<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span>birthday<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//创建一个学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Student s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                s<span style="color:#f92672">.</span><span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                s<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                s<span style="color:#f92672">.</span><span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span>age<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                s<span style="color:#f92672">.</span><span style="color:#a6e22e">setBirthday</span><span style="color:#f92672">(</span>birthday<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//调用studentservice里面的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                studentService<span style="color:#f92672">.</span><span style="color:#a6e22e">addStudent</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//给浏览器响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;学生数据添加成功....&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>ParseException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;日期格式不正确，正确的格式为:yyyy-MM-dd&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NumberFormatException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;年龄只能为整数&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//birthday  yyyy-MM-dd
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="2单元测试">2.单元测试<a hidden class="anchor" aria-hidden="true" href="#2单元测试">#</a></h2>
+<h3 id="21概述理解">2.1概述【理解】<a hidden class="anchor" aria-hidden="true" href="#21概述理解">#</a></h3>
+<p>JUnit是一个 Java 编程语言的单元测试工具。JUnit 是一个非常重要的测试工具</p>
+<h3 id="22特点理解">2.2特点【理解】<a hidden class="anchor" aria-hidden="true" href="#22特点理解">#</a></h3>
+<ul>
+<li>JUnit是一个开放源代码的测试工具。</li>
+<li>提供注解来识别测试方法。</li>
+<li>JUnit测试可以让你编写代码更快，并能提高质量。</li>
+<li>JUnit优雅简洁。没那么复杂，花费时间较少。</li>
+<li>JUnit在一个条中显示进度。如果运行良好则是绿色；如果运行失败，则变成红色。</li>
+</ul>
+<h3 id="23使用步骤应用">2.3使用步骤【应用】<a hidden class="anchor" aria-hidden="true" href="#23使用步骤应用">#</a></h3>
+<ul>
+<li>
+<p>使用步骤</p>
+<ol>
+<li>将junit的jar包导入到工程中 junit-4.9.jar</li>
+<li>编写测试方法该测试方法必须是公共的无参数无返回值的非静态方法</li>
+<li>在测试方法上使用@Test注解标注该方法是一个测试方法</li>
+<li>选中测试方法右键通过junit运行该方法</li>
+</ol>
+</li>
+<li>
+<p>代码示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JunitDemo1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>2 <span style="color:#f92672">/</span> 0<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 10<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 20<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>sum<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24相关注解应用">2.4相关注解【应用】<a hidden class="anchor" aria-hidden="true" href="#24相关注解应用">#</a></h3>
+<ul>
+<li>
+<p>注解说明</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Test</td>
+<td>表示测试该方法</td>
+</tr>
+<tr>
+<td>@Before</td>
+<td>在测试的方法前运行</td>
+</tr>
+<tr>
+<td>@After</td>
+<td>在测试的方法后运行</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>代码示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JunitDemo2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Before</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">before</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 在执行测试代码之前执行，一般用于初始化操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;before&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 要执行的测试代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;test&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@After</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">after</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 在执行测试代码之后执行，一般用于释放资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;after&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="3日志">3.日志<a hidden class="anchor" aria-hidden="true" href="#3日志">#</a></h2>
+<h3 id="31概述理解">3.1概述【理解】<a hidden class="anchor" aria-hidden="true" href="#31概述理解">#</a></h3>
+<ul>
+<li>
+<p>概述</p>
+<p>程序中的日志可以用来记录程序在运行的时候点点滴滴。并可以进行永久存储。</p>
+</li>
+<li>
+<p>日志与输出语句的区别</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>输出语句</th>
+<th>日志技术</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>取消日志</td>
+<td>需要修改代码，灵活性比较差</td>
+<td>不需要修改代码，灵活性比较好</td>
+</tr>
+<tr>
+<td>输出位置</td>
+<td>只能是控制台</td>
+<td>可以将日志信息写入到文件或者数据库中</td>
+</tr>
+<tr>
+<td>多线程</td>
+<td>和业务代码处于一个线程中</td>
+<td>多线程方式记录日志，不影响业务代码的性能</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h3 id="32日志体系结构和log4j理解">3.2日志体系结构和Log4J【理解】<a hidden class="anchor" aria-hidden="true" href="#32日志体系结构和log4j理解">#</a></h3>
+<ul>
+<li>
+<p>体系结构</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/06_%e6%97%a5%e5%bf%97%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84.png" alt=""  />
+</p>
+</li>
+<li>
+<p>Log4J</p>
+<p>Log4j是Apache的一个开源项目。</p>
+<p>通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件等位置。</p>
+<p>我们也可以控制每一条日志的输出格式。</p>
+<p>通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。</p>
+<p>最令人感兴趣的就是，这些可以通过一个配置文件来灵活地进行配置，而不需要修改应用的代码。</p>
+</li>
+<li>
+<p>Apache基金会</p>
+<p>Apache软件基金会（也就是Apache Software Foundation，简称为ASF），为支持开源软件项目而办的一个非盈利性组织。</p>
+</li>
+</ul>
+<h3 id="33入门案例应用">3.3入门案例【应用】<a hidden class="anchor" aria-hidden="true" href="#33入门案例应用">#</a></h3>
+<ul>
+<li>
+<p>使用步骤</p>
+<ol>
+<li>导入log4j的相关jar包</li>
+<li>编写log4j配置文件</li>
+<li>在代码中获取日志的对象</li>
+<li>按照级别设置记录日志信息</li>
+</ol>
+</li>
+<li>
+<p>代码示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// log4j的配置文件,名字为log4j.properties, 放在src根目录下
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">rootLogger</span><span style="color:#f92672">=</span>debug<span style="color:#f92672">,</span>my<span style="color:#f92672">,</span>fileAppender
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">###</span> direct log messages to my <span style="color:#960050;background-color:#1e0010">###</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">my</span><span style="color:#f92672">=</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">log4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ConsoleAppender</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">my</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ImmediateFlush</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">my</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Target</span><span style="color:#f92672">=</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">my</span><span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">=</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">log4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">PatternLayout</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">my</span><span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ConversionPattern</span><span style="color:#f92672">=%</span>d <span style="color:#f92672">%</span>t <span style="color:#f92672">%</span>5p <span style="color:#f92672">%</span>c<span style="color:#f92672">{</span>1<span style="color:#f92672">}:%</span>L <span style="color:#f92672">-</span> <span style="color:#f92672">%</span>m<span style="color:#f92672">%</span>n
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> fileAppender<span style="color:#960050;background-color:#1e0010">��</span>ʾ
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">=</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">log4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">FileAppender</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ImmediateFlush</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Append</span><span style="color:#f92672">=</span><span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">File</span><span style="color:#f92672">=</span>D<span style="color:#f92672">:/</span>log4j<span style="color:#f92672">-</span>log<span style="color:#f92672">.</span><span style="color:#a6e22e">log</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">=</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">log4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">PatternLayout</span>
+</span></span><span style="display:flex;"><span>log4j<span style="color:#f92672">.</span><span style="color:#a6e22e">appender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fileAppender</span><span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ConversionPattern</span><span style="color:#f92672">=%</span>d <span style="color:#f92672">%</span>5p <span style="color:#f92672">%</span>c<span style="color:#f92672">{</span>1<span style="color:#f92672">}:%</span>L <span style="color:#f92672">-</span> <span style="color:#f92672">%</span>m<span style="color:#f92672">%</span>n
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 测试类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Log4JTest01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//使用log4j的api来获取日志的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//弊端：如果以后我们更换日志的实现类，那么下面的代码就需要跟着改
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//不推荐使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//private static final Logger LOGGER = Logger.getLogger(Log4JTest01.class);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//使用slf4j里面的api来获取日志的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//好处：如果以后我们更换日志的实现类，那么下面的代码不需要跟着修改
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//推荐使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span>  <span style="color:#66d9ef">final</span> Logger LOGGER <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span>Log4JTest01<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//1.导入jar包
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//2.编写配置文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//3.在代码中获取日志的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//4.按照日志级别设置日志信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        LOGGER<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;debug级别的日志&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        LOGGER<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;info级别的日志&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        LOGGER<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;warn级别的日志&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        LOGGER<span style="color:#f92672">.</span><span style="color:#a6e22e">error</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;error级别的日志&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="34配置文件详解理解">3.4配置文件详解【理解】<a hidden class="anchor" aria-hidden="true" href="#34配置文件详解理解">#</a></h3>
+<ul>
+<li>
+<p>三个核心</p>
+<ul>
+<li>
+<p>Loggers(记录器)        日志的级别</p>
+<p>Loggers组件在此系统中常见的五个级别：DEBUG、INFO、WARN、ERROR 和 FATAL。</p>
+<p>DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL。</p>
+<p>Log4j有一个规则：只输出级别不低于设定级别的日志信息。</p>
+</li>
+<li>
+<p>Appenders(输出源)   日志要输出的地方</p>
+<p>把日志输出到不同的地方，如控制台（Console）、文件（Files）等。</p>
+<ul>
+<li>org.apache.log4j.ConsoleAppender（控制台）</li>
+<li>org.apache.log4j.FileAppender（文件）</li>
+</ul>
+</li>
+<li>
+<p>Layouts(布局)             日志输出的格式</p>
+<p>可以根据自己的喜好规定日志输出的格式</p>
+<p>常用的布局管理器：</p>
+<p>​		org.apache.log4j.PatternLayout（可以灵活地指定布局模式）</p>
+<p>​        org.apache.log4j.SimpleLayout（包含日志信息的级别和信息字符串）</p>
+<p>​		org.apache.log4j.TTCCLayout（包含日志产生的时间、线程、类别等信息）</p>
+</li>
+</ul>
+</li>
+<li>
+<p>配置根Logger</p>
+<ul>
+<li>
+<p>格式</p>
+<p>log4j.rootLogger=日志级别，appenderName1，appenderName2，…</p>
+</li>
+<li>
+<p>日志级别</p>
+<p>OFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL或者自定义的级别。</p>
+</li>
+<li>
+<p>appenderName1</p>
+<p>就是指定日志信息要输出到哪里。可以同时指定多个输出目的地，用逗号隔开。</p>
+<p>例如：log4j.rootLogger＝INFO，ca，fa</p>
+</li>
+</ul>
+</li>
+<li>
+<p>ConsoleAppender常用的选项</p>
+<ul>
+<li>
+<p>ImmediateFlush=true</p>
+<p>表示所有消息都会被立即输出，设为false则不输出，默认值是true。</p>
+</li>
+<li>
+<p>Target=System.err</p>
+<p>默认值是System.out。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>FileAppender常用的选项</p>
+<ul>
+<li>
+<p>ImmediateFlush=true</p>
+<p>表示所有消息都会被立即输出。设为false则不输出，默认值是true</p>
+</li>
+<li>
+<p>Append=false</p>
+<p>true表示将消息添加到指定文件中，原来的消息不覆盖。</p>
+<p>false则将消息覆盖指定的文件内容，默认值是true。</p>
+</li>
+<li>
+<p>File=D:/logs/logging.log4j</p>
+<p>指定消息输出到logging.log4j文件中</p>
+</li>
+</ul>
+</li>
+<li>
+<p>PatternLayout常用的选项</p>
+<ul>
+<li>
+<p>ConversionPattern=%m%n</p>
+<p>设定以怎样的格式显示消息</p>
+<p><img loading="lazy" src="/images/Java%e5%9f%ba%e7%a1%80%e5%8a%a0%e5%bc%ba03/07_PatternLayout%e5%b8%b8%e7%94%a8%e7%9a%84%e9%80%89%e9%a1%b9.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="35在项目中的应用应用">3.5在项目中的应用【应用】<a hidden class="anchor" aria-hidden="true" href="#35在项目中的应用应用">#</a></h3>
+<ul>
+<li>
+<p>步骤</p>
+<ol>
+<li>导入相关的依赖</li>
+<li>将资料中的properties配置文件复制到src目录下</li>
+<li>在代码中获取日志的对象</li>
+<li>按照级别设置记录日志信息</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@WebServlet</span><span style="color:#f92672">(</span>urlPatterns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/servlet/loginservlet&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoginServlet</span> <span style="color:#66d9ef">implements</span> HttpServlet<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//获取日志的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Logger LOGGER <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span>LoginServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">service</span><span style="color:#f92672">(</span>HttpRequest httpRequest<span style="color:#f92672">,</span> HttpResponse httpResponse<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">//处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;LoginServlet处理了登录请求&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        LOGGER<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;现在已经处理了登录请求，准备给浏览器响应&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">//响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">setContentTpye</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;text/html;charset=UTF-8&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        httpResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;登录成功&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA/">基础加强</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/docker-compose%E6%95%99%E7%A8%8B/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Docker Compose教程</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E5%9F%BA%E7%A1%80%E5%8A%A0%E5%BC%BA02/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java基础加强02</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

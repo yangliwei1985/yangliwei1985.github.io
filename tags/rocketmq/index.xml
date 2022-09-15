@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>rocketMQ on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/rocketmq/</link>
+    <description>Recent content in rocketMQ on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 31 Mar 2022 17:51:01 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/rocketmq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS7搭建Rocketmq4.6三主集群</title>
+      <link>https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Thu, 31 Mar 2022 17:51:01 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/centos7%E6%90%AD%E5%BB%BArocketmq4.6%E4%B8%89%E4%B8%BB%E9%9B%86%E7%BE%A4/</guid>
+      <description>一、下载 wget https://archive.apache.org/dist/rocketmq/4.6.0/rocketmq-all-4.6.0-bin-release.zip unzip rocketmq-all-4.6.0-bin-release.zip mv rocketmq-all-4.6.0-bin-release.zip /data/rocketmq # tree rocketmq rocketmq-all-4.6.0-bin-release ├── LICENSE ├── NOTICE ├── README.md ├── benchmark │ ├── consumer.sh │ ├── producer.sh │ ├── runclass.sh │ └── tproducer.sh ├── bin │ ├── README.md │ ├── cachedog.sh │ ├── cleancache.sh │ ├── cleancache.v1.sh │ ├── dledger │ │ └── fast-try.sh │ ├── mqadmin │ ├── mqadmin.cmd │ ├── mqbroker │ ├── mqbroker.cmd │ ├── mqbroker.numanode0 │ ├── mqbroker.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Java集合02 | ylw&#39;s blog</title>
+<meta name="keywords" content="集合" />
+<meta name="description" content="1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历
+public class MySet1 {  public static void main(String[] args) {  //创建集合对象  Set&lt;String&gt; set = new TreeSet&lt;&gt;();  //添加元素  set.add(&#34;ccc&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;bbb&#34;);  // for (int i = 0; i &lt; set.size(); i&#43;&#43;) { // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  Iterator&lt;String&gt; it = set.iterator();  while (it.hasNext()){  String s = it.next();  System.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Java集合02" />
+<meta property="og:description" content="1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历
+public class MySet1 {  public static void main(String[] args) {  //创建集合对象  Set&lt;String&gt; set = new TreeSet&lt;&gt;();  //添加元素  set.add(&#34;ccc&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;bbb&#34;);  // for (int i = 0; i &lt; set.size(); i&#43;&#43;) { // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  Iterator&lt;String&gt; it = set.iterator();  while (it.hasNext()){  String s = it.next();  System." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-08T14:13:24&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-08T14:13:24&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java集合02"/>
+<meta name="twitter:description" content="1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历
+public class MySet1 {  public static void main(String[] args) {  //创建集合对象  Set&lt;String&gt; set = new TreeSet&lt;&gt;();  //添加元素  set.add(&#34;ccc&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;aaa&#34;);  set.add(&#34;bbb&#34;);  // for (int i = 0; i &lt; set.size(); i&#43;&#43;) { // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  Iterator&lt;String&gt; it = set.iterator();  while (it.hasNext()){  String s = it.next();  System."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Java集合02",
+      "item": "https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java集合02",
+  "name": "Java集合02",
+  "description": "1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历\npublic class MySet1 {  public static void main(String[] args) {  //创建集合对象  Set\u0026lt;String\u0026gt; set = new TreeSet\u0026lt;\u0026gt;();  //添加元素  set.add(\u0026#34;ccc\u0026#34;);  set.add(\u0026#34;aaa\u0026#34;);  set.add(\u0026#34;aaa\u0026#34;);  set.add(\u0026#34;bbb\u0026#34;);  // for (int i = 0; i \u0026lt; set.size(); i++) { // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  Iterator\u0026lt;String\u0026gt; it = set.iterator();  while (it.hasNext()){  String s = it.next();  System.",
+  "keywords": [
+    "集合"
+  ],
+  "articleBody": "1.Set集合 1.1Set集合概述和特点【应用】  不可以存储重复元素 没有索引,不能使用普通for循环遍历  1.2Set集合的使用【应用】 存储字符串并遍历\npublic class MySet1 {  public static void main(String[] args) {  //创建集合对象  SetString set = new TreeSet();  //添加元素  set.add(\"ccc\");  set.add(\"aaa\");  set.add(\"aaa\");  set.add(\"bbb\");  // for (int i = 0; i // //Set集合是没有索引的，所以不能使用通过索引获取元素的方法 // }   //遍历集合  IteratorString it = set.iterator();  while (it.hasNext()){  String s = it.next();  System.out.println(s);  }  System.out.println(\"-----------------------------------\");  for (String s : set) {  System.out.println(s);  }  } } 2.TreeSet集合 2.1TreeSet集合概述和特点【应用】  不可以存储重复元素 没有索引 可以将元素按照规则进行排序  TreeSet()：根据其元素的自然排序进行排序 TreeSet(Comparator comparator) ：根据指定的比较器进行排序    2.2TreeSet集合基本使用【应用】 存储Integer类型的整数并遍历\npublic class TreeSetDemo01 {  public static void main(String[] args) {  //创建集合对象  TreeSetInteger ts = new TreeSetInteger();   //添加元素  ts.add(10);  ts.add(40);  ts.add(30);  ts.add(50);  ts.add(20);   ts.add(30);   //遍历集合  for(Integer i : ts) {  System.out.println(i);  }  } } 2.3自然排序Comparable的使用【应用】   案例需求\n 存储学生对象并遍历，创建TreeSet集合使用无参构造方法 要求：按照年龄从小到大排序，年龄相同时，按照姓名的字母顺序排序    实现步骤\n 使用空参构造创建TreeSet集合  用TreeSet集合存储自定义对象，无参构造方法使用的是自然排序对元素进行排序的   自定义的Student类实现Comparable接口  自然排序，就是让元素所属的类实现Comparable接口，重写compareTo(T o)方法   重写接口中的compareTo方法  重写方法时，一定要注意排序规则必须按照要求的主要条件和次要条件来写      代码实现\n学生类\npublic class Student implements ComparableStudent{  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Student{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  }   @Override  public int compareTo(Student o) {  //按照对象的年龄进行排序  //主要判断条件: 按照年龄从小到大排序  int result = this.age - o.age;  //次要判断条件: 年龄相同时，按照姓名的字母顺序排序  result = result == 0 ? this.name.compareTo(o.getName()) : result;  return result;  } } 测试类\npublic class MyTreeSet2 {  public static void main(String[] args) {  //创建集合对象  TreeSetStudent ts = new TreeSet(); \t//创建学生对象  Student s1 = new Student(\"zhangsan\",28);  Student s2 = new Student(\"lisi\",27);  Student s3 = new Student(\"wangwu\",29);  Student s4 = new Student(\"zhaoliu\",28);  Student s5 = new Student(\"qianqi\",30); \t//把学生添加到集合  ts.add(s1);  ts.add(s2);  ts.add(s3);  ts.add(s4);  ts.add(s5); \t//遍历集合  for (Student student : ts) {  System.out.println(student);  }  } }   2.4比较器排序Comparator的使用【应用】   案例需求\n 存储老师对象并遍历，创建TreeSet集合使用带参构造方法 要求：按照年龄从小到大排序，年龄相同时，按照姓名的字母顺序排序    实现步骤\n 用TreeSet集合存储自定义对象，带参构造方法使用的是比较器排序对元素进行排序的 比较器排序，就是让集合构造方法接收Comparator的实现类对象，重写compare(T o1,T o2)方法 重写方法时，一定要注意排序规则必须按照要求的主要条件和次要条件来写    代码实现\n老师类\npublic class Teacher {  private String name;  private int age;   public Teacher() {  }   public Teacher(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public String toString() {  return \"Teacher{\" +  \"name='\" + name + '\\'' +  \", age=\" + age +  '}';  } } 测试类\npublic class MyTreeSet4 {  public static void main(String[] args) {  //创建集合对象  TreeSetTeacher ts = new TreeSet(new ComparatorTeacher() {  @Override  public int compare(Teacher o1, Teacher o2) {  //o1表示现在要存入的那个元素  //o2表示已经存入到集合中的元素   //主要条件  int result = o1.getAge() - o2.getAge();  //次要条件  result = result == 0 ? o1.getName().compareTo(o2.getName()) : result;  return result;  }  }); \t//创建老师对象  Teacher t1 = new Teacher(\"zhangsan\",23);  Teacher t2 = new Teacher(\"lisi\",22);  Teacher t3 = new Teacher(\"wangwu\",24);  Teacher t4 = new Teacher(\"zhaoliu\",24); \t//把老师添加到集合  ts.add(t1);  ts.add(t2);  ts.add(t3);  ts.add(t4); \t//遍历集合  for (Teacher teacher : ts) {  System.out.println(teacher);  }  } }   2.4两种比较方式总结【理解】  两种比较方式小结  自然排序: 自定义类实现Comparable接口,重写compareTo方法,根据返回值进行排序 比较器排序: 创建TreeSet对象的时候传递Comparator的实现类对象,重写compare方法,根据返回值进行排序 在使用的时候,默认使用自然排序,当自然排序不满足现在的需求时,必须使用比较器排序   两种方式中关于返回值的规则  如果返回值为负数，表示当前存入的元素是较小值，存左边 如果返回值为0，表示当前存入的元素跟集合中元素重复了，不存 如果返回值为正数，表示当前存入的元素是较大值，存右边    3.数据结构 3.1二叉树【理解】   二叉树的特点\n 二叉树中,任意一个节点的度要小于等于2  节点: 在树结构中,每一个元素称之为节点 度: 每一个节点的子节点数量称之为度      二叉树结构图\n  3.2二叉查找树【理解】   二叉查找树的特点\n 二叉查找树,又称二叉排序树或者二叉搜索树 每一个节点上最多有两个子节点 左子树上所有节点的值都小于根节点的值 右子树上所有节点的值都大于根节点的值    二叉查找树结构图\n  二叉查找树和二叉树对比结构图\n  二叉查找树添加节点规则\n  小的存左边\n  大的存右边\n  一样的不存\n    3.3平衡二叉树【理解】   平衡二叉树的特点\n 二叉树左右两个子树的高度差不超过1 任意节点的左右两个子树都是一颗平衡二叉树    平衡二叉树旋转\n  旋转触发时机\n 当添加一个节点之后,该树不再是一颗平衡二叉树    左旋\n  就是将根节点的右侧往左拉,原先的右子节点变成新的父节点,并把多余的左子节点出让,给已经降级的根节点当右子节点\n    右旋\n  就是将根节点的左侧往右拉,左子节点变成了新的父节点,并把多余的右子节点出让,给已经降级根节点当左子节点\n      平衡二叉树和二叉查找树对比结构图\n  平衡二叉树旋转的四种情况\n  左左\n  左左: 当根节点左子树的左子树有节点插入,导致二叉树不平衡\n  如何旋转: 直接对整体进行右旋即可\n    左右\n  左右: 当根节点左子树的右子树有节点插入,导致二叉树不平衡\n  如何旋转: 先在左子树对应的节点位置进行左旋,在对整体进行右旋\n    右右\n  右右: 当根节点右子树的右子树有节点插入,导致二叉树不平衡\n  如何旋转: 直接对整体进行左旋即可\n    右左\n  右左:当根节点右子树的左子树有节点插入,导致二叉树不平衡\n  如何旋转: 先在右子树对应的节点位置进行右旋,在对整体进行左旋\n      3.4红黑树【理解】   红黑树的特点\n 平衡二叉B树 每一个节点可以是红或者黑 红黑树不是高度平衡的,它的平衡是通过\"自己的红黑规则\"进行实现的    红黑树的红黑规则有哪些\n  每一个节点或是红色的,或者是黑色的\n  根节点必须是黑色\n  如果一个节点没有子节点或者父节点,则该节点相应的指针属性值为Nil,这些Nil视为叶节点,每个叶节点(Nil)是黑色的\n  如果某一个节点是红色,那么它的子节点必须是黑色(不能出现两个红色节点相连 的情况)\n  对每一个节点,从该节点到其所有后代叶节点的简单路径上,均包含相同数目的黑色节点\n    红黑树添加节点的默认颜色\n  添加节点时,默认为红色,效率高\n    红黑树添加节点后如何保持红黑规则\n 根节点位置  直接变为黑色   非根节点位置  父节点为黑色  不需要任何操作,默认红色即可   父节点为红色  叔叔节点为红色  将\"父节点\"设为黑色,将\"叔叔节点\"设为黑色 将\"祖父节点\"设为红色 如果\"祖父节点\"为根节点,则将根节点再次变成黑色   叔叔节点为黑色  将\"父节点\"设为黑色 将\"祖父节点\"设为红色 以\"祖父节点\"为支点进行旋转          3.5成绩排序案例【应用】   案例需求\n 用TreeSet集合存储多个学生信息(姓名,语文成绩,数学成绩,英语成绩),并遍历该集合 要求: 按照总分从高到低出现    代码实现\n学生类\npublic class Student implements ComparableStudent {  private String name;  private int chinese;  private int math;  private int english;   public Student() {  }   public Student(String name, int chinese, int math, int english) {  this.name = name;  this.chinese = chinese;  this.math = math;  this.english = english;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getChinese() {  return chinese;  }   public void setChinese(int chinese) {  this.chinese = chinese;  }   public int getMath() {  return math;  }   public void setMath(int math) {  this.math = math;  }   public int getEnglish() {  return english;  }   public void setEnglish(int english) {  this.english = english;  }   public int getSum() {  return this.chinese + this.math + this.english;  }   @Override  public int compareTo(Student o) {  // 主要条件: 按照总分进行排序  int result = o.getSum() - this.getSum();  // 次要条件: 如果总分一样,就按照语文成绩排序  result = result == 0 ? o.getChinese() - this.getChinese() : result;  // 如果语文成绩也一样,就按照数学成绩排序  result = result == 0 ? o.getMath() - this.getMath() : result;  // 如果总分一样,各科成绩也都一样,就按照姓名排序  result = result == 0 ? o.getName().compareTo(this.getName()) : result;  return result;  } } 测试类\npublic class TreeSetDemo {  public static void main(String[] args) {  //创建TreeSet集合对象，通过比较器排序进行排序  TreeSetStudent ts = new TreeSetStudent();  //创建学生对象  Student s1 = new Student(\"jack\", 98, 100, 95);  Student s2 = new Student(\"rose\", 95, 95, 95);  Student s3 = new Student(\"sam\", 100, 93, 98);  //把学生对象添加到集合  ts.add(s1);  ts.add(s2);  ts.add(s3);   //遍历集合  for (Student s : ts) {  System.out.println(s.getName() + \",\" + s.getChinese() + \",\" + s.getMath() + \",\" + s.getEnglish() + \",\" + s.getSum());  }  } }   4.HashSet集合 4.1HashSet集合概述和特点【应用】  底层数据结构是哈希表 存取无序 不可以存储重复元素 没有索引,不能使用普通for循环遍历  4.2HashSet集合的基本应用【应用】 存储字符串并遍历\npublic class HashSetDemo {  public static void main(String[] args) {  //创建集合对象  HashSetString set = new HashSetString();   //添加元素  set.add(\"hello\");  set.add(\"world\");  set.add(\"java\");  //不包含重复元素的集合  set.add(\"world\");   //遍历  for(String s : set) {  System.out.println(s);  }  } } 4.3哈希值【理解】   哈希值简介\n​\t是JDK根据对象的地址或者字符串或者数字算出来的int类型的数值\n  如何获取哈希值\n​\tObject类中的public int hashCode()：返回对象的哈希码值\n  哈希值的特点\n 同一个对象多次调用hashCode()方法返回的哈希值是相同的 默认情况下，不同对象的哈希值是不同的。而重写hashCode()方法，可以实现让不同对象的哈希值相同    4.4哈希表结构【理解】   JDK1.8以前\n​\t数组 + 链表\n  JDK1.8以后\n  节点个数少于等于8个\n​\t数组 + 链表\n  节点个数多于8个\n​\t数组 + 红黑树\n    4.5HashSet集合存储学生对象并遍历【应用】   案例需求\n 创建一个存储学生对象的集合，存储多个学生对象，使用程序实现在控制台遍历该集合 要求：学生对象的成员变量值相同，我们就认为是同一个对象    代码实现\n学生类\npublic class Student {  private String name;  private int age;   public Student() {  }   public Student(String name, int age) {  this.name = name;  this.age = age;  }   public String getName() {  return name;  }   public void setName(String name) {  this.name = name;  }   public int getAge() {  return age;  }   public void setAge(int age) {  this.age = age;  }   @Override  public boolean equals(Object o) {  if (this == o) return true;  if (o == null || getClass() != o.getClass()) return false;   Student student = (Student) o;   if (age != student.age) return false;  return name != null ? name.equals(student.name) : student.name == null;  }   @Override  public int hashCode() {  int result = name != null ? name.hashCode() : 0;  result = 31 * result + age;  return result;  } } 测试类\npublic class HashSetDemo02 {  public static void main(String[] args) {  //创建HashSet集合对象  HashSetStudent hs = new HashSetStudent();   //创建学生对象  Student s1 = new Student(\"林青霞\", 30);  Student s2 = new Student(\"张曼玉\", 35);  Student s3 = new Student(\"王祖贤\", 33);   Student s4 = new Student(\"王祖贤\", 33);   //把学生添加到集合  hs.add(s1);  hs.add(s2);  hs.add(s3);  hs.add(s4);   //遍历集合(增强for)  for (Student s : hs) {  System.out.println(s.getName() + \",\" + s.getAge());  }  } }   总结\n​\tHashSet集合存储自定义类型元素,要想实现元素的唯一,要求必须重写hashCode方法和equals方法\n  ",
+  "wordCount" : "1094",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-08T14:13:24Z",
+  "dateModified": "2022-03-08T14:13:24Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/java%E9%9B%86%E5%90%8802/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Java集合02
+    </h1>
+    <div class="post-meta"><span title='2022-03-08 14:13:24 +0000 UTC'>2022-03-08</span>&nbsp;·&nbsp;6 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#1set%e9%9b%86%e5%90%88" aria-label="1.Set集合">1.Set集合</a><ul>
+                            
+                    <li>
+                        <a href="#11set%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0%e5%92%8c%e7%89%b9%e7%82%b9%e5%ba%94%e7%94%a8" aria-label="1.1Set集合概述和特点【应用】">1.1Set集合概述和特点【应用】</a></li>
+                    <li>
+                        <a href="#12set%e9%9b%86%e5%90%88%e7%9a%84%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="1.2Set集合的使用【应用】">1.2Set集合的使用【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#2treeset%e9%9b%86%e5%90%88" aria-label="2.TreeSet集合">2.TreeSet集合</a><ul>
+                            
+                    <li>
+                        <a href="#21treeset%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0%e5%92%8c%e7%89%b9%e7%82%b9%e5%ba%94%e7%94%a8" aria-label="2.1TreeSet集合概述和特点【应用】">2.1TreeSet集合概述和特点【应用】</a></li>
+                    <li>
+                        <a href="#22treeset%e9%9b%86%e5%90%88%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="2.2TreeSet集合基本使用【应用】">2.2TreeSet集合基本使用【应用】</a></li>
+                    <li>
+                        <a href="#23%e8%87%aa%e7%84%b6%e6%8e%92%e5%ba%8fcomparable%e7%9a%84%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="2.3自然排序Comparable的使用【应用】">2.3自然排序Comparable的使用【应用】</a></li>
+                    <li>
+                        <a href="#24%e6%af%94%e8%be%83%e5%99%a8%e6%8e%92%e5%ba%8fcomparator%e7%9a%84%e4%bd%bf%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="2.4比较器排序Comparator的使用【应用】">2.4比较器排序Comparator的使用【应用】</a></li>
+                    <li>
+                        <a href="#24%e4%b8%a4%e7%a7%8d%e6%af%94%e8%be%83%e6%96%b9%e5%bc%8f%e6%80%bb%e7%bb%93%e7%90%86%e8%a7%a3" aria-label="2.4两种比较方式总结【理解】">2.4两种比较方式总结【理解】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#3%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" aria-label="3.数据结构">3.数据结构</a><ul>
+                            
+                    <li>
+                        <a href="#31%e4%ba%8c%e5%8f%89%e6%a0%91%e7%90%86%e8%a7%a3" aria-label="3.1二叉树【理解】">3.1二叉树【理解】</a></li>
+                    <li>
+                        <a href="#32%e4%ba%8c%e5%8f%89%e6%9f%a5%e6%89%be%e6%a0%91%e7%90%86%e8%a7%a3" aria-label="3.2二叉查找树【理解】">3.2二叉查找树【理解】</a></li>
+                    <li>
+                        <a href="#33%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e7%90%86%e8%a7%a3" aria-label="3.3平衡二叉树【理解】">3.3平衡二叉树【理解】</a></li>
+                    <li>
+                        <a href="#34%e7%ba%a2%e9%bb%91%e6%a0%91%e7%90%86%e8%a7%a3" aria-label="3.4红黑树【理解】">3.4红黑树【理解】</a></li>
+                    <li>
+                        <a href="#35%e6%88%90%e7%bb%a9%e6%8e%92%e5%ba%8f%e6%a1%88%e4%be%8b%e5%ba%94%e7%94%a8" aria-label="3.5成绩排序案例【应用】">3.5成绩排序案例【应用】</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#4hashset%e9%9b%86%e5%90%88" aria-label="4.HashSet集合">4.HashSet集合</a><ul>
+                            
+                    <li>
+                        <a href="#41hashset%e9%9b%86%e5%90%88%e6%a6%82%e8%bf%b0%e5%92%8c%e7%89%b9%e7%82%b9%e5%ba%94%e7%94%a8" aria-label="4.1HashSet集合概述和特点【应用】">4.1HashSet集合概述和特点【应用】</a></li>
+                    <li>
+                        <a href="#42hashset%e9%9b%86%e5%90%88%e7%9a%84%e5%9f%ba%e6%9c%ac%e5%ba%94%e7%94%a8%e5%ba%94%e7%94%a8" aria-label="4.2HashSet集合的基本应用【应用】">4.2HashSet集合的基本应用【应用】</a></li>
+                    <li>
+                        <a href="#43%e5%93%88%e5%b8%8c%e5%80%bc%e7%90%86%e8%a7%a3" aria-label="4.3哈希值【理解】">4.3哈希值【理解】</a></li>
+                    <li>
+                        <a href="#44%e5%93%88%e5%b8%8c%e8%a1%a8%e7%bb%93%e6%9e%84%e7%90%86%e8%a7%a3" aria-label="4.4哈希表结构【理解】">4.4哈希表结构【理解】</a></li>
+                    <li>
+                        <a href="#45hashset%e9%9b%86%e5%90%88%e5%ad%98%e5%82%a8%e5%ad%a6%e7%94%9f%e5%af%b9%e8%b1%a1%e5%b9%b6%e9%81%8d%e5%8e%86%e5%ba%94%e7%94%a8" aria-label="4.5HashSet集合存储学生对象并遍历【应用】">4.5HashSet集合存储学生对象并遍历【应用】</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="1set集合">1.Set集合<a hidden class="anchor" aria-hidden="true" href="#1set集合">#</a></h2>
+<h3 id="11set集合概述和特点应用">1.1Set集合概述和特点【应用】<a hidden class="anchor" aria-hidden="true" href="#11set集合概述和特点应用">#</a></h3>
+<ul>
+<li>不可以存储重复元素</li>
+<li>没有索引,不能使用普通for循环遍历</li>
+</ul>
+<h3 id="12set集合的使用应用">1.2Set集合的使用【应用】<a hidden class="anchor" aria-hidden="true" href="#12set集合的使用应用">#</a></h3>
+<p>存储字符串并遍历</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MySet1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Set<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> set <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeSet<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//添加元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ccc&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;aaa&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;aaa&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bbb&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        for (int i = 0; i &lt; set.size(); i++) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            //Set集合是没有索引的，所以不能使用通过索引获取元素的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Iterator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> it <span style="color:#f92672">=</span> set<span style="color:#f92672">.</span><span style="color:#a6e22e">iterator</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">hasNext</span><span style="color:#f92672">()){</span>
+</span></span><span style="display:flex;"><span>            String s <span style="color:#f92672">=</span> it<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-----------------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>String s <span style="color:#f92672">:</span> set<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="2treeset集合">2.TreeSet集合<a hidden class="anchor" aria-hidden="true" href="#2treeset集合">#</a></h2>
+<h3 id="21treeset集合概述和特点应用">2.1TreeSet集合概述和特点【应用】<a hidden class="anchor" aria-hidden="true" href="#21treeset集合概述和特点应用">#</a></h3>
+<ul>
+<li>不可以存储重复元素</li>
+<li>没有索引</li>
+<li>可以将元素按照规则进行排序
+<ul>
+<li>TreeSet()：根据其元素的自然排序进行排序</li>
+<li>TreeSet(Comparator comparator) ：根据指定的比较器进行排序</li>
+</ul>
+</li>
+</ul>
+<h3 id="22treeset集合基本使用应用">2.2TreeSet集合基本使用【应用】<a hidden class="anchor" aria-hidden="true" href="#22treeset集合基本使用应用">#</a></h3>
+<p>存储Integer类型的整数并遍历</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeSetDemo01</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TreeSet<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> ts <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeSet<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//添加元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>10<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>40<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>50<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>20<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span>Integer i <span style="color:#f92672">:</span> ts<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="23自然排序comparable的使用应用">2.3自然排序Comparable的使用【应用】<a hidden class="anchor" aria-hidden="true" href="#23自然排序comparable的使用应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<ul>
+<li>存储学生对象并遍历，创建TreeSet集合使用无参构造方法</li>
+<li>要求：按照年龄从小到大排序，年龄相同时，按照姓名的字母顺序排序</li>
+</ul>
+</li>
+<li>
+<p>实现步骤</p>
+<ol>
+<li>使用空参构造创建TreeSet集合
+<ul>
+<li>用TreeSet集合存储自定义对象，无参构造方法使用的是自然排序对元素进行排序的</li>
+</ul>
+</li>
+<li>自定义的Student类实现Comparable接口
+<ul>
+<li>自然排序，就是让元素所属的类实现Comparable接口，重写compareTo(T o)方法</li>
+</ul>
+</li>
+<li>重写接口中的compareTo方法
+<ul>
+<li>重写方法时，一定要注意排序规则必须按照要求的主要条件和次要条件来写</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>代码实现</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Comparable<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Student{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>Student o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//按照对象的年龄进行排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//主要判断条件: 按照年龄从小到大排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">-</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">age</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//次要判断条件: 年龄相同时，按照姓名的字母顺序排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        result <span style="color:#f92672">=</span> result <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">.</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>o<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">())</span> <span style="color:#f92672">:</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyTreeSet2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TreeSet<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> ts <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeSet<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">//创建学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Student s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;zhangsan&#34;</span><span style="color:#f92672">,</span>28<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;lisi&#34;</span><span style="color:#f92672">,</span>27<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;wangwu&#34;</span><span style="color:#f92672">,</span>29<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;zhaoliu&#34;</span><span style="color:#f92672">,</span>28<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s5 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;qianqi&#34;</span><span style="color:#f92672">,</span>30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//把学生添加到集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s5<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student student <span style="color:#f92672">:</span> ts<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>student<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24比较器排序comparator的使用应用">2.4比较器排序Comparator的使用【应用】<a hidden class="anchor" aria-hidden="true" href="#24比较器排序comparator的使用应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<ul>
+<li>存储老师对象并遍历，创建TreeSet集合使用带参构造方法</li>
+<li>要求：按照年龄从小到大排序，年龄相同时，按照姓名的字母顺序排序</li>
+</ul>
+</li>
+<li>
+<p>实现步骤</p>
+<ul>
+<li>用TreeSet集合存储自定义对象，带参构造方法使用的是比较器排序对元素进行排序的</li>
+<li>比较器排序，就是让集合构造方法接收Comparator的实现类对象，重写compare(T o1,T o2)方法</li>
+<li>重写方法时，一定要注意排序规则必须按照要求的主要条件和次要条件来写</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<p>老师类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Teacher</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Teacher</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Teacher</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Teacher{&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name=&#39;&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;\&#39;&#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;, age=&#34;</span> <span style="color:#f92672">+</span> age <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;}&#39;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyTreeSet4</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TreeSet<span style="color:#f92672">&lt;</span>Teacher<span style="color:#f92672">&gt;</span> ts <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeSet<span style="color:#f92672">&lt;&gt;(</span><span style="color:#66d9ef">new</span> Comparator<span style="color:#f92672">&lt;</span>Teacher<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">compare</span><span style="color:#f92672">(</span>Teacher o1<span style="color:#f92672">,</span> Teacher o2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//o1表示现在要存入的那个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">//o2表示已经存入到集合中的元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//主要条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> o1<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> o2<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//次要条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                result <span style="color:#f92672">=</span> result <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> o1<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">().</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>o2<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">())</span> <span style="color:#f92672">:</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//创建老师对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Teacher t1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Teacher<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;zhangsan&#34;</span><span style="color:#f92672">,</span>23<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Teacher t2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Teacher<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;lisi&#34;</span><span style="color:#f92672">,</span>22<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Teacher t3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Teacher<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;wangwu&#34;</span><span style="color:#f92672">,</span>24<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Teacher t4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Teacher<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;zhaoliu&#34;</span><span style="color:#f92672">,</span>24<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//把老师添加到集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>t1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>t2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>t3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>t4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Teacher teacher <span style="color:#f92672">:</span> ts<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>teacher<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="24两种比较方式总结理解">2.4两种比较方式总结【理解】<a hidden class="anchor" aria-hidden="true" href="#24两种比较方式总结理解">#</a></h3>
+<ul>
+<li>两种比较方式小结
+<ul>
+<li>自然排序: 自定义类实现Comparable接口,重写compareTo方法,根据返回值进行排序</li>
+<li>比较器排序: 创建TreeSet对象的时候传递Comparator的实现类对象,重写compare方法,根据返回值进行排序</li>
+<li>在使用的时候,默认使用自然排序,当自然排序不满足现在的需求时,必须使用比较器排序</li>
+</ul>
+</li>
+<li>两种方式中关于返回值的规则
+<ul>
+<li>如果返回值为负数，表示当前存入的元素是较小值，存左边</li>
+<li>如果返回值为0，表示当前存入的元素跟集合中元素重复了，不存</li>
+<li>如果返回值为正数，表示当前存入的元素是较大值，存右边</li>
+</ul>
+</li>
+</ul>
+<h2 id="3数据结构">3.数据结构<a hidden class="anchor" aria-hidden="true" href="#3数据结构">#</a></h2>
+<h3 id="31二叉树理解">3.1二叉树【理解】<a hidden class="anchor" aria-hidden="true" href="#31二叉树理解">#</a></h3>
+<ul>
+<li>
+<p>二叉树的特点</p>
+<ul>
+<li>二叉树中,任意一个节点的度要小于等于2
+<ul>
+<li>节点: 在树结构中,每一个元素称之为节点</li>
+<li>度: 每一个节点的子节点数量称之为度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>二叉树结构图</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/01_%e4%ba%8c%e5%8f%89%e6%a0%91%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="32二叉查找树理解">3.2二叉查找树【理解】<a hidden class="anchor" aria-hidden="true" href="#32二叉查找树理解">#</a></h3>
+<ul>
+<li>
+<p>二叉查找树的特点</p>
+<ul>
+<li>二叉查找树,又称二叉排序树或者二叉搜索树</li>
+<li>每一个节点上最多有两个子节点</li>
+<li>左子树上所有节点的值都小于根节点的值</li>
+<li>右子树上所有节点的值都大于根节点的值</li>
+</ul>
+</li>
+<li>
+<p>二叉查找树结构图</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/02_%e4%ba%8c%e5%8f%89%e6%9f%a5%e6%89%be%e6%a0%91%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+</li>
+<li>
+<p>二叉查找树和二叉树对比结构图</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/03_%e4%ba%8c%e5%8f%89%e6%9f%a5%e6%89%be%e6%a0%91%e5%92%8c%e4%ba%8c%e5%8f%89%e6%a0%91%e5%af%b9%e6%af%94%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+</li>
+<li>
+<p>二叉查找树添加节点规则</p>
+<ul>
+<li>
+<p>小的存左边</p>
+</li>
+<li>
+<p>大的存右边</p>
+</li>
+<li>
+<p>一样的不存</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/04_%e4%ba%8c%e5%8f%89%e6%9f%a5%e6%89%be%e6%a0%91%e6%b7%bb%e5%8a%a0%e8%8a%82%e7%82%b9%e8%a7%84%e5%88%99.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="33平衡二叉树理解">3.3平衡二叉树【理解】<a hidden class="anchor" aria-hidden="true" href="#33平衡二叉树理解">#</a></h3>
+<ul>
+<li>
+<p>平衡二叉树的特点</p>
+<ul>
+<li>二叉树左右两个子树的高度差不超过1</li>
+<li>任意节点的左右两个子树都是一颗平衡二叉树</li>
+</ul>
+</li>
+<li>
+<p>平衡二叉树旋转</p>
+<ul>
+<li>
+<p>旋转触发时机</p>
+<ul>
+<li>当添加一个节点之后,该树不再是一颗平衡二叉树</li>
+</ul>
+</li>
+<li>
+<p>左旋</p>
+<ul>
+<li>
+<p>就是将根节点的右侧往左拉,原先的右子节点变成新的父节点,并把多余的左子节点出让,给已经降级的根节点当右子节点</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/05_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%b7%a6%e6%97%8b01.png" alt=""  />
+</p>
+</li>
+</ul>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/05_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%b7%a6%e6%97%8b02.png" alt=""  />
+</p>
+</li>
+<li>
+<p>右旋</p>
+<ul>
+<li>
+<p>就是将根节点的左侧往右拉,左子节点变成了新的父节点,并把多余的右子节点出让,给已经降级根节点当左子节点</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/06_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%8f%b3%e6%97%8b01.png" alt=""  />
+</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/06_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%8f%b3%e6%97%8b02.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>平衡二叉树和二叉查找树对比结构图</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/07_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%92%8c%e4%ba%8c%e5%8f%89%e6%9f%a5%e6%89%be%e6%a0%91%e5%af%b9%e6%af%94%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+</li>
+<li>
+<p>平衡二叉树旋转的四种情况</p>
+<ul>
+<li>
+<p>左左</p>
+<ul>
+<li>
+<p>左左: 当根节点左子树的左子树有节点插入,导致二叉树不平衡</p>
+</li>
+<li>
+<p>如何旋转: 直接对整体进行右旋即可</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/08_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%b7%a6%e5%b7%a6.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>左右</p>
+<ul>
+<li>
+<p>左右: 当根节点左子树的右子树有节点插入,导致二叉树不平衡</p>
+</li>
+<li>
+<p>如何旋转: 先在左子树对应的节点位置进行左旋,在对整体进行右旋</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/09_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%b7%a6%e5%8f%b3.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>右右</p>
+<ul>
+<li>
+<p>右右: 当根节点右子树的右子树有节点插入,导致二叉树不平衡</p>
+</li>
+<li>
+<p>如何旋转: 直接对整体进行左旋即可</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/10_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%8f%b3%e5%8f%b3.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>右左</p>
+<ul>
+<li>
+<p>右左:当根节点右子树的左子树有节点插入,导致二叉树不平衡</p>
+</li>
+<li>
+<p>如何旋转: 先在右子树对应的节点位置进行右旋,在对整体进行左旋</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/11_%e5%b9%b3%e8%a1%a1%e4%ba%8c%e5%8f%89%e6%a0%91%e5%8f%b3%e5%b7%a6.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="34红黑树理解">3.4红黑树【理解】<a hidden class="anchor" aria-hidden="true" href="#34红黑树理解">#</a></h3>
+<ul>
+<li>
+<p>红黑树的特点</p>
+<ul>
+<li>平衡二叉B树</li>
+<li>每一个节点可以是红或者黑</li>
+<li>红黑树不是高度平衡的,它的平衡是通过&quot;自己的红黑规则&quot;进行实现的</li>
+</ul>
+</li>
+<li>
+<p>红黑树的红黑规则有哪些</p>
+<ol>
+<li>
+<p>每一个节点或是红色的,或者是黑色的</p>
+</li>
+<li>
+<p>根节点必须是黑色</p>
+</li>
+<li>
+<p>如果一个节点没有子节点或者父节点,则该节点相应的指针属性值为Nil,这些Nil视为叶节点,每个叶节点(Nil)是黑色的</p>
+</li>
+<li>
+<p>如果某一个节点是红色,那么它的子节点必须是黑色(不能出现两个红色节点相连 的情况)</p>
+</li>
+<li>
+<p>对每一个节点,从该节点到其所有后代叶节点的简单路径上,均包含相同数目的黑色节点</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/12_%e7%ba%a2%e9%bb%91%e6%a0%91%e7%bb%93%e6%9e%84%e5%9b%be.png" alt=""  />
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>红黑树添加节点的默认颜色</p>
+<ul>
+<li>
+<p>添加节点时,默认为红色,效率高</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/13_%e7%ba%a2%e9%bb%91%e6%a0%91%e6%b7%bb%e5%8a%a0%e8%8a%82%e7%82%b9%e9%a2%9c%e8%89%b2.png" alt=""  />
+</p>
+</li>
+</ul>
+</li>
+<li>
+<p>红黑树添加节点后如何保持红黑规则</p>
+<ul>
+<li>根节点位置
+<ul>
+<li>直接变为黑色</li>
+</ul>
+</li>
+<li>非根节点位置
+<ul>
+<li>父节点为黑色
+<ul>
+<li>不需要任何操作,默认红色即可</li>
+</ul>
+</li>
+<li>父节点为红色
+<ul>
+<li>叔叔节点为红色
+<ol>
+<li>将&quot;父节点&quot;设为黑色,将&quot;叔叔节点&quot;设为黑色</li>
+<li>将&quot;祖父节点&quot;设为红色</li>
+<li>如果&quot;祖父节点&quot;为根节点,则将根节点再次变成黑色</li>
+</ol>
+</li>
+<li>叔叔节点为黑色
+<ol>
+<li>将&quot;父节点&quot;设为黑色</li>
+<li>将&quot;祖父节点&quot;设为红色</li>
+<li>以&quot;祖父节点&quot;为支点进行旋转</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="35成绩排序案例应用">3.5成绩排序案例【应用】<a hidden class="anchor" aria-hidden="true" href="#35成绩排序案例应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<ul>
+<li>用TreeSet集合存储多个学生信息(姓名,语文成绩,数学成绩,英语成绩),并遍历该集合</li>
+<li>要求: 按照总分从高到低出现</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">implements</span> Comparable<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> chinese<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> math<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> english<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> chinese<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> math<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> english<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">chinese</span> <span style="color:#f92672">=</span> chinese<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">math</span> <span style="color:#f92672">=</span> math<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">english</span> <span style="color:#f92672">=</span> english<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getChinese</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> chinese<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setChinese</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> chinese<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">chinese</span> <span style="color:#f92672">=</span> chinese<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getMath</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> math<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setMath</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> math<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">math</span> <span style="color:#f92672">=</span> math<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getEnglish</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> english<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setEnglish</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> english<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">english</span> <span style="color:#f92672">=</span> english<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getSum</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">chinese</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">math</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">english</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>Student o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 主要条件: 按照总分进行排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getSum</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getSum</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 次要条件: 如果总分一样,就按照语文成绩排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        result <span style="color:#f92672">=</span> result <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getChinese</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getChinese</span><span style="color:#f92672">()</span> <span style="color:#f92672">:</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果语文成绩也一样,就按照数学成绩排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        result <span style="color:#f92672">=</span> result <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getMath</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getMath</span><span style="color:#f92672">()</span> <span style="color:#f92672">:</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果总分一样,各科成绩也都一样,就按照姓名排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        result <span style="color:#f92672">=</span> result <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">().</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">())</span> <span style="color:#f92672">:</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeSetDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建TreeSet集合对象，通过比较器排序进行排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TreeSet<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> ts <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeSet<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Student s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;jack&#34;</span><span style="color:#f92672">,</span> 98<span style="color:#f92672">,</span> 100<span style="color:#f92672">,</span> 95<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;rose&#34;</span><span style="color:#f92672">,</span> 95<span style="color:#f92672">,</span> 95<span style="color:#f92672">,</span> 95<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;sam&#34;</span><span style="color:#f92672">,</span> 100<span style="color:#f92672">,</span> 93<span style="color:#f92672">,</span> 98<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//把学生对象添加到集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        ts<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student s <span style="color:#f92672">:</span> ts<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getChinese</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getMath</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getEnglish</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getSum</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="4hashset集合">4.HashSet集合<a hidden class="anchor" aria-hidden="true" href="#4hashset集合">#</a></h2>
+<h3 id="41hashset集合概述和特点应用">4.1HashSet集合概述和特点【应用】<a hidden class="anchor" aria-hidden="true" href="#41hashset集合概述和特点应用">#</a></h3>
+<ul>
+<li>底层数据结构是哈希表</li>
+<li>存取无序</li>
+<li>不可以存储重复元素</li>
+<li>没有索引,不能使用普通for循环遍历</li>
+</ul>
+<h3 id="42hashset集合的基本应用应用">4.2HashSet集合的基本应用【应用】<a hidden class="anchor" aria-hidden="true" href="#42hashset集合的基本应用应用">#</a></h3>
+<p>存储字符串并遍历</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HashSetDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        HashSet<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> set <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//添加元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;world&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;java&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//不包含重复元素的集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        set<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;world&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span>String s <span style="color:#f92672">:</span> set<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="43哈希值理解">4.3哈希值【理解】<a hidden class="anchor" aria-hidden="true" href="#43哈希值理解">#</a></h3>
+<ul>
+<li>
+<p>哈希值简介</p>
+<p>​	是JDK根据对象的地址或者字符串或者数字算出来的int类型的数值</p>
+</li>
+<li>
+<p>如何获取哈希值</p>
+<p>​	Object类中的public int hashCode()：返回对象的哈希码值</p>
+</li>
+<li>
+<p>哈希值的特点</p>
+<ul>
+<li>同一个对象多次调用hashCode()方法返回的哈希值是相同的</li>
+<li>默认情况下，不同对象的哈希值是不同的。而重写hashCode()方法，可以实现让不同对象的哈希值相同</li>
+</ul>
+</li>
+</ul>
+<h3 id="44哈希表结构理解">4.4哈希表结构【理解】<a hidden class="anchor" aria-hidden="true" href="#44哈希表结构理解">#</a></h3>
+<ul>
+<li>
+<p>JDK1.8以前</p>
+<p>​	数组 + 链表</p>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/14_JKD8%e4%bb%a5%e5%89%8d%e5%93%88%e5%b8%8c%e8%a1%a8.png" alt=""  />
+</p>
+</li>
+<li>
+<p>JDK1.8以后</p>
+<ul>
+<li>
+<p>节点个数少于等于8个</p>
+<p>​	数组 + 链表</p>
+</li>
+<li>
+<p>节点个数多于8个</p>
+<p>​	数组 + 红黑树</p>
+</li>
+</ul>
+<p><img loading="lazy" src="/images/Java%e9%9b%86%e5%90%8802/15_JKD8%e4%bb%a5%e5%90%8e%e5%93%88%e5%b8%8c%e8%a1%a8.png" alt=""  />
+</p>
+</li>
+</ul>
+<h3 id="45hashset集合存储学生对象并遍历应用">4.5HashSet集合存储学生对象并遍历【应用】<a hidden class="anchor" aria-hidden="true" href="#45hashset集合存储学生对象并遍历应用">#</a></h3>
+<ul>
+<li>
+<p>案例需求</p>
+<ul>
+<li>创建一个存储学生对象的集合，存储多个学生对象，使用程序实现在控制台遍历该集合</li>
+<li>要求：学生对象的成员变量值相同，我们就认为是同一个对象</li>
+</ul>
+</li>
+<li>
+<p>代码实现</p>
+<p>学生类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAge</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAge</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> age<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">age</span> <span style="color:#f92672">=</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span> <span style="color:#f92672">==</span> o<span style="color:#f92672">)</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>o <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> getClass<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">())</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Student student <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Student<span style="color:#f92672">)</span> o<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>age <span style="color:#f92672">!=</span> student<span style="color:#f92672">.</span><span style="color:#a6e22e">age</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> name<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>student<span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">)</span> <span style="color:#f92672">:</span> student<span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hashCode</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> name <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> name<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">()</span> <span style="color:#f92672">:</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> 31 <span style="color:#f92672">*</span> result <span style="color:#f92672">+</span> age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>测试类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HashSetDemo02</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建HashSet集合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        HashSet<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;</span> hs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;</span>Student<span style="color:#f92672">&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//创建学生对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Student s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;林青霞&#34;</span><span style="color:#f92672">,</span> 30<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;张曼玉&#34;</span><span style="color:#f92672">,</span> 35<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Student s3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;王祖贤&#34;</span><span style="color:#f92672">,</span> 33<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Student s4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;王祖贤&#34;</span><span style="color:#f92672">,</span> 33<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//把学生添加到集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        hs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        hs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        hs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        hs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>s4<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//遍历集合(增强for)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Student s <span style="color:#f92672">:</span> hs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">getAge</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p>总结</p>
+<p>​	HashSet集合存储自定义类型元素,要想实现元素的唯一,要求必须重写hashCode方法和equals方法</p>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/%E9%9B%86%E5%90%88/">集合</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8803/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Java集合03</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/java%E9%9B%86%E5%90%8801/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Java集合01</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

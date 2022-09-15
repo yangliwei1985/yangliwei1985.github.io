@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>MySQL生产级全备&#43;增备备份脚本 | ylw&#39;s blog</title>
+<meta name="keywords" content="xtrabackup" />
+<meta name="description" content="脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&#34;/data/mysql_backup&#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&#34;root&#34; MYSQL_PASSWORD=&#34;root&#34; MYSQL_HOST=&#34;10.0.0.1&#34;  MYSQL_CNF=&#34;/etc/my.cnf&#34; MYSQL_MULTI_GROUP=&#34;--socket=/data/mysql/mysql.sock&#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&#34;  CURRENT_WEEK_OF_YEAR=$(date &#43;%U) CURRENT_DAY_OF_WEEK=$(date &#43;%u) CURRENT_DATE=$(date &#43;%F) CURRENT_TIME=$(date &#43;%H-%M-%S) CURRENT_DATETIME=&#34;${CURRENT_DATE}_${CURRENT_TIME}&#34;  BAK_WEEK_DIR=&#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&#34;  BAK_FULL_DIR=&#34;${BAK_WEEK_DIR}/FULL&#34;  BAK_LOG=&#34;${BAK_WEEK_DIR}/backup.log&#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime &#43;${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="MySQL生产级全备&#43;增备备份脚本" />
+<meta property="og:description" content="脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&#34;/data/mysql_backup&#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&#34;root&#34; MYSQL_PASSWORD=&#34;root&#34; MYSQL_HOST=&#34;10.0.0.1&#34;  MYSQL_CNF=&#34;/etc/my.cnf&#34; MYSQL_MULTI_GROUP=&#34;--socket=/data/mysql/mysql.sock&#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&#34;  CURRENT_WEEK_OF_YEAR=$(date &#43;%U) CURRENT_DAY_OF_WEEK=$(date &#43;%u) CURRENT_DATE=$(date &#43;%F) CURRENT_TIME=$(date &#43;%H-%M-%S) CURRENT_DATETIME=&#34;${CURRENT_DATE}_${CURRENT_TIME}&#34;  BAK_WEEK_DIR=&#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&#34;  BAK_FULL_DIR=&#34;${BAK_WEEK_DIR}/FULL&#34;  BAK_LOG=&#34;${BAK_WEEK_DIR}/backup.log&#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime &#43;${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-13T17:19:20&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-13T17:19:20&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL生产级全备&#43;增备备份脚本"/>
+<meta name="twitter:description" content="脚本内容如下：Xtrabackup.sh
+#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=&#34;/data/mysql_backup&#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=&#34;root&#34; MYSQL_PASSWORD=&#34;root&#34; MYSQL_HOST=&#34;10.0.0.1&#34;  MYSQL_CNF=&#34;/etc/my.cnf&#34; MYSQL_MULTI_GROUP=&#34;--socket=/data/mysql/mysql.sock&#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=&#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&#34;  CURRENT_WEEK_OF_YEAR=$(date &#43;%U) CURRENT_DAY_OF_WEEK=$(date &#43;%u) CURRENT_DATE=$(date &#43;%F) CURRENT_TIME=$(date &#43;%H-%M-%S) CURRENT_DATETIME=&#34;${CURRENT_DATE}_${CURRENT_TIME}&#34;  BAK_WEEK_DIR=&#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}&#34;  BAK_FULL_DIR=&#34;${BAK_WEEK_DIR}/FULL&#34;  BAK_LOG=&#34;${BAK_WEEK_DIR}/backup.log&#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime &#43;${HOLD_DAYS} -prune -exec rm -rf {} \; }   function write_start_log() {   if [[ !"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "MySQL生产级全备+增备备份脚本",
+      "item": "https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL生产级全备+增备备份脚本",
+  "name": "MySQL生产级全备\u002b增备备份脚本",
+  "description": "脚本内容如下：Xtrabackup.sh\n#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=\u0026#34;/data/mysql_backup\u0026#34; #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=\u0026#34;root\u0026#34; MYSQL_PASSWORD=\u0026#34;root\u0026#34; MYSQL_HOST=\u0026#34;10.0.0.1\u0026#34;  MYSQL_CNF=\u0026#34;/etc/my.cnf\u0026#34; MYSQL_MULTI_GROUP=\u0026#34;--socket=/data/mysql/mysql.sock\u0026#34; #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=\u0026#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock\u0026#34;  CURRENT_WEEK_OF_YEAR=$(date +%U) CURRENT_DAY_OF_WEEK=$(date +%u) CURRENT_DATE=$(date +%F) CURRENT_TIME=$(date +%H-%M-%S) CURRENT_DATETIME=\u0026#34;${CURRENT_DATE}_${CURRENT_TIME}\u0026#34;  BAK_WEEK_DIR=\u0026#34;${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}\u0026#34;  BAK_FULL_DIR=\u0026#34;${BAK_WEEK_DIR}/FULL\u0026#34;  BAK_LOG=\u0026#34;${BAK_WEEK_DIR}/backup.log\u0026#34;    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime +${HOLD_DAYS} -prune -exec rm -rf {} \\; }   function write_start_log() {   if [[ !",
+  "keywords": [
+    "xtrabackup"
+  ],
+  "articleBody": "脚本内容如下：Xtrabackup.sh\n#!/bin/bash ##备份策略: ##周日(7)： 全备 ##周一 ~ 周六(1-6)： 增量备份  source /etc/profile ulimit -HSn 102400  ## ##========== global var ============ ##  #如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别 #可增加端口作为区分，例如 /opt/backup/mysqk/3306 BAK_DIR_ROOT=\"/data/mysql_backup\" #默认周日进行全备 (1 - 7), 1 是周一，7是周日 FULL_BAK_DAY_OF_WEEK=7 #备份文件保留周期，默认保留35天 (4-5周) HOLD_DAYS=35  MYSQL_USERNAME=\"root\" MYSQL_PASSWORD=\"root\" MYSQL_HOST=\"10.0.0.1\"  MYSQL_CNF=\"/etc/my.cnf\" MYSQL_MULTI_GROUP=\"--socket=/data/mysql/mysql.sock\" #如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例 #MYSQL_MULTI_GROUP=\"--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock\"  CURRENT_WEEK_OF_YEAR=$(date +%U) CURRENT_DAY_OF_WEEK=$(date +%u) CURRENT_DATE=$(date +%F) CURRENT_TIME=$(date +%H-%M-%S) CURRENT_DATETIME=\"${CURRENT_DATE}_${CURRENT_TIME}\"  BAK_WEEK_DIR=\"${BAK_DIR_ROOT}/WEEK_${CURRENT_WEEK_OF_YEAR}\"  BAK_FULL_DIR=\"${BAK_WEEK_DIR}/FULL\"  BAK_LOG=\"${BAK_WEEK_DIR}/backup.log\"    ## ##========== function ============= ##  function clean_backup() {  find ${BAK_DIR_ROOT} -mtime +${HOLD_DAYS} -prune -exec rm -rf {} \\; }   function write_start_log() {   if [[ ! -d ${BAK_WEEK_DIR} ]];then  mkdir -p ${BAK_WEEK_DIR}  fi   echo \" ${CURRENT_DATETIME}Begin Backup   ${BAK_LOG}  }  function full_backup() {   if [[ ! -d ${BAK_FULL_DIR} ]]; then  mkdir -p ${BAK_FULL_DIR}  fi   echo \"*** FULL BACKUP Date : ${CURRENT_DATETIME}\"  ${BAK_FULL_DIR}/full_backup.date   innobackupex --defaults-file=${MYSQL_CNF} ${MYSQL_MULTI_GROUP} --no-timestamp --user=${MYSQL_USERNAME} --password=${MYSQL_PASSWORD} --host=${MYSQL_HOST} --compress --compress-threads=4 --stream=xbstream --parallel=4 --extra-lsndir=\"${BAK_FULL_DIR}/LSN_INFO\" ${BAK_FULL_DIR}  \"${BAK_FULL_DIR}/mysql_backup_full.xbstream\" 2 ${BAK_LOG}  }   #每周周一到周六进行增量备份 function incr_backup() {   CURRENT_INCR_DIR=\"${BAK_WEEK_DIR}/INCR_${CURRENT_DAY_OF_WEEK}\"  PREV_DAY_OF_WEEK=$((${CURRENT_DAY_OF_WEEK} - 1))  BASE_DIR=\"${BAK_WEEK_DIR}/INCR_${PREV_DAY_OF_WEEK}\"   #如果不存在之前的增量，则使用全量路径作为增量的BASE  #比如周一的时候  if [[ ! -d ${BASE_DIR} ]];then  BASE_DIR=${BAK_FULL_DIR}  fi   #如果在此函数中，还没有BASE，则认为可能是在项目第一周执行  #进行一次全量备份  if [[ ! -d ${BASE_DIR} ]];then  echo \"*** ${BASE_DIR}as BASE_DIR is not exists!\"  ${BAK_LOG}  echo \"*** So Backup Processor into FULL BACKUP \"  ${BAK_LOG}  full_backup  exit $?  fi   #如果存放增量数据的目录已经存在，这里进行添加时间戳处理（一天备份多次）  if [[ -d ${CURRENT_INCR_DIR} ]];then  CURRENT_INCR_DIR=\"${CURRENT_INCR_DIR}_${CURRENT_DATETIME}\"  fi   #如果BASE_DIR 存在，则进行增量备份  if [[ ! -d ${CURRENT_INCR_DIR} ]];then  mkdir -p ${CURRENT_INCR_DIR}  fi   echo \"*** INCR BACKUP Date : ${CURRENT_DATETIME}\"  ${CURRENT_INCR_DIR}/incr_backup.date   innobackupex --defaults-file=${MYSQL_CNF} ${MYSQL_MULTI_GROUP} --no-timestamp --user=${MYSQL_USERNAME} --password=${MYSQL_PASSWORD} --host=${MYSQL_HOST} --compress --compress-threads=4 --stream=xbstream --parallel=4 --incremental --incremental-basedir=\"${BASE_DIR}/LSN_INFO\" --extra-lsndir=\"${CURRENT_INCR_DIR}/LSN_INFO\" ${CURRENT_INCR_DIR}  \"${CURRENT_INCR_DIR}/mysql_backup_incr_${CURRENT_DAY_OF_WEEK}.xbstream\" 2 ${BAK_LOG}  }  # 同步至远程备份机器 function async_remote() {   echo \"*** Start Backup \"  ${BAK_LOG}   rsync -av --delete /data/mysql_backup/* back@10.0.0.2:/data/mysql_backup/  ${BAK_LOG} }  # 修改同步目录权限 function modify_Dir_Permissions() {   chown -R back.back /data/mysql_backup }  #################main #################  clean_backup write_start_log   #如果指定的全备时间 == 当前的时间，则执行全备 if [[ ${FULL_BAK_DAY_OF_WEEK} -eq ${CURRENT_DAY_OF_WEEK} ]];then  full_backup  modify_Dir_Permissions  async_remote  exit $? else  incr_backup  modify_Dir_Permissions  async_remote  exit $? fi ",
+  "wordCount" : "291",
+  "inLanguage": "zh",
+  "datePublished": "2022-04-13T17:19:20+08:00",
+  "dateModified": "2022-04-13T17:19:20+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/mysql%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%85%A8%E5%A4%87-%E5%A2%9E%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      MySQL生产级全备&#43;增备备份脚本
+    </h1>
+    <div class="post-meta"><span title='2022-04-13 17:19:20 +0800 CST'>2022-04-13</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> 
+
+
+  <div class="post-content"><p>脚本内容如下：Xtrabackup.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">##备份策略:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##周日(7)： 全备</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##周一 ~ 周六(1-6)： 增量备份</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>source /etc/profile
+</span></span><span style="display:flex;"><span>ulimit -HSn <span style="color:#ae81ff">102400</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##========== global var ============</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#如果一台服务器上有多个MySQL，可以使用 BAK_DIR_ROOT进行备份路径的区别</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#可增加端口作为区分，例如 /opt/backup/mysqk/3306</span>
+</span></span><span style="display:flex;"><span>BAK_DIR_ROOT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/data/mysql_backup&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#默认周日进行全备 (1 - 7), 1 是周一，7是周日</span>
+</span></span><span style="display:flex;"><span>FULL_BAK_DAY_OF_WEEK<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#备份文件保留周期，默认保留35天 (4-5周)</span>
+</span></span><span style="display:flex;"><span>HOLD_DAYS<span style="color:#f92672">=</span><span style="color:#ae81ff">35</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MYSQL_USERNAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>
+</span></span><span style="display:flex;"><span>MYSQL_PASSWORD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>
+</span></span><span style="display:flex;"><span>MYSQL_HOST<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;10.0.0.1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MYSQL_CNF<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/etc/my.cnf&#34;</span>
+</span></span><span style="display:flex;"><span>MYSQL_MULTI_GROUP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--socket=/data/mysql/mysql.sock&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#如果使用多实例，比如通过ecloud的方式下发安装，默认使用多实例</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#MYSQL_MULTI_GROUP=&#34;--defaults-group=mysqld3307 --socket=/tmp/mysql3307.sock&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CURRENT_WEEK_OF_YEAR<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%U<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>CURRENT_DAY_OF_WEEK<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%u<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>CURRENT_DATE<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%F<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>CURRENT_TIME<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%H-%M-%S<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>CURRENT_DATETIME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CURRENT_DATE<span style="color:#e6db74">}</span><span style="color:#e6db74">_</span><span style="color:#e6db74">${</span>CURRENT_TIME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BAK_WEEK_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_DIR_ROOT<span style="color:#e6db74">}</span><span style="color:#e6db74">/WEEK_</span><span style="color:#e6db74">${</span>CURRENT_WEEK_OF_YEAR<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BAK_FULL_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/FULL&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BAK_LOG<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/backup.log&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##========== function =============</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> clean_backup<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    find <span style="color:#e6db74">${</span>BAK_DIR_ROOT<span style="color:#e6db74">}</span>  -mtime +<span style="color:#e6db74">${</span>HOLD_DAYS<span style="color:#e6db74">}</span>  -prune -exec rm -rf <span style="color:#f92672">{}</span> <span style="color:#ae81ff">\;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> write_start_log<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> ! -d <span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        mkdir -p <span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; </span><span style="color:#e6db74">${</span>CURRENT_DATETIME<span style="color:#e6db74">}</span><span style="color:#e6db74"> Begin Backup &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> full_backup<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> ! -d <span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        mkdir -p <span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;*** FULL BACKUP Date : </span><span style="color:#e6db74">${</span>CURRENT_DATETIME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span>/full_backup.date
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    innobackupex --defaults-file<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_CNF<span style="color:#e6db74">}</span> <span style="color:#e6db74">${</span>MYSQL_MULTI_GROUP<span style="color:#e6db74">}</span> --no-timestamp --user<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_USERNAME<span style="color:#e6db74">}</span> --password<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_PASSWORD<span style="color:#e6db74">}</span> --host<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_HOST<span style="color:#e6db74">}</span> --compress --compress-threads<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> --stream<span style="color:#f92672">=</span>xbstream --parallel<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> --extra-lsndir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/LSN_INFO&#34;</span>  <span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span>  &gt; <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/mysql_backup_full.xbstream&#34;</span>  2&gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#每周周一到周六进行增量备份</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> incr_backup<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CURRENT_INCR_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/INCR_</span><span style="color:#e6db74">${</span>CURRENT_DAY_OF_WEEK<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    PREV_DAY_OF_WEEK<span style="color:#f92672">=</span><span style="color:#66d9ef">$((</span><span style="color:#e6db74">${</span>CURRENT_DAY_OF_WEEK<span style="color:#e6db74">}</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span>    BASE_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BAK_WEEK_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/INCR_</span><span style="color:#e6db74">${</span>PREV_DAY_OF_WEEK<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#如果不存在之前的增量，则使用全量路径作为增量的BASE</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#比如周一的时候</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> ! -d <span style="color:#e6db74">${</span>BASE_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        BASE_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>BAK_FULL_DIR<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#如果在此函数中，还没有BASE，则认为可能是在项目第一周执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#进行一次全量备份</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span>  ! -d <span style="color:#e6db74">${</span>BASE_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;*** </span><span style="color:#e6db74">${</span>BASE_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74"> as BASE_DIR is not exists!&#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;***  So Backup Processor into FULL BACKUP &#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>        full_backup
+</span></span><span style="display:flex;"><span>        exit $?
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#如果存放增量数据的目录已经存在，这里进行添加时间戳处理（一天备份多次）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        CURRENT_INCR_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">_</span><span style="color:#e6db74">${</span>CURRENT_DATETIME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#如果BASE_DIR 存在，则进行增量备份</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> ! -d <span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        mkdir -p <span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;*** INCR BACKUP Date : </span><span style="color:#e6db74">${</span>CURRENT_DATETIME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span>/incr_backup.date
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    innobackupex --defaults-file<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_CNF<span style="color:#e6db74">}</span> <span style="color:#e6db74">${</span>MYSQL_MULTI_GROUP<span style="color:#e6db74">}</span> --no-timestamp --user<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_USERNAME<span style="color:#e6db74">}</span> --password<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_PASSWORD<span style="color:#e6db74">}</span> --host<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>MYSQL_HOST<span style="color:#e6db74">}</span> --compress --compress-threads<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> --stream<span style="color:#f92672">=</span>xbstream --parallel<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> --incremental --incremental-basedir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>BASE_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/LSN_INFO&#34;</span> --extra-lsndir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/LSN_INFO&#34;</span>  <span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span>  &gt; <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CURRENT_INCR_DIR<span style="color:#e6db74">}</span><span style="color:#e6db74">/mysql_backup_incr_</span><span style="color:#e6db74">${</span>CURRENT_DAY_OF_WEEK<span style="color:#e6db74">}</span><span style="color:#e6db74">.xbstream&#34;</span> 2&gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 同步至远程备份机器</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> async_remote<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;***  Start Backup &#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    rsync -av --delete /data/mysql_backup/* back@10.0.0.2:/data/mysql_backup/  &gt;&gt; <span style="color:#e6db74">${</span>BAK_LOG<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改同步目录权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> modify_Dir_Permissions<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    chown -R back.back /data/mysql_backup
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#################main #################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>clean_backup
+</span></span><span style="display:flex;"><span>write_start_log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#如果指定的全备时间 == 当前的时间，则执行全备</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">${</span>FULL_BAK_DAY_OF_WEEK<span style="color:#e6db74">}</span> -eq <span style="color:#e6db74">${</span>CURRENT_DAY_OF_WEEK<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    full_backup
+</span></span><span style="display:flex;"><span>    modify_Dir_Permissions
+</span></span><span style="display:flex;"><span>    async_remote
+</span></span><span style="display:flex;"><span>    exit $?
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    incr_backup
+</span></span><span style="display:flex;"><span>    modify_Dir_Permissions
+</span></span><span style="display:flex;"><span>    async_remote
+</span></span><span style="display:flex;"><span>    exit $?
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/xtrabackup/">xtrabackup</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/nginx%E6%A0%B9%E6%8D%AE%E8%AF%B7%E6%B1%82ip%E8%BD%AC%E5%8F%91%E8%AF%B7%E6%B1%82/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Nginx根据请求IP转发请求</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/rocketmq-console%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>RocketMQ Console安装及配置</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

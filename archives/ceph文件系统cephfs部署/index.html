@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Ceph文件系统—CephFS部署 | ylw&#39;s blog</title>
+<meta name="keywords" content="ceph" />
+<meta name="description" content="一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+ 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统.">
+<meta name="author" content="">
+<link rel="canonical" href="https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7af5e4f048c756d5896f15b3f7cd7ee898ea1b3b101fcb40abfb5216ca230ecf.css" integrity="sha256-evXk8EjHVtWJbxWz981&#43;6JjqGzsQH8tAq/tSFsojDs8=" rel="preload stylesheet" as="style">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://iblog.zone/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="https://iblog.zone/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+
+<meta property="og:title" content="Ceph文件系统—CephFS部署" />
+<meta property="og:description" content="一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+ 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-01T11:34:22&#43;00:00" />
+<meta property="article:modified_time" content="2022-03-01T11:34:22&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ceph文件系统—CephFS部署"/>
+<meta name="twitter:description" content="一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。
+ 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://iblog.zone/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Ceph文件系统—CephFS部署",
+      "item": "https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ceph文件系统—CephFS部署",
+  "name": "Ceph文件系统—CephFS部署",
+  "description": "一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。\n 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统.",
+  "keywords": [
+    "ceph"
+  ],
+  "articleBody": "一、CephFS介绍  Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。\n 注意：你集群里必须有MDS，不然无法进行下面的操作  二、CephFS创建   要使用 CephFS， 至少就需要一个 metadata server 进程；在admin节点通过以下命令进行创建  [root@ceph-admin ~]# su - cephu  [cephu@ceph-admin ~]$ cd ~/my-cluster/ [cephu@ceph-admin my-cluster]$ ceph-deploy mds create ceph-node2 #无报错则创建完成 三、CephFS部署  1、部署流程  在一个 Mon 节点上创建 Ceph 文件系统. 若使用 CephX 认证,需要创建一个访问 CephFS 的客户端 挂载 CephFS 到一个专用的节点，以 kernel client 形式挂载 CephFS  2、执行操作 2.1：创建文件系统\n Mon节点我们三台Node上都创建了，我们在任一Mon节点进行创建；这里我在ceph-node1节点创建 CephFS 需要两个 Pools，cephfs-data 和 cephfs-metadata, 分别存储文件数据和文件元数据  [root@ceph-node1 ~]# su - cephu [cephu@ceph-node1 ~]$ sudo ceph osd pool create cephfs-data 128 128 pool 'cephfs-data' created  [cephu@ceph-node1 ~]$ sudo ceph osd pool create cephfs-metadata 64 64 pool 'cephfs-metadata' created 2.2：创建CephFS\n 创建一个CephFS，名称为cephfs，还是在Mon节点操作  [cephu@ceph-node1 ~]$ sudo ceph fs new cephfs cephfs-metadata cephfs-data  new fs with metadata pool 2 and data pool 1 2.3：检查状态\n[cephu@ceph-node1 ~]$ sudo ceph fs status cephfs 2.4：创建用户\n 在Mon节点创建一个用户，用于访问CephFS；且这个用户有读写的权限  [cephu@ceph-node1 ~]$ sudo ceph auth get-or-create client.cephfs mon 'allow r' mds 'allow rw' osd 'allow rw pool=cephfs-data, allow rw pool=cephfs-metadata'  [client.cephfs] \tkey = AQDnTxVf/k2sFhAANbw0QbPuCa7dLCJBDQbr8A== 2.5：检查Key\n 检查上面步骤生成的Key是否生效  [cephu@ceph-node1 ~]$ sudo ceph auth get client.cephfs  exported keyring for client.cephfs [client.cephfs] \tkey = AQDnTxVf/k2sFhAANbw0QbPuCa7dLCJBDQbr8A== \tcaps mds = \"allow rw\" \tcaps mon = \"allow r\" \tcaps osd = \"allow rw pool=cephfs-data, allow rw pool=cephfs-metadata\" 2.6：检查CephFS和Mds状态\n[cephu@ceph-node1 ~]$ sudo ceph mds stat cephfs-1/1/1 up {0=ceph-node2=up:active}  [cephu@ceph-node1 ~]$ sudo ceph fs ls name: cephfs, metadata pool: cephfs-metadata, data pools: [cephfs-data ]  [cephu@ceph-node1 ~]$ sudo ceph fs status 四、CephFS挂载   Mon默然端口：tcp: 6789 这里我们以 kernel client 的方式进行挂载，在客户端服务器进行挂载  1、创建挂载点 [root@ceph-client ~]# mkdir /cephfs 2、挂载目录 [root@ceph-client ~]# mount -t ceph 192.168.66.201:6789,192.168.66.202:6789,192.168.66.203:6789:/ /cephfs/ -o name=cephfs,secret=AQA+bhVfgv2nFRAAE1oYVGUOdjtqfsXlQS2nEw==  参数说明  name：为使用cephfs存储的用户 secret：为上面在mon节点创建的cephfs对应的用户秘钥    3、自动挂载 [root@ceph-client ~]# echo \"192.168.66.201:6789,192.168.66.202:6789,192.168.66.203:6789:/ /cephfs ceph name=cephfs,secretfile=/etc/ceph/cephfs.key,_netdev,noatime 0 0\" | sudo tee -a /etc/fstab 4、验证挂载 [root@ceph-client ~]# stat -f /cephfs ",
+  "wordCount" : "287",
+  "inLanguage": "zh",
+  "datePublished": "2022-03-01T11:34:22Z",
+  "dateModified": "2022-03-01T11:34:22Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://iblog.zone/archives/ceph%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fcephfs%E9%83%A8%E7%BD%B2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ylw's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://iblog.zone/images/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://iblog.zone" accesskey="h" title="ylw&#39;s blog (Alt + H)">ylw&#39;s blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://iblog.zone/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://iblog.zone/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://iblog.zone">主页</a>&nbsp;»&nbsp;<a href="https://iblog.zone/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Ceph文件系统—CephFS部署
+    </h1>
+    <div class="post-meta"><span title='2022-03-01 11:34:22 +0000 UTC'>2022-03-01</span>&nbsp;·&nbsp;2 分钟
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e4%b8%80cephfs%e4%bb%8b%e7%bb%8d" aria-label="一、CephFS介绍">一、CephFS介绍</a></li>
+                    <li>
+                        <a href="#%e4%ba%8ccephfs%e5%88%9b%e5%bb%ba" aria-label="二、CephFS创建">二、CephFS创建</a></li>
+                    <li>
+                        <a href="#%e4%b8%89cephfs%e9%83%a8%e7%bd%b2" aria-label="三、CephFS部署">三、CephFS部署</a><ul>
+                            
+                    <li>
+                        <a href="#1%e9%83%a8%e7%bd%b2%e6%b5%81%e7%a8%8b" aria-label="1、部署流程">1、部署流程</a></li>
+                    <li>
+                        <a href="#2%e6%89%a7%e8%a1%8c%e6%93%8d%e4%bd%9c" aria-label="2、执行操作">2、执行操作</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9b%9bcephfs%e6%8c%82%e8%bd%bd" aria-label="四、CephFS挂载">四、CephFS挂载</a><ul>
+                            
+                    <li>
+                        <a href="#1%e5%88%9b%e5%bb%ba%e6%8c%82%e8%bd%bd%e7%82%b9" aria-label="1、创建挂载点">1、创建挂载点</a></li>
+                    <li>
+                        <a href="#2%e6%8c%82%e8%bd%bd%e7%9b%ae%e5%bd%95" aria-label="2、挂载目录">2、挂载目录</a></li>
+                    <li>
+                        <a href="#3%e8%87%aa%e5%8a%a8%e6%8c%82%e8%bd%bd" aria-label="3、自动挂载">3、自动挂载</a></li>
+                    <li>
+                        <a href="#4%e9%aa%8c%e8%af%81%e6%8c%82%e8%bd%bd" aria-label="4、验证挂载">4、验证挂载</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script data-cfasync="false">
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+
+  <div class="post-content"><h2 id="一cephfs介绍">一、CephFS介绍<a hidden class="anchor" aria-hidden="true" href="#一cephfs介绍">#</a></h2>
+<hr>
+<p>Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问. Jewel 版本 (10.2.0) 是第一个包含稳定 CephFS 的 Ceph 版本. CephFS 需要至少一个元数据服务器 (Metadata Server – MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。</p>
+<ul>
+<li><strong>注意</strong>：你集群里必须有MDS，不然无法进行下面的操作</li>
+</ul>
+<h2 id="二cephfs创建">二、CephFS创建<a hidden class="anchor" aria-hidden="true" href="#二cephfs创建">#</a></h2>
+<hr>
+<ul>
+<li>要使用 CephFS， 至少就需要一个 <code>metadata server</code> 进程；在admin节点通过以下命令进行创建</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-admin ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin ~<span style="color:#f92672">]</span>$ cd ~/my-cluster/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-admin my-cluster<span style="color:#f92672">]</span>$ ceph-deploy mds create ceph-node2
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#无报错则创建完成</span>
+</span></span></code></pre></div><h2 id="三cephfs部署">三、CephFS部署<a hidden class="anchor" aria-hidden="true" href="#三cephfs部署">#</a></h2>
+<hr>
+<h3 id="1部署流程">1、部署流程<a hidden class="anchor" aria-hidden="true" href="#1部署流程">#</a></h3>
+<ol>
+<li>在一个 Mon 节点上创建 Ceph 文件系统.</li>
+<li>若使用 CephX 认证,需要创建一个访问 CephFS 的客户端</li>
+<li>挂载 CephFS 到一个专用的节点，以 <code>kernel client </code>形式挂载 CephFS</li>
+</ol>
+<h3 id="2执行操作">2、执行操作<a hidden class="anchor" aria-hidden="true" href="#2执行操作">#</a></h3>
+<p>2.1：创建文件系统</p>
+<ul>
+<li>Mon节点我们三台Node上都创建了，我们在任一Mon节点进行创建；这里我在<code>ceph-node1</code>节点创建</li>
+<li>CephFS 需要两个 Pools，<code>cephfs-data</code> 和 <code>cephfs-metadata</code>, 分别存储文件数据和文件元数据</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-node1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># su - cephu</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph osd pool create cephfs-data <span style="color:#ae81ff">128</span> <span style="color:#ae81ff">128</span>
+</span></span><span style="display:flex;"><span>pool <span style="color:#e6db74">&#39;cephfs-data&#39;</span> created
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph osd pool create cephfs-metadata <span style="color:#ae81ff">64</span> <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>pool <span style="color:#e6db74">&#39;cephfs-metadata&#39;</span> created
+</span></span></code></pre></div><p>2.2：创建CephFS</p>
+<ul>
+<li>创建一个CephFS，名称为cephfs，还是在Mon节点操作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph fs new cephfs cephfs-metadata cephfs-data
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>new fs with metadata pool <span style="color:#ae81ff">2</span> and data pool <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>2.3：检查状态</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph fs status cephfs
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e6%96%87%e4%bb%b6%e7%b3%bb%e7%bb%9f%e2%80%94CephFS%e9%83%a8%e7%bd%b2/cephfs-1.png" alt=""  />
+</p>
+<p>2.4：创建用户</p>
+<ul>
+<li>在Mon节点创建一个用户，用于访问CephFS；且这个用户有读写的权限</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph auth get-or-create client.cephfs mon <span style="color:#e6db74">&#39;allow r&#39;</span> mds <span style="color:#e6db74">&#39;allow rw&#39;</span> osd <span style="color:#e6db74">&#39;allow rw pool=cephfs-data, allow rw pool=cephfs-metadata&#39;</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>client.cephfs<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	key <span style="color:#f92672">=</span> AQDnTxVf/k2sFhAANbw0QbPuCa7dLCJBDQbr8A<span style="color:#f92672">==</span>
+</span></span></code></pre></div><p>2.5：检查Key</p>
+<ul>
+<li>检查上面步骤生成的Key是否生效</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph auth get client.cephfs
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>exported keyring <span style="color:#66d9ef">for</span> client.cephfs
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>client.cephfs<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	key <span style="color:#f92672">=</span> AQDnTxVf/k2sFhAANbw0QbPuCa7dLCJBDQbr8A<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>	caps mds <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;allow rw&#34;</span>
+</span></span><span style="display:flex;"><span>	caps mon <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;allow r&#34;</span>
+</span></span><span style="display:flex;"><span>	caps osd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;allow rw pool=cephfs-data, allow rw pool=cephfs-metadata&#34;</span>
+</span></span></code></pre></div><p>2.6：检查CephFS和Mds状态</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph mds stat
+</span></span><span style="display:flex;"><span>cephfs-1/1/1 up  <span style="color:#f92672">{</span>0<span style="color:#f92672">=</span>ceph-node2<span style="color:#f92672">=</span>up:active<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph fs ls
+</span></span><span style="display:flex;"><span>name: cephfs, metadata pool: cephfs-metadata, data pools: <span style="color:#f92672">[</span>cephfs-data <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>cephu@ceph-node1 ~<span style="color:#f92672">]</span>$ sudo ceph fs status
+</span></span></code></pre></div><h2 id="四cephfs挂载">四、CephFS挂载<a hidden class="anchor" aria-hidden="true" href="#四cephfs挂载">#</a></h2>
+<hr>
+<ul>
+<li>Mon默然端口：<code>tcp: 6789</code></li>
+<li>这里我们以 kernel client 的方式进行挂载，在客户端服务器进行挂载</li>
+</ul>
+<h3 id="1创建挂载点">1、创建挂载点<a hidden class="anchor" aria-hidden="true" href="#1创建挂载点">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir /cephfs</span>
+</span></span></code></pre></div><h3 id="2挂载目录">2、挂载目录<a hidden class="anchor" aria-hidden="true" href="#2挂载目录">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># mount -t ceph 192.168.66.201:6789,192.168.66.202:6789,192.168.66.203:6789:/ /cephfs/ -o name=cephfs,secret=AQA+bhVfgv2nFRAAE1oYVGUOdjtqfsXlQS2nEw==</span>
+</span></span></code></pre></div><ul>
+<li>参数说明
+<ul>
+<li>name：为使用cephfs存储的用户</li>
+<li>secret：为上面在mon节点创建的cephfs对应的用户秘钥</li>
+</ul>
+</li>
+</ul>
+<h3 id="3自动挂载">3、自动挂载<a hidden class="anchor" aria-hidden="true" href="#3自动挂载">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># echo &#34;192.168.66.201:6789,192.168.66.202:6789,192.168.66.203:6789:/ /cephfs ceph name=cephfs,secretfile=/etc/ceph/cephfs.key,_netdev,noatime 0 0&#34; | sudo tee -a /etc/fstab</span>
+</span></span></code></pre></div><h3 id="4验证挂载">4、验证挂载<a hidden class="anchor" aria-hidden="true" href="#4验证挂载">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@ceph-client ~<span style="color:#f92672">]</span><span style="color:#75715e"># stat -f /cephfs</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/images/Ceph%e6%96%87%e4%bb%b6%e7%b3%bb%e7%bb%9f%e2%80%94CephFS%e9%83%a8%e7%bd%b2/cephfs-2.png" alt=""  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://iblog.zone/tags/ceph/">ceph</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://iblog.zone/archives/k8s%E4%B8%AD%E4%BD%BF%E7%94%A8ceph%E9%9B%86%E7%BE%A4%E5%8A%A8%E6%80%81%E5%92%8C%E9%9D%99%E6%80%81%E6%96%B9%E5%BC%8F%E6%8C%82%E8%BD%BDpv%E4%B8%8Epvc/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K8S中使用Ceph集群动态和静态方式挂载PV与PVC</span>
+  </a>
+  <a class="next" href="https://iblog.zone/archives/ceph%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Ceph存储集群部署</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://iblog.zone">ylw&#39;s blog</a></span>
+    <span>
+	& <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank">京ICP备2021039488号</a>
+    </span>
+
+    总访客：<span id="busuanzi_value_site_uv"></span>
+    总浏览量：<span id="busuanzi_value_site_pv"></span>
+    页面访问量：<span id="busuanzi_value_page_pv"></span>
+
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '复制';
+
+        function copyingDone() {
+            copybutton.innerText = '已复制！';
+            setTimeout(() => {
+                copybutton.innerText = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

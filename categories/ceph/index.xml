@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ceph on ylw&#39;s blog</title>
+    <link>https://iblog.zone/categories/ceph/</link>
+    <description>Recent content in ceph on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 18 Apr 2022 11:36:08 +0800</lastBuildDate><atom:link href="https://iblog.zone/categories/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>单机单盘场景部署ceph环境</title>
+      <link>https://iblog.zone/archives/%E5%8D%95%E6%9C%BA%E5%8D%95%E7%9B%98%E5%9C%BA%E6%99%AF%E9%83%A8%E7%BD%B2ceph%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Mon, 18 Apr 2022 11:36:08 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/%E5%8D%95%E6%9C%BA%E5%8D%95%E7%9B%98%E5%9C%BA%E6%99%AF%E9%83%A8%E7%BD%B2ceph%E7%8E%AF%E5%A2%83/</guid>
+      <description>一、环境信息 系统：CentOS Linux release 7.7.1908 磁盘：200G（系统盘）
+1、创建loop设备 mkdir -p /data/ceph-disk/ fallocate -l 40G /data/ceph-disk/sdb.img fallocate -l 40G /data/ceph-disk/sdc.img fallocate -l 40G /data/ceph-disk/sdd.img  losetup -l -P /dev/loop1 /data/ceph-disk/sdb.img losetup -l -P /dev/loop2 /data/ceph-disk/sdc.img losetup -l -P /dev/loop3 /data/ceph-disk/sdd.img  wipefs -a /dev/loop1 wipefs -a /dev/loop2 wipefs -a /dev/loop3 2、设置开机启动挂载loop设备 cat /etc/rc.local
+losetup -l -P /dev/loop1 /data/ceph-disk/sdb.img losetup -l -P /dev/loop2 /data/ceph-disk/sdc.img losetup -l -P /dev/loop3 /data/ceph-disk/sdd.img  #卸载loop设备 #losetup --detach /dev/loop1 #losetup --detach /dev/loop2 #losetup --detach /dev/loop3 chmod a+x /etc/rc.</description>
+    </item>
+    
+  </channel>
+</rss>

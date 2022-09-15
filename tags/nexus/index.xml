@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>nexus on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/nexus/</link>
+    <description>Recent content in nexus on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 08 Apr 2022 17:11:04 +0800</lastBuildDate><atom:link href="https://iblog.zone/tags/nexus/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Maven私服Nexus的搭建与使用</title>
+      <link>https://iblog.zone/archives/maven%E7%A7%81%E6%9C%8Dnexus%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 08 Apr 2022 17:11:04 +0800</pubDate>
+      
+      <guid>https://iblog.zone/archives/maven%E7%A7%81%E6%9C%8Dnexus%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/</guid>
+      <description>一、基本介绍 1、如果没有搭建私服会有什么问题？  如果没有私服，我们所需的所有构件都需要通过 Maven 的中央仓库或者第三方的 Maven 仓库下载到本地，而一个团队中的所有人都重复的从 Maven 仓库下载构件无疑加大了仓库的负载和浪费了外网带宽，如果网速慢的话，还会影响项目的进程。 另外，很多情况下项目的开发都是在内网进行的，可能根本连接不了 Maven 的中央仓库和第三方的 Maven 仓库。 我们开发的公共构件如果需要提供给其它项目使用，也需要搭建私服。  2、搭建私服的优点 Maven 私服的概念就是在本地架设一个 Maven 仓库服务器，在代理远程仓库的同时维护本地仓库。当我们需要下载一些构件（artifact）时，如果本地仓库没有，再去私服下载，私服没有，再去中央仓库下载。这样做会有如下一些优点：
+ 减少网络带宽流量 加速 Maven 构建 部署第三方构件 提高稳定性、增强控制 降低中央仓库的负载  3、Nexus 介绍 Nexus 是一个专门的 Maven 仓库管理软件，它不仅能搭建 Maven 私服，还具备如下一些优点使其日趋成为最流行的 Maven 仓库管理器：
+ 提供了强大的仓库管理功能，构件搜索功能 它基于 REST，友好的 UI 是一个 ext.js 的 REST 客户端 它占用较少的内存 基于简单文件系统而非数据库  二、Nexus 服务的安装 使用 Docker 镜像进行安装 （1）首先执行如下命令下载 Nexus3 镜像：
+docker pull sonatype/nexus3 （2）接着执行如下命令，创建宿主机挂载目录：
+mkdir -p /data/nexus-data （3）最后执行如下命令运行 Nexus3 容器即可：</description>
+    </item>
+    
+  </channel>
+</rss>

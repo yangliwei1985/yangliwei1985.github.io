@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>rabbitmq on ylw&#39;s blog</title>
+    <link>https://iblog.zone/tags/rabbitmq/</link>
+    <description>Recent content in rabbitmq on ylw&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 15 Feb 2022 11:10:06 +0000</lastBuildDate><atom:link href="https://iblog.zone/tags/rabbitmq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RabbitMQ安装和使用</title>
+      <link>https://iblog.zone/archives/rabbitmq%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Tue, 15 Feb 2022 11:10:06 +0000</pubDate>
+      
+      <guid>https://iblog.zone/archives/rabbitmq%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/</guid>
+      <description>RabbitMQ安装步骤   *虚拟机：VMware workstation 12.0*
+  Linux系统：CentOS 7.0
+安装Erlang环境 由于RabbitMQ是采用Erlang编写的，首先需要安装该语言库，以便运行代理服务器，可以参考Erlang官方文档。
+  erlang-solution配置信息安装
+  wget http://packages.erlang-solutions.com/erlang-solutions-1.0-1.noarch.rpm sudo rpm -Uvh erlang-solutions-1.0-1.noarch.rpm rpm --import http://packages.erlang-solutions.com/rpm/erlang_solutions.asc  第三方yum源依赖  wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm rpm –import http://apt.sw.be/RPM-GPG-KEY.dag.txt sudo rpm -i rpmforge-release-0.5.2-2.el6.rf.*.rpm  安装erlang  sudo yum install erlang  运行*erl*命令进行测试  安装RabbitMQ  首先下载最新版的RabbitMQ  wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm  使用rpm和yum进行安装  rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc yum install rabbitmq-server-3.6.1-1.noarch.rpm  启动RabbitMQ管理插件，用于web界面管理  rabbitmq-plugins enable rabbitmq_management service rabbitmq-server restart  测试安装完成的RabbitMQ  rabbitmqctl status 具体内容可以参考RabbitMQ安装官方文档。</description>
+    </item>
+    
+  </channel>
+</rss>
